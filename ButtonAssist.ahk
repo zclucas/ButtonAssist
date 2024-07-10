@@ -266,7 +266,6 @@ OnTriggerKey(key)
         {
             if (isPause) 
                 break
-            
 
             if (mode = 1)
             {
@@ -286,6 +285,7 @@ OnPauseHotkey(key)
     global isPause, pauseToggleControl  ; 访问全局变量
     isPause := !isPause
     pauseToggleControl.value := isPause
+    Suspend(isPause)
 }
 
 
