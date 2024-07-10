@@ -153,8 +153,8 @@ OnAddSetting(*)
     KName := " vKeyInfo" KeyInfoArr.Length
     MName := " vMode" ModeArr.Length
 
-    newTkControl := MyGui.Add("Edit", "x20 w50 Center" TName YPos, "")
-    newKeyControl := MyGui.Add("Edit", "x80 w550" KName YPos, "")
+    newTkControl := MyGui.Add("Edit", "x20 w70 Center" TName YPos, "")
+    newKeyControl := MyGui.Add("Edit", "x100 w550" KName YPos, "")
     newModeControl := MyGui.Add("Checkbox", "x670 w50" MName YPos, "")
     newModeControl.value := 0
     TkControlArr.Push(newTkControl)
