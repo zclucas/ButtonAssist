@@ -17,21 +17,27 @@ global TkControlReplaceArr := []
 global KeyControlReplaceArr := []
 global ModeControlReplaceArr := []
 
-global IsLastSaved := false
+global MyGui
 global PauseHotkey := ""
-global IsPause := false
+
 global TabIndex := 1
 global TabPosY := 0
 global OperBtnPosY := 0
-global HotKeyUIY := 0
-global ReplaceKeyUIY := 0
-global MyGui
-global PauseToggleControl
-global PauseHotkeyControl
-global TabCtrl
+global HotKeyUnderPosY := 0
+global ReplaceKeyUnderPosY := 0
+
 global BtnAdd
 global BtnSave
 global BtnRemove
+
+global TabCtrl
+global ShowWinCtrl
+global PauseToggleCtrl
+global PauseHotkeyCtrl
+
+global IsPause := false
+global IsLastSaved := false
+global IsExecuteShow := true
 
 OnReadSetting()
 AddUI()
@@ -44,22 +50,28 @@ OnOpen()
 ;UI相关函数
 AddUI()
 {
-    global MyGui, PauseToggleControl, PauseHotkeyControl, TabCtrl, TabPosY
+    global MyGui, PauseToggleCtrl, PauseHotkeyCtrl, TabCtrl, TabPosY, ShowWinCtrl
     MyGui := Gui(, "Super的按键辅助器")
     MyGui.Opt("ToolWindow")
     MyGui.SetFont(, "Consolas")
 
     ; 参考链接
     LinkText := '<a href="https://wyagd001.github.io/v2/docs/KeyList.htm" id="notepad">按键名参考链接</a>'
-    MyGui.Add("Link", "x20 w200", LinkText)
+    MyGui.Add("Link", "x20 w150", LinkText)
 
     ; 暂停模块
-    MyGui.Add("Text", "x350 y5 w70", "暂停:")
-    PauseToggleControl := MyGui.Add("CheckBox", "x385 y5", "")
-    PauseToggleControl.Value := IsPause
-    PauseToggleControl.OnEvent("Click", OnPauseHotkey)
-    MyGui.Add("Text", "x420 y5 w70", "快捷键:")
-    PauseHotkeyControl := MyGui.Add("Edit", "x470 y0 w70 Center", PauseHotkey)
+    MyGui.Add("Text", "x200 y5 w70", "暂停:")
+    PauseToggleCtrl := MyGui.Add("CheckBox", "x235 y5", "")
+    PauseToggleCtrl.Value := IsPause
+    PauseToggleCtrl.OnEvent("Click", OnPauseHotkey)
+    MyGui.Add("Text", "x255 y5 w70", "快捷键:")
+    PauseHotkeyCtrl := MyGui.Add("Edit", "x305 y0 w70 Center", PauseHotkey)
+
+    MyGui.Add("Text", "x450 y5 w150", "运行后显示窗口:")
+    ShowWinCtrl := MyGui.Add("CheckBox", "x550 y5", "")
+    ShowWinCtrl.Value := IsExecuteShow
+    ShowWinCtrl.OnEvent("Click", OnShowWinChanged)
+
 
     TabPosY := 30
     TabCtrl := myGui.Add("Tab3","x10 w700 y" TabPosY " Choose" TabIndex, ["按键宏", "按键替换"])
@@ -74,24 +86,24 @@ AddUI()
 
 AddHotkeyUI()
 {
-    global HotKeyUIY
-    HotKeyUIY := TabPosY
+    global HotKeyUnderPosY
+    HotKeyUnderPosY := TabPosY
     ; 配置规则说明
-    HotKeyUIY += 30
-    MyGui.Add("Text", Format("x20 y{}", HotKeyUIY), "触发键规则：“q”忽略系统q按键，“~q”系统q按键正常")
-    HotKeyUIY += 20
-    MyGui.Add("Text", Format("x20 y{}", HotKeyUIY), "辅助键规则：例如“a_40_50_5”(按键名_按住时间_按键间隔[_按下次数])(单位毫秒),逗号分割")
-    HotKeyUIY += 20
-    MyGui.Add("Text", Format("x20 y{}", HotKeyUIY), "模式：勾选为游戏模式。若游戏内无效请以管理员身份运行软件")
-    HotKeyUIY += 20
-    MyGui.Add("Text", Format("x30 y{} w70", HotKeyUIY), "触发键")
-    MyGui.Add("Text", Format("x100 y{} w550", HotKeyUIY), "辅助键：触发键按下后，依次辅助按下的按键")
-    MyGui.Add("Text", Format("x650 y{} w70", HotKeyUIY), "模式")
+    HotKeyUnderPosY += 30
+    MyGui.Add("Text", Format("x20 y{}", HotKeyUnderPosY), "触发键规则：“q”忽略系统q按键，“~q”系统q按键正常")
+    HotKeyUnderPosY += 20
+    MyGui.Add("Text", Format("x20 y{}", HotKeyUnderPosY), "辅助键规则：例如“a_40_50_5”(按键名_按住时间_按键间隔[_按下次数])(单位毫秒),逗号分割")
+    HotKeyUnderPosY += 20
+    MyGui.Add("Text", Format("x20 y{}", HotKeyUnderPosY), "模式：勾选为游戏模式。若游戏内无效请以管理员身份运行软件")
+    HotKeyUnderPosY += 20
+    MyGui.Add("Text", Format("x30 y{} w70", HotKeyUnderPosY), "触发键")
+    MyGui.Add("Text", Format("x100 y{} w550", HotKeyUnderPosY), "辅助键：触发键按下后，依次辅助按下的按键")
+    MyGui.Add("Text", Format("x650 y{} w70", HotKeyUnderPosY), "模式")
     
-    HotKeyUIY += 20
+    HotKeyUnderPosY += 20
     loop TKArr.Length
     {
-        YPos := " y" HotKeyUIY
+        YPos := " y" HotKeyUnderPosY
         TName := " vTk" A_Index
         KName := " vKeyInfo" A_Index
         MName := " vMode" A_Index
@@ -103,31 +115,31 @@ AddHotkeyUI()
         TkControlArr.Push(newTkControl)
         KeyControlArr.Push(newKeyControl)
         ModeControlArr.Push(newModeControl)
-        HotKeyUIY += 30
+        HotKeyUnderPosY += 30
     }
 }
 
 ;添加按键替换UI
 AddReplacekeyUI()
 {
-    global ReplaceKeyUIY
-    ReplaceKeyUIY := TabPosY
+    global ReplaceKeyUnderPosY
+    ReplaceKeyUnderPosY := TabPosY
     ; 配置规则说明
-    ReplaceKeyUIY += 30
-    MyGui.Add("Text", Format("x20 y{}", ReplaceKeyUIY), "触发键规则：“q”忽略系统q按键，“~q”系统q按键正常")
-    ReplaceKeyUIY += 20
-    MyGui.Add("Text", Format("x20 y{}", ReplaceKeyUIY), "辅助键规则：按键名，按键名...")
-    ReplaceKeyUIY += 20
-    MyGui.Add("Text", Format("x20 y{}", ReplaceKeyUIY), "模式：勾选为游戏模式。若游戏内无效请以管理员身份运行软件")
-    ReplaceKeyUIY += 20
-    MyGui.Add("Text", Format("x30 y{} w70", ReplaceKeyUIY), "触发键")
-    MyGui.Add("Text", Format("x100 y{} w550", ReplaceKeyUIY), "辅助键：触发键按下/松开后，依次辅助按下/松开的按键")
-    MyGui.Add("Text", Format("x650 y{} w70", ReplaceKeyUIY), "模式")
+    ReplaceKeyUnderPosY += 30
+    MyGui.Add("Text", Format("x20 y{}", ReplaceKeyUnderPosY), "触发键规则：“q”忽略系统q按键，“~q”系统q按键正常")
+    ReplaceKeyUnderPosY += 20
+    MyGui.Add("Text", Format("x20 y{}", ReplaceKeyUnderPosY), "辅助键规则：按键名，按键名...")
+    ReplaceKeyUnderPosY += 20
+    MyGui.Add("Text", Format("x20 y{}", ReplaceKeyUnderPosY), "模式：勾选为游戏模式。若游戏内无效请以管理员身份运行软件")
+    ReplaceKeyUnderPosY += 20
+    MyGui.Add("Text", Format("x30 y{} w70", ReplaceKeyUnderPosY), "触发键")
+    MyGui.Add("Text", Format("x100 y{} w550", ReplaceKeyUnderPosY), "辅助键：触发键按下/松开后，依次辅助按下/松开的按键")
+    MyGui.Add("Text", Format("x650 y{} w70", ReplaceKeyUnderPosY), "模式")
 
-    ReplaceKeyUIY += 20
+    ReplaceKeyUnderPosY += 20
     loop TKRepalceArr.Length
     {
-        YPos := " y" ReplaceKeyUIY
+        YPos := " y" ReplaceKeyUnderPosY
         TName := " vTk" "replace" A_Index
         KName := " vKeyInfo" "replace" A_Index
         MName := " vMode" "replace" A_Index
@@ -139,14 +151,14 @@ AddReplacekeyUI()
         TkControlReplaceArr.Push(newTkControl)
         KeyControlReplaceArr.Push(newKeyControl)
         ModeControlReplaceArr.Push(newModeControl)
-        ReplaceKeyUIY += 30
+        ReplaceKeyUnderPosY += 30
     }
 }
 
 AddOperBtnUI()
 {
     global OperBtnPosY, BtnAdd, BtnSave, BtnRemove
-    maxY := Max(HotKeyUIY, ReplaceKeyUIY)
+    maxY := Max(HotKeyUnderPosY, ReplaceKeyUnderPosY)
     OperBtnPosY := maxY + 10
     YPos := " y" OperBtnPosY
     BtnAdd := MyGui.Add("Button", "x100 w100 vbtnAdd" YPos, "新增配置")
@@ -195,16 +207,6 @@ BindHotKey()
         key := "$" PauseHotkey
         Hotkey(key, OnPauseHotkey, "S")
     }
-
-    ; if (PauseHotkey != "")
-    ; {
-    ;     key := "$" PauseHotkey
-    ;     #SuspendExempt
-    ;     Hotkey(key, OnPauseHotkey)
-    ;     #SuspendExempt false
-    ; }
-
-    
 }
 
 BindReplaceKey()
@@ -223,13 +225,13 @@ BindReplaceKey()
 
 RefreshGui()
 {
-    MyGui.Show("w720" "h" Max(HotKeyUIY, ReplaceKeyUIY) + 50)
+    MyGui.Show("w720" "h" Max(HotKeyUnderPosY, ReplaceKeyUnderPosY) + 50)
 }
 
 RefreshOperBtnPos()
 {
     global OperBtnPosY
-    maxY := Max(HotKeyUIY, ReplaceKeyUIY)
+    maxY := Max(HotKeyUnderPosY, ReplaceKeyUnderPosY)
     OperBtnPosY := maxY + 10
     BtnAdd.Move(100, OperBtnPosY)
     BtnRemove.Move(300, OperBtnPosY)
@@ -281,8 +283,9 @@ SendNormalReplaceUpKey(Key)
 ; 回调函数
 OnOpen()
 {
-    if (!IsLastSaved)
+    if (!ShowWinCtrl.Value && !IsLastSaved) 
         return
+
     RefreshGui()
     IniWrite(false, IniFile, IniSection, "LastSaved")
     IniWrite(1, IniFile, IniSection, "TabIndex")
@@ -290,7 +293,7 @@ OnOpen()
 
 OnReadSetting()
 {
-    global IsLastSaved, PauseHotkey, TabIndex  ; 访问全局变量
+    global IsLastSaved, PauseHotkey, TabIndex, IsExecuteShow  ; 访问全局变量
     savedTK := IniRead(IniFile, IniSection, "TriggerKey", "~q,2,^+n")
     savedKeyInfo := IniRead(IniFile, IniSection, "KeyInfos", "d_30_40,a_30_40,d_30_40,a_30_10,j_30_0|ctrl_100_10,a_100_0|LButton_30_50,LButton_30_0")
     savedMode := IniRead(IniFile, IniSection, "Mode", "0,1,0")
@@ -300,6 +303,7 @@ OnReadSetting()
     TabIndex := IniRead(IniFile, IniSection, "TabIndex", 1)
     IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
     PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!p")
+    IsExecuteShow := IniRead(IniFile, IniSection, "IsExecuteShow", true)
     For index, value in StrSplit(savedTK, ",")
     {
         if (TKArr.Length < index)
@@ -376,10 +380,10 @@ OnReadSetting()
 
 OnAddSetting(*)
 {
-    global HotKeyUIY, ReplaceKeyUIY
+    global HotKeyUnderPosY, ReplaceKeyUnderPosY
     tabIndex := TabCtrl.Value
     postfix := tabIndex == 1 ? "" : "replace"
-    UIY := tabIndex == 1 ? HotKeyUIY : ReplaceKeyUIY
+    UIY := tabIndex == 1 ? HotKeyUnderPosY : ReplaceKeyUnderPosY
     btnRemove.Visible := false
 
     keyArr := tabIndex == 1 ? TKArr : TKRepalceArr
@@ -405,20 +409,20 @@ OnAddSetting(*)
     UIY += 30
     if (tabIndex == 1)
     {
-        HotKeyUIY := UIY
+        HotKeyUnderPosY := UIY
         TkControlArr.Push(newTkControl)
         KeyControlArr.Push(newKeyControl)
         ModeControlArr.Push(newModeControl)
     }
     else
     {
-        ReplaceKeyUIY := UIY
+        ReplaceKeyUnderPosY := UIY
         TkControlReplaceArr.Push(newTkControl)
         KeyControlReplaceArr.Push(newKeyControl)
         ModeControlReplaceArr.Push(newModeControl)
     }
 
-    maxY := Max(HotKeyUIY, ReplaceKeyUIY)
+    maxY := Max(HotKeyUnderPosY, ReplaceKeyUnderPosY)
     TabCtrl.UseTab()
     TabCtrl.Move(10, TabPosY, 700, maxY - TabPosY)
 
@@ -428,15 +432,15 @@ OnAddSetting(*)
 
 OnRemoveSetting(*)
 {
-    global HotKeyUIY, ReplaceKeyUIY
+    global HotKeyUnderPosY, ReplaceKeyUnderPosY
     tabIndex := TabCtrl.Value
     postfix := tabIndex == 1 ? "" : "replace"
-    UIY := tabIndex == 1 ? HotKeyUIY : ReplaceKeyUIY
+    UIY := tabIndex == 1 ? HotKeyUnderPosY : ReplaceKeyUnderPosY
     btnAdd.Visible := false
     UIY -= 30
     if (tabIndex == 1)
     {
-        HotKeyUIY := UIY
+        HotKeyUnderPosY := UIY
         TKArr.Pop()
         KeyInfoArr.Pop()
         ModeArr.Pop()
@@ -446,7 +450,7 @@ OnRemoveSetting(*)
     }
     else
     {
-        ReplaceKeyUIY := UIY
+        ReplaceKeyUnderPosY := UIY
         TKRepalceArr.Pop()
         KeyInfoReplaceArr.Pop()
         ModeReplaceArr.Pop()
@@ -526,7 +530,7 @@ OnSaveSetting(*)
         }
     }
 
-    IniWrite(PauseHotkeyControl.Text, IniFile, IniSection, "PauseHotkey")
+    IniWrite(PauseHotkeyCtrl.Text, IniFile, IniSection, "PauseHotkey")
     IniWrite(curTK, IniFile, IniSection, "TriggerKey")
     IniWrite(curKeyInfo, IniFile, IniSection, "KeyInfos")
     IniWrite(curMode, IniFile, IniSection, "Mode")
@@ -535,6 +539,7 @@ OnSaveSetting(*)
     IniWrite(curModeReplace, IniFile, IniSection, "ModeReplace")
     IniWrite(true, IniFile, IniSection, "LastSaved")
     IniWrite(TabCtrl.Value, IniFile, IniSection, "TabIndex")
+    IniWrite(ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
     Reload()
 }
 
@@ -642,8 +647,15 @@ OnReplaceUpKey(key)
 
 OnPauseHotkey(*)
 {
-    global IsPause, PauseToggleControl  ; 访问全局变量
+    global IsPause, PauseToggleCtrl  ; 访问全局变量
     IsPause := !IsPause
-    PauseToggleControl.Value := IsPause
+    PauseToggleCtrl.Value := IsPause
     Suspend(IsPause)
+}
+
+OnShowWinChanged(*)
+{
+    global IsExecuteShow  ; 访问全局变量
+    IsExecuteShow := !IsExecuteShow
+    IniWrite(IsExecuteShow, IniFile, IniSection, "IsExecuteShow")
 }
