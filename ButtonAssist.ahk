@@ -61,14 +61,14 @@ AddUI()
 
     ; 暂停模块
     MyGui.Add("Text", "x200 y5 w70", "暂停:")
-    PauseToggleCtrl := MyGui.Add("CheckBox", "x235 y5", "")
+    PauseToggleCtrl := MyGui.Add("CheckBox", "x235 y5 w25", "")
     PauseToggleCtrl.Value := IsPause
     PauseToggleCtrl.OnEvent("Click", OnPauseHotkey)
-    MyGui.Add("Text", "x255 y5 w70", "快捷键:")
+    MyGui.Add("Text", "x260 y5 w70", "快捷键:")
     PauseHotkeyCtrl := MyGui.Add("Edit", "x305 y0 w70 Center", PauseHotkey)
 
     MyGui.Add("Text", "x450 y5 w150", "运行后显示窗口:")
-    ShowWinCtrl := MyGui.Add("CheckBox", "x550 y5", "")
+    ShowWinCtrl := MyGui.Add("CheckBox", "x550 y5 w25", "")
     ShowWinCtrl.Value := IsExecuteShow
     ShowWinCtrl.OnEvent("Click", OnShowWinChanged)
 
@@ -110,7 +110,7 @@ AddHotkeyUI()
 
         newTkControl := MyGui.Add("Edit", "x20 w70 Center" TName YPos, TKArr[A_Index])
         newKeyControl := MyGui.Add("Edit", "x100 w550" KName YPos, KeyInfoArr[A_Index])
-        newModeControl := MyGui.Add("Checkbox", "x660 w50" MName YPos, "")
+        newModeControl := MyGui.Add("Checkbox", "x660 w25" MName YPos, "")
         newModeControl.Value := ModeArr[A_Index]
         TkControlArr.Push(newTkControl)
         KeyControlArr.Push(newKeyControl)
@@ -146,7 +146,7 @@ AddReplacekeyUI()
 
         newTkControl := MyGui.Add("Edit", "x20 w70 Center" TName YPos, TKRepalceArr[A_Index])
         newKeyControl := MyGui.Add("Edit", "x100 w550" KName YPos, KeyInfoReplaceArr[A_Index])
-        newModeControl := MyGui.Add("Checkbox", "x660 w50" MName YPos, "")
+        newModeControl := MyGui.Add("Checkbox", "x660 w25" MName YPos, "")
         newModeControl.Value := ModeReplaceArr [A_Index]
         TkControlReplaceArr.Push(newTkControl)
         KeyControlReplaceArr.Push(newKeyControl)
