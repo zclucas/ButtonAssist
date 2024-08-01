@@ -29,6 +29,9 @@ global MyGui
 global PauseToggleControl
 global PauseHotkeyControl
 global TabCtrl
+global BtnAdd
+global BtnSave
+global BtnRemove
 
 OnReadSetting()
 AddUI()
@@ -47,13 +50,14 @@ AddUI()
     MyGui.SetFont(, "Consolas")
 
     ; 参考链接
-    LinkText := '<a href="https://wyagd001.github.io/v2/docs/KeyList.htm" id="notepad">特殊按键名参考链接</a>'
+    LinkText := '<a href="https://wyagd001.github.io/v2/docs/KeyList.htm" id="notepad">按键名参考链接</a>'
     MyGui.Add("Link", "x20 w200", LinkText)
 
     ; 暂停模块
     MyGui.Add("Text", "x350 y5 w70", "暂停:")
-    PauseToggleControl := MyGui.Add("Checkbox", "x385 y5", "")
-    PauseToggleControl.value := IsPause
+    PauseToggleControl := MyGui.Add("CheckBox", "x385 y5", "")
+    PauseToggleControl.Value := IsPause
+    PauseToggleControl.OnEvent("Click", OnPauseHotkey)
     MyGui.Add("Text", "x420 y5 w70", "快捷键:")
     PauseHotkeyControl := MyGui.Add("Edit", "x470 y0 w70 Center", PauseHotkey)
 
@@ -116,8 +120,8 @@ AddReplacekeyUI()
     ReplaceKeyUIY += 20
     MyGui.Add("Text", Format("x20 y{}", ReplaceKeyUIY), "模式：勾选为游戏模式。若游戏内无效请以管理员身份运行软件")
     ReplaceKeyUIY += 20
-    MyGui.Add("Text", Format("x30 y{} w70", ReplaceKeyUIY), "替换键")
-    MyGui.Add("Text", Format("x100 y{} w550", ReplaceKeyUIY), "辅助键：替换键按下/松开后，依次辅助按下/松开的按键")
+    MyGui.Add("Text", Format("x30 y{} w70", ReplaceKeyUIY), "触发键")
+    MyGui.Add("Text", Format("x100 y{} w550", ReplaceKeyUIY), "辅助键：触发键按下/松开后，依次辅助按下/松开的按键")
     MyGui.Add("Text", Format("x650 y{} w70", ReplaceKeyUIY), "模式")
 
     ReplaceKeyUIY += 20
@@ -141,16 +145,16 @@ AddReplacekeyUI()
 
 AddOperBtnUI()
 {
-    global OperBtnPosY
+    global OperBtnPosY, BtnAdd, BtnSave, BtnRemove
     maxY := Max(HotKeyUIY, ReplaceKeyUIY)
     OperBtnPosY := maxY + 10
     YPos := " y" OperBtnPosY
-    global btnAdd := MyGui.Add("Button", "x100 w100 vbtnAdd" YPos, "新增配置")
-    btnAdd.OnEvent("Click", OnAddSetting)
-    global btnRemove := MyGui.Add("Button", "x300 w100 vbtnRemove" YPos, "删除最后的配置")
-    btnRemove.OnEvent("Click", OnRemoveSetting)
-    global btnSure := MyGui.Add("Button", "x500 w100 vbtnSure" YPos, "应用并保存")
-    btnSure.OnEvent("Click", OnSaveSetting)
+    BtnAdd := MyGui.Add("Button", "x100 w100 vbtnAdd" YPos, "新增配置")
+    BtnAdd.OnEvent("Click", OnAddSetting)
+    BtnRemove := MyGui.Add("Button", "x300 w100 vbtnRemove" YPos, "删除最后的配置")
+    BtnRemove.OnEvent("Click", OnRemoveSetting)
+    BtnSave := MyGui.Add("Button", "x500 w100 vbtnSure" YPos, "应用并保存")
+    BtnSave.OnEvent("Click", OnSaveSetting)
 }
 
 
@@ -189,8 +193,18 @@ BindHotKey()
     if (PauseHotkey != "")
     {
         key := "$" PauseHotkey
-        Hotkey(key, OnPauseHotkey)
+        Hotkey(key, OnPauseHotkey, "S")
     }
+
+    ; if (PauseHotkey != "")
+    ; {
+    ;     key := "$" PauseHotkey
+    ;     #SuspendExempt
+    ;     Hotkey(key, OnPauseHotkey)
+    ;     #SuspendExempt false
+    ; }
+
+    
 }
 
 BindReplaceKey()
@@ -217,9 +231,9 @@ RefreshOperBtnPos()
     global OperBtnPosY
     maxY := Max(HotKeyUIY, ReplaceKeyUIY)
     OperBtnPosY := maxY + 10
-    btnAdd.Move(100, OperBtnPosY)
-    btnRemove.Move(300, OperBtnPosY)
-    btnSure.Move(500, OperBtnPosY)
+    BtnAdd.Move(100, OperBtnPosY)
+    BtnRemove.Move(300, OperBtnPosY)
+    BtnSave.Move(500, OperBtnPosY)
 }
 
 
@@ -280,7 +294,7 @@ OnReadSetting()
     savedTK := IniRead(IniFile, IniSection, "TriggerKey", "~q,2,^+n")
     savedKeyInfo := IniRead(IniFile, IniSection, "KeyInfos", "d_30_40,a_30_40,d_30_40,a_30_10,j_30_0|ctrl_100_10,a_100_0|LButton_30_50,LButton_30_0")
     savedMode := IniRead(IniFile, IniSection, "Mode", "0,1,0")
-    savedReplaceTK := IniRead(IniFile, IniSection, "TriggerReplaceKey", "e,alt,t")
+    savedReplaceTK := IniRead(IniFile, IniSection, "TriggerReplaceKey", "e,~alt,t")
     savedReplaceKeyInfo := IniRead(IniFile, IniSection, "KeyReplaceInfos", "w,d|f10|")
     savedReplaceMode := IniRead(IniFile, IniSection, "ModeReplace", "1,1,0")
     TabIndex := IniRead(IniFile, IniSection, "TabIndex", 1)
@@ -626,10 +640,10 @@ OnReplaceUpKey(key)
 
 }
 
-OnPauseHotkey(key)
+OnPauseHotkey(*)
 {
     global IsPause, PauseToggleControl  ; 访问全局变量
     IsPause := !IsPause
-    PauseToggleControl.value := IsPause
+    PauseToggleControl.Value := IsPause
     Suspend(IsPause)
 }
