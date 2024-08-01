@@ -386,18 +386,18 @@ OnAddSetting(*)
     UIY := tabIndex == 1 ? HotKeyUnderPosY : ReplaceKeyUnderPosY
     btnRemove.Visible := false
 
-    keyArr := tabIndex == 1 ? TKArr : TKRepalceArr
-    keyInfoArr := tabIndex == 1 ? KeyInfoArr : KeyInfoReplaceArr
-    modeArr := tabIndex == 1 ? ModeArr : ModeReplaceArr
+    curKeyArr := tabIndex == 1 ? TKArr : TKRepalceArr
+    curKeyInfoArr := tabIndex == 1 ? KeyInfoArr : KeyInfoReplaceArr
+    curModeArr := tabIndex == 1 ? ModeArr : ModeReplaceArr
 
-    keyArr.Push("")
-    keyInfoArr.Push("")
-    modeArr.Push(0)
+    curKeyArr.Push("")
+    curKeyInfoArr.Push("")
+    curModeArr.Push(0)
     
     posY := " y" UIY
-    TName := " vTk" postfix keyArr.Length
-    KName := " vKeyInfo" postfix keyInfoArr.Length
-    MName := " vMode" postfix modeArr.Length
+    TName := " vTk" postfix curKeyArr.Length
+    KName := " vKeyInfo" postfix curKeyInfoArr.Length
+    MName := " vMode" postfix curModeArr.Length
     TabCtrl.UseTab(tabIndex)
     newTkControl := MyGui.Add("Edit", "x20 w70 Center" TName posY, "")
     newKeyControl := MyGui.Add("Edit", "x100 w550" KName posY, "")
