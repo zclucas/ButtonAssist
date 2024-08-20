@@ -61,14 +61,14 @@ AddUI()
 
     ; 暂停模块
     MyGui.Add("Text", "x200 y5 w70", "暂停:")
-    PauseToggleCtrl := MyGui.Add("CheckBox", "x235 y5 w25", "")
+    PauseToggleCtrl := MyGui.Add("CheckBox", "x235 y5 w30", "")
     PauseToggleCtrl.Value := IsPause
     PauseToggleCtrl.OnEvent("Click", OnPauseHotkey)
     MyGui.Add("Text", "x260 y5 w70", "快捷键:")
     PauseHotkeyCtrl := MyGui.Add("Edit", "x305 y0 w70 Center", PauseHotkey)
 
     MyGui.Add("Text", "x450 y5 w150", "运行后显示窗口:")
-    ShowWinCtrl := MyGui.Add("CheckBox", "x550 y5 w25", "")
+    ShowWinCtrl := MyGui.Add("CheckBox", "x550 y5 w30", "")
     ShowWinCtrl.Value := IsExecuteShow
     ShowWinCtrl.OnEvent("Click", OnShowWinChanged)
 
@@ -110,7 +110,7 @@ AddHotkeyUI()
 
         newTkControl := MyGui.Add("Edit", "x20 w70 Center" TName YPos, TKArr[A_Index])
         newKeyControl := MyGui.Add("Edit", "x100 w550" KName YPos, KeyInfoArr[A_Index])
-        newModeControl := MyGui.Add("Checkbox", "x660 w25" MName YPos, "")
+        newModeControl := MyGui.Add("Checkbox", "x660 w30" MName YPos, "")
         newModeControl.Value := ModeArr[A_Index]
         TkControlArr.Push(newTkControl)
         KeyControlArr.Push(newKeyControl)
@@ -146,7 +146,7 @@ AddReplacekeyUI()
 
         newTkControl := MyGui.Add("Edit", "x20 w70 Center" TName YPos, TKRepalceArr[A_Index])
         newKeyControl := MyGui.Add("Edit", "x100 w550" KName YPos, KeyInfoReplaceArr[A_Index])
-        newModeControl := MyGui.Add("Checkbox", "x660 w25" MName YPos, "")
+        newModeControl := MyGui.Add("Checkbox", "x660 w30" MName YPos, "")
         newModeControl.Value := ModeReplaceArr [A_Index]
         TkControlReplaceArr.Push(newTkControl)
         KeyControlReplaceArr.Push(newKeyControl)
@@ -161,11 +161,11 @@ AddOperBtnUI()
     maxY := Max(HotKeyUnderPosY, ReplaceKeyUnderPosY)
     OperBtnPosY := maxY + 10
     YPos := " y" OperBtnPosY
-    BtnAdd := MyGui.Add("Button", "x100 w100 vbtnAdd" YPos, "新增配置")
+    BtnAdd := MyGui.Add("Button", "x100 w120 vbtnAdd" YPos, "新增配置")
     BtnAdd.OnEvent("Click", OnAddSetting)
-    BtnRemove := MyGui.Add("Button", "x300 w100 vbtnRemove" YPos, "删除最后的配置")
+    BtnRemove := MyGui.Add("Button", "x300 w120 vbtnRemove" YPos, "删除最后的配置")
     BtnRemove.OnEvent("Click", OnRemoveSetting)
-    BtnSave := MyGui.Add("Button", "x500 w100 vbtnSure" YPos, "应用并保存")
+    BtnSave := MyGui.Add("Button", "x500 w120 vbtnSure" YPos, "应用并保存")
     BtnSave.OnEvent("Click", OnSaveSetting)
 }
 
