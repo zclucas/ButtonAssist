@@ -1,12 +1,11 @@
 OnReadSetting()
 {
-    global TabIndex, TableItemNum, ToolCheckInfo ; 访问全局变量
+    global TableItemNum, ToolCheckInfo ; 访问全局变量
     global ScriptInfo
     Loop TableItemNum
     {
         ReadTableItemInfo(A_Index)
     }
-    TabIndex := IniRead(IniFile, IniSection, "TabIndex", 1)
     ScriptInfo.NormalPeriod := IniRead(IniFile, IniSection, "NormalPeriod", 50)
     ScriptInfo.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
     ScriptInfo.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!p")
@@ -16,6 +15,7 @@ OnReadSetting()
     ScriptInfo.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
     ScriptInfo.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
     ScriptInfo.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
+    ScriptInfo.TableIndex := IniRead(IniFile, IniSection, "TableIndex", 1)
 }
 
 ReadTableItemInfo(index)
@@ -49,18 +49,21 @@ ReadTableItemInfo(index)
 
 SaveWinPos()
 {
-    global ScriptInfo
+    global ScriptInfo, TabCtrl
     MyGui.GetPos(&posX, &posY)
     ScriptInfo.WinPosx := posX
     ScriptInfo.WinPosy := posY
+    ScriptInfo.IsSavedWinPos := true
+    ScriptInfo.TableIndex := TabCtrl.Value
     IniWrite(ScriptInfo.WinPosx, IniFile, IniSection, "WinPosx")
     IniWrite(ScriptInfo.WinPosy, IniFile, IniSection, "WinPosy")
     IniWrite(true, IniFile, IniSection, "IsSavedWinPos")
+    IniWrite(TabCtrl.Value, IniFile, IniSection, "TableIndex")
 }
 
 OnSaveSetting(*)
 {
-    global ScriptInfo
+    global ScriptInfo, TabCtrl
     isCanSave := CheckCanSave()
     if (!isCanSave)
         return
@@ -73,11 +76,10 @@ OnSaveSetting(*)
     IniWrite(ScriptInfo.NormalPeriodCtrl.Value, IniFile, IniSection, "NormalPeriod")
     IniWrite(ScriptInfo.PauseHotkeyCtrl.Text, IniFile, IniSection, "PauseHotkey")
     IniWrite(true, IniFile, IniSection, "LastSaved")
-    IniWrite(TabCtrl.Value, IniFile, IniSection, "TabIndex")
     IniWrite(ScriptInfo.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
     IniWrite(ToolCheckInfo.IsToolCheck, IniFile, IniSection, "IsToolCheck")
     IniWrite(ToolCheckInfo.ToolCheckHotKey, IniFile, IniSection, "ToolCheckHotKey")
-
+    IniWrite(TabCtrl.Value, IniFile, IniSection, "TableIndex")
     Reload()
 }
 

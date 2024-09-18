@@ -64,5 +64,6 @@ Class ScriptSettingInfo
         this.WinPosx := 0
         this.WinPosy := 0
         this.IsSavedWinPos := false
+        this.TableIndex := 1
     }
 }

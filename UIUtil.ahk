@@ -8,7 +8,6 @@ OnOpen()
 
     RefreshGui()
     IniWrite(false, IniFile, IniSection, "LastSaved")
-    IniWrite(1, IniFile, IniSection, "TabIndex")
 }
 
 ;UI相关函数
@@ -41,7 +40,7 @@ AddUI()
     ReloadBtnCtrl.OnEvent("Click", MenuReload)
 
     TabPosY := 30
-    TabCtrl := myGui.Add("Tab3","x10 w880 y" TabPosY " Choose" TabIndex, ["简易按键宏", "按键宏", "按键替换", "软件宏" ,"配置规则","工具"])
+    TabCtrl := myGui.Add("Tab3","x10 w880 y" TabPosY " Choose" ScriptInfo.TableIndex, ["简易按键宏", "按键宏", "按键替换", "软件宏" ,"配置规则","工具"])
     TabCtrl.UseTab(1)
     AddSimpleHotkeyUI()
     TabCtrl.UseTab(2)
@@ -270,7 +269,7 @@ MaxUnderPosY()
 
 AddOperBtnUI()
 {
-    global OperBtnPosY, BtnAdd, BtnSave, BtnRemove
+    global BtnAdd, BtnSave, BtnRemove
     maxY := MaxUnderPosY()
     OperBtnPosY := maxY + 10
     YPos := " y" OperBtnPosY
@@ -285,8 +284,8 @@ AddOperBtnUI()
 OnAddSetting(*)
 {
     global TabCtrl, MyGui
-    tabIndex := TabCtrl.Value
-    tableItem := GetTableItem(tabIndex)
+    TableIndex := TabCtrl.Value
+    tableItem := GetTableItem(TableIndex)
     btnRemove.Visible := false
 
     tableItem.TKArr.Push("")
@@ -296,7 +295,7 @@ OnAddSetting(*)
     tableItem.ProcessNameArr.Push("")
 
     posY := " y" tableItem.underPosY
-    symbol := GetTableSymbol(tabIndex)
+    symbol := GetTableSymbol(TableIndex)
     index := tableItem.TKArr.Length
     TKNameValue := " v" symbol "TKArr" index
     InfoNameValue := " v" symbol "InfoArr" index
@@ -304,7 +303,7 @@ OnAddSetting(*)
     ForbidNameValue := " v" symbol "ForbidArr" index
     ProcessNameValue := " v" symbol "ProcessNameArr" index
 
-    TabCtrl.UseTab(tabIndex)
+    TabCtrl.UseTab(TableIndex)
     newTkControl := MyGui.Add("Edit", "x20 w70 Center" TKNameValue posY, "")
     newKeyControl := MyGui.Add("Edit", "x100 w550" InfoNameValue posY, "")
 
@@ -320,23 +319,24 @@ OnAddSetting(*)
     tableItem.ModeConArr.Push(newModeControl)
     tableItem.ForbidConArr.Push(newForbidControl)
     tableItem.ProcessNameConArr.Push(newProcessNameControl)
-    UpdateUnderPosY(tabIndex, 30)
+    UpdateUnderPosY(TableIndex, 30)
 
     maxY := MaxUnderPosY()
     TabCtrl.UseTab()
     TabCtrl.Move(10, TabPosY, 880, maxY - TabPosY)
 
     RefreshOperBtnPos()
+    SaveWinPos()
     RefreshGui()
 }
 
 OnRemoveSetting(*)
 {
     global TabCtrl
-    tabIndex := TabCtrl.Value
-    tableItem := GetTableItem(tabIndex)
+    TableIndex := TabCtrl.Value
+    tableItem := GetTableItem(TableIndex)
     btnAdd.Visible := false
-    UpdateUnderPosY(tabIndex, -30)
+    UpdateUnderPosY(TableIndex, -30)
     tableItem.TKArr.Pop()
     tableItem.InfoArr.Pop()
     tableItem.ModeArr.Pop()
@@ -360,7 +360,6 @@ RefreshGui()
 
 RefreshOperBtnPos()
 {
-    global OperBtnPosY
     maxY := MaxUnderPosY()
     OperBtnPosY := maxY + 10
     BtnAdd.Move(100, OperBtnPosY)
