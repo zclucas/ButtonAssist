@@ -98,7 +98,7 @@ AddNormalHotkeyUI()
 AddReplacekeyUI()
 {
     tableItem := GetTableItem(3)
-    tableItem.underPosY := TabPosY
+    tableItem.UnderPosY := TabPosY
     ; 配置规则说明
     UpdateUnderPosY(3, 30)
     MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
@@ -114,7 +114,7 @@ AddReplacekeyUI()
 AddSoftUI()
 {
     tableItem := GetTableItem(4)
-    tableItem.underPosY := TabPosY
+    tableItem.UnderPosY := TabPosY
     ; 配置规则说明
     UpdateUnderPosY(4, 30)
     MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
@@ -159,7 +159,9 @@ AddRuleUI()
     MyGui.Add("Text", Format("x20 y{}", posY), "周期：按键持续时间内，每隔多少毫秒触发一次(工具模块下持续检测的刷新周期也是这个)")
 
     posY += 20
-    GetTableItem(4).underPosY := posY
+    
+    tableItem := GetTableItem(5)
+    tableItem.UnderPosY := posY
 }
 
 AddToolUI()
@@ -199,7 +201,7 @@ AddToolUI()
     ToolCheckInfo.ToolProcessClassCtrl := MyGui.Add("Edit", Format("x120 y{} w250", posY - 5), ToolCheckInfo.ProcessClass)
 
     posY += 20
-    GetTableItem(5).underPosY := posY
+    GetTableItem(6).underPosY := posY
 }
 
 RefreshToolUI()
@@ -254,9 +256,9 @@ LoadSavedSettingUI(index)
 MaxUnderPosY()
 {
     maxY := 0
-    Loop 4
+    Loop TableItemNum
     {
-        posY := GetTableItem(A_Index).underPosY
+        posY := GetTableItem(A_Index).UnderPosY
         if (posY > maxY)
             maxY := posY
     }
@@ -288,15 +290,16 @@ OnAddSetting(*)
     tableItem.InfoArr.Push("")
     tableItem.ModeArr.Push(0)
     tableItem.ForbidArr.Push(0)
-    tableItem.ProcessNameArr.Push(0)
+    tableItem.ProcessNameArr.Push("")
 
     posY := " y" tableItem.underPosY
     symbol := GetTableSymbol(tabIndex)
-    TKNameValue := " v" symbol "TKArr" tableItem.TKArr.Length
-    InfoNameValue := " v" symbol "InfoArr" tableItem.InfoArr.Length
-    ModeNameValue := " v" symbol "ModeArr" tableItem.ModeArr.Length
-    ForbidNameValue := " v" symbol "ForbidArr" tableItem.ForbidArr.Length
-    ProcessNameValue := " v" symbol "ProcessNameArr" tableItem.ProcessNameArr.Length
+    index := tableItem.TKArr.Length
+    TKNameValue := " v" symbol "TKArr" index
+    InfoNameValue := " v" symbol "InfoArr" index
+    ModeNameValue := " v" symbol "ModeArr" index
+    ForbidNameValue := " v" symbol "ForbidArr" index
+    ProcessNameValue := " v" symbol "ProcessNameArr" index
 
     TabCtrl.UseTab(tabIndex)
     newTkControl := MyGui.Add("Edit", "x20 w70 Center" TKNameValue posY, "")

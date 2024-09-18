@@ -162,6 +162,8 @@ UpdateUnderPosY(tableIndex, value)
 {
     table := GetTableItem(tableIndex)
     table.UnderPosY += value
+     if (tableIndex == 4)
+        aa := 1 ; 临时调试代码
 }
 
 SetToolCheckInfo(*)
