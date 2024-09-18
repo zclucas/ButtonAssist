@@ -61,5 +61,8 @@ Class ScriptSettingInfo
         this.NormalPeriod := 50
         this.NormalPeriodCtrl := ""
         this.IsLastSaved := false
+        this.WinPosx := 0
+        this.WinPosy := 0
+        this.IsSavedWinPos := false
     }
 }

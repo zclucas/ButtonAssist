@@ -37,6 +37,9 @@ AddUI()
     ScriptInfo.ShowWinCtrl.Value := ScriptInfo.IsExecuteShow
     ScriptInfo.ShowWinCtrl.OnEvent("Click", OnShowWinChanged)
 
+    ReloadBtnCtrl := MyGui.Add("Button", "x620 y0 w100 center", "重载")
+    ReloadBtnCtrl.OnEvent("Click", MenuReload)
+
     TabPosY := 30
     TabCtrl := myGui.Add("Tab3","x10 w880 y" TabPosY " Choose" TabIndex, ["简易按键宏", "按键宏", "按键替换", "软件宏" ,"配置规则","工具"])
     TabCtrl.UseTab(1)
@@ -348,8 +351,13 @@ OnRemoveSetting(*)
 
 RefreshGui()
 {
-    MyGui.Show("w900" "h" MaxUnderPosY() + 50)
+    global ScriptInfo
+    if (ScriptInfo.IsSavedWinPos)
+        MyGui.Show(Format("w900" "h{} x{} y{}", MaxUnderPosY() + 50, ScriptInfo.WinPosx, ScriptInfo.WinPosy))
+    else
+        MyGui.Show(Format("w900" "h{} center", MaxUnderPosY() + 50))
 }
+
 RefreshOperBtnPos()
 {
     global OperBtnPosY
@@ -361,18 +369,20 @@ RefreshOperBtnPos()
 }
 ; 系统托盘优化
 CustomTrayMenu(){
-    A_TrayMenu.Insert("&Suspend Hotkeys", "显示设置", ShowGui)
+    A_TrayMenu.Insert("&Suspend Hotkeys", "重置位置并显示窗口", ResetWinPosAndRefreshGui)
     A_TrayMenu.Insert("&Suspend Hotkeys", "重载", MenuReload)
     A_TrayMenu.Delete("&Pause Script")
     A_TrayMenu.ClickCount := 1
-    A_TrayMenu.Default := "显示设置"
+    A_TrayMenu.Default := "重载"
 }
 MenuReload(*)
 {
+    SaveWinPos()
     Reload()
 }
-ShowGui(*)
+ResetWinPosAndRefreshGui(*)
 {
+    IniWrite(false, IniFile, IniSection, "IsSavedWinPos")
     RefreshGui()
 }
 OnPauseHotkey(*)

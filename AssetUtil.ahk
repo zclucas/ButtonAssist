@@ -13,6 +13,9 @@ OnReadSetting()
     ToolCheckInfo.IsToolCheck := IniRead(IniFile, IniSection, "IsToolCheck", false)
     ToolCheckInfo.ToolCheckHotKey := IniRead(IniFile, IniSection, "ToolCheckHotKey", "!q")
     ScriptInfo.IsExecuteShow := IniRead(IniFile, IniSection, "IsExecuteShow", true)
+    ScriptInfo.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
+    ScriptInfo.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
+    ScriptInfo.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
 }
 
 ReadTableItemInfo(index)
@@ -42,6 +45,17 @@ ReadTableItemInfo(index)
     SetArr(savedModeArrStr, ",", tableItem.ModeArr)
     SetArr(savedForbidArrStr, ",", tableItem.ForbidArr)
     SetArr(savedProcessNameStr, ",", tableItem.ProcessNameArr)
+}
+
+SaveWinPos()
+{
+    global ScriptInfo
+    MyGui.GetPos(&posX, &posY)
+    ScriptInfo.WinPosx := posX
+    ScriptInfo.WinPosy := posY
+    IniWrite(ScriptInfo.WinPosx, IniFile, IniSection, "WinPosx")
+    IniWrite(ScriptInfo.WinPosy, IniFile, IniSection, "WinPosy")
+    IniWrite(true, IniFile, IniSection, "IsSavedWinPos")
 }
 
 OnSaveSetting(*)
@@ -312,14 +326,14 @@ CheckCanSave()
             if(!CheckTableTKSetting(TKArr[A_Index]))
             {
                 MsgBox (Format("{} 模块下 第 {} 个触发键配置错误", tableName, A_Index))
-                ShowGui()
+                RefreshGui()
                 return false
             }
 
             if (!CheckTableInfoSetting(index, InfoArr[A_Index]))
             {
                 MsgBox (Format("{} 模块下 第 {} 个辅助信息配置错误", tableName, A_Index))
-                ShowGui()
+                RefreshGui()
                 return false
             }
         }
