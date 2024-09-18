@@ -1,18 +1,18 @@
 OnReadSetting()
 {
-    global IsLastSaved, PauseHotkey, TabIndex, IsExecuteShow, TableItemNum, ToolCheckInfo ; 访问全局变量
-
+    global TabIndex, TableItemNum, ToolCheckInfo ; 访问全局变量
+    global ScriptInfo
     Loop TableItemNum
     {
         ReadTableItemInfo(A_Index)
     }
     TabIndex := IniRead(IniFile, IniSection, "TabIndex", 1)
-    
-    IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
-    PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!p")
+    ScriptInfo.NormalPeriod := IniRead(IniFile, IniSection, "NormalPeriod", 50)
+    ScriptInfo.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
+    ScriptInfo.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!p")
     ToolCheckInfo.IsToolCheck := IniRead(IniFile, IniSection, "IsToolCheck", false)
-    ToolCheckInfo.ToolCheckHotKey := IniRead(IniFile, IniSection, "ToolCheckHotKey", "!o")
-    IsExecuteShow := IniRead(IniFile, IniSection, "IsExecuteShow", true)
+    ToolCheckInfo.ToolCheckHotKey := IniRead(IniFile, IniSection, "ToolCheckHotKey", "!q")
+    ScriptInfo.IsExecuteShow := IniRead(IniFile, IniSection, "IsExecuteShow", true)
 }
 
 ReadTableItemInfo(index)
@@ -36,9 +36,7 @@ ReadTableItemInfo(index)
     if (savedProcessNameStr == "")
         savedProcessNameStr := defalutInfo[5]
 
-
     tableItem := GetTableItem(index)
-    aa := tableItem.ProcessNameArr
     SetArr(savedTKArrStr, "," , tableItem.TKArr)
     SetArr(savedInfoArrStr, "|", tableItem.InfoArr)
     SetArr(savedModeArrStr, ",", tableItem.ModeArr)
@@ -46,18 +44,23 @@ ReadTableItemInfo(index)
     SetArr(savedProcessNameStr, ",", tableItem.ProcessNameArr)
 }
 
-
 OnSaveSetting(*)
 {
+    global ScriptInfo
+    isCanSave := CheckCanSave()
+    if (!isCanSave)
+        return
+
     Loop TableItemNum
     {
         SaveTableItemInfo(A_Index)
     }
 
-    IniWrite(PauseHotkeyCtrl.Text, IniFile, IniSection, "PauseHotkey")
+    IniWrite(ScriptInfo.NormalPeriodCtrl.Value, IniFile, IniSection, "NormalPeriod")
+    IniWrite(ScriptInfo.PauseHotkeyCtrl.Text, IniFile, IniSection, "PauseHotkey")
     IniWrite(true, IniFile, IniSection, "LastSaved")
     IniWrite(TabCtrl.Value, IniFile, IniSection, "TabIndex")
-    IniWrite(ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
+    IniWrite(ScriptInfo.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
     IniWrite(ToolCheckInfo.IsToolCheck, IniFile, IniSection, "IsToolCheck")
     IniWrite(ToolCheckInfo.ToolCheckHotKey, IniFile, IniSection, "ToolCheckHotKey")
 
@@ -115,7 +118,43 @@ GetTableSymbol(index)
     }
     else if(index == 4)
     {
+        return "Soft"
+    }
+    else if(index == 5)
+    {
         return "Rule"
+    }
+    else if(index == 6)
+    {
+        return "Tool"
+    }
+}
+
+GetTableName(index)
+{
+    if (index == 1)
+    {
+        return "简易按键宏"
+    }
+    else if (index == 2)
+    {
+        return "按键宏"
+    }
+    else if (index == 3)
+    {
+        return "按键替换"
+    }
+    else if(index == 4)
+    {
+        return "软件宏"
+    }
+    else if (index == 5)
+    {
+        return "配置规则"
+    }
+    else if(index == 6)
+    {
+        return "工具"
     }
 }
 
@@ -224,27 +263,159 @@ GetTablItemDefaultInfo(index)
     savedProcessNameStr := ""
     if (index == 1)
     {
-        savedTKArrStr := "q"
-        savedInfoArrStr := "d,30,a,30,j"
-        savedModeArrStr := "0"
-        savedForbidArrStr := "0"
-        savedProcessNameStr := ""
+        savedTKArrStr := "q,q"
+        savedInfoArrStr := "t,30,h,30,i,30,s,30,space,30,i,30,s,30,space,30,q|d,30,a,30,j"
+        savedModeArrStr := "0,0"
+        savedForbidArrStr := "0,0"
+        savedProcessNameStr := "Notepad.exe,explorer.exe"
     }
     else if (index == 2)
     {
-        savedTKArrStr := "k"
-        savedInfoArrStr := "ctrl_100,0,a_100"
+        savedTKArrStr := "k,m"
+        savedInfoArrStr := "ctrl_100,0,a_100|a_1000"
+        savedModeArrStr := "0,0"
+        savedForbidArrStr := "0,0"
+        savedProcessNameStr := "Notepad.exe,"
+    }
+    else if (index == 3)
+    {
+        savedTKArrStr := "e,t"
+        savedInfoArrStr := "w,d|"
+        savedModeArrStr := "1,0"
+        savedForbidArrStr := "0,0"
+        savedProcessNameStr := ","
+    }
+    else if(index == 4)
+    {
+        savedTKArrStr := "!d"
+        savedInfoArrStr := "Notepad.exe"
         savedModeArrStr := "0"
         savedForbidArrStr := "0"
         savedProcessNameStr := ""
     }
-    else if (index == 3)
-    {
-        savedTKArrStr := "e,~alt,t"
-        savedInfoArrStr := "w,d|f10|"
-        savedModeArrStr := "1,1,0"
-        savedForbidArrStr := "0,0,0"
-        savedProcessNameStr := ",,"
-    }
     return [savedTKArrStr, savedInfoArrStr, savedModeArrStr, savedForbidArrStr, savedProcessNameStr]
+}
+
+CheckCanSave()
+{
+    Loop TableItemNum
+    {
+        index := A_Index
+        SavedInfo := GetSavedTableItemInfo(index)
+        TKArr := StrSplit(SavedInfo[1], ",")
+        InfoArr := StrSplit(SavedInfo[2], "|")
+        Loop TKArr.Length
+        {
+            tableName := GetTableName(index)
+            if(!CheckTableTKSetting(TKArr[A_Index]))
+            {
+                MsgBox (Format("{} 模块下 第 {} 个触发键配置错误", tableName, A_Index))
+                ShowGui()
+                return false
+            }
+
+            if (!CheckTableInfoSetting(index, InfoArr[A_Index]))
+            {
+                MsgBox (Format("{} 模块下 第 {} 个辅助信息配置错误", tableName, A_Index))
+                ShowGui()
+                return false
+            }
+        }
+    }
+    return true
+}
+
+CheckTableInfoSetting(index, str)
+{
+    if (index == 1)
+    {
+        infos := StrSplit(str, ",")
+        loop infos.Length
+        {
+            info := infos[A_Index]
+            keyName := GetKeyName(info)
+            if (keyName == "")
+                return false
+
+            if (infos.Length > A_Index)
+            {
+                A_Index++
+                if (!IsInteger(infos[A_Index]))
+                    return false
+            }
+        }
+        return true
+    }
+    else if (index == 2)
+    {
+        infos := StrSplit(str, ",")
+        loop infos.Length
+        {
+            info := infos[A_Index]
+            infoArr := StrSplit(info, "_")
+            keyName := GetKeyName(infoArr[1])
+            if (keyName == "")
+                return false
+
+            if (infoArr.Length != 2)
+                return false
+            if (!IsInteger(infoArr[2]))
+                return false
+
+            if (infos.Length > A_Index)
+            {
+                A_Index++
+                if (!IsInteger(infos[A_Index]))
+                    return false
+            }
+        }
+        return true
+    }
+    else if(index == 3)
+    {
+        infos := StrSplit(str, ",")
+        loop infos.Length
+        {
+            info := infos[A_Index]
+            keyName := GetKeyName(info)
+            if (keyName == "")
+                return false
+        }
+        return true
+    }
+    return true
+}
+
+CheckTableTKSetting(str)
+{
+    if (str == "")
+        return true
+
+    key := RemoveHotkeyPrefix(str)
+
+    keyName := GetKeyName(key)
+    if (keyName == "")
+        return false
+
+    return true
+}
+
+RemoveHotkeyPrefix(hotkey) {
+    prefix := ""
+    ; 检查并去掉前缀
+    if InStr(hotkey, "^") ; Ctrl
+        prefix .= "^"
+    if InStr(hotkey, "!") ; Alt
+        prefix .= "!"
+    if InStr(hotkey, "+") ; Shift
+        prefix .= "+"
+    if InStr(hotkey, "#") ; Win
+        prefix .= "#"
+    if InStr(hotkey, "~") ; 系统
+        prefix .= "~"
+     if InStr(hotkey, "$") ; 系统
+        prefix .= "$"
+    
+    ; 去掉前缀并返回按键部分
+    return SubStr(hotkey, StrLen(prefix) + 1)
 }
