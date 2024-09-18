@@ -20,7 +20,7 @@ Class ToolCheck
 {
     __New()
     {
-        this.ToolCheckCtrl := ""        
+        this.ToolCheckCtrl := "" 
         this.ToolCheckHotKeyCtrl := ""
         this.ToolMousePosCtrl := ""
         this.ToolProcessNameCtrl := ""
@@ -40,10 +40,26 @@ Class ToolCheck
 
     ResetTimer()
     {
-        global NormalPeriod
+        global ScriptInfo
         if (this.IsToolCheck)
-            this.CheckTimer := Timer(SetToolCheckInfo, NormalPeriod, "")
+            this.CheckTimer := Timer(SetToolCheckInfo, ScriptInfo.NormalPeriod, "")
         else
             this.CheckTimer := ""
+    }
+}
+
+Class ScriptSettingInfo
+{
+    __New()
+    {
+        this.IsExecuteShow := true
+        this.ShowWinCtrl := ""
+        this.IsPause := false
+        this.PauseToggleCtrl := ""
+        this.PauseHotkey := ""
+        this.PauseHotkeyCtrl := ""
+        this.NormalPeriod := 50
+        this.NormalPeriodCtrl := ""
+        this.IsLastSaved := false
     }
 }

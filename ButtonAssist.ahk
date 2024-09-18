@@ -10,10 +10,8 @@ IniFile := "settings.ini"
 IniSection := "UserSettings"
 
 global MyGui
-global PauseHotkey := ""
+global ScriptInfo := ScriptSettingInfo()
 
-
-global TabIndex := 1
 global TabPosY := 0
 global OperBtnPosY := 0
 
@@ -22,18 +20,10 @@ global BtnSave
 global BtnRemove
 
 global TabCtrl
-global TableItemNum := 5
+global TabIndex := 1
+global TableItemNum := 6
 global TableInfo := CreateTableItemArr(TableItemNum)
 global ToolCheckInfo := ToolCheck()
-global ShowWinCtrl
-global PauseToggleCtrl
-global PauseHotkeyCtrl
-
-
-global IsPause := false
-global IsLastSaved := false
-global IsExecuteShow := true
-global NormalPeriod := 50
 
 OnReadSetting()
 AddUI()

@@ -28,17 +28,25 @@ BindHotKey()
 
                 if (tableIndex == 1)
                 {
-                    funcObj := OnSimpleTriggerKey.Bind(key, info, mode)
-                    Hotkey(key, (key)=>funcObj())
+                    action := GetHotKeyAction(key, info, mode, OnSimpleTriggerKey)
+                    Hotkey(key, action)
                 }
                 else if (tableIndex == 2)
                 {
-                    Hotkey(key, OnNormalTriggerKey)
+                    action := GetHotKeyAction(key, info, mode, OnNormalTriggerKey)
+                    Hotkey(key, action)
                 }
                 else if (tableIndex == 3)
                 {
-                    Hotkey(key, OnReplaceDownKey)
-                    Hotkey(key " up", OnReplaceUpKey)
+                    action1 := GetHotKeyAction(key, info, mode, OnReplaceDownKey)
+                    action2 := GetHotKeyAction(key " up", info, mode, OnReplaceDownKey)
+                    Hotkey(key, action1) 
+                    Hotkey(key " up", action2)
+                }
+                else if(tableIndex == 4)
+                {
+                    action := GetHotKeyAction(key, info, mode, OnSoftTriggerKey)
+                    Hotkey(key, action)
                 }
 
                 if (curProcessName != "")
@@ -51,11 +59,23 @@ BindHotKey()
     }
 }
 
+GetHotKeyAction(key, info, mode, func)
+{
+    funcObj := func.Bind(key, info, mode)
+    return (*)=>funcObj()
+}
+
+OnSoftTriggerKey(key, info, mode)
+{
+    run info
+}
+
 BindPauseHotkey()
 {
-    if (PauseHotkey != "")
+    global ScriptInfo
+    if (ScriptInfo.PauseHotkey != "")
     {
-        key := "$" PauseHotkey
+        key := "$" ScriptInfo.PauseHotkey
         Hotkey(key, OnPauseHotkey, "S")
     }
 }
@@ -113,13 +133,14 @@ SendNormalUpKey(Key)
 
 OnSimpleTriggerKey(key, info, mode)
 {
+    global ScriptInfo
     key := SubStr(key, 2)
     tableItem := GetTableItem(1)
     infos := StrSplit(info, ",")
 
     loop infos.Length
     {
-        if (IsPause) 
+        if (ScriptInfo.IsPause) 
             break
 
         curKey := infos[A_Index]
@@ -141,26 +162,16 @@ OnSimpleTriggerKey(key, info, mode)
     }
 }
 
-OnNormalTriggerKey(key)
+OnNormalTriggerKey(key, info, mode)
 {
-    info := ""
+    global ScriptInfo
     key := SubStr(key, 2)
-    mode := 1
     tableItem := GetTableItem(2)
-    TKArr := tableItem.TKArr
-    loop TKArr.Length
-    {
-        if (TKArr[A_Index] == key)
-        {
-            info := tableItem.InfoArr[A_Index]
-            mode := tableItem.ModeArr[A_Index]
-        }
-    }
     infos := StrSplit(info, ",")
 
     loop infos.Length
     {
-        if (IsPause) 
+        if (ScriptInfo.IsPause) 
             break
 
         strs := StrSplit(infos[A_Index], "_")
@@ -169,11 +180,11 @@ OnNormalTriggerKey(key)
 
         if (mode == 1)
         {
-            HoldKey(SendGameModeDownKey, SendGameModeUpKey, NormalPeriod, leftTime, curKey)
+            HoldKey(SendGameModeDownKey, SendGameModeUpKey, ScriptInfo.NormalPeriod, leftTime, curKey)
         }
         else
         {
-            HoldKey(SendNormalDownKey, SendNormalUpKey, NormalPeriod, leftTime, curKey)
+            HoldKey(SendNormalDownKey, SendNormalUpKey, ScriptInfo.NormalPeriod, leftTime, curKey)
         }
 
         if (infos.Length > A_Index)
@@ -184,26 +195,15 @@ OnNormalTriggerKey(key)
     }
 }
 
-OnReplaceDownKey(key)
+OnReplaceDownKey(key, info, mode)
 {
-    keyInfo := ""
     key := SubStr(key, 2)
-    mode := 1
     tableItem := GetTableItem(3)
-    TKArr := tableItem.TKArr
-    loop TKArr.Length
-    {
-        if (TKArr[A_Index] == key)
-        {
-            keyInfo := tableItem.InfoArr[A_Index]
-            mode := tableItem.ModeArr[A_Index]
-        }
-    }
-    keyInfos := StrSplit(keyInfo, ",")
+    infos := StrSplit(info, ",")
 
-    loop keyInfos.Length
+    loop infos.Length
     {
-        assistKey := keyInfos[A_Index]
+        assistKey := infos[A_Index]
         if (mode == 1)
         {
             SendGameModeDownKey(assistKey)
@@ -216,26 +216,15 @@ OnReplaceDownKey(key)
 
 }
 
-OnReplaceUpKey(key)
+OnReplaceUpKey(key, info, mode)
 {
-    keyInfo := ""
-    key := SubStr(key, 2, StrLen(key) - 4)
-    mode := 1
+    key := SubStr(key, 2)
     tableItem := GetTableItem(3)
-    TKArr := tableItem.TKArr
-    loop TKArr.Length
-    {
-        if (TKArr[A_Index] = key)
-        {
-            keyInfo := tableItem.InfoArr[A_Index]
-            mode := tableItem.ModeArr[A_Index]
-        }
-    }
-    keyInfos := StrSplit(keyInfo, ",")
+    infos := StrSplit(info, ",")
 
-    loop keyInfos.Length
+    loop infos.Length
     {
-        assistKey := keyInfos[A_Index]
+        assistKey := infos[A_Index]
         if (mode == 1)
         {
             SendGameModeUpKey(assistKey)

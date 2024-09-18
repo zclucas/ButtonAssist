@@ -1,9 +1,9 @@
 ; 回调函数
 OnOpen()
 {
-    global ShowWinCtrl
+    global ScriptInfo
 
-    if (!ShowWinCtrl.Value && !IsLastSaved) 
+    if (!ScriptInfo.ShowWinCtrl.Value && !ScriptInfo.IsLastSaved) 
         return
 
     RefreshGui()
@@ -14,7 +14,8 @@ OnOpen()
 ;UI相关函数
 AddUI()
 {
-    global MyGui, PauseToggleCtrl, PauseHotkeyCtrl, TabCtrl, TabPosY, ShowWinCtrl
+    global MyGui, TabCtrl, TabPosY
+    global ScriptInfo
     MyGui := Gui(, "Super的按键辅助器")
     MyGui.Opt("ToolWindow")
     MyGui.SetFont(, "Consolas")
@@ -25,19 +26,19 @@ AddUI()
 
     ; 暂停模块
     MyGui.Add("Text", "x200 y5 w70", "暂停:")
-    PauseToggleCtrl := MyGui.Add("CheckBox", "x235 y5 w30", "")
-    PauseToggleCtrl.Value := IsPause
-    PauseToggleCtrl.OnEvent("Click", OnPauseHotkey)
+    ScriptInfo.PauseToggleCtrl := MyGui.Add("CheckBox", "x235 y5 w30", "")
+    ScriptInfo.PauseToggleCtrl.Value := ScriptInfo.IsPause
+    ScriptInfo.PauseToggleCtrl.OnEvent("Click", OnPauseHotkey)
     MyGui.Add("Text", "x270 y5 w70", "快捷键:")
-    PauseHotkeyCtrl := MyGui.Add("Edit", "x320 y0 w80 Center", PauseHotkey)
+    ScriptInfo.PauseHotkeyCtrl := MyGui.Add("Edit", "x320 y0 w80 Center", ScriptInfo.PauseHotkey)
 
     MyGui.Add("Text", "x450 y5 w150", "运行后显示窗口:")
-    ShowWinCtrl := MyGui.Add("CheckBox", "x550 y5 w30", "")
-    ShowWinCtrl.Value := IsExecuteShow
-    ShowWinCtrl.OnEvent("Click", OnShowWinChanged)
+    ScriptInfo.ShowWinCtrl := MyGui.Add("CheckBox", "x550 y5 w30", "")
+    ScriptInfo.ShowWinCtrl.Value := ScriptInfo.IsExecuteShow
+    ScriptInfo.ShowWinCtrl.OnEvent("Click", OnShowWinChanged)
 
     TabPosY := 30
-    TabCtrl := myGui.Add("Tab3","x10 w880 y" TabPosY " Choose" TabIndex, ["按键宏", "高级按键宏", "按键替换", "配置规则","工具"])
+    TabCtrl := myGui.Add("Tab3","x10 w880 y" TabPosY " Choose" TabIndex, ["简易按键宏", "按键宏", "按键替换", "软件宏" ,"配置规则","工具"])
     TabCtrl.UseTab(1)
     AddSimpleHotkeyUI()
     TabCtrl.UseTab(2)
@@ -45,8 +46,10 @@ AddUI()
     TabCtrl.UseTab(3)
     AddReplacekeyUI()
     TabCtrl.UseTab(4)
-    AddRuleUI()
+    AddSoftUI()
     TabCtrl.UseTab(5)
+    AddRuleUI()
+    TabCtrl.UseTab(6)
     AddToolUI()
     TabCtrl.UseTab()
 
@@ -72,12 +75,13 @@ AddSimpleHotkeyUI()
 ;添加正常按键宏UI
 AddNormalHotkeyUI()
 {
+    global ScriptInfo
     tableItem := GetTableItem(2)
     tableItem.underPosY := TabPosY
     ; 配置规则说明
     UpdateUnderPosY(2, 30)
     MyGui.Add("Text", Format("x30 y{} w100", tableItem.underPosY), "按键周期:")
-    PauseHotkeyCtrl := MyGui.Add("Edit", Format("x100 y{} w70 center", tableItem.underPosY - 4), 50)
+    ScriptInfo.NormalPeriodCtrl := MyGui.Add("Edit", Format("x100 y{} w70 center", tableItem.underPosY - 4), ScriptInfo.NormalPeriod)
     MyGui.Add("Text", Format("x180 y{} w300", tableItem.underPosY), "(也就是按键持续时间内，每隔多少毫秒触发一次)")
     UpdateUnderPosY(2, 20)
     MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
@@ -107,31 +111,52 @@ AddReplacekeyUI()
     LoadSavedSettingUI(3)
 }
 
+AddSoftUI()
+{
+    tableItem := GetTableItem(4)
+    tableItem.underPosY := TabPosY
+    ; 配置规则说明
+    UpdateUnderPosY(4, 30)
+    MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
+    MyGui.Add("Text", Format("x100 y{} w550", tableItem.underPosY), "辅助键信息案例：Notepad.exe(进程名)")
+    MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "模式")
+    MyGui.Add("Text", Format("x700 y{} w50", tableItem.underPosY), "禁止")
+    MyGui.Add("Text", Format("x740 y{} w100", tableItem.underPosY), "指定进程名")
+
+    UpdateUnderPosY(4, 20)
+    LoadSavedSettingUI(4)
+}
+
+
 AddRuleUI()
 {
 
     posY := TabPosY
     ; 配置规则说明
     posY += 30
+    MyGui.Add("Text", Format("x20 y{}", posY), "禁止：勾选后对应配置不生效")
+    posY += 20
     MyGui.Add("Text", Format("x20 y{}", posY), "模式：勾选为游戏模式。若游戏内仍然无效请以管理员身份运行软件")
     posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "触发键规则：“q”忽略系统q按键，“~q”系统q按键正常")
+    MyGui.Add("Text", Format("x20 y{}", posY), "指定进程名：填写后，仅在该进程获得焦点时生效，否则对所有进程生效（可通过工具模块获取进程名）")
     posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "组合触发键：修饰键需要用特殊符号代替，参考软件链接")
+    MyGui.Add("Text", Format("x20 y{}", posY), "触发键规则：填写想要触发配置的按键或组合键，增加前缀~符号，触发时，触发键原有功能不会被屏蔽")
+    posY += 20
+    MyGui.Add("Text", Format("x20 y{}", posY), "组合触发键：ctrl,alt,shift,win等修饰键需要用特殊符号代替，参考软件链接")
     posY += 30
-    MyGui.Add("Text", Format("x20 y{}", posY), "按键宏配置规则（辅助按键之间没有交集，不重叠）")
+    MyGui.Add("Text", Format("x20 y{}", posY), "简易按键宏配置规则（辅助按键之间没有交集，不重叠）")
     posY += 20
     MyGui.Add("Text", Format("x20 y{}", posY), "辅助键规则：按键名，按键间隔，按键名，按键间隔，按键名...")
     posY += 20
     MyGui.Add("Text", Format("x20 y{}", posY), "案例：d,30,a,30,d,30,a,30,j")
     posY += 30
-    MyGui.Add("Text", Format("x20 y{}", posY), "高级按键宏配置规则（辅助键之间有交集，重叠）")
+    MyGui.Add("Text", Format("x20 y{}", posY), "按键宏配置规则（辅助键之间有交集，重叠）")
     posY += 20
     MyGui.Add("Text", Format("x20 y{}", posY), "辅助键规则：按键名_持续时间，按键间隔，按键名_持续时间，按键间隔...")
     posY += 20
     MyGui.Add("Text", Format("x20 y{}", posY), "案例：ctrl_100,0,a_100(全选快捷键)")
     posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "周期：按键持续时间内，每隔多少毫秒触发一次")
+    MyGui.Add("Text", Format("x20 y{}", posY), "周期：按键持续时间内，每隔多少毫秒触发一次(工具模块下持续检测的刷新周期也是这个)")
 
     posY += 20
     GetTableItem(4).underPosY := posY
@@ -349,10 +374,10 @@ ShowGui(*)
 }
 OnPauseHotkey(*)
 {
-    global IsPause, PauseToggleCtrl ; 访问全局变量
-    IsPause := !IsPause
-    PauseToggleCtrl.Value := IsPause
-    Suspend(IsPause)
+    global ScriptInfo ; 访问全局变量
+    ScriptInfo.IsPause := !ScriptInfo.IsPause
+    ScriptInfo.PauseToggleCtrl.Value := ScriptInfo.IsPause
+    Suspend(ScriptInfo.IsPause)
 }
 
 OnToolCheckHotkey(*)
@@ -366,7 +391,7 @@ OnToolCheckHotkey(*)
 
 OnShowWinChanged(*)
 {
-    global IsExecuteShow ; 访问全局变量
-    IsExecuteShow := !IsExecuteShow
-    IniWrite(IsExecuteShow, IniFile, IniSection, "IsExecuteShow")
+    global ScriptInfo ; 访问全局变量
+    ScriptInfo.IsExecuteShow := !ScriptInfo.IsExecuteShow
+    IniWrite(ScriptInfo.IsExecuteShow, IniFile, IniSection, "IsExecuteShow")
 }
