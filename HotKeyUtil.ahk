@@ -39,7 +39,7 @@ BindHotKey()
                 else if (tableIndex == 3)
                 {
                     action1 := GetHotKeyAction(key, info, mode, OnReplaceDownKey)
-                    action2 := GetHotKeyAction(key " up", info, mode, OnReplaceDownKey)
+                    action2 := GetHotKeyAction(key " up", info, mode, OnReplaceUpKey)
                     Hotkey(key, action1) 
                     Hotkey(key " up", action2)
                 }

@@ -80,6 +80,7 @@ OnSaveSetting(*)
     IniWrite(ToolCheckInfo.IsToolCheck, IniFile, IniSection, "IsToolCheck")
     IniWrite(ToolCheckInfo.ToolCheckHotKey, IniFile, IniSection, "ToolCheckHotKey")
     IniWrite(TabCtrl.Value, IniFile, IniSection, "TableIndex")
+    SaveWinPos()
     Reload()
 }
 
