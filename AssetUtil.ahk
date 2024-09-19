@@ -2,10 +2,7 @@ OnReadSetting()
 {
     global TableItemNum, ToolCheckInfo ; 访问全局变量
     global ScriptInfo
-    Loop TableItemNum
-    {
-        ReadTableItemInfo(A_Index)
-    }
+    ScriptInfo.HasSaved := IniRead(IniFile, IniSection, "HasSaved", false)
     ScriptInfo.NormalPeriod := IniRead(IniFile, IniSection, "NormalPeriod", 50)
     ScriptInfo.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
     ScriptInfo.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!p")
@@ -16,10 +13,15 @@ OnReadSetting()
     ScriptInfo.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
     ScriptInfo.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
     ScriptInfo.TableIndex := IniRead(IniFile, IniSection, "TableIndex", 1)
+    Loop TableItemNum
+    {
+        ReadTableItemInfo(A_Index)
+    }
 }
 
 ReadTableItemInfo(index)
 {
+    global ScriptInfo
     symbol := GetTableSymbol(index)
     defalutInfo := GetTablItemDefaultInfo(index)
     savedTKArrStr := IniRead(IniFile, IniSection, symbol "TKArr", "")
@@ -28,16 +30,19 @@ ReadTableItemInfo(index)
     savedForbidArrStr := IniRead(IniFile, IniSection, symbol "ForbidArr", "")
     savedProcessNameStr := IniRead(IniFile, IniSection, symbol "ProcessNameArr", "")
 
-    if (savedTKArrStr == "")
-        savedTKArrStr := defalutInfo[1]
-    if (savedInfoArrStr == "")
-        savedInfoArrStr := defalutInfo[2]
-    if (savedModeArrStr == "")
-        savedModeArrStr := defalutInfo[3]
-    if (savedForbidArrStr == "")
-        savedForbidArrStr := defalutInfo[4]
-    if (savedProcessNameStr == "")
-        savedProcessNameStr := defalutInfo[5]
+    if (!ScriptInfo.HasSaved)
+    {
+        if (savedTKArrStr == "")
+            savedTKArrStr := defalutInfo[1]
+        if (savedInfoArrStr == "")
+            savedInfoArrStr := defalutInfo[2]
+        if (savedModeArrStr == "")
+            savedModeArrStr := defalutInfo[3]
+        if (savedForbidArrStr == "")
+            savedForbidArrStr := defalutInfo[4]
+        if (savedProcessNameStr == "")
+            savedProcessNameStr := defalutInfo[5]
+    }
 
     tableItem := GetTableItem(index)
     SetArr(savedTKArrStr, "," , tableItem.TKArr)
@@ -80,6 +85,7 @@ OnSaveSetting(*)
     IniWrite(ToolCheckInfo.IsToolCheck, IniFile, IniSection, "IsToolCheck")
     IniWrite(ToolCheckInfo.ToolCheckHotKey, IniFile, IniSection, "ToolCheckHotKey")
     IniWrite(TabCtrl.Value, IniFile, IniSection, "TableIndex")
+    IniWrite(true, IniFile, IniSection, "HasSaved")
     SaveWinPos()
     Reload()
 }
@@ -179,7 +185,7 @@ UpdateUnderPosY(tableIndex, value)
 {
     table := GetTableItem(tableIndex)
     table.UnderPosY += value
-     if (tableIndex == 4)
+    if (tableIndex == 4)
         aa := 1 ; 临时调试代码
 }
 
@@ -432,9 +438,9 @@ RemoveHotkeyPrefix(hotkey) {
         prefix .= "#"
     if InStr(hotkey, "~") ; 系统
         prefix .= "~"
-     if InStr(hotkey, "$") ; 系统
+    if InStr(hotkey, "$") ; 系统
         prefix .= "$"
-    
+
     ; 去掉前缀并返回按键部分
     return SubStr(hotkey, StrLen(prefix) + 1)
 }
