@@ -13,6 +13,9 @@ GetKeyAction(callback, endCallback, key)
     action()
     {
         global ScriptInfo
+        if (ScriptInfo.IsPause)
+            return
+            
         callback(key)
         funcObj := endCallback.Bind(key)
         SetTimer funcObj, -ScriptInfo.KeyAutoLooseTime
