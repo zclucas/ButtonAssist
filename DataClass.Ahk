@@ -42,7 +42,13 @@ Class ToolCheck
     {
         global ScriptInfo
         if (this.IsToolCheck)
-            this.CheckTimer := Timer(SetToolCheckInfo, ScriptInfo.NormalPeriod, "")
+        {
+            action()
+            {
+                SetToolCheckInfo(1)
+            }
+            this.CheckTimer := Timer(action, ScriptInfo.NormalPeriod)
+        }
         else
             this.CheckTimer := ""
     }
