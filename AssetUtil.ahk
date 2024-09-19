@@ -346,6 +346,16 @@ CheckCanSave()
                 return false
             }
         }
+
+        tableName := GetTableName(2)
+        NormalPeriodCtrlValue := ScriptInfo.NormalPeriodCtrl.Value
+        if (!IsInteger(NormalPeriodCtrlValue) || NormalPeriodCtrlValue < ScriptInfo.MinNormalPeriod)
+        {
+            MsgBox (Format("{} 模块下 按键周期配置错误", tableName, A_Index))
+            RefreshGui()
+            return false
+        }
+
     }
     return true
 }

@@ -66,5 +66,7 @@ Class ScriptSettingInfo
         this.IsSavedWinPos := false
         this.TableIndex := 1
         this.HasSaved := false
+        this.KeyAutoLooseTime := 25
+        this.MinNormalPeriod := 30
     }
 }

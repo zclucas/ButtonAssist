@@ -147,12 +147,14 @@ OnSimpleTriggerKey(key, info, mode)
         if (mode == 1)
         {
             SendGameModeDownKey(curKey)
-            SendGameModeUpKey(curKey)
+            funcObj := SendGameModeUpKey.Bind(curKey)
+            SetTimer funcObj, -ScriptInfo.KeyAutoLooseTime
         }
         else
         {
             SendNormalDownKey(curKey)
-            SendNormalUpKey(curKey)
+            funcObj := SendNormalUpKey.Bind(curKey)
+            SetTimer funcObj, -ScriptInfo.KeyAutoLooseTime
         }
         if (infos.Length > A_Index)
         {
