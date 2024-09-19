@@ -369,11 +369,12 @@ RefreshOperBtnPos()
 ; 系统托盘优化
 CustomTrayMenu(){
     A_TrayMenu.Insert("&Suspend Hotkeys", "重置位置并显示窗口", ResetWinPosAndRefreshGui)
-    A_TrayMenu.Insert("&Suspend Hotkeys", "重载", MenuReload)
+    A_TrayMenu.Insert("&Suspend Hotkeys", "显示窗口", (*)=>RefreshGui())
     A_TrayMenu.Delete("&Pause Script")
     A_TrayMenu.ClickCount := 1
-    A_TrayMenu.Default := "重载"
+    A_TrayMenu.Default := "显示窗口"
 }
+
 MenuReload(*)
 {
     SaveWinPos()
@@ -382,6 +383,7 @@ MenuReload(*)
 ResetWinPosAndRefreshGui(*)
 {
     IniWrite(false, IniFile, IniSection, "IsSavedWinPos")
+    ScriptInfo.IsSavedWinPos := false
     RefreshGui()
 }
 OnPauseHotkey(*)
