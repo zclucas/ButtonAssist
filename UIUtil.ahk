@@ -92,10 +92,7 @@ AddNormalHotkeyUI(index)
     tableItem.underPosY := TabPosY
     ; 配置规则说明
     UpdateUnderPosY(index, 30)
-    MyGui.Add("Text", Format("x30 y{} w100", tableItem.underPosY), "按键周期:")
-    ScriptInfo.NormalPeriodCtrl := MyGui.Add("Edit", Format("x100 y{} w70 center", tableItem.underPosY - 4), ScriptInfo.NormalPeriod)
-    MyGui.Add("Text", Format("x180 y{} w400", tableItem.underPosY), "(也就是按键持续时间内，每隔多少毫秒触发一次)(最小值为30)")
-    UpdateUnderPosY(index, 20)
+    
     MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
     MyGui.Add("Text", Format("x100 y{} w550", tableItem.underPosY), "辅助键案例：ctrl_100,0,a_100(全选快捷键)")
     MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "模式")
@@ -162,6 +159,14 @@ AddRuleUI(index)
     posY := TabPosY
     ; 配置规则说明
     posY += 30
+    MyGui.Add("Text", Format("x20 y{} w100", posY), "按键时间:")
+    ScriptInfo.KeyAutoLooseTimeCtrl := MyGui.Add("Edit", Format("x100 y{} w70 center", posY - 4), ScriptInfo.KeyAutoLooseTime)
+    MyGui.Add("Text", Format("x180 y{} w600", posY), "(所有辅助键按下到松开的间隔时间)(太小软件检测不到,推荐值:25+)")
+    posY += 30
+    MyGui.Add("Text", Format("x20 y{} w100", posY), "按键周期:")
+    ScriptInfo.NormalPeriodCtrl := MyGui.Add("Edit", Format("x100 y{} w70 center", posY - 4), ScriptInfo.NormalPeriod)
+    MyGui.Add("Text", Format("x180 y{} w600", posY), "(按键持续时间内，每隔多少毫秒触发一次)(应该比上面时间大，推荐值:50+)")
+    posY += 20
     MyGui.Add("Text", Format("x20 y{}", posY), "禁止：勾选后对应配置不生效")
     posY += 20
     MyGui.Add("Text", Format("x20 y{}", posY), "模式：勾选为游戏模式。若游戏内仍然无效请以管理员身份运行软件")
@@ -183,8 +188,6 @@ AddRuleUI(index)
     MyGui.Add("Text", Format("x20 y{}", posY), "辅助键规则：按键名_持续时间，按键间隔，按键名_持续时间，按键间隔...")
     posY += 20
     MyGui.Add("Text", Format("x20 y{}", posY), "案例：ctrl_100,0,a_100(全选快捷键)")
-    posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "周期：按键持续时间内，每隔多少毫秒触发一次(工具模块下持续检测的刷新周期也是这个)")
 
     posY += 20
     

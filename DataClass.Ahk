@@ -49,7 +49,7 @@ Class ToolCheck
             {
                 SetToolCheckInfo(1)
             }
-            this.CheckTimer := Timer(action, ScriptInfo.NormalPeriod)
+            this.CheckTimer := Timer(action, 100)
             this.CheckTimer.On()
         }
         else
@@ -67,6 +67,8 @@ Class ScriptSettingInfo
         this.PauseToggleCtrl := ""
         this.PauseHotkey := ""
         this.PauseHotkeyCtrl := ""
+        this.KeyAutoLooseTime := 25
+        this.KeyAutoLooseTimeCtrl := ""
         this.NormalPeriod := 50
         this.NormalPeriodCtrl := ""
         this.IsLastSaved := false
@@ -75,7 +77,5 @@ Class ScriptSettingInfo
         this.IsSavedWinPos := false
         this.TableIndex := 1
         this.HasSaved := false
-        this.KeyAutoLooseTime := 25
-        this.MinNormalPeriod := 30
     }
 }
