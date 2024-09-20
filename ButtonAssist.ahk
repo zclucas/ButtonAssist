@@ -17,7 +17,7 @@ global BtnSave
 global BtnRemove
 
 global TabCtrl
-global TableItemNum := 6
+global TableItemNum := 7
 
 global ScriptInfo := ScriptSettingInfo()
 global TableInfo := CreateTableItemArr(TableItemNum)

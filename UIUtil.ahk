@@ -40,97 +40,123 @@ AddUI()
     ReloadBtnCtrl.OnEvent("Click", MenuReload)
 
     TabPosY := 30
-    TabCtrl := myGui.Add("Tab3","x10 w880 y" TabPosY " Choose" ScriptInfo.TableIndex, ["简易按键宏", "按键宏", "按键替换", "软件宏" ,"配置规则","工具"])
-    TabCtrl.UseTab(1)
-    AddSimpleHotkeyUI()
-    TabCtrl.UseTab(2)
-    AddNormalHotkeyUI()
-    TabCtrl.UseTab(3)
-    AddReplacekeyUI()
-    TabCtrl.UseTab(4)
-    AddSoftUI()
-    TabCtrl.UseTab(5)
-    AddRuleUI()
-    TabCtrl.UseTab(6)
-    AddToolUI()
+    TabCtrl := myGui.Add("Tab3","x10 w880 y" TabPosY " Choose" ScriptInfo.TableIndex, ["简易按键宏", "按键宏", "循环宏","按键替换", "软件宏" ,"配置规则","工具"])
+    index := 1
+    TabCtrl.UseTab(index)
+    AddSimpleHotkeyUI(index)
+    index++
+    TabCtrl.UseTab(index)
+    AddNormalHotkeyUI(index)
+    index++
+    TabCtrl.UseTab(index)
+    AddLoopKeyUI(index)
+    index++
+    TabCtrl.UseTab(index)
+    AddReplacekeyUI(index)
+    index++
+    TabCtrl.UseTab(index)
+    AddSoftUI(index)
+    index++
+    TabCtrl.UseTab(index)
+    AddRuleUI(index)
+    index++
+    TabCtrl.UseTab(index)
+    AddToolUI(index)
+    index++
     TabCtrl.UseTab()
 
     AddOperBtnUI()
 }
 
-AddSimpleHotkeyUI()
+AddSimpleHotkeyUI(index)
 {
-    tableItem := GetTableItem(1)
+    tableItem := GetTableItem(index)
     tableItem.underPosY := TabPosY
     ; 配置规则说明
-    UpdateUnderPosY(1, 30)
+    UpdateUnderPosY(index, 30)
     MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
     MyGui.Add("Text", Format("x100 y{} w550", tableItem.underPosY), "辅助键案例：d,30,a,30,d,30,a,30,j(依次输出dadaj)")
     MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "模式")
     MyGui.Add("Text", Format("x700 y{} w50", tableItem.underPosY), "禁止")
     MyGui.Add("Text", Format("x740 y{} w100", tableItem.underPosY), "指定进程名")
 
-    UpdateUnderPosY(1, 20)
-    LoadSavedSettingUI(1)
+    UpdateUnderPosY(index, 20)
+    LoadSavedSettingUI(index)
 }
 
 ;添加正常按键宏UI
-AddNormalHotkeyUI()
+AddNormalHotkeyUI(index)
 {
     global ScriptInfo
-    tableItem := GetTableItem(2)
+    tableItem := GetTableItem(index)
     tableItem.underPosY := TabPosY
     ; 配置规则说明
-    UpdateUnderPosY(2, 30)
+    UpdateUnderPosY(index, 30)
     MyGui.Add("Text", Format("x30 y{} w100", tableItem.underPosY), "按键周期:")
     ScriptInfo.NormalPeriodCtrl := MyGui.Add("Edit", Format("x100 y{} w70 center", tableItem.underPosY - 4), ScriptInfo.NormalPeriod)
     MyGui.Add("Text", Format("x180 y{} w400", tableItem.underPosY), "(也就是按键持续时间内，每隔多少毫秒触发一次)(最小值为30)")
-    UpdateUnderPosY(2, 20)
+    UpdateUnderPosY(index, 20)
     MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
     MyGui.Add("Text", Format("x100 y{} w550", tableItem.underPosY), "辅助键案例：ctrl_100,0,a_100(全选快捷键)")
     MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "模式")
     MyGui.Add("Text", Format("x700 y{} w50", tableItem.underPosY), "禁止")
     MyGui.Add("Text", Format("x740 y{} w100", tableItem.underPosY), "指定进程名")
 
-    UpdateUnderPosY(2, 20)
-    LoadSavedSettingUI(2)
+    UpdateUnderPosY(index, 20)
+    LoadSavedSettingUI(index)
+}
+
+AddLoopKeyUI(index)
+{
+    tableItem := GetTableItem(index)
+    tableItem.underPosY := TabPosY
+    ; 配置规则说明
+    UpdateUnderPosY(index, 30)
+    MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
+    MyGui.Add("Text", Format("x100 y{} w550", tableItem.underPosY), "辅助键案例：z,50,x,50(循环输出z，x)(底层接口bug偶尔卡键，需要再次点击后松开触发键)")
+    MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "模式")
+    MyGui.Add("Text", Format("x700 y{} w50", tableItem.underPosY), "禁止")
+    MyGui.Add("Text", Format("x740 y{} w100", tableItem.underPosY), "指定进程名")
+
+    UpdateUnderPosY(index, 20)
+    LoadSavedSettingUI(index)
 }
 
 ;添加按键替换UI
-AddReplacekeyUI()
+AddReplacekeyUI(index)
 {
-    tableItem := GetTableItem(3)
+    tableItem := GetTableItem(index)
     tableItem.UnderPosY := TabPosY
     ; 配置规则说明
-    UpdateUnderPosY(3, 30)
+    UpdateUnderPosY(index, 30)
     MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
     MyGui.Add("Text", Format("x100 y{} w550", tableItem.underPosY), "辅助键案例：w,d(按键替换为w和d)")
     MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "模式")
     MyGui.Add("Text", Format("x700 y{} w50", tableItem.underPosY), "禁止")
     MyGui.Add("Text", Format("x740 y{} w100", tableItem.underPosY), "指定进程名")
 
-    UpdateUnderPosY(3, 20)
-    LoadSavedSettingUI(3)
+    UpdateUnderPosY(index, 20)
+    LoadSavedSettingUI(index)
 }
 
-AddSoftUI()
+AddSoftUI(index)
 {
-    tableItem := GetTableItem(4)
+    tableItem := GetTableItem(index)
     tableItem.UnderPosY := TabPosY
     ; 配置规则说明
-    UpdateUnderPosY(4, 30)
+    UpdateUnderPosY(index, 30)
     MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
     MyGui.Add("Text", Format("x100 y{} w550", tableItem.underPosY), "辅助键信息案例：Notepad.exe(进程名)")
     MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "模式")
     MyGui.Add("Text", Format("x700 y{} w50", tableItem.underPosY), "禁止")
     MyGui.Add("Text", Format("x740 y{} w100", tableItem.underPosY), "指定进程名")
 
-    UpdateUnderPosY(4, 20)
-    LoadSavedSettingUI(4)
+    UpdateUnderPosY(index, 20)
+    LoadSavedSettingUI(index)
 }
 
 
-AddRuleUI()
+AddRuleUI(index)
 {
 
     posY := TabPosY
@@ -162,11 +188,11 @@ AddRuleUI()
 
     posY += 20
     
-    tableItem := GetTableItem(5)
+    tableItem := GetTableItem(index)
     tableItem.UnderPosY := posY
 }
 
-AddToolUI()
+AddToolUI(index)
 {
     global ToolCheckInfo
 
@@ -203,7 +229,7 @@ AddToolUI()
     ToolCheckInfo.ToolProcessClassCtrl := MyGui.Add("Edit", Format("x120 y{} w250", posY - 5), ToolCheckInfo.ProcessClass)
 
     posY += 20
-    GetTableItem(6).underPosY := posY
+    GetTableItem(index).underPosY := posY
 }
 
 RefreshToolUI()

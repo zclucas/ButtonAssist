@@ -137,17 +137,21 @@ GetTableSymbol(index)
     }
     else if (index == 3)
     {
-        return "Replace"
+        return "Loop"
     }
-    else if(index == 4)
+    else if (index == 4)
     {
-        return "Soft"
+        return "Replace"
     }
     else if(index == 5)
     {
-        return "Rule"
+        return "Soft"
     }
     else if(index == 6)
+    {
+        return "Rule"
+    }
+    else if(index == 7)
     {
         return "Tool"
     }
@@ -165,17 +169,21 @@ GetTableName(index)
     }
     else if (index == 3)
     {
+        return "循环宏"
+    }
+    else if (index == 4)
+    {
         return "按键替换"
     }
-    else if(index == 4)
+    else if(index == 5)
     {
         return "软件宏"
     }
-    else if (index == 5)
+    else if (index == 6)
     {
         return "配置规则"
     }
-    else if(index == 6)
+    else if(index == 7)
     {
         return "工具"
     }
@@ -185,8 +193,6 @@ UpdateUnderPosY(tableIndex, value)
 {
     table := GetTableItem(tableIndex)
     table.UnderPosY += value
-    if (tableIndex == 4)
-        aa := 1 ; 临时调试代码
 }
 
 SetToolCheckInfo(*)
@@ -304,13 +310,21 @@ GetTablItemDefaultInfo(index)
     }
     else if (index == 3)
     {
+        savedTKArrStr := "z"
+        savedInfoArrStr := "z,50,x,50"
+        savedModeArrStr := "0"
+        savedForbidArrStr := "0"
+        savedProcessNameStr := ","
+    }
+    else if (index == 4)
+    {
         savedTKArrStr := "e,t"
         savedInfoArrStr := "w,d|"
         savedModeArrStr := "1,0"
         savedForbidArrStr := "0,0"
         savedProcessNameStr := ","
     }
-    else if(index == 4)
+    else if(index == 5)
     {
         savedTKArrStr := "!d"
         savedInfoArrStr := "Notepad.exe"
@@ -407,6 +421,25 @@ CheckTableInfoSetting(index, str)
         return true
     }
     else if(index == 3)
+    {
+        infos := StrSplit(str, ",")
+        loop infos.Length
+        {
+            info := infos[A_Index]
+            keyName := GetKeyName(info)
+            if (keyName == "")
+                return false
+
+            if (infos.Length > A_Index)
+            {
+                A_Index++
+                if (!IsInteger(infos[A_Index]))
+                    return false
+            }
+        }
+        return true
+    }
+    else if(index == 4)
     {
         infos := StrSplit(str, ",")
         loop infos.Length

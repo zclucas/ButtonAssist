@@ -13,6 +13,8 @@ Class TableItem
         this.ForbidConArr := []
         this.ProcessNameConArr := []
         this.UnderPosY := 0
+        ;Loop专用
+        this.LoopState := []
     }
 }
 
@@ -48,6 +50,7 @@ Class ToolCheck
                 SetToolCheckInfo(1)
             }
             this.CheckTimer := Timer(action, ScriptInfo.NormalPeriod)
+            this.CheckTimer.On()
         }
         else
             this.CheckTimer := ""

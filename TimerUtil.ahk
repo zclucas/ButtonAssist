@@ -3,6 +3,7 @@ HoldKey(callback, endCallback, period, leftTime, key)
 {
     action := GetKeyAction(callback, endCallback, key)
     holdTimer := Timer(action, period)
+    holdTimer.On()
     funcObj := ReleaseKey.Bind(holdTimer, endCallback, key)
     SetTimer funcObj, -leftTime, -1
 }
@@ -38,7 +39,6 @@ class Timer
         this.binding := callback
         this.period := period
         this.priority := 0
-        this.On()
     }
 
     __Delete()

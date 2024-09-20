@@ -5,6 +5,7 @@ BindHotKey()
     {
         tableItem := GetTableItem(A_Index)
         tableIndex := A_Index
+        tableItem.LoopState := []
         For index, value in tableItem.TKArr
         {
             isForbid := (Integer)(tableItem.ForbidArr[index])
@@ -28,7 +29,7 @@ BindHotKey()
 
                 if (tableIndex == 1)
                 {
-                    action := GetHotKeyAction(key, info, mode, OnSimpleTriggerKey)
+                    action := GetHotKeyAction(key, info, mode, OnSimpleTriggerKey, )
                     Hotkey(key, action)
                 }
                 else if (tableIndex == 2)
@@ -38,12 +39,20 @@ BindHotKey()
                 }
                 else if (tableIndex == 3)
                 {
+                    tableItem.LoopState.Push(true)
+                    action1 := GetHotKeyAction2(key, info, mode, index, OnLoopTriggerDownKey)
+                    action2 := GetHotKeyAction2(key " up", info, mode, index, OnLoopTriggerUpKey)
+                    Hotkey(key, action1) 
+                    Hotkey(key " up", action2)
+                }
+                else if (tableIndex == 4)
+                {
                     action1 := GetHotKeyAction(key, info, mode, OnReplaceDownKey)
                     action2 := GetHotKeyAction(key " up", info, mode, OnReplaceUpKey)
                     Hotkey(key, action1) 
                     Hotkey(key " up", action2)
                 }
-                else if(tableIndex == 4)
+                else if(tableIndex == 5)
                 {
                     action := GetHotKeyAction(key, info, mode, OnSoftTriggerKey)
                     Hotkey(key, action)
@@ -62,6 +71,12 @@ BindHotKey()
 GetHotKeyAction(key, info, mode, func)
 {
     funcObj := func.Bind(key, info, mode)
+    return (*)=>funcObj()
+}
+
+GetHotKeyAction2(key, info, mode, index, func)
+{
+    funcObj := func.Bind(key, info, mode, index)
     return (*)=>funcObj()
 }
 
@@ -197,10 +212,54 @@ OnNormalTriggerKey(key, info, mode)
     }
 }
 
-OnReplaceDownKey(key, info, mode)
+OnLoopTriggerDownKey(key, info, mode ,index)
 {
     key := SubStr(key, 2)
     tableItem := GetTableItem(3)
+    infos := StrSplit(info, ",")
+    realKey := RemoveHotkeyPrefix(key)
+    tableItem.LoopState[index] := true
+
+    While(GetKeyState(realKey, "P") && !ScriptInfo.IsPause && tableItem.LoopState[index])
+    {
+        loop infos.Length
+        {
+            if (ScriptInfo.IsPause || !GetKeyState(realKey, "P") || !tableItem.LoopState[index]) 
+                break
+
+            curKey := infos[A_Index]
+            if (mode == 1)
+            {
+                SendGameModeDownKey(curKey)
+                funcObj := SendGameModeUpKey.Bind(curKey)
+                SetTimer funcObj, -ScriptInfo.KeyAutoLooseTime
+            }
+            else
+            {
+                SendNormalDownKey(curKey)
+                funcObj := SendNormalUpKey.Bind(curKey)
+                SetTimer funcObj, -ScriptInfo.KeyAutoLooseTime
+            }
+            if (infos.Length > A_Index)
+            {
+                Sleep(Integer(infos[A_Index + 1]))
+                A_Index++
+            }
+        }
+    }
+
+}
+
+OnLoopTriggerUpKey(key, info, mode, index)
+{
+    tableItem := GetTableItem(3)
+    tableItem.LoopState[index] := False
+}
+
+OnReplaceDownKey(key, info, mode)
+{
+    key := SubStr(key, 2)
+    tableItem := GetTableItem(4)
     infos := StrSplit(info, ",")
 
     loop infos.Length
@@ -221,7 +280,7 @@ OnReplaceDownKey(key, info, mode)
 OnReplaceUpKey(key, info, mode)
 {
     key := SubStr(key, 2)
-    tableItem := GetTableItem(3)
+    tableItem := GetTableItem(4)
     infos := StrSplit(info, ",")
 
     loop infos.Length
