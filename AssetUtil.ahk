@@ -373,7 +373,7 @@ CheckCanSave()
     }
 
     tableName := GetTableName(6)
-    if (!IsInteger(ScriptInfo.KeyAutoLooseTimeCtrl.Value))
+    if (!IsInteger(ScriptInfo.KeyAutoLooseTimeMinCtrl.Value) || !IsInteger(ScriptInfo.KeyAutoLooseTimeMaxCtrl.Value))
     {
         MsgBox (Format("{} 模块下 按键时间配置错误", tableName))
         RefreshGui()
