@@ -1,6 +1,7 @@
 ; 回调函数，间隔，持续时间，参数
 HoldKey(callback, endCallback, period, leftTime, key)
 {
+    callback(key)
     action := GetKeyAction(callback, endCallback, key)
     holdTimer := Timer(action, period)
     holdTimer.On()
