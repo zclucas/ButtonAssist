@@ -67,8 +67,10 @@ Class ScriptSettingInfo
         this.PauseToggleCtrl := ""
         this.PauseHotkey := ""
         this.PauseHotkeyCtrl := ""
-        this.KeyAutoLooseTime := 25
-        this.KeyAutoLooseTimeCtrl := ""
+        this.KeyAutoLooseTimeMin := 25
+        this.KeyAutoLooseTimeMax := 35
+        this.KeyAutoLooseTimeMinCtrl := ""
+        this.KeyAutoLooseTimeMaxCtrl := ""
         this.NormalPeriod := 50
         this.NormalPeriodCtrl := ""
         this.IsLastSaved := false

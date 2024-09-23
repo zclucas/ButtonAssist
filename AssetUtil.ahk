@@ -4,7 +4,8 @@ OnReadSetting()
     global ScriptInfo
     ScriptInfo.HasSaved := IniRead(IniFile, IniSection, "HasSaved", false)
     ScriptInfo.NormalPeriod := IniRead(IniFile, IniSection, "NormalPeriod", 50)
-    ScriptInfo.KeyAutoLooseTime := IniRead(IniFile, IniSection, "KeyAutoLooseTime", 25)
+    ScriptInfo.KeyAutoLooseTimeMin := IniRead(IniFile, IniSection, "KeyAutoLooseTimeMin", 25)
+    ScriptInfo.KeyAutoLooseTimeMax := IniRead(IniFile, IniSection, "KeyAutoLooseTimeMax", 35)
     ScriptInfo.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
     ScriptInfo.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!p")
     ToolCheckInfo.IsToolCheck := IniRead(IniFile, IniSection, "IsToolCheck", false)
@@ -80,7 +81,8 @@ OnSaveSetting(*)
     }
 
     IniWrite(ScriptInfo.NormalPeriodCtrl.Value, IniFile, IniSection, "NormalPeriod")
-    IniWrite(ScriptInfo.KeyAutoLooseTimeCtrl.Value, IniFile, IniSection, "KeyAutoLooseTime")
+    IniWrite(ScriptInfo.KeyAutoLooseTimeMinCtrl.Value, IniFile, IniSection, "KeyAutoLooseTimeMin")
+    IniWrite(ScriptInfo.KeyAutoLooseTimeMaxCtrl.Value, IniFile, IniSection, "KeyAutoLooseTimeMax")
     IniWrite(ScriptInfo.PauseHotkeyCtrl.Text, IniFile, IniSection, "PauseHotkey")
     IniWrite(true, IniFile, IniSection, "LastSaved")
     IniWrite(ScriptInfo.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
@@ -207,6 +209,12 @@ SetToolCheckInfo(*)
     ToolCheckInfo.ProcessPid := WinGetPID(winId)
     ToolCheckInfo.ProcessClass := WinGetClass(winId)
     RefreshToolUI()
+}
+
+GetRandonAutoLooseTime()
+{
+    global ScriptInfo
+    return Random(ScriptInfo.KeyAutoLooseTimeMin, ScriptInfo.KeyAutoLooseTimeMax)
 }
 
 GetProcessName()

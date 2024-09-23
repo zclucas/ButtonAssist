@@ -159,17 +159,19 @@ OnSimpleTriggerKey(key, info, mode)
             break
 
         curKey := infos[A_Index]
+        looseTime := GetRandonAutoLooseTime()
         if (mode == 1)
         {
             SendGameModeDownKey(curKey)
             funcObj := SendGameModeUpKey.Bind(curKey)
-            SetTimer funcObj, -ScriptInfo.KeyAutoLooseTime
+            looseTime := GetRandonAutoLooseTime()
+            SetTimer funcObj, -looseTime
         }
         else
         {
             SendNormalDownKey(curKey)
             funcObj := SendNormalUpKey.Bind(curKey)
-            SetTimer funcObj, -ScriptInfo.KeyAutoLooseTime
+            SetTimer funcObj, -looseTime
         }
         if (infos.Length > A_Index)
         {
@@ -228,17 +230,18 @@ OnLoopTriggerDownKey(key, info, mode ,index)
                 break
 
             curKey := infos[A_Index]
+            looseTime := GetRandonAutoLooseTime()
             if (mode == 1)
             {
                 SendGameModeDownKey(curKey)
                 funcObj := SendGameModeUpKey.Bind(curKey)
-                SetTimer funcObj, -ScriptInfo.KeyAutoLooseTime
+                SetTimer funcObj, -looseTime
             }
             else
             {
                 SendNormalDownKey(curKey)
                 funcObj := SendNormalUpKey.Bind(curKey)
-                SetTimer funcObj, -ScriptInfo.KeyAutoLooseTime
+                SetTimer funcObj, -looseTime
             }
             if (infos.Length > A_Index)
             {

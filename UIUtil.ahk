@@ -159,9 +159,10 @@ AddRuleUI(index)
     posY := TabPosY
     ; 配置规则说明
     posY += 30
-    MyGui.Add("Text", Format("x20 y{} w100", posY), "按键时间:")
-    ScriptInfo.KeyAutoLooseTimeCtrl := MyGui.Add("Edit", Format("x100 y{} w70 center", posY - 4), ScriptInfo.KeyAutoLooseTime)
-    MyGui.Add("Text", Format("x180 y{} w600", posY), "(所有辅助键按下到松开的间隔时间)(太小软件检测不到,推荐值:25+)")
+    MyGui.Add("Text", Format("x20 y{} w100", posY), "按键时间范围:")
+    ScriptInfo.KeyAutoLooseTimeMinCtrl := MyGui.Add("Edit", Format("x100 y{} w70 center", posY - 4), ScriptInfo.KeyAutoLooseTimeMin)
+    ScriptInfo.KeyAutoLooseTimeMaxCtrl := MyGui.Add("Edit", Format("x180 y{} w70 center", posY - 4), ScriptInfo.KeyAutoLooseTimeMax)
+    MyGui.Add("Text", Format("x280 y{} w600", posY), "(所有辅助键按下到松开的间隔时间)(太小软件检测不到,推荐值:25~35)")
     posY += 30
     MyGui.Add("Text", Format("x20 y{} w100", posY), "按键周期:")
     ScriptInfo.NormalPeriodCtrl := MyGui.Add("Edit", Format("x100 y{} w70 center", posY - 4), ScriptInfo.NormalPeriod)
