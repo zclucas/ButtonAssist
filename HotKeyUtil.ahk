@@ -8,6 +8,7 @@ BindHotKey()
         tableItem.LoopState := []
         For index, value in tableItem.TKArr
         {
+            tableItem.LoopState.Push(true)
             isForbid := (Integer)(tableItem.ForbidArr[index])
             curProcessName := ""
             if (tableItem.ProcessNameArr.Length >= index)
@@ -39,7 +40,6 @@ BindHotKey()
                 }
                 else if (tableIndex == 3)
                 {
-                    tableItem.LoopState.Push(true)
                     action1 := GetHotKeyAction2(key, info, mode, index, OnLoopTriggerDownKey)
                     action2 := GetHotKeyAction2(key " up", info, mode, index, OnLoopTriggerUpKey)
                     Hotkey(key, action1) 
