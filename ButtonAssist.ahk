@@ -17,13 +17,14 @@ global BtnSave
 global BtnRemove
 
 global TabCtrl
-global TableItemNum := 7
+global TableItemNum := 6
 
 global ScriptInfo := ScriptSettingInfo()
 global TableInfo := CreateTableItemArr(TableItemNum)
 global ToolCheckInfo := ToolCheck()
 
 OnReadSetting()
+InitLoopHotkeyState()
 AddUI()
 CustomTrayMenu()
 BindHotKey()

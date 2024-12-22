@@ -20,7 +20,7 @@ GetKeyAction(callback, endCallback, key)
             
         callback(key)
         funcObj := endCallback.Bind(key)
-        looseTime := GetRandonAutoLooseTime()
+        looseTime := GetRandomAutoLooseTime()
         SetTimer funcObj, -looseTime
     }
     return action

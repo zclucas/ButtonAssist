@@ -13,6 +13,7 @@ Class TableItem
         this.ForbidConArr := []
         this.ProcessNameConArr := []
         this.UnderPosY := 0
+
         ;Loop专用
         this.LoopState := []
     }
@@ -74,8 +75,8 @@ Class ScriptSettingInfo
         this.NormalPeriod := 50
         this.NormalPeriodCtrl := ""
         this.IsLastSaved := false
-        this.WinPosx := 0
-        this.WinPosy := 0
+        this.WinPosX := 0
+        this.WinPosY := 0
         this.IsSavedWinPos := false
         this.TableIndex := 1
         this.HasSaved := false

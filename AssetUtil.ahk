@@ -1,3 +1,25 @@
+InitLoopHotkeyState()
+{
+    Loop TableItemNum
+    {
+        tableSymbol := GetTableSymbol(A_Index)
+        if (tableSymbol == "Loop")
+        {
+            tableItem := GetTableItem(A_Index) 
+            tableItem.LoopState := []
+            For index, value in tableItem.TKArr
+            {
+                if (tableItem.LoopState.Length >= index){
+                    tableItem.LoopState[index] := true
+                }
+                else{
+                    tableItem.LoopState.Push(true)
+                }
+            }
+        }
+    }
+}
+
 OnReadSetting()
 {
     global TableItemNum, ToolCheckInfo ; 访问全局变量
@@ -25,7 +47,7 @@ ReadTableItemInfo(index)
 {
     global ScriptInfo
     symbol := GetTableSymbol(index)
-    defalutInfo := GetTablItemDefaultInfo(index)
+    defaultInfo := GetTableItemDefaultInfo(index)
     savedTKArrStr := IniRead(IniFile, IniSection, symbol "TKArr", "")
     savedInfoArrStr := IniRead(IniFile, IniSection, symbol "InfoArr", "")
     savedModeArrStr := IniRead(IniFile, IniSection, symbol "ModeArr", "")
@@ -35,15 +57,15 @@ ReadTableItemInfo(index)
     if (!ScriptInfo.HasSaved)
     {
         if (savedTKArrStr == "")
-            savedTKArrStr := defalutInfo[1]
+            savedTKArrStr := defaultInfo[1]
         if (savedInfoArrStr == "")
-            savedInfoArrStr := defalutInfo[2]
+            savedInfoArrStr := defaultInfo[2]
         if (savedModeArrStr == "")
-            savedModeArrStr := defalutInfo[3]
+            savedModeArrStr := defaultInfo[3]
         if (savedForbidArrStr == "")
-            savedForbidArrStr := defalutInfo[4]
+            savedForbidArrStr := defaultInfo[4]
         if (savedProcessNameStr == "")
-            savedProcessNameStr := defalutInfo[5]
+            savedProcessNameStr := defaultInfo[5]
     }
 
     tableItem := GetTableItem(index)
@@ -58,12 +80,12 @@ SaveWinPos()
 {
     global ScriptInfo, TabCtrl
     MyGui.GetPos(&posX, &posY)
-    ScriptInfo.WinPosx := posX
+    ScriptInfo.WinPosX := posX
     ScriptInfo.WinPosy := posY
     ScriptInfo.IsSavedWinPos := true
     ScriptInfo.TableIndex := TabCtrl.Value
-    IniWrite(ScriptInfo.WinPosx, IniFile, IniSection, "WinPosx")
-    IniWrite(ScriptInfo.WinPosy, IniFile, IniSection, "WinPosy")
+    IniWrite(ScriptInfo.WinPosX, IniFile, IniSection, "WinPosX")
+    IniWrite(ScriptInfo.WinPosY, IniFile, IniSection, "WinPosY")
     IniWrite(true, IniFile, IniSection, "IsSavedWinPos")
     IniWrite(TabCtrl.Value, IniFile, IniSection, "TableIndex")
 }
@@ -71,9 +93,9 @@ SaveWinPos()
 OnSaveSetting(*)
 {
     global ScriptInfo, TabCtrl
-    isCanSave := CheckCanSave()
-    if (!isCanSave)
-        return
+    ; isCanSave := CheckCanSave()
+    ; if (!isCanSave)
+    ;     return
 
     Loop TableItemNum
     {
@@ -129,68 +151,38 @@ GetTableItem(index)
     return TableInfo[index]
 }
 
+GetTableSymbolArr()
+{
+    tableSymbolArr := ["Normal", "Loop", "Replace", "Soft", "Rule", "Tool"]
+    return tableSymbolArr
+}
+
 GetTableSymbol(index)
 {
-    if (index == 1)
+    return GetTableSymbolArr()[index]
+}
+
+GetTableIndex(symbol)
+{
+    tableSymbolArr := GetTableSymbolArr()
+    Loop tableSymbolArr.Length
     {
-        return "Simple"
+        if (tableSymbolArr[A_Index] == symbol)
+        {
+            return A_Index
+        }
     }
-    else if (index == 2)
-    {
-        return "Normal"
-    }
-    else if (index == 3)
-    {
-        return "Loop"
-    }
-    else if (index == 4)
-    {
-        return "Replace"
-    }
-    else if(index == 5)
-    {
-        return "Soft"
-    }
-    else if(index == 6)
-    {
-        return "Rule"
-    }
-    else if(index == 7)
-    {
-        return "Tool"
-    }
+}
+
+GetTableNameArr()
+{
+    tableNameArr := ["按键宏", "循环宏", "按键替换", "软件宏", "配置规则", "工具"]
+    return tableNameArr
 }
 
 GetTableName(index)
 {
-    if (index == 1)
-    {
-        return "简易按键宏"
-    }
-    else if (index == 2)
-    {
-        return "按键宏"
-    }
-    else if (index == 3)
-    {
-        return "循环宏"
-    }
-    else if (index == 4)
-    {
-        return "按键替换"
-    }
-    else if(index == 5)
-    {
-        return "软件宏"
-    }
-    else if (index == 6)
-    {
-        return "配置规则"
-    }
-    else if(index == 7)
-    {
-        return "工具"
-    }
+    return GetTableNameArr()[index]
 }
 
 UpdateUnderPosY(tableIndex, value)
@@ -211,7 +203,7 @@ SetToolCheckInfo(*)
     RefreshToolUI()
 }
 
-GetRandonAutoLooseTime()
+GetRandomAutoLooseTime()
 {
     global ScriptInfo
     return Random(ScriptInfo.KeyAutoLooseTimeMin, ScriptInfo.KeyAutoLooseTimeMax)
@@ -253,15 +245,15 @@ GetSavedTableItemInfo(index)
 
     loop tableItem.TKArr.Length
     {
-        TKNmaeValue := symbol "TKArr" A_Index
-        InfoNameValue := symbol "InfoArr" A_Index
-        ModeNameValue := symbol "ModeArr" A_Index
-        ForbidNameValue := symbol "ForbidArr" A_Index
-        ProcessNameNameValue := symbol "ProcessNameArr" A_Index
+        TKNameValue := symbol "TK" A_Index
+        InfoNameValue := symbol "Info" A_Index
+        ModeNameValue := symbol "Mode" A_Index
+        ForbidNameValue := symbol "Forbid" A_Index
+        ProcessNameNameValue := symbol "ProcessName" A_Index
 
         For Name, Value in Saved.OwnProps()
         {
-            if (TKNmaeValue == Name)
+            if (TKNameValue == Name)
             {
                 TKArrStr .= Value
             }
@@ -295,7 +287,7 @@ GetSavedTableItemInfo(index)
     return [TKArrStr, InfoArrStr, ModeArrStr, ForbidArrStr, ProcessNameArrStr]
 }
 
-GetTablItemDefaultInfo(index)
+GetTableItemDefaultInfo(index)
 {
     savedTKArrStr := ""
     savedInfoArrStr := ""
@@ -304,21 +296,13 @@ GetTablItemDefaultInfo(index)
     savedProcessNameStr := ""
     if (index == 1)
     {
-        savedTKArrStr := "q,q"
-        savedInfoArrStr := "t,30,h,30,i,30,s,30,space,30,i,30,s,30,space,30,q|d,30,a,30,j"
-        savedModeArrStr := "0,0"
-        savedForbidArrStr := "0,0"
-        savedProcessNameStr := "Notepad.exe,explorer.exe"
-    }
-    else if (index == 2)
-    {
         savedTKArrStr := "k,m"
         savedInfoArrStr := "ctrl_100,0,a_100|a_1000"
         savedModeArrStr := "0,0"
         savedForbidArrStr := "0,0"
         savedProcessNameStr := "Notepad.exe,"
     }
-    else if (index == 3)
+    else if (index == 2)
     {
         savedTKArrStr := "z"
         savedInfoArrStr := "z,50,x,50"
@@ -326,7 +310,7 @@ GetTablItemDefaultInfo(index)
         savedForbidArrStr := "0"
         savedProcessNameStr := ","
     }
-    else if (index == 4)
+    else if (index == 3)
     {
         savedTKArrStr := "e,t"
         savedInfoArrStr := "w,d|"
@@ -334,7 +318,7 @@ GetTablItemDefaultInfo(index)
         savedForbidArrStr := "0,0"
         savedProcessNameStr := ","
     }
-    else if(index == 5)
+    else if(index == 4)
     {
         savedTKArrStr := "!d"
         savedInfoArrStr := "Notepad.exe"

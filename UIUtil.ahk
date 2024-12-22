@@ -13,7 +13,7 @@ OnOpen()
 ;UI相关函数
 AddUI()
 {
-    global MyGui, TabCtrl, TabPosY
+    global MyGui, TabCtrl, TabPosY,TableItemNum
     global ScriptInfo
     MyGui := Gui(, "Super的按键辅助器")
     MyGui.Opt("ToolWindow")
@@ -40,48 +40,24 @@ AddUI()
     ReloadBtnCtrl.OnEvent("Click", MenuReload)
 
     TabPosY := 30
-    TabCtrl := myGui.Add("Tab3","x10 w880 y" TabPosY " Choose" ScriptInfo.TableIndex, ["简易按键宏", "按键宏", "循环宏","按键替换", "软件宏" ,"配置规则","工具"])
-    index := 1
-    TabCtrl.UseTab(index)
-    AddSimpleHotkeyUI(index)
-    index++
-    TabCtrl.UseTab(index)
-    AddNormalHotkeyUI(index)
-    index++
-    TabCtrl.UseTab(index)
-    AddLoopKeyUI(index)
-    index++
-    TabCtrl.UseTab(index)
-    AddReplacekeyUI(index)
-    index++
-    TabCtrl.UseTab(index)
-    AddSoftUI(index)
-    index++
-    TabCtrl.UseTab(index)
-    AddRuleUI(index)
-    index++
-    TabCtrl.UseTab(index)
-    AddToolUI(index)
-    index++
+    tableNameArr := GetTableNameArr()
+    TabCtrl := myGui.Add("Tab3","x10 w880 y" TabPosY " Choose" ScriptInfo.TableIndex, tableNameArr)
+   
+    loop TableItemNum
+    {
+        TabCtrl.UseTab(A_Index)
+        func := GetUIAddFunc(A_Index)
+        func(A_Index)
+    }
     TabCtrl.UseTab()
 
     AddOperBtnUI()
 }
 
-AddSimpleHotkeyUI(index)
+GetUIAddFunc(index)
 {
-    tableItem := GetTableItem(index)
-    tableItem.underPosY := TabPosY
-    ; 配置规则说明
-    UpdateUnderPosY(index, 30)
-    MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
-    MyGui.Add("Text", Format("x100 y{} w550", tableItem.underPosY), "辅助键案例：d,30,a,30,d,30,a,30,j(依次输出dadaj)")
-    MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "模式")
-    MyGui.Add("Text", Format("x700 y{} w50", tableItem.underPosY), "禁止")
-    MyGui.Add("Text", Format("x740 y{} w100", tableItem.underPosY), "指定进程名")
-
-    UpdateUnderPosY(index, 20)
-    LoadSavedSettingUI(index)
+    UIAddFuncArr := [AddNormalHotkeyUI, AddLoopKeyUI, AddReplaceKeyUI, AddSoftUI, AddRuleUI, AddToolUI]
+    return UIAddFuncArr[index]
 }
 
 ;添加正常按键宏UI
@@ -95,9 +71,11 @@ AddNormalHotkeyUI(index)
     
     MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
     MyGui.Add("Text", Format("x100 y{} w550", tableItem.underPosY), "辅助键案例：ctrl_100,0,a_100(全选快捷键)")
-    MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "模式")
+    MyGui.Add("Text", Format("x900 y{} w100", tableItem.underPosY), "连点间隔")
+    MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "游戏")
     MyGui.Add("Text", Format("x700 y{} w50", tableItem.underPosY), "禁止")
     MyGui.Add("Text", Format("x740 y{} w100", tableItem.underPosY), "指定进程名")
+    
 
     UpdateUnderPosY(index, 20)
     LoadSavedSettingUI(index)
@@ -111,7 +89,7 @@ AddLoopKeyUI(index)
     UpdateUnderPosY(index, 30)
     MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
     MyGui.Add("Text", Format("x100 y{} w550", tableItem.underPosY), "辅助键案例：z,50,x,50(循环输出z，x)(底层接口bug偶尔卡键，需要再次点击后松开触发键)")
-    MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "模式")
+    MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "游戏")
     MyGui.Add("Text", Format("x700 y{} w50", tableItem.underPosY), "禁止")
     MyGui.Add("Text", Format("x740 y{} w100", tableItem.underPosY), "指定进程名")
 
@@ -120,7 +98,7 @@ AddLoopKeyUI(index)
 }
 
 ;添加按键替换UI
-AddReplacekeyUI(index)
+AddReplaceKeyUI(index)
 {
     tableItem := GetTableItem(index)
     tableItem.UnderPosY := TabPosY
@@ -253,14 +231,15 @@ LoadSavedSettingUI(index)
     {
         posY := " y" tableItem.underPosY
         symbol := GetTableSymbol(index)
-        TKNameValue := " v" symbol "TKArr" A_Index
-        InfoNameValue := " v" symbol "InfoArr" A_Index
-        ModeNameValue := " v" symbol "ModeArr" A_Index
-        ForbidNameValue := " v" symbol "ForbidArr" A_Index
-        ProcessNameValue := " v" symbol "ProcessNameArr" A_Index
+        TKNameValue := " v" symbol "TK" A_Index
+        InfoNameValue := " v" symbol "Info" A_Index
+        ModeNameValue := " v" symbol "Mode" A_Index
+        ForbidNameValue := " v" symbol "Forbid" A_Index
+        ProcessNameValue := " v" symbol "ProcessName" A_Index
 
         newTkControl := MyGui.Add("Edit", "x20 w70 Center" TKNameValue posY, tableItem.TKArr[A_Index])
         newInfoControl := MyGui.Add("Edit", "x100 w550" InfoNameValue posY, tableItem.InfoArr[A_Index])
+
         newModeControl := MyGui.Add("Checkbox", Format("x670 w30 y{}", tableItem.underPosY + 5) ModeNameValue, "")
         newModeControl.value := tableItem.ModeArr[A_Index]
         newForbidControl := MyGui.Add("Checkbox", Format("x705 w30 y{}", tableItem.underPosY + 5) ForbidNameValue, "")
@@ -273,8 +252,6 @@ LoadSavedSettingUI(index)
             if (value != "")
                 newProcessNameControl.value := value
         }
-        
-
 
         tableItem.TKConArr.Push(newTkControl)
         tableItem.InfoConArr.Push(newInfoControl)
@@ -327,11 +304,11 @@ OnAddSetting(*)
     posY := " y" tableItem.underPosY
     symbol := GetTableSymbol(TableIndex)
     index := tableItem.TKArr.Length
-    TKNameValue := " v" symbol "TKArr" index
-    InfoNameValue := " v" symbol "InfoArr" index
-    ModeNameValue := " v" symbol "ModeArr" index
-    ForbidNameValue := " v" symbol "ForbidArr" index
-    ProcessNameValue := " v" symbol "ProcessNameArr" index
+    TKNameValue := " v" symbol "TKA" index
+    InfoNameValue := " v" symbol "Info" index
+    ModeNameValue := " v" symbol "Mode" index
+    ForbidNameValue := " v" symbol "Forbid" index
+    ProcessNameValue := " v" symbol "ProcessName" index
 
     TabCtrl.UseTab(TableIndex)
     newTkControl := MyGui.Add("Edit", "x20 w70 Center" TKNameValue posY, "")
@@ -383,7 +360,7 @@ RefreshGui()
 {
     global ScriptInfo
     if (ScriptInfo.IsSavedWinPos)
-        MyGui.Show(Format("w900" "h{} x{} y{}", MaxUnderPosY() + 50, ScriptInfo.WinPosx, ScriptInfo.WinPosy))
+        MyGui.Show(Format("w900" "h{} x{} y{}", MaxUnderPosY() + 50, ScriptInfo.WinPosX, ScriptInfo.WinPosY))
     else
         MyGui.Show(Format("w900" "h{} center", MaxUnderPosY() + 50))
 }
