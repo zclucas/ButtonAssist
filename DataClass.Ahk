@@ -7,15 +7,19 @@ Class TableItem
         this.ModeArr := []
         this.ForbidArr := []
         this.ProcessNameArr := []
+        this.LoosenStopArr := []
+        this.RemarkArr := []
         this.TKConArr := []
         this.InfoConArr := []
         this.ModeConArr := []
         this.ForbidConArr := []
         this.ProcessNameConArr := []
+        this.LoosenStopConArr := []
+        this.RemarkTextConArr := []
+        this.RemarkConArr := []
         this.UnderPosY := 0
 
-        ;Loop专用
-        this.LoopState := []
+        this.LoosenState := []
     }
 }
 
@@ -68,12 +72,14 @@ Class ScriptSettingInfo
         this.PauseToggleCtrl := ""
         this.PauseHotkey := ""
         this.PauseHotkeyCtrl := ""
-        this.KeyAutoLooseTimeMin := 25
-        this.KeyAutoLooseTimeMax := 35
-        this.KeyAutoLooseTimeMinCtrl := ""
-        this.KeyAutoLooseTimeMaxCtrl := ""
-        this.NormalPeriod := 50
-        this.NormalPeriodCtrl := ""
+        this.HoldFloat := 5
+        this.HoldFloatCtrl := ""
+        this.ClickFloat := 5
+        this.ClickFloatCtrl := ""
+        this.IntervalFloat := 5
+        this.IntervalFloatCtrl := ""
+        this.ImageSearchBlur := 100
+        this.ImageSearchBlurCtrl := ""
         this.IsLastSaved := false
         this.WinPosX := 0
         this.WinPosY := 0

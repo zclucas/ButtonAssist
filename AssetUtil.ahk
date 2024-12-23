@@ -1,19 +1,19 @@
-InitLoopHotkeyState()
+InitLoosenState()
 {
-    Loop TableItemNum
+    Loop TabNameArr.Length
     {
         tableSymbol := GetTableSymbol(A_Index)
-        if (tableSymbol == "Loop")
+        if (tableSymbol == "Normal" || tableSymbol == "Special")
         {
             tableItem := GetTableItem(A_Index) 
-            tableItem.LoopState := []
+            tableItem.LoosenState := []
             For index, value in tableItem.TKArr
             {
-                if (tableItem.LoopState.Length >= index){
-                    tableItem.LoopState[index] := true
+                if (tableItem.LoosenState.Length >= index){
+                    tableItem.LoosenState[index] := false
                 }
                 else{
-                    tableItem.LoopState.Push(true)
+                    tableItem.LoosenState.Push(false)
                 }
             }
         }
@@ -22,12 +22,13 @@ InitLoopHotkeyState()
 
 OnReadSetting()
 {
-    global TableItemNum, ToolCheckInfo ; 访问全局变量
-    global ScriptInfo
+    global ToolCheckInfo, ScriptInfo
     ScriptInfo.HasSaved := IniRead(IniFile, IniSection, "HasSaved", false)
     ScriptInfo.NormalPeriod := IniRead(IniFile, IniSection, "NormalPeriod", 50)
-    ScriptInfo.KeyAutoLooseTimeMin := IniRead(IniFile, IniSection, "KeyAutoLooseTimeMin", 25)
-    ScriptInfo.KeyAutoLooseTimeMax := IniRead(IniFile, IniSection, "KeyAutoLooseTimeMax", 35)
+    ScriptInfo.HoldFloat := IniRead(IniFile, IniSection, "HoldFloat", 5)
+    ScriptInfo.ClickFloat := IniRead(IniFile, IniSection, "ClickFloat", 5)
+    ScriptInfo.IntervalFloat := IniRead(IniFile, IniSection, "IntervalFloat", 5)
+    ScriptInfo.ImageSearchBlur := IniRead(IniFile, IniSection, "ImageSearchBlur", 100)
     ScriptInfo.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
     ScriptInfo.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!p")
     ToolCheckInfo.IsToolCheck := IniRead(IniFile, IniSection, "IsToolCheck", false)
@@ -37,7 +38,7 @@ OnReadSetting()
     ScriptInfo.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
     ScriptInfo.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
     ScriptInfo.TableIndex := IniRead(IniFile, IniSection, "TableIndex", 1)
-    Loop TableItemNum
+    Loop TabNameArr.Length
     {
         ReadTableItemInfo(A_Index)
     }
@@ -53,6 +54,8 @@ ReadTableItemInfo(index)
     savedModeArrStr := IniRead(IniFile, IniSection, symbol "ModeArr", "")
     savedForbidArrStr := IniRead(IniFile, IniSection, symbol "ForbidArr", "")
     savedProcessNameStr := IniRead(IniFile, IniSection, symbol "ProcessNameArr", "")
+    savedLoosenStopArrStr := IniRead(IniFile, IniSection, symbol "LoosenStopArr", "")
+    savedRemarkArrStr := IniRead(IniFile, IniSection, symbol "RemarkArr", "")
 
     if (!ScriptInfo.HasSaved)
     {
@@ -66,6 +69,10 @@ ReadTableItemInfo(index)
             savedForbidArrStr := defaultInfo[4]
         if (savedProcessNameStr == "")
             savedProcessNameStr := defaultInfo[5]
+        if (savedLoosenStopArrStr == "")
+            savedLoosenStopArrStr := defaultInfo[6]
+        if (savedRemarkArrStr == "")
+            savedRemarkArrStr := defaultInfo[7]
     }
 
     tableItem := GetTableItem(index)
@@ -74,6 +81,8 @@ ReadTableItemInfo(index)
     SetArr(savedModeArrStr, ",", tableItem.ModeArr)
     SetArr(savedForbidArrStr, ",", tableItem.ForbidArr)
     SetArr(savedProcessNameStr, ",", tableItem.ProcessNameArr)
+    SetArr(savedLoosenStopArrStr, ",", tableItem.LoosenStopArr)
+    SetArr(savedRemarkArrStr, "|", tableItem.RemarkArr)
 }
 
 SaveWinPos()
@@ -93,19 +102,16 @@ SaveWinPos()
 OnSaveSetting(*)
 {
     global ScriptInfo, TabCtrl
-    ; isCanSave := CheckCanSave()
-    ; if (!isCanSave)
-    ;     return
-
-    Loop TableItemNum
+    Loop TabNameArr.Length
     {
         SaveTableItemInfo(A_Index)
     }
 
-    IniWrite(ScriptInfo.NormalPeriodCtrl.Value, IniFile, IniSection, "NormalPeriod")
-    IniWrite(ScriptInfo.KeyAutoLooseTimeMinCtrl.Value, IniFile, IniSection, "KeyAutoLooseTimeMin")
-    IniWrite(ScriptInfo.KeyAutoLooseTimeMaxCtrl.Value, IniFile, IniSection, "KeyAutoLooseTimeMax")
-    IniWrite(ScriptInfo.PauseHotkeyCtrl.Text, IniFile, IniSection, "PauseHotkey")
+    IniWrite(ScriptInfo.HoldFloatCtrl.Value, IniFile, IniSection, "HoldFloat")
+    IniWrite(ScriptInfo.ClickFloatCtrl.Value, IniFile, IniSection, "ClickFloat")
+    IniWrite(ScriptInfo.IntervalFloatCtrl.Value, IniFile, IniSection, "IntervalFloat")
+    IniWrite(ScriptInfo.ImageSearchBlurCtrl.Value, IniFile, IniSection, "ImageSearchBlur")
+    IniWrite(ScriptInfo.PauseHotkeyCtrl.Value, IniFile, IniSection, "PauseHotkey")
     IniWrite(true, IniFile, IniSection, "LastSaved")
     IniWrite(ScriptInfo.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
     IniWrite(ToolCheckInfo.IsToolCheck, IniFile, IniSection, "IsToolCheck")
@@ -125,6 +131,8 @@ SaveTableItemInfo(index)
     IniWrite(SavedInfo[3], IniFile, IniSection, symbol "ModeArr")
     IniWrite(SavedInfo[4], IniFile, IniSection, symbol "ForbidArr")
     IniWrite(SavedInfo[5], IniFile, IniSection, symbol "ProcessNameArr")
+    IniWrite(SavedInfo[6], IniFile, IniSection, symbol "LoosenStopArr")
+    IniWrite(SavedInfo[7], IniFile, IniSection, symbol "RemarkArr")
 }
 
 CreateTableItemArr(num)
@@ -151,38 +159,42 @@ GetTableItem(index)
     return TableInfo[index]
 }
 
-GetTableSymbolArr()
-{
-    tableSymbolArr := ["Normal", "Loop", "Replace", "Soft", "Rule", "Tool"]
-    return tableSymbolArr
-}
 
 GetTableSymbol(index)
 {
-    return GetTableSymbolArr()[index]
+    return TabSymbolArr[index]
 }
 
 GetTableIndex(symbol)
 {
-    tableSymbolArr := GetTableSymbolArr()
-    Loop tableSymbolArr.Length
+    Loop TabSymbolArr.Length
     {
-        if (tableSymbolArr[A_Index] == symbol)
+        if (TabSymbolArr[A_Index] == symbol)
         {
             return A_Index
         }
     }
 }
 
-GetTableNameArr()
-{
-    tableNameArr := ["按键宏", "循环宏", "按键替换", "软件宏", "配置规则", "工具"]
-    return tableNameArr
-}
-
 GetTableName(index)
 {
-    return GetTableNameArr()[index]
+    return TabNameArr[index]
+}
+
+CheckIsSpecialTable(index){
+    symbol := GetTableSymbol(index)
+    if (symbol == "Special")
+        return true
+    return false
+}
+
+CheckIsSpecialOrNormalTable(index){
+    symbol := GetTableSymbol(index)
+    if (symbol == "Normal")
+        return true
+    if (symbol == "Special")
+        return true
+    return false
 }
 
 UpdateUnderPosY(tableIndex, value)
@@ -194,6 +206,7 @@ UpdateUnderPosY(tableIndex, value)
 SetToolCheckInfo(*)
 {
     global ToolCheckInfo
+    CoordMode("Mouse", "Screen")
     MouseGetPos &mouseX, &mouseY, &winId
     ToolCheckInfo.PosStr := mouseX . "," . mouseY
     ToolCheckInfo.ProcessName := WinGetProcessName(winId)
@@ -203,10 +216,10 @@ SetToolCheckInfo(*)
     RefreshToolUI()
 }
 
-GetRandomAutoLooseTime()
-{
-    global ScriptInfo
-    return Random(ScriptInfo.KeyAutoLooseTimeMin, ScriptInfo.KeyAutoLooseTimeMax)
+GetRandom(floatTime){
+    max := Abs(Integer(floatTime))
+    min := -max
+    return Random(min, max)
 }
 
 GetProcessName()
@@ -240,6 +253,8 @@ GetSavedTableItemInfo(index)
     ModeArrStr := ""
     ForbidArrStr := ""
     ProcessNameArrStr := ""
+    LoosenStopArrStr := ""
+    RemarkArrStr := ""
     tableItem := GetTableItem(index)
     symbol := GetTableSymbol(index)
 
@@ -250,6 +265,8 @@ GetSavedTableItemInfo(index)
         ModeNameValue := symbol "Mode" A_Index
         ForbidNameValue := symbol "Forbid" A_Index
         ProcessNameNameValue := symbol "ProcessName" A_Index
+        LoosenStopNameValue := symbol "LoosenStop" A_Index
+        RemarkNameValue := symbol "Remark" A_Index
 
         For Name, Value in Saved.OwnProps()
         {
@@ -273,6 +290,14 @@ GetSavedTableItemInfo(index)
             {
                 ProcessNameArrStr .= Value
             }
+            if (LoosenStopNameValue == Name)
+            {
+                LoosenStopArrStr .= Value
+            }
+            if (RemarkNameValue == Name)
+            {
+                RemarkArrStr .= Value
+            }
         }
 
         if (tableItem.TKArr.Length > A_Index)
@@ -282,9 +307,11 @@ GetSavedTableItemInfo(index)
             ModeArrStr .= ","
             ForbidArrStr .= ","
             ProcessNameArrStr .= ","
+            LoosenStopArrStr .= ","
+            RemarkArrStr .= "|"
         }
     }
-    return [TKArrStr, InfoArrStr, ModeArrStr, ForbidArrStr, ProcessNameArrStr]
+    return [TKArrStr, InfoArrStr, ModeArrStr, ForbidArrStr, ProcessNameArrStr, LoosenStopArrStr, RemarkArrStr]
 }
 
 GetTableItemDefaultInfo(index)
@@ -294,31 +321,37 @@ GetTableItemDefaultInfo(index)
     savedModeArrStr := ""
     savedForbidArrStr := ""
     savedProcessNameStr := ""
-    if (index == 1)
-    {
-        savedTKArrStr := "k,m"
-        savedInfoArrStr := "ctrl_100,0,a_100|a_1000"
-        savedModeArrStr := "0,0"
-        savedForbidArrStr := "0,0"
-        savedProcessNameStr := "Notepad.exe,"
+    savedLoosenStopArrStr := ""
+    savedRemarkArrStr := ""
+    symbol := GetTableSymbol(index)
+    if (symbol == "Special"){
+        savedTKArrStr := "m,+m,h,y,i"
+        savedInfoArrStr := "lbutton_200,50,MouseMove_100_100_10|lbutton_200,50,MouseMove_100_-100_10_R|lbutton_30_2_50|left_30_2_50|ImageSearch_Test.png(lbutton_30_2_50)"
+        savedModeArrStr := "0,0,1,1,0"
+        savedForbidArrStr := "0,0,0,0,0"
+        savedProcessNameStr := ",,,,,"
+        savedLoosenStopArrStr := "0,0,0,0,0"
+        savedRemarkArrStr := "鼠标双击移动_绝对|鼠标移动窗口_相对|鼠标左键双击|左移两位|找到图片双击查看"
     }
-    else if (index == 2)
+    else if (symbol == "Normal")
     {
-        savedTKArrStr := "z"
-        savedInfoArrStr := "z,50,x,50"
-        savedModeArrStr := "0"
-        savedForbidArrStr := "0"
-        savedProcessNameStr := ","
+        savedTKArrStr := "k,shift,+k,^k,XButton1"
+        savedInfoArrStr := "a_30_30_50,3000|b_30_2_50|c_30_5_50,250,left_30_2_50,100,d_30_2_50|ctrl_100,0,a_100|t_30,50,h_30,50,i_30,50,s_30,50,space_30,50,i_30,50,s_30,50,space_30,50,c_30,50,j_30"
+        savedModeArrStr := "0,0,0,0,0"
+        savedForbidArrStr := "0,1,0,0,0"
+        savedProcessNameStr := ",,,,"
+        savedLoosenStopArrStr := "1,0,0,0,0"
+        savedRemarkArrStr := "演示配置|演示配置|演示配置|解决按住Ctrl导致宏无效|鼠标侧键宏"
     }
-    else if (index == 3)
+    else if (symbol == "Replace")
     {
-        savedTKArrStr := "e,t"
-        savedInfoArrStr := "w,d|"
-        savedModeArrStr := "1,0"
-        savedForbidArrStr := "0,0"
-        savedProcessNameStr := ","
+        savedTKArrStr := "l,o,p"
+        savedInfoArrStr := "left|b,c|"
+        savedModeArrStr := "0,0,0"
+        savedForbidArrStr := "0,0,0"
+        savedProcessNameStr := ",,"
     }
-    else if(index == 4)
+    else if(symbol == "Soft")
     {
         savedTKArrStr := "!d"
         savedInfoArrStr := "Notepad.exe"
@@ -326,162 +359,16 @@ GetTableItemDefaultInfo(index)
         savedForbidArrStr := "0"
         savedProcessNameStr := ""
     }
-    return [savedTKArrStr, savedInfoArrStr, savedModeArrStr, savedForbidArrStr, savedProcessNameStr]
+    return [savedTKArrStr, savedInfoArrStr, savedModeArrStr, savedForbidArrStr, savedProcessNameStr, savedLoosenStopArrStr, savedRemarkArrStr]
 }
 
-CheckCanSave()
-{
-    Loop TableItemNum
-    {
-        index := A_Index
-        SavedInfo := GetSavedTableItemInfo(index)
-        TKArr := StrSplit(SavedInfo[1], ",")
-        InfoArr := StrSplit(SavedInfo[2], "|")
-        Loop TKArr.Length
-        {
-            tableName := GetTableName(index)
-            if(!CheckTableTKSetting(TKArr[A_Index]))
-            {
-                MsgBox (Format("{} 模块下 第 {} 个触发键配置错误", tableName, A_Index))
-                RefreshGui()
-                return false
-            }
+GetImageSize(imageFile){
+    pToken := Gdip_Startup()
+    pBm := Gdip_CreateBitmapFromFile(imageFile)
+    width := Gdip_GetImageWidth(pBm)
+    height := Gdip_GetImageHeight(pBm)
 
-            if (!CheckTableInfoSetting(index, InfoArr[A_Index]))
-            {
-                MsgBox (Format("{} 模块下 第 {} 个辅助信息配置错误", tableName, A_Index))
-                RefreshGui()
-                return false
-            }
-        }
-    }
-
-    tableName := GetTableName(6)
-    if (!IsInteger(ScriptInfo.KeyAutoLooseTimeMinCtrl.Value) || !IsInteger(ScriptInfo.KeyAutoLooseTimeMaxCtrl.Value))
-    {
-        MsgBox (Format("{} 模块下 按键时间配置错误", tableName))
-        RefreshGui()
-        return false
-    }
-    if (!IsInteger(ScriptInfo.NormalPeriodCtrl.Value))
-    {
-        MsgBox (Format("{} 模块下 按键周期配置错误", tableName))
-        RefreshGui()
-        return false
-    }
-    return true
-}
-
-CheckTableInfoSetting(index, str)
-{
-    if (index == 1)
-    {
-        infos := StrSplit(str, ",")
-        loop infos.Length
-        {
-            info := infos[A_Index]
-            keyName := GetKeyName(info)
-            if (keyName == "")
-                return false
-
-            if (infos.Length > A_Index)
-            {
-                A_Index++
-                if (!IsInteger(infos[A_Index]))
-                    return false
-            }
-        }
-        return true
-    }
-    else if (index == 2)
-    {
-        infos := StrSplit(str, ",")
-        loop infos.Length
-        {
-            info := infos[A_Index]
-            infoArr := StrSplit(info, "_")
-            keyName := GetKeyName(infoArr[1])
-            if (keyName == "")
-                return false
-
-            if (infoArr.Length != 2)
-                return false
-            if (!IsInteger(infoArr[2]))
-                return false
-
-            if (infos.Length > A_Index)
-            {
-                A_Index++
-                if (!IsInteger(infos[A_Index]))
-                    return false
-            }
-        }
-        return true
-    }
-    else if(index == 3)
-    {
-        infos := StrSplit(str, ",")
-        loop infos.Length
-        {
-            info := infos[A_Index]
-            keyName := GetKeyName(info)
-            if (keyName == "")
-                return false
-
-            if (infos.Length > A_Index)
-            {
-                A_Index++
-                if (!IsInteger(infos[A_Index]))
-                    return false
-            }
-        }
-        return true
-    }
-    else if(index == 4)
-    {
-        infos := StrSplit(str, ",")
-        loop infos.Length
-        {
-            info := infos[A_Index]
-            keyName := GetKeyName(info)
-            if (keyName == "")
-                return false
-        }
-        return true
-    }
-    return true
-}
-
-CheckTableTKSetting(str)
-{
-    if (str == "")
-        return true
-
-    key := RemoveHotkeyPrefix(str)
-
-    keyName := GetKeyName(key)
-    if (keyName == "")
-        return false
-
-    return true
-}
-
-RemoveHotkeyPrefix(hotkey) {
-    prefix := ""
-    ; 检查并去掉前缀
-    if InStr(hotkey, "^") ; Ctrl
-        prefix .= "^"
-    if InStr(hotkey, "!") ; Alt
-        prefix .= "!"
-    if InStr(hotkey, "+") ; Shift
-        prefix .= "+"
-    if InStr(hotkey, "#") ; Win
-        prefix .= "#"
-    if InStr(hotkey, "~") ; 系统
-        prefix .= "~"
-    if InStr(hotkey, "$") ; 系统
-        prefix .= "$"
-
-    ; 去掉前缀并返回按键部分
-    return SubStr(hotkey, StrLen(prefix) + 1)
+    Gdip_DisposeImage(pBm)
+    Gdip_Shutdown(pToken)
+    return [width, height]
 }

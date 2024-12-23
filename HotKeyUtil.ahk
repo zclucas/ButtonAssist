@@ -1,6 +1,6 @@
 BindHotKey() {
     tableIndex := 0
-    loop TableItemNum {
+    loop TabNameArr.Length {
         tableItem := GetTableItem(A_Index)
         tableIndex := A_Index
         for index, value in tableItem.TKArr {
@@ -21,14 +21,10 @@ BindHotKey() {
                 }
 
                 tableSymbol := GetTableSymbol(tableIndex)
-                if (tableSymbol == "Normal") {
-                    action := GetHotKeyAction(key, info, mode, OnNewNormalTriggerKey)
+                if (tableSymbol == "Normal" || tableSymbol == "Special") {
+                    action := GetHotKeyAction2(info, mode, index, OnNormalTriggerKey)
+                    action2 := GetHotKeyAction2(info, mode, index, OnNormalUpKey)
                     Hotkey(key, action)
-                }
-                else if (tableSymbol == "Loop") {
-                    action1 := GetHotKeyAction2(key, info, mode, index, OnLoopTriggerDownKey)
-                    action2 := GetHotKeyAction2(key " up", info, mode, index, OnLoopTriggerUpKey)
-                    Hotkey(key, action1)
                     Hotkey(key " up", action2)
                 }
                 else if (tableSymbol == "Replace") {
@@ -56,8 +52,8 @@ GetHotKeyAction(key, info, mode, func) {
     return (*) => funcObj()
 }
 
-GetHotKeyAction2(key, info, mode, index, func) {
-    funcObj := func.Bind(key, info, mode, index)
+GetHotKeyAction2(info, mode, index, func) {
+    funcObj := func.Bind(info, mode, index)
     return (*) => funcObj()
 }
 
@@ -81,13 +77,50 @@ BindToolCheckHotkey() {
     }
 }
 
-; 模拟按键相关函数
+
 SendGameModeKey(Key, holdTime := 30) {
+    VK := GetKeyVK(Key)
+    SC := GetKeySC(Key)
 
-    VK := GetKeyVK(Key), SC := GetKeySC(Key)
+    if (VK == 1 || VK == 2 || VK == 4){   ; 鼠标左键、右键、中键
+        SendGameMouseClick(key, holdTime)
+        return
+    }
 
-    DllCall("keybd_event", "UChar", VK, "UChar", SC, "UInt", 0, "UPtr", 0)
-    SetTimer(() => DllCall("keybd_event", "UChar", VK, "UChar", SC, "UInt", 2, "UPtr", 0), -holdTime)
+    ; 检测是否为扩展键
+    isExtendedKey := false
+    extendedArr := [0x25, 0x26, 0x27, 0x28]    ; 左、上、右、下箭头
+    for index, value in extendedArr {
+        if (VK == value) {
+            isExtendedKey := true
+            break
+        }
+    }
+
+    ; 按下键
+    DllCall("keybd_event", "UChar", VK, "UChar", SC, "UInt", isExtendedKey ? 0x1 : 0, "UPtr", 0)
+
+    ; 设置定时器模拟释放
+    SetTimer(() =>DllCall("keybd_event", "UChar", VK, "UChar", SC, "UInt", (isExtendedKey ? 0x3 : 0x2), "UPtr", 0), -holdTime)
+}
+
+SendGameMouseClick(Key, holdTime := 30) {
+    ; 鼠标按下和松开的标志
+    if (StrCompare(Key, "LButton", false) == 0){
+        mouseDown := 0x0002
+        mouseUp := 0x0004
+    }
+    else if (StrCompare(Key, "RButton", false) == 0){
+        mouseDown := 0x0008
+        mouseUp := 0x0010
+    }
+    else if (StrCompare(Key, "MButton", false) == 0){
+        mouseDown := 0x0020
+        mouseUp := 0x0040
+    }
+
+    DllCall("mouse_event", "UInt", mouseDown, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 0)
+    SetTimer(() =>DllCall("mouse_event", "UInt", mouseUp, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 0), -holdTime)
 }
 
 SendNormalKey(Key, holdTime := 30) {
@@ -118,29 +151,33 @@ SendNormalUpKey(Key) {
     Send(keyUp)
 }
 
-OnNewNormalTriggerKey(key, info, mode) {
+OnNormalTriggerKey(info, mode, index) {
     global ScriptInfo
-    key := SubStr(key, 2)
     tableIndex := GetTableIndex("Normal")
     tableItem := GetTableItem(tableIndex)
+    tableItem.LoosenState[index] := false
     infos := StrSplit(info, ",")
 
     loop infos.Length {
-        if (ScriptInfo.IsPause)
+        if (ScriptInfo.IsPause || tableItem.LoosenState[index])
             break
 
         strArr := StrSplit(infos[A_Index], "_")
         curKey := strArr[1]
 
-        IsMouseMove := curKey == "MouseMove"
+        IsMouseMove := StrCompare(curKey, "MouseMove", false) == 0
+        IsImageSearch := StrCompare(curKey, "ImageSearch", false) == 0
         if (IsMouseMove) {
-            SendMode("Event")
-            MouseMove(Integer(strArr[2]), Integer(strArr[3]), Integer(strArr[4]), strArr[5])
+            OnMouseMove(strArr)
+        }
+        else if (IsImageSearch) {
+            OnImageSearch(infos[A_Index], mode, index)
         }
         else {
-            clickTime := Integer(strArr[2])
+            oriHoldTime := Integer(strArr[2])
+            holdTime := oriHoldTime + GetRandom(ScriptInfo.HoldFloat)
             action := mode == 1 ? SendGameModeKey : SendNormalKey
-            action(curKey, clickTime)
+            action(curKey, holdTime)
 
             count := strArr.Length > 2 ? Integer(strArr[3]) : 1
             if (count > 1) {
@@ -148,97 +185,93 @@ OnNewNormalTriggerKey(key, info, mode) {
                 loop count {
                     if (A_Index == 1)
                         continue
-                    tempAction := mode == 1 ? SendGameModeKey : SendNormalKey
-                    tempAction := tempAction.Bind(curKey, clickTime)
+
+                    tempHoldTime := oriHoldTime + GetRandom(ScriptInfo.HoldFloat)
+                    tempAction := OnNormalMuchClick.Bind(action, curKey, tempHoldTime, tableItem.LoosenState, index)
                     leftTime := clickInterval * (A_Index - 1)
+                    leftTime += GetRandom(ScriptInfo.ClickFloat)
                     SetTimer tempAction, -leftTime
                 }
             }
         }
 
         if (infos.Length > A_Index) {
-            Sleep(Integer(infos[A_Index + 1]))
+            interval := Integer(infos[A_Index + 1])
+            interval += GetRandom(ScriptInfo.IntervalFloat)
+            Sleep(interval)
             A_Index++
         }
     }
 
 }
 
-OnNormalTriggerKey(key, info, mode) {
-    global ScriptInfo
-    key := SubStr(key, 2)
+OnImageSearch(str, mode, index) {
+    splitIndex := RegExMatch(str, "(\(.*\))", &match)
+    imageInfoStr := SubStr(str, 1, splitIndex - 1)
+    imageInfoArr := StrSplit(imageInfoStr, "_")
+    findAfterActionStr := SubStr(match[1], 2, StrLen(match[1]) - 2)
+
+    ImageFile := Format("*{} *w0 *h0 {}", Integer(ScriptInfo.ImageSearchBlur), imageInfoArr[2])
+    if (imageInfoArr.Length > 3){
+        X1 := Integer(imageInfoArr[3])
+        Y1 := Integer(imageInfoArr[4])
+        X2 := Integer(imageInfoArr[5])
+        Y2 := Integer(imageInfoArr[6])
+    }
+    else{
+        X1 := 0
+        Y1 := 0
+        X2 := A_ScreenWidth
+        Y2 := A_ScreenHeight
+    }
+
+    CoordMode("Mouse", "Screen")
+    result := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, ImageFile)
+
+    if (result) {
+        imageSize := GetImageSize(ImageFile)
+        Pos := [OutputVarX + imageSize[1]/2, OutputVarY + imageSize[2]/2]
+        MouseMove(Pos[1], Pos[2])
+        if (findAfterActionStr == "") 
+            return
+
+        OnNormalTriggerKey(findAfterActionStr, mode, index)
+    }
+    
+}
+
+OnMouseMove(strArr) {
+    SendMode("Event")
+    CoordMode("Mouse", "Screen")
+    if (strArr.Length == 3) {
+        MouseMove(Integer(strArr[2]), Integer(strArr[3]))
+    }
+    else if (strArr.Length == 4) {
+        MouseMove(Integer(strArr[2]), Integer(strArr[3]), Integer(strArr[4]))
+    }
+    else {
+        MouseMove(Integer(strArr[2]), Integer(strArr[3]), Integer(strArr[4]), strArr[5])
+    }
+}
+
+OnNormalMuchClick(action, key, time, LoosenStateArr, index) {
+    if (LoosenStateArr[index])
+        return
+
+    action(key, time)
+}
+
+OnNormalUpKey(info, mode, index) {
     tableIndex := GetTableIndex("Normal")
     tableItem := GetTableItem(tableIndex)
-    infos := StrSplit(info, ",")
-
-    loop infos.Length {
-        if (ScriptInfo.IsPause)
-            break
-
-        strArr := StrSplit(infos[A_Index], "_")
-        curKey := strArr[1]
-        leftTime := Integer(strArr[2])
-
-        if (mode == 1) {
-            HoldKey(SendGameModeDownKey, SendGameModeUpKey, ScriptInfo.NormalPeriod, leftTime, curKey)
-        }
-        else {
-            HoldKey(SendNormalDownKey, SendNormalUpKey, ScriptInfo.NormalPeriod, leftTime, curKey)
-        }
-
-        if (infos.Length > A_Index) {
-            Sleep(Integer(infos[A_Index + 1]))
-            A_Index++
-        }
+    isLoosenStop := tableItem.LoosenStopArr[index]
+    if (isLoosenStop) {
+        tableItem.LoosenState[index] := true
     }
-}
-
-OnLoopTriggerDownKey(key, info, mode, index) {
-    key := SubStr(key, 2)
-    tableIndex := GetTableIndex("Loop")
-    tableItem := GetTableItem(tableIndex)
-    infos := StrSplit(info, ",")
-    realKey := RemoveHotkeyPrefix(key)
-    tableItem.LoopState[index] := true
-    isHold := GetKeyState(realKey, "P")
-    isHold2 := GetKeyState(realKey)
-
-    while (GetKeyState(realKey, "P") && !ScriptInfo.IsPause && tableItem.LoopState[index]) {
-        loop infos.Length {
-            if (ScriptInfo.IsPause || !GetKeyState(realKey, "P") || !tableItem.LoopState[index])
-                break
-
-            curKey := infos[A_Index]
-            looseTime := GetRandomAutoLooseTime()
-            if (mode == 1) {
-                SendGameModeDownKey(curKey)
-                funcObj := SendGameModeUpKey.Bind(curKey)
-                SetTimer funcObj, -looseTime
-            }
-            else {
-                SendNormalDownKey(curKey)
-                funcObj := SendNormalUpKey.Bind(curKey)
-                SetTimer funcObj, -looseTime
-            }
-            if (infos.Length > A_Index) {
-                Sleep(Integer(infos[A_Index + 1]))
-                A_Index++
-            }
-        }
-    }
-
-}
-
-OnLoopTriggerUpKey(key, info, mode, index) {
-    tableIndex := GetTableIndex("Loop")
-    tableItem := GetTableItem(tableIndex)
-    tableItem.LoopState[index] := False
 }
 
 OnReplaceDownKey(key, info, mode) {
     key := SubStr(key, 2)
-    tableIndex := GetTableIndex("Replace")
-    tableItem := GetTableItem(tableIndex)
     infos := StrSplit(info, ",")
 
     loop infos.Length {
@@ -255,8 +288,6 @@ OnReplaceDownKey(key, info, mode) {
 
 OnReplaceUpKey(key, info, mode) {
     key := SubStr(key, 2)
-    tableIndex := GetTableIndex("Replace")
-    tableItem := GetTableItem(tableIndex)
     infos := StrSplit(info, ",")
 
     loop infos.Length {

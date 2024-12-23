@@ -1,5 +1,6 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
+#Include Gdip_All.ahk
 #Include TimerUtil.ahk
 #Include AssetUtil.ahk
 #Include UIUtil.ahk
@@ -16,15 +17,16 @@ global BtnAdd
 global BtnSave
 global BtnRemove
 
+global TabNameArr :=["特按键宏", "按键宏", "按键替换", "软件宏", "配置规则", "工具"]
+global TabSymbolArr := ["Special", "Normal", "Replace", "Soft", "Rule", "Tool"]
 global TabCtrl
-global TableItemNum := 6
 
 global ScriptInfo := ScriptSettingInfo()
-global TableInfo := CreateTableItemArr(TableItemNum)
+global TableInfo := CreateTableItemArr(TabNameArr.Length)
 global ToolCheckInfo := ToolCheck()
 
 OnReadSetting()
-InitLoopHotkeyState()
+InitLoosenState()
 AddUI()
 CustomTrayMenu()
 BindHotKey()
