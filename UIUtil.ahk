@@ -467,6 +467,7 @@ OnPauseHotkey(*) {
     global ScriptInfo ; 访问全局变量
     ScriptInfo.IsPause := !ScriptInfo.IsPause
     ScriptInfo.PauseToggleCtrl.Value := ScriptInfo.IsPause
+    
     Suspend(ScriptInfo.IsPause)
 }
 

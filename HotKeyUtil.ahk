@@ -185,9 +185,10 @@ OnNormalTriggerKey(tableItem, info, mode, index) {
                         continue
 
                     tempHoldTime := oriHoldTime + GetRandom(ScriptInfo.HoldFloat)
-                    tempAction := OnNormalMuchClick.Bind(action, curKey, tempHoldTime, tableItem.LoosenState, index)
+                    tempAction := OnNormalMuchClick.Bind(action, curKey, tempHoldTime, tableItem, index)
                     leftTime := clickInterval * (A_Index - 1)
                     leftTime += GetRandom(ScriptInfo.ClickFloat)
+                    tableItem.TimerArr[index].Push(tempAction)
                     SetTimer tempAction, -leftTime
                 }
             }
@@ -252,9 +253,15 @@ OnMouseMove(strArr) {
     }
 }
 
-OnNormalMuchClick(action, key, time, LoosenStateArr, index) {
-    if (LoosenStateArr[index])
+OnNormalMuchClick(action, key, time, tableItem, index) {
+    if (tableItem.LoosenState[index] || ScriptInfo.IsPause){
+        timerActionArr := tableItem.TimerArr[index]
+        for index, value in timerActionArr {
+            SetTimer value, 0
+        }
+        tableItem.TimerArr[index] := []
         return
+    }
 
     action(key, time)
 }

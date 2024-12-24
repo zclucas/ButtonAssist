@@ -26,7 +26,7 @@ global TableInfo := CreateTableItemArr(TabNameArr.Length)
 global ToolCheckInfo := ToolCheck()
 
 OnReadSetting()
-InitLoosenState()
+InitTableItemState()
 AddUI()
 CustomTrayMenu()
 BindHotKey()

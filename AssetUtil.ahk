@@ -1,4 +1,4 @@
-InitLoosenState()
+InitTableItemState()
 {
     Loop TabNameArr.Length
     {
@@ -7,6 +7,7 @@ InitLoosenState()
         {
             tableItem := GetTableItem(A_Index) 
             tableItem.LoosenState := []
+            tableItem.TimerArr := []
             For index, value in tableItem.TKArr
             {
                 if (tableItem.LoosenState.Length >= index){
@@ -14,6 +15,13 @@ InitLoosenState()
                 }
                 else{
                     tableItem.LoosenState.Push(false)
+                }
+
+                if (tableItem.TimerArr.Length >= index){
+                    tableItem.TimerArr[index] := []
+                }
+                else{
+                    tableItem.TimerArr.Push([])
                 }
             }
         }
