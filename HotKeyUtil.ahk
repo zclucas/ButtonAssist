@@ -154,7 +154,7 @@ SendNormalUpKey(Key) {
 OnNormalTriggerKey(tableItem, info, mode, index) {
     global ScriptInfo
     tableItem.LoosenState[index] := false
-    infos := StrSplit(info, ",")
+    infos := SplitCommand(info)
 
     loop infos.Length {
         if (ScriptInfo.IsPause || tableItem.LoosenState[index])
@@ -227,7 +227,7 @@ OnImageSearch(tableItem, info, mode, index) {
     result := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, ImageFile)
 
     if (result) {
-        imageSize := GetImageSize(ImageFile)
+        imageSize := GetImageSize(imageInfoArr[2])
         Pos := [OutputVarX + imageSize[1]/2, OutputVarY + imageSize[2]/2]
         MouseMove(Pos[1], Pos[2])
         if (findAfterActionInfo == "") 

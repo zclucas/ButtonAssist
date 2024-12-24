@@ -373,3 +373,36 @@ GetImageSize(imageFile){
     Gdip_Shutdown(pToken)
     return [width, height]
 }
+
+
+SplitCommand(info){
+    resultArr := []
+    lastSymbolIndex := 0
+    leftBracket := 0
+
+    loop parse info{
+
+        if (A_LoopField == "("){
+            leftBracket += 1
+        }
+
+        if (A_LoopField == ")"){
+            leftBracket -= 1
+        }
+
+        if (A_LoopField == ","){
+            if (leftBracket == 0){
+                curCmd := SubStr(info, lastSymbolIndex + 1, A_Index - lastSymbolIndex - 1)
+                resultArr.Push(curCmd)
+                lastSymbolIndex := A_Index
+            }
+        }
+
+        if (A_Index == StrLen(info)){
+            curCmd := SubStr(info, lastSymbolIndex + 1, A_Index - lastSymbolIndex)
+            resultArr.Push(curCmd)
+        }
+
+    }
+    return resultArr
+}
