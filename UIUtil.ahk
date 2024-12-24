@@ -236,7 +236,7 @@ LoadSavedSettingUI(index) {
     tableItem := GetTableItem(index)
     isSpecialOrNormal := CheckIsSpecialOrNormalTable(index)
     isSpecial := CheckIsSpecialTable(index)
-    loop tableItem.TKArr.Length {
+    loop tableItem.ModeArr.Length {
         heightValue := isSpecialOrNormal ? 60 : 30
         posY := " y" tableItem.underPosY
         TKPosY := isSpecialOrNormal ? " y" tableItem.underPosY + 10 : " y" tableItem.underPosY
@@ -252,13 +252,15 @@ LoadSavedSettingUI(index) {
         RemarkNameValue := " v" symbol "Remark" A_Index
 
         if (isSpecial) {
-            newTkControl := MyGui.Add("Hotkey", "x20 Center" TKNameValue TKPosY, tableItem.TKArr[A_Index])
-            newInfoControl := MyGui.Add("Edit", "x160 w490" InfoHeight InfoNameValue posY, tableItem.InfoArr[A_Index])
+            newTkControl := MyGui.Add("Hotkey", "x20 Center" TKNameValue TKPosY, "")
+            newInfoControl := MyGui.Add("Edit", "x160 w490" InfoHeight InfoNameValue posY, "")
         }
         else {
-            newTkControl := MyGui.Add("Edit", "x20 w70 Center" TKNameValue TKPosY, tableItem.TKArr[A_Index])
-            newInfoControl := MyGui.Add("Edit", "x100 w550" InfoHeight InfoNameValue posY, tableItem.InfoArr[A_Index])
+            newTkControl := MyGui.Add("Edit", "x20 w70 Center" TKNameValue TKPosY, "")
+            newInfoControl := MyGui.Add("Edit", "x100 w550" InfoHeight InfoNameValue posY, "")
         }
+        newTkControl.Value := tableItem.TKArr.Length >= A_Index ? tableItem.TKArr[A_Index] : ""
+        newInfoControl.Value := tableItem.InfoArr.Length >= A_Index ? tableItem.InfoArr[A_Index] : ""
 
         newModeControl := MyGui.Add("Checkbox", Format("x670 w30 y{}", tableItem.underPosY + 5) ModeNameValue, "")
         newModeControl.value := tableItem.ModeArr[A_Index]
@@ -400,13 +402,21 @@ OnRemoveSetting(*) {
     TableIndex := TabCtrl.Value
     tableItem := GetTableItem(TableIndex)
     isSpecialOrNormal := CheckIsSpecialOrNormalTable(TableIndex)
+    if (tableItem.ModeArr.Length == 0){
+        return
+    }
     btnAdd.Visible := false
     UpdateUnderPosY(TableIndex, -30)
-    tableItem.TKArr.Pop()
-    tableItem.InfoArr.Pop()
     tableItem.ModeArr.Pop()
     tableItem.ForbidArr.Pop()
-    tableItem.ProcessNameArr.Pop()
+    if (tableItem.TKArr.Length > 0)
+        tableItem.TKArr.Pop()
+    if (tableItem.InfoArr.Length > 0)
+        tableItem.InfoArr.Pop()
+    if (tableItem.ProcessNameArr.Length > 0)
+        tableItem.ProcessNameArr.Pop()
+
+
     tableItem.TKConArr.Pop().Visible := false
     tableItem.InfoConArr.Pop().Visible := false
     tableItem.ModeConArr.Pop().Visible := false

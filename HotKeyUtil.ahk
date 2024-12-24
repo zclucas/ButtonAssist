@@ -22,8 +22,8 @@ BindHotKey() {
 
                 tableSymbol := GetTableSymbol(tableIndex)
                 if (tableSymbol == "Normal" || tableSymbol == "Special") {
-                    action := GetHotKeyAction2(info, mode, index, OnNormalTriggerKey)
-                    action2 := GetHotKeyAction2(info, mode, index, OnNormalUpKey)
+                    action := GetHotKeyAction2(tableItem, info, mode, index, OnNormalTriggerKey)
+                    action2 := GetHotKeyAction2(tableItem, info, mode, index, OnNormalUpKey)
                     Hotkey(key, action)
                     Hotkey(key " up", action2)
                 }
@@ -52,8 +52,8 @@ GetHotKeyAction(key, info, mode, func) {
     return (*) => funcObj()
 }
 
-GetHotKeyAction2(info, mode, index, func) {
-    funcObj := func.Bind(info, mode, index)
+GetHotKeyAction2(tableItem, info, mode, index, func) {
+    funcObj := func.Bind(tableItem, info, mode, index)
     return (*) => funcObj()
 }
 
@@ -151,10 +151,8 @@ SendNormalUpKey(Key) {
     Send(keyUp)
 }
 
-OnNormalTriggerKey(info, mode, index) {
+OnNormalTriggerKey(tableItem, info, mode, index) {
     global ScriptInfo
-    tableIndex := GetTableIndex("Normal")
-    tableItem := GetTableItem(tableIndex)
     tableItem.LoosenState[index] := false
     infos := StrSplit(info, ",")
 
@@ -171,7 +169,7 @@ OnNormalTriggerKey(info, mode, index) {
             OnMouseMove(strArr)
         }
         else if (IsImageSearch) {
-            OnImageSearch(infos[A_Index], mode, index)
+            OnImageSearch(tableItem, infos[A_Index], mode, index)
         }
         else {
             oriHoldTime := Integer(strArr[2])
@@ -205,11 +203,11 @@ OnNormalTriggerKey(info, mode, index) {
 
 }
 
-OnImageSearch(str, mode, index) {
-    splitIndex := RegExMatch(str, "(\(.*\))", &match)
-    imageInfoStr := SubStr(str, 1, splitIndex - 1)
+OnImageSearch(tableItem, info, mode, index) {
+    splitIndex := RegExMatch(info, "(\(.*\))", &match)
+    imageInfoStr := SubStr(info, 1, splitIndex - 1)
     imageInfoArr := StrSplit(imageInfoStr, "_")
-    findAfterActionStr := SubStr(match[1], 2, StrLen(match[1]) - 2)
+    findAfterActionInfo := SubStr(match[1], 2, StrLen(match[1]) - 2)
 
     ImageFile := Format("*{} *w0 *h0 {}", Integer(ScriptInfo.ImageSearchBlur), imageInfoArr[2])
     if (imageInfoArr.Length > 3){
@@ -232,10 +230,10 @@ OnImageSearch(str, mode, index) {
         imageSize := GetImageSize(ImageFile)
         Pos := [OutputVarX + imageSize[1]/2, OutputVarY + imageSize[2]/2]
         MouseMove(Pos[1], Pos[2])
-        if (findAfterActionStr == "") 
+        if (findAfterActionInfo == "") 
             return
 
-        OnNormalTriggerKey(findAfterActionStr, mode, index)
+        OnNormalTriggerKey(tableItem, findAfterActionInfo, mode, index)
     }
     
 }
@@ -261,9 +259,7 @@ OnNormalMuchClick(action, key, time, LoosenStateArr, index) {
     action(key, time)
 }
 
-OnNormalUpKey(info, mode, index) {
-    tableIndex := GetTableIndex("Normal")
-    tableItem := GetTableItem(tableIndex)
+OnNormalUpKey(tableItem, info, mode, index) {
     isLoosenStop := tableItem.LoosenStopArr[index]
     if (isLoosenStop) {
         tableItem.LoosenState[index] := true

@@ -258,7 +258,7 @@ GetSavedTableItemInfo(index)
     tableItem := GetTableItem(index)
     symbol := GetTableSymbol(index)
 
-    loop tableItem.TKArr.Length
+    loop tableItem.ModeArr.Length
     {
         TKNameValue := symbol "TK" A_Index
         InfoNameValue := symbol "Info" A_Index
@@ -300,7 +300,7 @@ GetSavedTableItemInfo(index)
             }
         }
 
-        if (tableItem.TKArr.Length > A_Index)
+        if (tableItem.ModeArr.Length > A_Index)
         {
             TKArrStr .= ","
             InfoArrStr .= "|"
@@ -328,7 +328,7 @@ GetTableItemDefaultInfo(index)
         savedTKArrStr := "m,+m,h,y,i"
         savedInfoArrStr := "lbutton_200,50,MouseMove_100_100_10|lbutton_200,50,MouseMove_100_-100_10_R|lbutton_30_2_50|left_30_2_50|ImageSearch_Test.png(lbutton_30_2_50)"
         savedModeArrStr := "0,0,1,1,0"
-        savedForbidArrStr := "0,0,0,0,0"
+        savedForbidArrStr := "1,1,1,1,1"
         savedProcessNameStr := ",,,,,"
         savedLoosenStopArrStr := "0,0,0,0,0"
         savedRemarkArrStr := "鼠标双击移动_绝对|鼠标移动窗口_相对|鼠标左键双击|左移两位|找到图片双击查看"
@@ -338,17 +338,18 @@ GetTableItemDefaultInfo(index)
         savedTKArrStr := "k,shift,+k,^k,XButton1"
         savedInfoArrStr := "a_30_30_50,3000|b_30_2_50|c_30_5_50,250,left_30_2_50,100,d_30_2_50|ctrl_100,0,a_100|t_30,50,h_30,50,i_30,50,s_30,50,space_30,50,i_30,50,s_30,50,space_30,50,c_30,50,j_30"
         savedModeArrStr := "0,0,0,0,0"
-        savedForbidArrStr := "0,1,0,0,0"
+        savedForbidArrStr := "1,1,1,1,1"
         savedProcessNameStr := ",,,,"
         savedLoosenStopArrStr := "1,0,0,0,0"
         savedRemarkArrStr := "演示配置|演示配置|演示配置|解决按住Ctrl导致宏无效|鼠标侧键宏"
+      
     }
     else if (symbol == "Replace")
     {
         savedTKArrStr := "l,o,p"
         savedInfoArrStr := "left|b,c|"
         savedModeArrStr := "0,0,0"
-        savedForbidArrStr := "0,0,0"
+        savedForbidArrStr := "1,1,1"
         savedProcessNameStr := ",,"
     }
     else if(symbol == "Soft")
