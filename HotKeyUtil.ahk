@@ -11,7 +11,7 @@ BindHotKey() {
             }
 
             if (tableItem.TKArr[index] != "" && !isForbid) {
-                key := "$" tableItem.TKArr[index]
+                key := "$*" tableItem.TKArr[index]
                 info := tableItem.InfoArr[index]
                 mode := tableItem.ModeArr[index]
 
@@ -64,7 +64,7 @@ OnSoftTriggerKey(key, info, mode) {
 BindPauseHotkey() {
     global ScriptInfo
     if (ScriptInfo.PauseHotkey != "") {
-        key := "$" ScriptInfo.PauseHotkey
+        key := "$*" ScriptInfo.PauseHotkey
         Hotkey(key, OnPauseHotkey, "S")
     }
 }
@@ -72,7 +72,7 @@ BindPauseHotkey() {
 BindToolCheckHotkey() {
     global ToolCheckInfo
     if (ToolCheckInfo.ToolCheckHotKey != "") {
-        key := "$" ToolCheckInfo.ToolCheckHotKey
+        key := "$*" ToolCheckInfo.ToolCheckHotKey
         Hotkey(key, OnToolCheckHotkey)
     }
 }
@@ -267,7 +267,6 @@ OnNormalUpKey(tableItem, info, mode, index) {
 }
 
 OnReplaceDownKey(key, info, mode) {
-    key := SubStr(key, 2)
     infos := StrSplit(info, ",")
 
     loop infos.Length {
@@ -283,7 +282,6 @@ OnReplaceDownKey(key, info, mode) {
 }
 
 OnReplaceUpKey(key, info, mode) {
-    key := SubStr(key, 2)
     infos := StrSplit(info, ",")
 
     loop infos.Length {
