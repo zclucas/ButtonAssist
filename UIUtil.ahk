@@ -1,4 +1,4 @@
-; 回调函数
+;窗口&UI刷新
 OnOpen() {
     global ScriptInfo
 
@@ -9,7 +9,33 @@ OnOpen() {
     IniWrite(false, IniFile, IniSection, "LastSaved")
 }
 
-;UI相关函数
+RefreshGui() {
+    global ScriptInfo
+    if (ScriptInfo.IsSavedWinPos)
+        MyGui.Show(Format("w920" "h{} x{} y{}", MaxUnderPosY() + 50, ScriptInfo.WinPosX, ScriptInfo.WinPosY))
+    else
+        MyGui.Show(Format("w920" "h{} center", MaxUnderPosY() + 50))
+}
+
+RefreshOperBtnPos() {
+    maxY := MaxUnderPosY()
+    OperBtnPosY := maxY + 10
+    BtnAdd.Move(100, OperBtnPosY)
+    BtnRemove.Move(300, OperBtnPosY)
+    BtnSave.Move(500, OperBtnPosY)
+}
+
+RefreshToolUI() {
+    global ToolCheckInfo
+    
+    ToolCheckInfo.ToolMousePosCtrl.Value := ToolCheckInfo.PosStr
+    ToolCheckInfo.ToolProcessNameCtrl.Value := ToolCheckInfo.ProcessName
+    ToolCheckInfo.ToolProcessTileCtrl.Value := ToolCheckInfo.ProcessTile
+    ToolCheckInfo.ToolProcessPidCtrl.Value := ToolCheckInfo.ProcessPid
+    ToolCheckInfo.ToolProcessClassCtrl.Value := ToolCheckInfo.ProcessClass
+}
+
+;UI元素相关函数
 AddUI() {
     global MyGui, TabCtrl, TabPosY
     global ScriptInfo
@@ -38,7 +64,7 @@ AddUI() {
     ReloadBtnCtrl.OnEvent("Click", MenuReload)
 
     TabPosY := 30
-    TabCtrl := myGui.Add("Tab3", "x10 w900 y" TabPosY " Choose" ScriptInfo.TableIndex, TabNameArr)
+    TabCtrl := MyGui.Add("Tab3", "x10 w900 y" TabPosY " Choose" ScriptInfo.TableIndex, TabNameArr)
 
     loop TabNameArr.Length {
         TabCtrl.UseTab(A_Index)
@@ -58,7 +84,7 @@ GetUIAddFunc(index) {
 ;添加特殊按键宏UI
 AddSpecialHotkeyUI(index) {
     global ScriptInfo
-    tableItem := GetTableItem(index)
+    tableItem := TableInfo[index]
     tableItem.underPosY := TabPosY
     ; 配置规则说明
     UpdateUnderPosY(index, 30)
@@ -77,7 +103,7 @@ AddSpecialHotkeyUI(index) {
 ;添加正常按键宏UI
 AddNormalHotkeyUI(index) {
     global ScriptInfo
-    tableItem := GetTableItem(index)
+    tableItem := TableInfo[index]
     tableItem.underPosY := TabPosY
     ; 配置规则说明
     UpdateUnderPosY(index, 30)
@@ -95,7 +121,7 @@ AddNormalHotkeyUI(index) {
 
 ;添加按键替换UI
 AddReplaceKeyUI(index) {
-    tableItem := GetTableItem(index)
+    tableItem := TableInfo[index]
     tableItem.UnderPosY := TabPosY
     ; 配置规则说明
     UpdateUnderPosY(index, 30)
@@ -110,7 +136,7 @@ AddReplaceKeyUI(index) {
 }
 
 AddSoftUI(index) {
-    tableItem := GetTableItem(index)
+    tableItem := TableInfo[index]
     tableItem.UnderPosY := TabPosY
     ; 配置规则说明
     UpdateUnderPosY(index, 30)
@@ -124,116 +150,8 @@ AddSoftUI(index) {
     LoadSavedSettingUI(index)
 }
 
-AddRuleUI(index) {
-
-    posY := TabPosY
-    ; 配置规则说明
-    posY += 30
-
-    MyGui.Add("Text", Format("x20 y{} w130", posY), "按住时间浮动:")
-    ScriptInfo.HoldFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), ScriptInfo.HoldFloat)
-
-    MyGui.Add("Text", Format("x270 y{} w130", posY), "图片搜索模糊度:")
-    ScriptInfo.ImageSearchBlurCtrl := MyGui.Add("Edit", Format("x380 y{} w70 center", posY - 4), ScriptInfo.ImageSearchBlur)
-
-    posY += 30
-    MyGui.Add("Text", Format("x20 y{} w130", posY), "连点间隔时间浮动:")
-    ScriptInfo.ClickFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), ScriptInfo.ClickFloat)
-
-    posY += 30
-    MyGui.Add("Text", Format("x20 y{} w130", posY), "按键间隔时间浮动:")
-    ScriptInfo.IntervalFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), ScriptInfo.IntervalFloat
-    )
-
-    posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "禁止：勾选后对应配置不生效")
-    posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "游戏：勾选为游戏模式。若游戏内仍然无效请以管理员身份运行软件，如果非游戏模式功能正常，请忽略此项")
-    posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "指定进程名：填写后，仅在该进程获得焦点时生效，否则对所有进程生效（可通过工具模块获取进程名）")
-    posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "松开停止：勾选后，松开触键时立刻停止触发配置")
-    posY += 30
-    MyGui.Add("Text", Format("x20 y{}", posY), "触发键规则：填写想要触发配置的按键或组合键，增加前缀~符号，触发时，触发键原有功能不会被屏蔽")
-    posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "组合触发键：ctrl,alt,shift,win等修饰键需要用特殊符号^!+#代替，其他按键参考软件链接")
-    posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "案例：shift+P要填写成+P,alt+R要填写成!R等等")
-    posY += 30
-    MyGui.Add("Text", Format("x20 y{}", posY),
-    "辅助键配置规则：按键名_持续时间[_按键次数_连续按键间隔],间隔时间,按键名_持续时间[_按键次数_连续按键间隔],间隔时间.....([]为可选参数)")
-    posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY),
-    "鼠标移动配置规则：MouseMove_X_Y[_Speed_R](X,Y为鼠标移动坐标,Speed为鼠标移动速度0~100,0为瞬移,R为是否相对位移)")
-    posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "案例:MouseMove_100_-100_10(鼠标速度10移动到坐标100,-100)")
-    posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "案例:MouseMove_50_-50_20_R(鼠标速度20移动到相对当前坐标50,-50)")
-    posY += 30
-    MyGui.Add("Text", Format("x20 y{}", posY), "图片搜索规则:ImageSearch_ImagePath[_X_Y_W_H](dosomething)(ImagePath为图片路径,X,Y为搜索区域左上角坐标,W,H为搜索区域右下角坐标)")
-    posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "案例:ImageSearch_ImagePath_300_300_500_500(lbutton_30_2_50)。从(300,300)到(500,500)搜索图片,找到后执行lbutton_30_2_50指令")
-
-
-    posY += 20
-
-    tableItem := GetTableItem(index)
-    tableItem.UnderPosY := posY
-}
-
-AddToolUI(index) {
-    global ToolCheckInfo
-
-    posY := TabPosY
-    ; 配置规则说明
-    posY += 30
-    MyGui.Add("Text", Format("x20 y{}", posY), "鼠标下窗口信息：")
-
-    MyGui.Add("Text", Format("x250 y{}", posY), "持续检测:")
-    ToolCheckInfo.ToolCheckCtrl := MyGui.Add("CheckBox", Format("x320 y{}", posY))
-    ToolCheckInfo.ToolCheckCtrl.Value := ToolCheckInfo.IsToolCheck
-    ToolCheckInfo.ToolCheckCtrl.OnEvent("Click", OnToolCheckHotkey)
-    MyGui.Add("Text", Format("x370 y{}", posY), "快捷键:")
-    ToolCheckInfo.ToolCheckHotKeyCtrl := MyGui.Add("HotKey", Format("x425 y{} center", posY - 5), ToolCheckInfo.ToolCheckHotkey
-    )
-
-    posY += 30
-    MyGui.Add("Text", Format("x20 y{}", posY), "鼠标位置坐标：")
-    ToolCheckInfo.ToolMousePosCtrl := MyGui.Add("Edit", Format("x120 y{} w250", posY - 5), ToolCheckInfo.PosStr)
-
-    MyGui.Add("Text", Format("x390 y{}", posY), "进程名：")
-    ToolCheckInfo.ToolProcessNameCtrl := MyGui.Add("Edit", Format("x450 y{} w250", posY - 5), ToolCheckInfo.ProcessName
-    )
-
-    posY += 30
-    MyGui.Add("Text", Format("x20 y{}", posY), "进程标题：")
-    ToolCheckInfo.ToolProcessTileCtrl := MyGui.Add("Edit", Format("x120 y{} w250", posY - 5), ToolCheckInfo.ProcessTile
-    )
-
-    MyGui.Add("Text", Format("x390 y{}", posY), "进程PID：")
-    ToolCheckInfo.ToolProcessPidCtrl := MyGui.Add("Edit", Format("x450 y{} w250", posY - 5), ToolCheckInfo.ProcessPid)
-
-    posY += 30
-    MyGui.Add("Text", Format("x20 y{}", posY), "进程窗口类：")
-    ToolCheckInfo.ToolProcessClassCtrl := MyGui.Add("Edit", Format("x120 y{} w250", posY - 5), ToolCheckInfo.ProcessClass
-    )
-
-    posY += 20
-    GetTableItem(index).underPosY := posY
-}
-
-RefreshToolUI() {
-    global ToolCheckInfo
-    
-    ToolCheckInfo.ToolMousePosCtrl.Value := ToolCheckInfo.PosStr
-    ToolCheckInfo.ToolProcessNameCtrl.Value := ToolCheckInfo.ProcessName
-    ToolCheckInfo.ToolProcessTileCtrl.Value := ToolCheckInfo.ProcessTile
-    ToolCheckInfo.ToolProcessPidCtrl.Value := ToolCheckInfo.ProcessPid
-    ToolCheckInfo.ToolProcessClassCtrl.Value := ToolCheckInfo.ProcessClass
-}
-
 LoadSavedSettingUI(index) {
-    tableItem := GetTableItem(index)
+    tableItem := TableInfo[index]
     isSpecialOrNormal := CheckIsSpecialOrNormalTable(index)
     isSpecial := CheckIsSpecialTable(index)
     loop tableItem.ModeArr.Length {
@@ -298,16 +216,6 @@ LoadSavedSettingUI(index) {
     }
 }
 
-MaxUnderPosY() {
-    maxY := 0
-    loop TabNameArr.Length {
-        posY := GetTableItem(A_Index).UnderPosY
-        if (posY > maxY)
-            maxY := posY
-    }
-    return maxY
-}
-
 AddOperBtnUI() {
     global BtnAdd, BtnSave, BtnRemove
     maxY := MaxUnderPosY()
@@ -324,7 +232,7 @@ AddOperBtnUI() {
 OnAddSetting(*) {
     global TabCtrl, MyGui
     TableIndex := TabCtrl.Value
-    tableItem := GetTableItem(TableIndex)
+    tableItem := TableInfo[TableIndex]
     btnRemove.Visible := false
     isSpecialOrNormal := CheckIsSpecialOrNormalTable(TableIndex)
     isSpecial := CheckIsSpecialTable(TableIndex)
@@ -400,7 +308,7 @@ OnAddSetting(*) {
 OnRemoveSetting(*) {
     global TabCtrl
     TableIndex := TabCtrl.Value
-    tableItem := GetTableItem(TableIndex)
+    tableItem := TableInfo[TableIndex]
     isSpecialOrNormal := CheckIsSpecialOrNormalTable(TableIndex)
     if (tableItem.ModeArr.Length == 0){
         return
@@ -427,24 +335,119 @@ OnRemoveSetting(*) {
         tableItem.RemarkConArr.Pop().Visible := false
         tableItem.RemarkTextConArr.Pop().Visible := false
     }
-
 }
 
-RefreshGui() {
-    global ScriptInfo
-    if (ScriptInfo.IsSavedWinPos)
-        MyGui.Show(Format("w920" "h{} x{} y{}", MaxUnderPosY() + 50, ScriptInfo.WinPosX, ScriptInfo.WinPosY))
-    else
-        MyGui.Show(Format("w920" "h{} center", MaxUnderPosY() + 50))
+AddRuleUI(index) {
+
+    posY := TabPosY
+    ; 配置规则说明
+    posY += 30
+
+    MyGui.Add("Text", Format("x20 y{} w130", posY), "按住时间浮动:")
+    ScriptInfo.HoldFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), ScriptInfo.HoldFloat)
+
+    MyGui.Add("Text", Format("x270 y{} w130", posY), "图片搜索模糊度:")
+    ScriptInfo.ImageSearchBlurCtrl := MyGui.Add("Edit", Format("x380 y{} w70 center", posY - 4), ScriptInfo.ImageSearchBlur)
+
+    posY += 30
+    MyGui.Add("Text", Format("x20 y{} w130", posY), "连点间隔时间浮动:")
+    ScriptInfo.ClickFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), ScriptInfo.ClickFloat)
+
+    posY += 30
+    MyGui.Add("Text", Format("x20 y{} w130", posY), "按键间隔时间浮动:")
+    ScriptInfo.IntervalFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), ScriptInfo.IntervalFloat
+    )
+
+    posY += 20
+    MyGui.Add("Text", Format("x20 y{}", posY), "禁止：勾选后对应配置不生效")
+    posY += 20
+    MyGui.Add("Text", Format("x20 y{}", posY), "游戏：勾选为游戏模式。若游戏内仍然无效请以管理员身份运行软件，如果非游戏模式功能正常，请忽略此项")
+    posY += 20
+    MyGui.Add("Text", Format("x20 y{}", posY), "指定进程名：填写后，仅在该进程获得焦点时生效，否则对所有进程生效（可通过工具模块获取进程名）")
+    posY += 20
+    MyGui.Add("Text", Format("x20 y{}", posY), "松开停止：勾选后，松开触键时立刻停止触发配置")
+    posY += 30
+    MyGui.Add("Text", Format("x20 y{}", posY), "触发键规则：填写想要触发配置的按键或组合键，增加前缀~符号，触发时，触发键原有功能不会被屏蔽")
+    posY += 20
+    MyGui.Add("Text", Format("x20 y{}", posY), "组合触发键：ctrl,alt,shift,win等修饰键需要用特殊符号^!+#代替，其他按键参考软件链接")
+    posY += 20
+    MyGui.Add("Text", Format("x20 y{}", posY), "案例：shift+P要填写成+P,alt+R要填写成!R等等")
+    posY += 30
+    MyGui.Add("Text", Format("x20 y{}", posY),
+    "辅助键配置规则：按键名_持续时间[_按键次数_连续按键间隔],间隔时间,按键名_持续时间[_按键次数_连续按键间隔],间隔时间.....([]为可选参数)")
+    posY += 20
+    MyGui.Add("Text", Format("x20 y{}", posY),
+    "鼠标移动配置规则：MouseMove_X_Y[_Speed_R](X,Y为鼠标移动坐标,Speed为鼠标移动速度0~100,0为瞬移,R为是否相对位移)")
+    posY += 20
+    MyGui.Add("Text", Format("x20 y{}", posY), "案例:MouseMove_100_-100_10(鼠标速度10移动到坐标100,-100)")
+    posY += 20
+    MyGui.Add("Text", Format("x20 y{}", posY), "案例:MouseMove_50_-50_20_R(鼠标速度20移动到相对当前坐标50,-50)")
+    posY += 30
+    MyGui.Add("Text", Format("x20 y{}", posY), "图片搜索规则:ImageSearch_ImagePath[_X_Y_W_H](dosomething)(ImagePath为图片路径,X,Y为搜索区域左上角坐标,W,H为搜索区域右下角坐标)")
+    posY += 20
+    MyGui.Add("Text", Format("x20 y{}", posY), "案例:ImageSearch_ImagePath_300_300_500_500(lbutton_30_2_50)。从(300,300)到(500,500)搜索图片,找到后执行lbutton_30_2_50指令")
+
+
+    posY += 20
+
+    tableItem := TableInfo[index]
+    tableItem.UnderPosY := posY
 }
 
-RefreshOperBtnPos() {
-    maxY := MaxUnderPosY()
-    OperBtnPosY := maxY + 10
-    BtnAdd.Move(100, OperBtnPosY)
-    BtnRemove.Move(300, OperBtnPosY)
-    BtnSave.Move(500, OperBtnPosY)
+AddToolUI(index) {
+    global ToolCheckInfo
+
+    posY := TabPosY
+    ; 配置规则说明
+    posY += 30
+    MyGui.Add("Text", Format("x20 y{}", posY), "鼠标下窗口信息：")
+
+    MyGui.Add("Text", Format("x250 y{}", posY), "持续检测:")
+    ToolCheckInfo.ToolCheckCtrl := MyGui.Add("CheckBox", Format("x320 y{}", posY))
+    ToolCheckInfo.ToolCheckCtrl.Value := ToolCheckInfo.IsToolCheck
+    ToolCheckInfo.ToolCheckCtrl.OnEvent("Click", OnToolCheckHotkey)
+    MyGui.Add("Text", Format("x370 y{}", posY), "快捷键:")
+    ToolCheckInfo.ToolCheckHotKeyCtrl := MyGui.Add("HotKey", Format("x425 y{} center", posY - 5), ToolCheckInfo.ToolCheckHotkey
+    )
+
+    posY += 30
+    MyGui.Add("Text", Format("x20 y{}", posY), "鼠标位置坐标：")
+    ToolCheckInfo.ToolMousePosCtrl := MyGui.Add("Edit", Format("x120 y{} w250", posY - 5), ToolCheckInfo.PosStr)
+
+    MyGui.Add("Text", Format("x390 y{}", posY), "进程名：")
+    ToolCheckInfo.ToolProcessNameCtrl := MyGui.Add("Edit", Format("x450 y{} w250", posY - 5), ToolCheckInfo.ProcessName
+    )
+
+    posY += 30
+    MyGui.Add("Text", Format("x20 y{}", posY), "进程标题：")
+    ToolCheckInfo.ToolProcessTileCtrl := MyGui.Add("Edit", Format("x120 y{} w250", posY - 5), ToolCheckInfo.ProcessTile
+    )
+
+    MyGui.Add("Text", Format("x390 y{}", posY), "进程PID：")
+    ToolCheckInfo.ToolProcessPidCtrl := MyGui.Add("Edit", Format("x450 y{} w250", posY - 5), ToolCheckInfo.ProcessPid)
+
+    posY += 30
+    MyGui.Add("Text", Format("x20 y{}", posY), "进程窗口类：")
+    ToolCheckInfo.ToolProcessClassCtrl := MyGui.Add("Edit", Format("x120 y{} w250", posY - 5), ToolCheckInfo.ProcessClass
+    )
+
+    posY += 20
+    TableInfo[index].underPosY := posY
 }
+
+SetToolCheckInfo(*)
+{
+    global ToolCheckInfo
+    CoordMode("Mouse", "Screen")
+    MouseGetPos &mouseX, &mouseY, &winId
+    ToolCheckInfo.PosStr := mouseX . "," . mouseY
+    ToolCheckInfo.ProcessName := WinGetProcessName(winId)
+    ToolCheckInfo.ProcessTile := WinGetTitle(winId)
+    ToolCheckInfo.ProcessPid := WinGetPID(winId)
+    ToolCheckInfo.ProcessClass := WinGetClass(winId)
+    RefreshToolUI()
+}
+
 ; 系统托盘优化
 CustomTrayMenu() {
     A_TrayMenu.Insert("&Suspend Hotkeys", "重置位置并显示窗口", ResetWinPosAndRefreshGui)
@@ -452,34 +455,4 @@ CustomTrayMenu() {
     A_TrayMenu.Delete("&Pause Script")
     A_TrayMenu.ClickCount := 1
     A_TrayMenu.Default := "显示窗口"
-}
-
-MenuReload(*) {
-    SaveWinPos()
-    Reload()
-}
-ResetWinPosAndRefreshGui(*) {
-    IniWrite(false, IniFile, IniSection, "IsSavedWinPos")
-    ScriptInfo.IsSavedWinPos := false
-    RefreshGui()
-}
-OnPauseHotkey(*) {
-    global ScriptInfo ; 访问全局变量
-    ScriptInfo.IsPause := !ScriptInfo.IsPause
-    ScriptInfo.PauseToggleCtrl.Value := ScriptInfo.IsPause
-    
-    Suspend(ScriptInfo.IsPause)
-}
-
-OnToolCheckHotkey(*) {
-    global ToolCheckInfo
-    ToolCheckInfo.IsToolCheck := !ToolCheckInfo.IsToolCheck
-    ToolCheckInfo.ToolCheckCtrl.Value := ToolCheckInfo.IsToolCheck
-    ToolCheckInfo.ResetTimer()
-}
-
-OnShowWinChanged(*) {
-    global ScriptInfo ; 访问全局变量
-    ScriptInfo.IsExecuteShow := !ScriptInfo.IsExecuteShow
-    IniWrite(ScriptInfo.IsExecuteShow, IniFile, IniSection, "IsExecuteShow")
 }

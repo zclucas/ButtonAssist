@@ -1,33 +1,62 @@
-InitTableItemState()
-{
-    Loop TabNameArr.Length
-    {
-        tableSymbol := GetTableSymbol(A_Index)
-        if (tableSymbol == "Normal" || tableSymbol == "Special")
-        {
-            tableItem := GetTableItem(A_Index) 
-            tableItem.LoosenState := []
-            tableItem.TimerArr := []
-            For index, value in tableItem.TKArr
-            {
-                if (tableItem.LoosenState.Length >= index){
-                    tableItem.LoosenState[index] := false
-                }
-                else{
-                    tableItem.LoosenState.Push(false)
-                }
-
-                if (tableItem.TimerArr.Length >= index){
-                    tableItem.TimerArr[index] := []
-                }
-                else{
-                    tableItem.TimerArr.Push([])
-                }
-            }
-        }
-    }
+; 功能函数
+GetRandom(floatTime){
+    max := Abs(Integer(floatTime))
+    min := -max
+    return Random(min, max)
 }
 
+GetProcessName()
+{
+    MouseGetPos &mouseX, &mouseY, &winId
+    name := WinGetProcessName(winId)
+    return name
+}
+
+GetImageSize(imageFile){
+    pToken := Gdip_Startup()
+    pBm := Gdip_CreateBitmapFromFile(imageFile)
+    width := Gdip_GetImageWidth(pBm)
+    height := Gdip_GetImageHeight(pBm)
+
+    Gdip_DisposeImage(pBm)
+    Gdip_Shutdown(pToken)
+    return [width, height]
+}
+
+SplitCommand(info){
+    resultArr := []
+    lastSymbolIndex := 0
+    leftBracket := 0
+
+    loop parse info{
+
+        if (A_LoopField == "("){
+            leftBracket += 1
+        }
+
+        if (A_LoopField == ")"){
+            leftBracket -= 1
+        }
+
+        if (A_LoopField == ","){
+            if (leftBracket == 0){
+                curCmd := SubStr(info, lastSymbolIndex + 1, A_Index - lastSymbolIndex - 1)
+                resultArr.Push(curCmd)
+                lastSymbolIndex := A_Index
+            }
+        }
+
+        if (A_Index == StrLen(info)){
+            curCmd := SubStr(info, lastSymbolIndex + 1, A_Index - lastSymbolIndex)
+            resultArr.Push(curCmd)
+        }
+
+    }
+    return resultArr
+}
+
+
+;资源读取
 OnReadSetting()
 {
     global ToolCheckInfo, ScriptInfo
@@ -83,7 +112,7 @@ ReadTableItemInfo(index)
             savedRemarkArrStr := defaultInfo[7]
     }
 
-    tableItem := GetTableItem(index)
+    tableItem := TableInfo[index]
     SetArr(savedTKArrStr, "," , tableItem.TKArr)
     SetArr(savedInfoArrStr, "|", tableItem.InfoArr)
     SetArr(savedModeArrStr, ",", tableItem.ModeArr)
@@ -93,20 +122,71 @@ ReadTableItemInfo(index)
     SetArr(savedRemarkArrStr, "|", tableItem.RemarkArr)
 }
 
-SaveWinPos()
+SetArr(str, symbol, Arr)
 {
-    global ScriptInfo, TabCtrl
-    MyGui.GetPos(&posX, &posY)
-    ScriptInfo.WinPosX := posX
-    ScriptInfo.WinPosy := posY
-    ScriptInfo.IsSavedWinPos := true
-    ScriptInfo.TableIndex := TabCtrl.Value
-    IniWrite(ScriptInfo.WinPosX, IniFile, IniSection, "WinPosX")
-    IniWrite(ScriptInfo.WinPosY, IniFile, IniSection, "WinPosY")
-    IniWrite(true, IniFile, IniSection, "IsSavedWinPos")
-    IniWrite(TabCtrl.Value, IniFile, IniSection, "TableIndex")
+    For index, value in StrSplit(str, symbol)
+    {
+        if (Arr.Length < index)
+        {
+            Arr.Push(value)
+        }
+        else
+        {
+            Arr[index] = value
+        }
+    }
 }
 
+GetTableItemDefaultInfo(index)
+{
+    savedTKArrStr := ""
+    savedInfoArrStr := ""
+    savedModeArrStr := ""
+    savedForbidArrStr := ""
+    savedProcessNameStr := ""
+    savedLoosenStopArrStr := ""
+    savedRemarkArrStr := ""
+    symbol := GetTableSymbol(index)
+    if (symbol == "Special"){
+        savedTKArrStr := "m,+m,h,y,i"
+        savedInfoArrStr := "lbutton_200,50,MouseMove_100_100_10|lbutton_200,50,MouseMove_100_-100_10_R|lbutton_30_2_50|left_30_2_50|ImageSearch_Test.png(lbutton_30_2_50)"
+        savedModeArrStr := "0,0,1,1,0"
+        savedForbidArrStr := "1,1,1,1,1"
+        savedProcessNameStr := ",,,,,"
+        savedLoosenStopArrStr := "0,0,0,0,0"
+        savedRemarkArrStr := "鼠标双击移动_绝对|鼠标移动窗口_相对|鼠标左键双击|左移两位|找到图片双击查看"
+    }
+    else if (symbol == "Normal")
+    {
+        savedTKArrStr := "k,shift,+k,^k,XButton1"
+        savedInfoArrStr := "a_30_30_50,3000|b_30_2_50|c_30_5_50,250,left_30_2_50,100,d_30_2_50|ctrl_100,0,a_100|t_30,50,h_30,50,i_30,50,s_30,50,space_30,50,i_30,50,s_30,50,space_30,50,c_30,50,j_30"
+        savedModeArrStr := "0,0,0,0,0"
+        savedForbidArrStr := "1,1,1,1,1"
+        savedProcessNameStr := ",,,,"
+        savedLoosenStopArrStr := "1,0,0,0,0"
+        savedRemarkArrStr := "演示配置|演示配置|演示配置|解决按住Ctrl导致宏无效|鼠标侧键宏"
+      
+    }
+    else if (symbol == "Replace")
+    {
+        savedTKArrStr := "l,o,p"
+        savedInfoArrStr := "left|b,c|"
+        savedModeArrStr := "0,0,0"
+        savedForbidArrStr := "1,1,1"
+        savedProcessNameStr := ",,"
+    }
+    else if(symbol == "Soft")
+    {
+        savedTKArrStr := "!d"
+        savedInfoArrStr := "Notepad.exe"
+        savedModeArrStr := "0"
+        savedForbidArrStr := "0"
+        savedProcessNameStr := ""
+    }
+    return [savedTKArrStr, savedInfoArrStr, savedModeArrStr, savedForbidArrStr, savedProcessNameStr, savedLoosenStopArrStr, savedRemarkArrStr]
+}
+
+;资源保存
 OnSaveSetting(*)
 {
     global ScriptInfo, TabCtrl
@@ -143,116 +223,6 @@ SaveTableItemInfo(index)
     IniWrite(SavedInfo[7], IniFile, IniSection, symbol "RemarkArr")
 }
 
-CreateTableItemArr(num)
-{
-    Arr := []
-    Loop num
-    {
-        if (Arr.Length < A_Index)
-        {
-            Arr.Push(TableItem())
-        }
-        else
-        {
-            Arr[A_Index] := TableItem()
-        }
-    }
-    return Arr
-}
-
-GetTableItem(index)
-{
-    global TableInfo
-
-    return TableInfo[index]
-}
-
-
-GetTableSymbol(index)
-{
-    return TabSymbolArr[index]
-}
-
-GetTableIndex(symbol)
-{
-    Loop TabSymbolArr.Length
-    {
-        if (TabSymbolArr[A_Index] == symbol)
-        {
-            return A_Index
-        }
-    }
-}
-
-GetTableName(index)
-{
-    return TabNameArr[index]
-}
-
-CheckIsSpecialTable(index){
-    symbol := GetTableSymbol(index)
-    if (symbol == "Special")
-        return true
-    return false
-}
-
-CheckIsSpecialOrNormalTable(index){
-    symbol := GetTableSymbol(index)
-    if (symbol == "Normal")
-        return true
-    if (symbol == "Special")
-        return true
-    return false
-}
-
-UpdateUnderPosY(tableIndex, value)
-{
-    table := GetTableItem(tableIndex)
-    table.UnderPosY += value
-}
-
-SetToolCheckInfo(*)
-{
-    global ToolCheckInfo
-    CoordMode("Mouse", "Screen")
-    MouseGetPos &mouseX, &mouseY, &winId
-    ToolCheckInfo.PosStr := mouseX . "," . mouseY
-    ToolCheckInfo.ProcessName := WinGetProcessName(winId)
-    ToolCheckInfo.ProcessTile := WinGetTitle(winId)
-    ToolCheckInfo.ProcessPid := WinGetPID(winId)
-    ToolCheckInfo.ProcessClass := WinGetClass(winId)
-    RefreshToolUI()
-}
-
-GetRandom(floatTime){
-    max := Abs(Integer(floatTime))
-    min := -max
-    return Random(min, max)
-}
-
-GetProcessName()
-{
-    MouseGetPos &mouseX, &mouseY, &winId
-    name := WinGetProcessName(winId)
-    return name
-}
-
-;自定义函数
-SetArr(str, symbol, Arr)
-{
-    For index, value in StrSplit(str, symbol)
-    {
-        if (Arr.Length < index)
-        {
-            Arr.Push(value)
-        }
-        else
-        {
-            Arr[index] = value
-        }
-    }
-}
-
 GetSavedTableItemInfo(index)
 {
     Saved := MyGui.Submit()
@@ -263,7 +233,7 @@ GetSavedTableItemInfo(index)
     ProcessNameArrStr := ""
     LoosenStopArrStr := ""
     RemarkArrStr := ""
-    tableItem := GetTableItem(index)
+    tableItem := TableInfo[index]
     symbol := GetTableSymbol(index)
 
     loop tableItem.ModeArr.Length
@@ -322,95 +292,101 @@ GetSavedTableItemInfo(index)
     return [TKArrStr, InfoArrStr, ModeArrStr, ForbidArrStr, ProcessNameArrStr, LoosenStopArrStr, RemarkArrStr]
 }
 
-GetTableItemDefaultInfo(index)
+SaveWinPos()
 {
-    savedTKArrStr := ""
-    savedInfoArrStr := ""
-    savedModeArrStr := ""
-    savedForbidArrStr := ""
-    savedProcessNameStr := ""
-    savedLoosenStopArrStr := ""
-    savedRemarkArrStr := ""
-    symbol := GetTableSymbol(index)
-    if (symbol == "Special"){
-        savedTKArrStr := "m,+m,h,y,i"
-        savedInfoArrStr := "lbutton_200,50,MouseMove_100_100_10|lbutton_200,50,MouseMove_100_-100_10_R|lbutton_30_2_50|left_30_2_50|ImageSearch_Test.png(lbutton_30_2_50)"
-        savedModeArrStr := "0,0,1,1,0"
-        savedForbidArrStr := "1,1,1,1,1"
-        savedProcessNameStr := ",,,,,"
-        savedLoosenStopArrStr := "0,0,0,0,0"
-        savedRemarkArrStr := "鼠标双击移动_绝对|鼠标移动窗口_相对|鼠标左键双击|左移两位|找到图片双击查看"
-    }
-    else if (symbol == "Normal")
-    {
-        savedTKArrStr := "k,shift,+k,^k,XButton1"
-        savedInfoArrStr := "a_30_30_50,3000|b_30_2_50|c_30_5_50,250,left_30_2_50,100,d_30_2_50|ctrl_100,0,a_100|t_30,50,h_30,50,i_30,50,s_30,50,space_30,50,i_30,50,s_30,50,space_30,50,c_30,50,j_30"
-        savedModeArrStr := "0,0,0,0,0"
-        savedForbidArrStr := "1,1,1,1,1"
-        savedProcessNameStr := ",,,,"
-        savedLoosenStopArrStr := "1,0,0,0,0"
-        savedRemarkArrStr := "演示配置|演示配置|演示配置|解决按住Ctrl导致宏无效|鼠标侧键宏"
-      
-    }
-    else if (symbol == "Replace")
-    {
-        savedTKArrStr := "l,o,p"
-        savedInfoArrStr := "left|b,c|"
-        savedModeArrStr := "0,0,0"
-        savedForbidArrStr := "1,1,1"
-        savedProcessNameStr := ",,"
-    }
-    else if(symbol == "Soft")
-    {
-        savedTKArrStr := "!d"
-        savedInfoArrStr := "Notepad.exe"
-        savedModeArrStr := "0"
-        savedForbidArrStr := "0"
-        savedProcessNameStr := ""
-    }
-    return [savedTKArrStr, savedInfoArrStr, savedModeArrStr, savedForbidArrStr, savedProcessNameStr, savedLoosenStopArrStr, savedRemarkArrStr]
+    global ScriptInfo, TabCtrl
+    MyGui.GetPos(&posX, &posY)
+    ScriptInfo.WinPosX := posX
+    ScriptInfo.WinPosy := posY
+    ScriptInfo.IsSavedWinPos := true
+    ScriptInfo.TableIndex := TabCtrl.Value
+    IniWrite(ScriptInfo.WinPosX, IniFile, IniSection, "WinPosX")
+    IniWrite(ScriptInfo.WinPosY, IniFile, IniSection, "WinPosY")
+    IniWrite(true, IniFile, IniSection, "IsSavedWinPos")
+    IniWrite(TabCtrl.Value, IniFile, IniSection, "TableIndex")
 }
 
-GetImageSize(imageFile){
-    pToken := Gdip_Startup()
-    pBm := Gdip_CreateBitmapFromFile(imageFile)
-    width := Gdip_GetImageWidth(pBm)
-    height := Gdip_GetImageHeight(pBm)
-
-    Gdip_DisposeImage(pBm)
-    Gdip_Shutdown(pToken)
-    return [width, height]
+;Table信息相关
+CreateTableItemArr()
+{
+    Arr := []
+    Loop TabNameArr.Length
+    {
+        if (Arr.Length < A_Index)
+        {
+            Arr.Push(TableItem())
+        }
+        else
+        {
+            Arr[A_Index] := TableItem()
+        }
+    }
+    return Arr
 }
 
+InitTableItemState()
+{
+    Loop TabNameArr.Length
+    {
+        tableSymbol := GetTableSymbol(A_Index)
+        if (tableSymbol == "Normal" || tableSymbol == "Special")
+        {
+            tableItem := TableInfo[A_Index]
+            tableItem.LoosenState := []
+            tableItem.TimerDoubleArr := []
+            For index, value in tableItem.ModeArr
+            {
+                if (tableItem.LoosenState.Length >= index){
+                    tableItem.LoosenState[index] := false
+                }
+                else{
+                    tableItem.LoosenState.Push(false)
+                }
 
-SplitCommand(info){
-    resultArr := []
-    lastSymbolIndex := 0
-    leftBracket := 0
-
-    loop parse info{
-
-        if (A_LoopField == "("){
-            leftBracket += 1
-        }
-
-        if (A_LoopField == ")"){
-            leftBracket -= 1
-        }
-
-        if (A_LoopField == ","){
-            if (leftBracket == 0){
-                curCmd := SubStr(info, lastSymbolIndex + 1, A_Index - lastSymbolIndex - 1)
-                resultArr.Push(curCmd)
-                lastSymbolIndex := A_Index
+                if (tableItem.TimerDoubleArr.Length >= index){
+                    tableItem.TimerDoubleArr[index] := []
+                }
+                else{
+                    tableItem.TimerDoubleArr.Push([])
+                }
             }
         }
-
-        if (A_Index == StrLen(info)){
-            curCmd := SubStr(info, lastSymbolIndex + 1, A_Index - lastSymbolIndex)
-            resultArr.Push(curCmd)
-        }
-
     }
-    return resultArr
+}
+
+MaxUnderPosY() {
+    maxY := 0
+    loop TabNameArr.Length {
+        posY := TableInfo[A_Index].UnderPosY
+        if (posY > maxY)
+            maxY := posY
+    }
+    return maxY
+}
+
+UpdateUnderPosY(tableIndex, value)
+{
+    table := TableInfo[tableIndex]
+    table.UnderPosY += value
+}
+
+GetTableSymbol(index)
+{
+    return TabSymbolArr[index]
+}
+ 
+CheckIsSpecialTable(index){
+    symbol := GetTableSymbol(index)
+    if (symbol == "Special")
+        return true
+    return false
+}
+
+CheckIsSpecialOrNormalTable(index){
+    symbol := GetTableSymbol(index)
+    if (symbol == "Normal")
+        return true
+    if (symbol == "Special")
+        return true
+    return false
 }

@@ -20,7 +20,7 @@ Class TableItem
         this.UnderPosY := 0
 
         this.LoosenState := []
-        this.TimerArr := []
+        this.TimerDoubleArr := []
     }
 }
 

@@ -1,11 +1,13 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
+#Include Joy\SuperCvJoyInterface.ahk
 #Include Gdip_All.ahk
-#Include TimerUtil.ahk
-#Include AssetUtil.ahk
-#Include UIUtil.ahk
-#Include HotkeyUtil.ahk
+
 #Include DataClass.ahk
+#Include AssetUtil.ahk
+#Include TimerUtil.ahk
+#Include HotkeyUtil.ahk
+#Include UIUtil.ahk
 
 IniFile := "settings.ini"
 IniSection := "UserSettings"
@@ -22,14 +24,15 @@ global TabSymbolArr := ["Special", "Normal", "Replace", "Soft", "Rule", "Tool"]
 global TabCtrl
 
 global ScriptInfo := ScriptSettingInfo()
-global TableInfo := CreateTableItemArr(TabNameArr.Length)
 global ToolCheckInfo := ToolCheck()
+global MyStick := SuperCvJoyInterface().Devices[1]
+global TableInfo := CreateTableItemArr()
 
 OnReadSetting()
 InitTableItemState()
 AddUI()
 CustomTrayMenu()
-BindHotKey()
+BindTabHotKey()
 BindPauseHotkey()
 BindToolCheckHotkey()
 ToolCheckInfo.ResetTimer()
