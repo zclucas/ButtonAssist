@@ -242,6 +242,7 @@ ResetWinPosAndRefreshGui(*) {
     ScriptInfo.IsSavedWinPos := false
     RefreshGui()
 }
+
 OnPauseHotkey(*) {
     global ScriptInfo ; 访问全局变量
     ScriptInfo.IsPause := !ScriptInfo.IsPause
