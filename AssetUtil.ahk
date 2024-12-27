@@ -55,27 +55,43 @@ SplitCommand(info){
     return resultArr
 }
 
+;初始化数据
+InitData(){
+    InitTableItemState()
+
+    SetGuiBtnAction()
+}
+
+SetGuiBtnAction(){
+    MyTriggerKeyGui.saveCallback := OnSaveSetting
+    MyTriggerStrGui.saveCallback := OnSaveSetting
+}
+
+SetSoftData(){
+
+}
 
 ;资源读取
-OnReadSetting()
+LoadSetting()
 {
-    global ToolCheckInfo, ScriptInfo
-    ScriptInfo.HasSaved := IniRead(IniFile, IniSection, "HasSaved", false)
-    ScriptInfo.NormalPeriod := IniRead(IniFile, IniSection, "NormalPeriod", 50)
-    ScriptInfo.HoldFloat := IniRead(IniFile, IniSection, "HoldFloat", 5)
-    ScriptInfo.ClickFloat := IniRead(IniFile, IniSection, "ClickFloat", 5)
-    ScriptInfo.IntervalFloat := IniRead(IniFile, IniSection, "IntervalFloat", 5)
-    ScriptInfo.ImageSearchBlur := IniRead(IniFile, IniSection, "ImageSearchBlur", 100)
-    ScriptInfo.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
-    ScriptInfo.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!p")
+    global ToolCheckInfo, MySoftData
+    MySoftData.HasSaved := IniRead(IniFile, IniSection, "HasSaved", false)
+    MySoftData.NormalPeriod := IniRead(IniFile, IniSection, "NormalPeriod", 50)
+    MySoftData.HoldFloat := IniRead(IniFile, IniSection, "HoldFloat", 5)
+    MySoftData.ClickFloat := IniRead(IniFile, IniSection, "ClickFloat", 5)
+    MySoftData.IntervalFloat := IniRead(IniFile, IniSection, "IntervalFloat", 5)
+    MySoftData.ImageSearchBlur := IniRead(IniFile, IniSection, "ImageSearchBlur", 100)
+    MySoftData.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
+    MySoftData.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!p")
     ToolCheckInfo.IsToolCheck := IniRead(IniFile, IniSection, "IsToolCheck", false)
     ToolCheckInfo.ToolCheckHotKey := IniRead(IniFile, IniSection, "ToolCheckHotKey", "!q")
-    ScriptInfo.IsExecuteShow := IniRead(IniFile, IniSection, "IsExecuteShow", true)
-    ScriptInfo.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
-    ScriptInfo.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
-    ScriptInfo.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
-    ScriptInfo.TableIndex := IniRead(IniFile, IniSection, "TableIndex", 1)
-    Loop TabNameArr.Length
+    MySoftData.IsExecuteShow := IniRead(IniFile, IniSection, "IsExecuteShow", true)
+    MySoftData.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
+    MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
+    MySoftData.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
+    MySoftData.TableIndex := IniRead(IniFile, IniSection, "TableIndex", 1)
+    MySoftData.TableInfo := CreateTableItemArr()
+    Loop MySoftData.TabNameArr.Length
     {
         ReadTableItemInfo(A_Index)
     }
@@ -83,7 +99,7 @@ OnReadSetting()
 
 ReadTableItemInfo(index)
 {
-    global ScriptInfo
+    global MySoftData
     symbol := GetTableSymbol(index)
     defaultInfo := GetTableItemDefaultInfo(index)
     savedTKArrStr := IniRead(IniFile, IniSection, symbol "TKArr", "")
@@ -94,7 +110,7 @@ ReadTableItemInfo(index)
     savedLoosenStopArrStr := IniRead(IniFile, IniSection, symbol "LoosenStopArr", "")
     savedRemarkArrStr := IniRead(IniFile, IniSection, symbol "RemarkArr", "")
 
-    if (!ScriptInfo.HasSaved)
+    if (!MySoftData.HasSaved)
     {
         if (savedTKArrStr == "")
             savedTKArrStr := defaultInfo[1]
@@ -112,7 +128,7 @@ ReadTableItemInfo(index)
             savedRemarkArrStr := defaultInfo[7]
     }
 
-    tableItem := TableInfo[index]
+    tableItem := MySoftData.TableInfo[index]
     SetArr(savedTKArrStr, "," , tableItem.TKArr)
     SetArr(savedInfoArrStr, "|", tableItem.InfoArr)
     SetArr(savedModeArrStr, ",", tableItem.ModeArr)
@@ -147,16 +163,8 @@ GetTableItemDefaultInfo(index)
     savedLoosenStopArrStr := ""
     savedRemarkArrStr := ""
     symbol := GetTableSymbol(index)
-    if (symbol == "Special"){
-        savedTKArrStr := "m,+m,h,y,i"
-        savedInfoArrStr := "lbutton_200,50,MouseMove_100_100_10|lbutton_200,50,MouseMove_100_-100_10_R|lbutton_30_2_50|left_30_2_50|ImageSearch_Test.png(lbutton_30_2_50)"
-        savedModeArrStr := "0,0,1,1,0"
-        savedForbidArrStr := "1,1,1,1,1"
-        savedProcessNameStr := ",,,,,"
-        savedLoosenStopArrStr := "0,0,0,0,0"
-        savedRemarkArrStr := "鼠标双击移动_绝对|鼠标移动窗口_相对|鼠标左键双击|左移两位|找到图片双击查看"
-    }
-    else if (symbol == "Normal")
+
+    if (symbol == "Normal")
     {
         savedTKArrStr := "k,shift,+k,^k,XButton1"
         savedInfoArrStr := "a_30_30_50,3000|b_30_2_50|c_30_5_50,250,left_30_2_50,100,d_30_2_50|ctrl_100,0,a_100|t_30,50,h_30,50,i_30,50,s_30,50,space_30,50,i_30,50,s_30,50,space_30,50,c_30,50,j_30"
@@ -166,6 +174,24 @@ GetTableItemDefaultInfo(index)
         savedLoosenStopArrStr := "1,0,0,0,0"
         savedRemarkArrStr := "演示配置|演示配置|演示配置|解决按住Ctrl导致宏无效|鼠标侧键宏"
       
+    }
+    else if (symbol == "Normal2"){
+        savedTKArrStr := "m,+m,h,y,i"
+        savedInfoArrStr := "lbutton_200,50,MouseMove_100_100_10|lbutton_200,50,MouseMove_100_-100_10_R|lbutton_30_2_50|left_30_2_50|ImageSearch_Test.png(lbutton_30_2_50)"
+        savedModeArrStr := "0,0,1,1,0"
+        savedForbidArrStr := "1,1,1,1,1"
+        savedProcessNameStr := ",,,,,"
+        savedLoosenStopArrStr := "0,0,0,0,0"
+        savedRemarkArrStr := "鼠标双击移动_绝对|鼠标移动窗口_相对|鼠标左键双击|左移两位|找到图片双击查看"
+    }
+    else if (symbol == "String"){
+        savedTKArrStr := ":?*:AA"
+        savedInfoArrStr := "lbutton_200,50,MouseMove_100_100_10"
+        savedModeArrStr := "0"
+        savedForbidArrStr := "1"
+        savedProcessNameStr := ","
+        savedLoosenStopArrStr := "0"
+        savedRemarkArrStr := "按两次a触发"
     }
     else if (symbol == "Replace")
     {
@@ -189,22 +215,22 @@ GetTableItemDefaultInfo(index)
 ;资源保存
 OnSaveSetting(*)
 {
-    global ScriptInfo, TabCtrl
-    Loop TabNameArr.Length
+    global MySoftData
+    Loop MySoftData.TabNameArr.Length
     {
         SaveTableItemInfo(A_Index)
     }
 
-    IniWrite(ScriptInfo.HoldFloatCtrl.Value, IniFile, IniSection, "HoldFloat")
-    IniWrite(ScriptInfo.ClickFloatCtrl.Value, IniFile, IniSection, "ClickFloat")
-    IniWrite(ScriptInfo.IntervalFloatCtrl.Value, IniFile, IniSection, "IntervalFloat")
-    IniWrite(ScriptInfo.ImageSearchBlurCtrl.Value, IniFile, IniSection, "ImageSearchBlur")
-    IniWrite(ScriptInfo.PauseHotkeyCtrl.Value, IniFile, IniSection, "PauseHotkey")
+    IniWrite(MySoftData.HoldFloatCtrl.Value, IniFile, IniSection, "HoldFloat")
+    IniWrite(MySoftData.ClickFloatCtrl.Value, IniFile, IniSection, "ClickFloat")
+    IniWrite(MySoftData.IntervalFloatCtrl.Value, IniFile, IniSection, "IntervalFloat")
+    IniWrite(MySoftData.ImageSearchBlurCtrl.Value, IniFile, IniSection, "ImageSearchBlur")
+    IniWrite(MySoftData.PauseHotkeyCtrl.Value, IniFile, IniSection, "PauseHotkey")
     IniWrite(true, IniFile, IniSection, "LastSaved")
-    IniWrite(ScriptInfo.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
+    IniWrite(MySoftData.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
     IniWrite(ToolCheckInfo.IsToolCheck, IniFile, IniSection, "IsToolCheck")
     IniWrite(ToolCheckInfo.ToolCheckHotKey, IniFile, IniSection, "ToolCheckHotKey")
-    IniWrite(TabCtrl.Value, IniFile, IniSection, "TableIndex")
+    IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
     IniWrite(true, IniFile, IniSection, "HasSaved")
     SaveWinPos()
     Reload()
@@ -225,7 +251,7 @@ SaveTableItemInfo(index)
 
 GetSavedTableItemInfo(index)
 {
-    Saved := MyGui.Submit()
+    Saved := MySoftData.MyGui.Submit()
     TKArrStr := ""
     InfoArrStr := ""
     ModeArrStr := ""
@@ -233,7 +259,7 @@ GetSavedTableItemInfo(index)
     ProcessNameArrStr := ""
     LoosenStopArrStr := ""
     RemarkArrStr := ""
-    tableItem := TableInfo[index]
+    tableItem := MySoftData.TableInfo[index]
     symbol := GetTableSymbol(index)
 
     loop tableItem.ModeArr.Length
@@ -294,23 +320,23 @@ GetSavedTableItemInfo(index)
 
 SaveWinPos()
 {
-    global ScriptInfo, TabCtrl
-    MyGui.GetPos(&posX, &posY)
-    ScriptInfo.WinPosX := posX
-    ScriptInfo.WinPosy := posY
-    ScriptInfo.IsSavedWinPos := true
-    ScriptInfo.TableIndex := TabCtrl.Value
-    IniWrite(ScriptInfo.WinPosX, IniFile, IniSection, "WinPosX")
-    IniWrite(ScriptInfo.WinPosY, IniFile, IniSection, "WinPosY")
+    global MySoftData
+    MySoftData.MyGui.GetPos(&posX, &posY)
+    MySoftData.WinPosX := posX
+    MySoftData.WinPosy := posY
+    MySoftData.IsSavedWinPos := true
+    MySoftData.TableIndex := MySoftData.TabCtrl.Value
+    IniWrite(MySoftData.WinPosX, IniFile, IniSection, "WinPosX")
+    IniWrite(MySoftData.WinPosY, IniFile, IniSection, "WinPosY")
     IniWrite(true, IniFile, IniSection, "IsSavedWinPos")
-    IniWrite(TabCtrl.Value, IniFile, IniSection, "TableIndex")
+    IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
 }
 
 ;Table信息相关
 CreateTableItemArr()
 {
     Arr := []
-    Loop TabNameArr.Length
+    Loop MySoftData.TabNameArr.Length
     {
         if (Arr.Length < A_Index)
         {
@@ -326,12 +352,12 @@ CreateTableItemArr()
 
 InitTableItemState()
 {
-    Loop TabNameArr.Length
+    Loop MySoftData.TabNameArr.Length
     {
         tableSymbol := GetTableSymbol(A_Index)
-        if (tableSymbol == "Normal" || tableSymbol == "Special")
+        if (tableSymbol == "Normal" || tableSymbol == "Normal2" || tableSymbol == "String")
         {
-            tableItem := TableInfo[A_Index]
+            tableItem := MySoftData.TableInfo[A_Index]
             tableItem.LoosenState := []
             tableItem.TimerDoubleArr := []
             For index, value in tableItem.ModeArr
@@ -356,8 +382,8 @@ InitTableItemState()
 
 MaxUnderPosY() {
     maxY := 0
-    loop TabNameArr.Length {
-        posY := TableInfo[A_Index].UnderPosY
+    loop MySoftData.TabNameArr.Length {
+        posY := MySoftData.TableInfo[A_Index].UnderPosY
         if (posY > maxY)
             maxY := posY
     }
@@ -366,27 +392,42 @@ MaxUnderPosY() {
 
 UpdateUnderPosY(tableIndex, value)
 {
-    table := TableInfo[tableIndex]
+    table := MySoftData.TableInfo[tableIndex]
     table.UnderPosY += value
 }
 
 GetTableSymbol(index)
 {
-    return TabSymbolArr[index]
+    return MySoftData.TabSymbolArr[index]
+} 
+
+GetTableLoosenStopVisible(tableIndex, index){
+    symbol := GetTableSymbol(tableIndex)
+    if (symbol != "Normal" && symbol != "Normal2")
+        return false
+
+    tableItem := MySoftData.TableInfo[tableIndex]
+    isJoyKey := SubStr(tableItem.TKArr[index], 1, 3) == "Joy"
+    if (isJoyKey)
+        return false
+
+    return true
 }
- 
-CheckIsSpecialTable(index){
+
+CheckIsMacroTable(index){
     symbol := GetTableSymbol(index)
-    if (symbol == "Special")
+    if (symbol == "Normal")
+        return true
+    if (symbol == "Normal2")
+        return true
+    if (symbol == "String")
         return true
     return false
 }
 
-CheckIsSpecialOrNormalTable(index){
+CheckIsStringMacroTable(index){
     symbol := GetTableSymbol(index)
-    if (symbol == "Normal")
-        return true
-    if (symbol == "Special")
+    if (symbol == "String")
         return true
     return false
 }

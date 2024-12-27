@@ -1,141 +1,5 @@
 #Requires AutoHotkey v2.0
 
-Class SuperCvJoyDevice {
-    IsOwned := 0
-
-    GetStatus(){
-        return this.Interface.GetVJDStatus(this.DeviceID)
-    }
-
-    ; Converts Status to human readable form
-    GetStatusName(){
-        DeviceStatus := this.GetStatus()
-        if (DeviceStatus = this.Interface.VJD_STAT_OWN) {
-            return "OWN"
-        } else if (DeviceStatus = this.Interface.VJD_STAT_FREE) {
-            return "FREE"
-        } else if (DeviceStatus = this.Interface.VJD_STAT_BUSY) {
-            return "BUSY"
-        } else if (DeviceStatus = this.Interface.VJD_STAT_MISS) {
-            return "MISS"
-        } else {
-            return "???"
-        }
-    }
-
-    ; Acquire the device
-    Acquire(){
-        if (this.IsOwned){
-            return 1
-        }
-        if (this.Interface.SingleStickMode){
-            Loop this.Interface.Devices.Length {
-                if (A_Index == this.DeviceID){
-                    Continue
-                }
-                if (this.Interface.Devices[A_Index].IsOwned){
-                    this.Interface.Devices[A_Index].Relinquish()
-                    break
-                }
-            }
-        }
-        ret := this.Interface.AcquireVJD(this.DeviceID)
-        if (ret && this.Interface.ResetOnAcquire){
-            ; Reset the Device so it centers
-            this.Interface.ResetVJD(this.DeviceID)
-        } else {
-            if (this.Interface.DebugMode) {
-                OutputDebug("Error in " A_ThisFunc "`nDeviceID = " this.DeviceID ", ErrorLevel: " 1 ", Device Status: " this.GetStatusName())
-            }
-        }
-        return ret
-    }
-
-    ; Relinquish the device, resetting it if Owned
-    Relinquish(){
-        if (this.IsOwned && this.Interface.ResetOnRelinquish){
-            this.Interface.ResetVJD(this.DeviceID)
-        }
-        return this.Interface.RelinquishVJD(this.DeviceID)
-    }
-
-    Reset(){
-        this.Interface.ResetVJD(this.DeviceID)
-    }
-
-    ResetButtons(){
-        this.Interface.ResetButtons(this.DeviceID)
-    }
-
-    ResetPovs(){
-        this.Interface.ResetPovs(this.DeviceID)
-    }
-
-    ; Does the device exist or not?
-    IsEnabled(){
-        state := this.GetStatus()
-        return state != this.Interface.VJD_STAT_MISS && state != this.Interface.VJD_STAT_UNKN
-    }
-
-    ; Is it possible to take control of the device?
-    IsAvailable(){
-        state := this.GetStatus()
-        return state == this.Interface.VJD_STAT_FREE || state == this.Interface.VJD_STAT_OWN
-    }
-
-    ; Set Axis by Index number.
-    ; eg x = 1, y = 2, z = 3, rx = 4
-    SetAxisByIndex(axis_val, index){
-        if (!this.Acquire()){
-            return 0
-        }
-        return this.Interface.SetAxis(axis_val, this.DeviceID, this.Interface.AxisIndex[index])
-    }
-
-    ; Set Axis by Name
-    ; eg "x", "y", "z", "rx"
-    SetAxisByName(axis_val, name){
-        if (!this.Acquire()){
-            return 0
-        }
-        return this.Interface.SetAxis(axis_val, this.DeviceID, this.Interface.AxisAssoc[name])
-    }
-
-    SetBtn(btn_val, btn){
-        if (!this.Acquire()){
-            return 0
-        }
-        return this.Interface.SetBtn(btn_val, this.DeviceID, btn)
-    }
-
-    SetDiscPov(pov_val, pov){
-        if (!this.Acquire()){
-            return 0
-        }
-        return this.Interface.SetDiscPov(pov_val, this.DeviceID, pov)
-    }
-
-    SetContPov(pov_val, pov){
-        if (!this.Acquire()){
-            return 0
-        }
-        return this.Interface.SetContPov(pov_val, this.DeviceID, pov)
-    }
-
-    ; Constructor
-    __New(id, parent){
-        this.DeviceID := id
-        this.Interface := parent
-    }
-
-    ; Destructor
-    __Delete(){
-        this.Relinquish()
-    }
-}
-
-
-
 Class SuperCvJoyInterface {
 	DebugMode := 0
 	SingleStickMode := 1 	; If set to 1, helper classes will automatically relinquish existing vjoy device on attempting to acquire one not connected.
@@ -170,12 +34,148 @@ Class SuperCvJoyInterface {
 	AxisAssoc := {x:0x30, y:0x31, z:0x32, rx:0x33, ry:0x34, rz: 0x35, sl1:0x36, sl2:0x37} ; Name (eg "x", "y", "z", "sl1") to HID Descriptor
 	AxisNames := ["X","Y","Z","RX","RY","RZ","SL0","SL1"]
 
+	Class CvJoyDevice {
+		IsOwned := 0
+		JoyAxisMap := Map("JoyAxis1Min", 0, "JoyAxis1Max", 100, "JoyAxis2Min", 0, "JoyAxis2Max", 100, "JoyAxis3Min", 0, "JoyAxis3Max", 100, "JoyAxis4Min", 0, "JoyAxis4Max", 100)
+	
+		GetStatus(){
+			return this.Interface.GetVJDStatus(this.DeviceID)
+		}
+	
+		; Converts Status to human readable form
+		GetStatusName(){
+			DeviceStatus := this.GetStatus()
+			if (DeviceStatus = this.Interface.VJD_STAT_OWN) {
+				return "OWN"
+			} else if (DeviceStatus = this.Interface.VJD_STAT_FREE) {
+				return "FREE"
+			} else if (DeviceStatus = this.Interface.VJD_STAT_BUSY) {
+				return "BUSY"
+			} else if (DeviceStatus = this.Interface.VJD_STAT_MISS) {
+				return "MISS"
+			} else {
+				return "???"
+			}
+		}
+	
+		; Acquire the device
+		Acquire(){
+			if (this.IsOwned){
+				return 1
+			}
+			if (this.Interface.SingleStickMode){
+				Loop this.Interface.Devices.Length {
+					if (A_Index == this.DeviceID){
+						Continue
+					}
+					if (this.Interface.Devices[A_Index].IsOwned){
+						this.Interface.Devices[A_Index].Relinquish()
+						break
+					}
+				}
+			}
+			ret := this.Interface.AcquireVJD(this.DeviceID)
+			if (ret && this.Interface.ResetOnAcquire){
+				; Reset the Device so it centers
+				this.Interface.ResetVJD(this.DeviceID)
+			} else {
+				if (this.Interface.DebugMode) {
+					OutputDebug("Error in " A_ThisFunc "`nDeviceID = " this.DeviceID ", ErrorLevel: " 1 ", Device Status: " this.GetStatusName())
+				}
+			}
+			return ret
+		}
+	
+		; Relinquish the device, resetting it if Owned
+		Relinquish(){
+			if (this.IsOwned && this.Interface.ResetOnRelinquish){
+				this.Interface.ResetVJD(this.DeviceID)
+			}
+			return this.Interface.RelinquishVJD(this.DeviceID)
+		}
+	
+		Reset(){
+			this.Interface.ResetVJD(this.DeviceID)
+		}
+	
+		ResetButtons(){
+			this.Interface.ResetButtons(this.DeviceID)
+		}
+	
+		ResetPovs(){
+			this.Interface.ResetPovs(this.DeviceID)
+		}
+	
+		; Does the device exist or not?
+		IsEnabled(){
+			state := this.GetStatus()
+			return state != this.Interface.VJD_STAT_MISS && state != this.Interface.VJD_STAT_UNKN
+		}
+	
+		; Is it possible to take control of the device?
+		IsAvailable(){
+			state := this.GetStatus()
+			return state == this.Interface.VJD_STAT_FREE || state == this.Interface.VJD_STAT_OWN
+		}
+	
+		; Set Axis by Index number.
+		; eg x = 1, y = 2, z = 3, rx = 4
+		SetAxisByIndex(axis_val, index){
+			if (!this.Acquire()){
+				return 0
+			}
+			return this.Interface.SetAxis(axis_val, this.DeviceID, this.Interface.AxisIndex[index])
+		}
+	
+		; Set Axis by Name
+		; eg "x", "y", "z", "rx"
+		SetAxisByName(axis_val, name){
+			if (!this.Acquire()){
+				return 0
+			}
+			return this.Interface.SetAxis(axis_val, this.DeviceID, this.Interface.AxisAssoc[name])
+		}
+	
+		SetBtn(btn_val, btn){
+			if (!this.Acquire()){
+				return 0
+			}
+			return this.Interface.SetBtn(btn_val, this.DeviceID, btn)
+		}
+	
+		SetDiscPov(pov_val, pov){
+			if (!this.Acquire()){
+				return 0
+			}
+			return this.Interface.SetDiscPov(pov_val, this.DeviceID, pov)
+		}
+	
+		SetContPov(pov_val, pov){
+			if (!this.Acquire()){
+				return 0
+			}
+			return this.Interface.SetContPov(pov_val, this.DeviceID, pov)
+		}
+	
+		; Constructor
+		__New(id, parent){
+			this.DeviceID := id
+			this.Interface := parent
+		}
+	
+		; Destructor
+		__Delete(){
+			this.Relinquish()
+		}
+	}
+	
+
 	; ===== Constructors / Destructors
 	__New(){
 		; Build Device array
 		Loop this.VJD_MAXDEV {
 
-            device := SuperCvJoyDevice(A_Index, this)
+            device := SuperCvJoyInterface.CvJoyDevice(A_Index, this)
             if (this.Devices.Length < A_Index){
                 this.Devices.Push(device)
             }
@@ -198,6 +198,16 @@ Class SuperCvJoyInterface {
 		; Unload DLL
 		if (this.hModule){
 			DllCall("FreeLibrary", "Ptr", this.hModule)
+		}
+	}
+
+	GetMyvJoy(){
+		for index, value in this.Devices{
+			state := value.GetStatus()
+			if (state == this.VJD_STAT_MISS)
+				continue
+			
+			return value
 		}
 	}
 

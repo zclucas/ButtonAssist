@@ -11,6 +11,9 @@ Class TableItem
         this.RemarkArr := []
         this.TKConArr := []
         this.InfoConArr := []
+        this.KeyBtnConArr := []
+        this.MacroBtnConArr := []
+        this.ReplaceBtnConArr := []
         this.ModeConArr := []
         this.ForbidConArr := []
         this.ProcessNameConArr := []
@@ -48,14 +51,10 @@ Class ToolCheck
 
     ResetTimer()
     {
-        global ScriptInfo
+        global MySoftData
         if (this.IsToolCheck)
         {
-            action()
-            {
-                SetToolCheckInfo(1)
-            }
-            this.CheckTimer := Timer(action, 100)
+            this.CheckTimer := Timer(SetToolCheckInfo, 100)
             this.CheckTimer.On()
         }
         else
@@ -63,7 +62,7 @@ Class ToolCheck
     }
 }
 
-Class ScriptSettingInfo
+Class SoftData
 {
     __New()
     {
@@ -87,5 +86,18 @@ Class ScriptSettingInfo
         this.IsSavedWinPos := false
         this.TableIndex := 1
         this.HasSaved := false
+
+        this.MyGui := {}
+        this.TabPosY := 0
+        this.BtnAddCon := ""
+        this.BtnAddSave := ""
+        this.BtnRemove := ""
+
+        this.TabNameArr := ["按键宏", "按键宏2", "子串宏", "按键替换", "软件宏", "配置规则", "工具"]
+        this.TabSymbolArr := ["Normal", "Normal2", "String", "Replace", "Soft", "Rule", "Tool"]
+        this.TabCtrl := {}
+        this.TableInfo := []
+
+        this.MyStick := {}
     }
 }

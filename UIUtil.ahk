@@ -1,8 +1,14 @@
 ;窗口&UI刷新
-OnOpen() {
-    global ScriptInfo
+InitUI() {
+    AddUI()
+    CustomTrayMenu()
+    OnOpen()
+}
 
-    if (!ScriptInfo.ShowWinCtrl.Value && !ScriptInfo.IsLastSaved)
+OnOpen() {
+    global MySoftData
+
+    if (!MySoftData.ShowWinCtrl.Value && !MySoftData.IsLastSaved)
         return
 
     RefreshGui()
@@ -10,24 +16,25 @@ OnOpen() {
 }
 
 RefreshGui() {
-    global ScriptInfo
-    if (ScriptInfo.IsSavedWinPos)
-        MyGui.Show(Format("w920" "h{} x{} y{}", MaxUnderPosY() + 50, ScriptInfo.WinPosX, ScriptInfo.WinPosY))
+    global MySoftData
+    if (MySoftData.IsSavedWinPos)
+        MySoftData.MyGui.Show(Format("w1170" "h{} x{} y{}", MaxUnderPosY() + 50, MySoftData.WinPosX, MySoftData.WinPosY
+        ))
     else
-        MyGui.Show(Format("w920" "h{} center", MaxUnderPosY() + 50))
+        MySoftData.MyGui.Show(Format("w1170" "h{} center", MaxUnderPosY() + 50))
 }
 
 RefreshOperBtnPos() {
     maxY := MaxUnderPosY()
     OperBtnPosY := maxY + 10
-    BtnAdd.Move(100, OperBtnPosY)
-    BtnRemove.Move(300, OperBtnPosY)
-    BtnSave.Move(500, OperBtnPosY)
+    MySoftData.BtnAdd.Move(100, OperBtnPosY)
+    MySoftData.BtnRemove.Move(400, OperBtnPosY)
+    MySoftData.BtnSave.Move(700, OperBtnPosY)
 }
 
 RefreshToolUI() {
     global ToolCheckInfo
-    
+
     ToolCheckInfo.ToolMousePosCtrl.Value := ToolCheckInfo.PosStr
     ToolCheckInfo.ToolProcessNameCtrl.Value := ToolCheckInfo.ProcessName
     ToolCheckInfo.ToolProcessTileCtrl.Value := ToolCheckInfo.ProcessTile
@@ -37,11 +44,11 @@ RefreshToolUI() {
 
 ;UI元素相关函数
 AddUI() {
-    global MyGui, TabCtrl, TabPosY
-    global ScriptInfo
+    global MySoftData
     MyGui := Gui(, "Super的按键辅助器")
     MyGui.Opt("ToolWindow")
     MyGui.SetFont(, "Consolas")
+    MySoftData.MyGui := MyGui
 
     ; 参考链接
     LinkText := '<a href="https://wyagd001.github.io/v2/docs/KeyList.htm" id="notepad">按键名参考链接</a>'
@@ -49,71 +56,77 @@ AddUI() {
 
     ; 暂停模块
     MyGui.Add("Text", "x200 y5 w70", "暂停:")
-    ScriptInfo.PauseToggleCtrl := MyGui.Add("CheckBox", "x235 y5 w30", "")
-    ScriptInfo.PauseToggleCtrl.Value := ScriptInfo.IsPause
-    ScriptInfo.PauseToggleCtrl.OnEvent("Click", OnPauseHotkey)
+    MySoftData.PauseToggleCtrl := MyGui.Add("CheckBox", "x235 y5 w30", "")
+    MySoftData.PauseToggleCtrl.Value := MySoftData.IsPause
+    MySoftData.PauseToggleCtrl.OnEvent("Click", OnPauseHotkey)
     MyGui.Add("Text", "x270 y5 w70", "快捷键:")
-    ScriptInfo.PauseHotkeyCtrl := MyGui.Add("Hotkey", "x320 y2 Center", ScriptInfo.PauseHotkey)
+    MySoftData.PauseHotkeyCtrl := MyGui.Add("Hotkey", "x320 y2 Center", MySoftData.PauseHotkey)
 
     MyGui.Add("Text", "x550 y5 w150", "运行后显示窗口:")
-    ScriptInfo.ShowWinCtrl := MyGui.Add("CheckBox", "x650 y5 w30", "")
-    ScriptInfo.ShowWinCtrl.Value := ScriptInfo.IsExecuteShow
-    ScriptInfo.ShowWinCtrl.OnEvent("Click", OnShowWinChanged)
+    MySoftData.ShowWinCtrl := MyGui.Add("CheckBox", "x650 y5 w30", "")
+    MySoftData.ShowWinCtrl.Value := MySoftData.IsExecuteShow
+    MySoftData.ShowWinCtrl.OnEvent("Click", OnShowWinChanged)
 
     ReloadBtnCtrl := MyGui.Add("Button", "x720 y0 w100 center", "重载")
     ReloadBtnCtrl.OnEvent("Click", MenuReload)
 
-    TabPosY := 30
-    TabCtrl := MyGui.Add("Tab3", "x10 w900 y" TabPosY " Choose" ScriptInfo.TableIndex, TabNameArr)
+    MySoftData.TabPosY := 30
+    MySoftData.TabCtrl := MyGui.Add("Tab3", "x10 w1150 y" MySoftData.TabPosY " Choose" MySoftData.TableIndex,
+        MySoftData.TabNameArr)
 
-    loop TabNameArr.Length {
-        TabCtrl.UseTab(A_Index)
+    loop MySoftData.TabNameArr.Length {
+        MySoftData.TabCtrl.UseTab(A_Index)
         func := GetUIAddFunc(A_Index)
         func(A_Index)
     }
-    TabCtrl.UseTab()
+    MySoftData.TabCtrl.UseTab()
 
     AddOperBtnUI()
 }
 
 GetUIAddFunc(index) {
-    UIAddFuncArr := [AddSpecialHotkeyUI, AddNormalHotkeyUI, AddReplaceKeyUI, AddSoftUI, AddRuleUI, AddToolUI]
+    UIAddFuncArr := [AddNormalHotkeyUI, AddNormalHotkeyUI, AddStringHotkeyUI, AddReplaceKeyUI, AddSoftUI, AddRuleUI,
+        AddToolUI]
     return UIAddFuncArr[index]
 }
 
-;添加特殊按键宏UI
-AddSpecialHotkeyUI(index) {
-    global ScriptInfo
-    tableItem := TableInfo[index]
-    tableItem.underPosY := TabPosY
+;添加正常按键宏UI
+AddNormalHotkeyUI(index) {
+    global MySoftData
+    tableItem := MySoftData.TableInfo[index]
+    tableItem.underPosY := MySoftData.TabPosY
     ; 配置规则说明
     UpdateUnderPosY(index, 30)
 
-    MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
-    MyGui.Add("Text", Format("x160 y{} w490", tableItem.underPosY), "辅助键案例：ctrl_100,0,a_100(全选快捷键)")
-    MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "游戏")
-    MyGui.Add("Text", Format("x700 y{} w50", tableItem.underPosY), "禁止")
-    MyGui.Add("Text", Format("x740 y{} w100", tableItem.underPosY), "指定进程名")
-    MyGui.Add("Text", Format("x850 y{} w80", tableItem.underPosY), "松开停止")
+    MyGui := MySoftData.MyGui
+    MyGui.Add("Text", Format("x30 y{} w100", tableItem.underPosY), "宏触发按键")
+    MyGui.Add("Text", Format("x140 y{} w550", tableItem.underPosY), "宏指令     案例：ctrl_100,0,a_100(全选快捷键)")
+    MyGui.Add("Text", Format("x810 y{} w50", tableItem.underPosY), "编辑")
+    MyGui.Add("Text", Format("x860 y{} w50", tableItem.underPosY), "游戏")
+    MyGui.Add("Text", Format("x900 y{} w50", tableItem.underPosY), "禁止")
+    MyGui.Add("Text", Format("x940 y{} w100", tableItem.underPosY), "指定进程名")
+    MyGui.Add("Text", Format("x1050 y{} w80", tableItem.underPosY), "松开停止")
 
     UpdateUnderPosY(index, 20)
     LoadSavedSettingUI(index)
 }
 
 ;添加正常按键宏UI
-AddNormalHotkeyUI(index) {
-    global ScriptInfo
-    tableItem := TableInfo[index]
-    tableItem.underPosY := TabPosY
+AddStringHotkeyUI(index) {
+    global MySoftData
+    tableItem := MySoftData.TableInfo[index]
+    tableItem.underPosY := MySoftData.TabPosY
     ; 配置规则说明
     UpdateUnderPosY(index, 30)
 
-    MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
-    MyGui.Add("Text", Format("x100 y{} w550", tableItem.underPosY), "辅助键案例：ctrl_100,0,a_100(全选快捷键)")
-    MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "游戏")
-    MyGui.Add("Text", Format("x700 y{} w50", tableItem.underPosY), "禁止")
-    MyGui.Add("Text", Format("x740 y{} w100", tableItem.underPosY), "指定进程名")
-    MyGui.Add("Text", Format("x850 y{} w80", tableItem.underPosY), "松开停止")
+    MyGui := MySoftData.MyGui
+    MyGui.Add("Text", Format("x30 y{} w100", tableItem.underPosY), "宏触发子串")
+    MyGui.Add("Text", Format("x140 y{} w550", tableItem.underPosY), "宏指令     案例：ctrl_100,0,a_100(全选快捷键)")
+    MyGui.Add("Text", Format("x810 y{} w50", tableItem.underPosY), "编辑")
+    MyGui.Add("Text", Format("x860 y{} w50", tableItem.underPosY), "游戏")
+    MyGui.Add("Text", Format("x900 y{} w50", tableItem.underPosY), "禁止")
+    MyGui.Add("Text", Format("x940 y{} w100", tableItem.underPosY), "指定进程名")
+    MyGui.Add("Text", Format("x1050 y{} w80", tableItem.underPosY), "松开停止")
 
     UpdateUnderPosY(index, 20)
     LoadSavedSettingUI(index)
@@ -121,44 +134,51 @@ AddNormalHotkeyUI(index) {
 
 ;添加按键替换UI
 AddReplaceKeyUI(index) {
-    tableItem := TableInfo[index]
-    tableItem.UnderPosY := TabPosY
+    tableItem := MySoftData.TableInfo[index]
+    tableItem.UnderPosY := MySoftData.TabPosY
     ; 配置规则说明
     UpdateUnderPosY(index, 30)
-    MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
-    MyGui.Add("Text", Format("x100 y{} w550", tableItem.underPosY), "辅助键案例：w,d(按键替换为w和d)")
-    MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "游戏")
-    MyGui.Add("Text", Format("x700 y{} w50", tableItem.underPosY), "禁止")
-    MyGui.Add("Text", Format("x740 y{} w100", tableItem.underPosY), "指定进程名")
+    MyGui := MySoftData.MyGui
+    MyGui.Add("Text", Format("x30 y{} w100", tableItem.underPosY), "原按键")
+    MyGui.Add("Text", Format("x140 y{} w550", tableItem.underPosY), "替换后的按键     案例:w,d(将原本按键替换成w,d)")
+    MyGui.Add("Text", Format("x810 y{} w50", tableItem.underPosY), "编辑")
+    MyGui.Add("Text", Format("x860 y{} w50", tableItem.underPosY), "游戏")
+    MyGui.Add("Text", Format("x900 y{} w50", tableItem.underPosY), "禁止")
+    MyGui.Add("Text", Format("x940 y{} w100", tableItem.underPosY), "指定进程名")
 
     UpdateUnderPosY(index, 20)
     LoadSavedSettingUI(index)
 }
 
 AddSoftUI(index) {
-    tableItem := TableInfo[index]
-    tableItem.UnderPosY := TabPosY
+    tableItem := MySoftData.TableInfo[index]
+    tableItem.UnderPosY := MySoftData.TabPosY
     ; 配置规则说明
     UpdateUnderPosY(index, 30)
-    MyGui.Add("Text", Format("x30 y{} w70", tableItem.underPosY), "触发键")
-    MyGui.Add("Text", Format("x100 y{} w550", tableItem.underPosY), "辅助键信息案例：Notepad.exe(进程名)")
-    MyGui.Add("Text", Format("x660 y{} w50", tableItem.underPosY), "游戏")
-    MyGui.Add("Text", Format("x700 y{} w50", tableItem.underPosY), "禁止")
-    MyGui.Add("Text", Format("x740 y{} w100", tableItem.underPosY), "指定进程名")
+    MyGui := MySoftData.MyGui
+    MyGui.Add("Text", Format("x30 y{} w100", tableItem.underPosY), "触发键")
+    MyGui.Add("Text", Format("x140 y{} w550", tableItem.underPosY), "辅助键信息案例:Notepad.exe(进程名)")
+    MyGui.Add("Text", Format("x810 y{} w50", tableItem.underPosY), "编辑")
+    MyGui.Add("Text", Format("x860 y{} w50", tableItem.underPosY), "游戏")
+    MyGui.Add("Text", Format("x900 y{} w50", tableItem.underPosY), "禁止")
+    MyGui.Add("Text", Format("x940 y{} w100", tableItem.underPosY), "指定进程名")
 
     UpdateUnderPosY(index, 20)
     LoadSavedSettingUI(index)
 }
 
 LoadSavedSettingUI(index) {
-    tableItem := TableInfo[index]
-    isSpecialOrNormal := CheckIsSpecialOrNormalTable(index)
-    isSpecial := CheckIsSpecialTable(index)
+    tableItem := MySoftData.TableInfo[index]
+    isMacro := CheckIsMacroTable(index)
+    curIndex := 0
+    MyGui := MySoftData.MyGui
+    isTriggerStr := CheckIsStringMacroTable(index)
+    EditTriggerAction := isTriggerStr ? OnTableEditTriggerStr : OnTableEditTriggerKey
     loop tableItem.ModeArr.Length {
-        heightValue := isSpecialOrNormal ? 60 : 30
+        heightValue := isMacro ? 60 : 30
         posY := " y" tableItem.underPosY
-        TKPosY := isSpecialOrNormal ? " y" tableItem.underPosY + 10 : " y" tableItem.underPosY
-        InfoHeight := isSpecialOrNormal ? " h45" : " h20"
+        TKPosY := isMacro ? " y" tableItem.underPosY + 10 : " y" tableItem.underPosY
+        InfoHeight := isMacro ? " h45" : " h20"
 
         symbol := GetTableSymbol(index)
         TKNameValue := " v" symbol "TK" A_Index
@@ -169,39 +189,42 @@ LoadSavedSettingUI(index) {
         LoosenStopNameValue := " v" symbol "LoosenStop" A_Index
         RemarkNameValue := " v" symbol "Remark" A_Index
 
-        if (isSpecial) {
-            newTkControl := MyGui.Add("Hotkey", "x20 Center" TKNameValue TKPosY, "")
-            newInfoControl := MyGui.Add("Edit", "x160 w490" InfoHeight InfoNameValue posY, "")
-        }
-        else {
-            newTkControl := MyGui.Add("Edit", "x20 w70 Center" TKNameValue TKPosY, "")
-            newInfoControl := MyGui.Add("Edit", "x100 w550" InfoHeight InfoNameValue posY, "")
-        }
+        newTkControl := MyGui.Add("Edit", "x20 w100 Center" TKNameValue TKPosY, "")
+        newInfoControl := MyGui.Add("Edit", "x130 w650" InfoHeight InfoNameValue posY, "")
         newTkControl.Value := tableItem.TKArr.Length >= A_Index ? tableItem.TKArr[A_Index] : ""
         newInfoControl.Value := tableItem.InfoArr.Length >= A_Index ? tableItem.InfoArr[A_Index] : ""
 
-        newModeControl := MyGui.Add("Checkbox", Format("x670 w30 y{}", tableItem.underPosY + 5) ModeNameValue, "")
+        newKeyBtnControl := MyGui.Add("Button", Format("x790 w60 y{} h20", tableItem.underPosY), "触发键")
+        newKeyBtnControl.OnEvent("Click", GetTableClosureAction(EditTriggerAction, tableItem, A_Index))
+
+        newModeControl := MyGui.Add("Checkbox", Format("x870 w30 y{}", tableItem.underPosY + 5) ModeNameValue, "")
         newModeControl.value := tableItem.ModeArr[A_Index]
-        newForbidControl := MyGui.Add("Checkbox", Format("x705 w30 y{}", tableItem.underPosY + 5) ForbidNameValue, "")
+        newForbidControl := MyGui.Add("Checkbox", Format("x905 w30 y{}", tableItem.underPosY + 5) ForbidNameValue, "")
         newForbidControl.value := tableItem.ForbidArr[A_Index]
 
-        newProcessNameControl := MyGui.Add("Edit", Format("x740 w130 y{}", tableItem.underPosY) ProcessNameValue, "")
+        newProcessNameControl := MyGui.Add("Edit", Format("x940 w130 y{}", tableItem.underPosY) ProcessNameValue, "")
         if (tableItem.ProcessNameArr.Length >= A_Index) {
             value := tableItem.ProcessNameArr[A_Index]
             if (value != "")
                 newProcessNameControl.value := value
         }
 
-        if (isSpecialOrNormal) {
-            newLoosenStopControl := MyGui.Add("Checkbox", Format("x880 w30 y{}", tableItem.underPosY + 5) LoosenStopNameValue,
-            "")
-            newLoosenStopControl.value := tableItem.LoosenStopArr.Length >= A_Index ? tableItem.LoosenStopArr[A_Index] : 0
+        if (isMacro) {
+            newMacroBtnControl := MyGui.Add("Button", Format("x790 w60 y{} h20", tableItem.underPosY + 25), "宏指令")
 
-            newRemarkTextControl := MyGui.Add("Text", Format("x670 y{} w60", tableItem.underPosY + 30), "备注:")
-            newRemarkControl := MyGui.Add("Edit", Format("x720 y{} w180", tableItem.underPosY + 25) RemarkNameValue, ""
+            newLoosenStopControl := MyGui.Add("Checkbox", Format("x1080 w30 y{}", tableItem.underPosY + 5) LoosenStopNameValue,
+            "")
+            newLoosenStopControl.value := tableItem.LoosenStopArr.Length >= A_Index ? tableItem.LoosenStopArr[A_Index] :
+                0
+            loosenStopVisible := GetTableLoosenStopVisible(index, A_Index)
+            newLoosenStopControl.Visible := loosenStopVisible
+
+            newRemarkTextControl := MyGui.Add("Text", Format("x870 y{} w60", tableItem.underPosY + 30), "备注:")
+            newRemarkControl := MyGui.Add("Edit", Format("x920 y{} w180", tableItem.underPosY + 25) RemarkNameValue, ""
             )
             newRemarkControl.value := tableItem.RemarkArr.Length >= A_Index ? tableItem.RemarkArr[A_Index] : ""
 
+            tableItem.MacroBtnConArr.Push(newMacroBtnControl)
             tableItem.LoosenStopConArr.Push(newLoosenStopControl)
             tableItem.RemarkConArr.Push(newRemarkControl)
             tableItem.RemarkTextConArr.Push(newRemarkTextControl)
@@ -209,6 +232,7 @@ LoadSavedSettingUI(index) {
 
         tableItem.TKConArr.Push(newTkControl)
         tableItem.InfoConArr.Push(newInfoControl)
+        tableItem.KeyBtnConArr.Push(newKeyBtnControl)
         tableItem.ModeConArr.Push(newModeControl)
         tableItem.ForbidConArr.Push(newForbidControl)
         tableItem.ProcessNameConArr.Push(newProcessNameControl)
@@ -217,25 +241,26 @@ LoadSavedSettingUI(index) {
 }
 
 AddOperBtnUI() {
-    global BtnAdd, BtnSave, BtnRemove
     maxY := MaxUnderPosY()
     OperBtnPosY := maxY + 10
     YPos := " y" OperBtnPosY
-    BtnAdd := MyGui.Add("Button", "x100 w120 vbtnAdd" YPos, "新增配置")
-    BtnAdd.OnEvent("Click", OnAddSetting)
-    BtnRemove := MyGui.Add("Button", "x300 w120 vbtnRemove" YPos, "删除最后的配置")
-    BtnRemove.OnEvent("Click", OnRemoveSetting)
-    BtnSave := MyGui.Add("Button", "x500 w120 vbtnSure" YPos, "应用并保存")
-    BtnSave.OnEvent("Click", OnSaveSetting)
+    MyGui := MySoftData.MyGui
+    MySoftData.BtnAdd := MyGui.Add("Button", "x100 w120 vbtnAdd" YPos, "新增配置")
+    MySoftData.BtnAdd.OnEvent("Click", OnAddSetting)
+    MySoftData.BtnRemove := MyGui.Add("Button", "x300 w120 vbtnRemove" YPos, "删除最后的配置")
+    MySoftData.BtnRemove.OnEvent("Click", OnRemoveSetting)
+    MySoftData.BtnSave := MyGui.Add("Button", "x500 w120 vbtnSure" YPos, "应用并保存")
+    MySoftData.BtnSave.OnEvent("Click", OnSaveSetting)
 }
 
 OnAddSetting(*) {
-    global TabCtrl, MyGui
-    TableIndex := TabCtrl.Value
-    tableItem := TableInfo[TableIndex]
-    btnRemove.Visible := false
-    isSpecialOrNormal := CheckIsSpecialOrNormalTable(TableIndex)
-    isSpecial := CheckIsSpecialTable(TableIndex)
+    MyGui := MySoftData.MyGui
+    TableIndex := MySoftData.TabCtrl.Value
+    tableItem := MySoftData.TableInfo[TableIndex]
+    MySoftData.BtnRemove.Visible := false
+    isMacro := CheckIsMacroTable(TableIndex)
+    isTriggerStr := CheckIsStringMacroTable(index)
+    EditTriggerAction := isTriggerStr ? OnTableEditTriggerStr : OnTableEditTriggerKey
     tableItem.TKArr.Push("")
     tableItem.InfoArr.Push("")
     tableItem.ModeArr.Push(0)
@@ -244,13 +269,13 @@ OnAddSetting(*) {
     tableItem.LoosenStopArr.Push(0)
     tableItem.RemarkArr.Push("")
 
-    heightValue := isSpecialOrNormal ? 60 : 30
+    heightValue := isMacro ? 60 : 30
     posY := " y" tableItem.underPosY
-    TKPosY := isSpecialOrNormal ? " y" tableItem.underPosY + 10 : " y" tableItem.underPosY
-    InfoHeight := isSpecialOrNormal ? " h45" : " h20"
+    TKPosY := isMacro ? " y" tableItem.underPosY + 10 : " y" tableItem.underPosY
+    InfoHeight := isMacro ? " h50" : " h20"
 
     symbol := GetTableSymbol(TableIndex)
-    index := tableItem.TKArr.Length
+    index := tableItem.ModeArr.Length
     TKNameValue := " v" symbol "TK" index
     InfoNameValue := " v" symbol "Info" index
     ModeNameValue := " v" symbol "Mode" index
@@ -259,35 +284,37 @@ OnAddSetting(*) {
     LoosenStopNameValue := " v" symbol "LoosenStop" index
     RemarkNameValue := " v" symbol "Remark" index
 
-    TabCtrl.UseTab(TableIndex)
-    if (isSpecial) {
-        newTkControl := MyGui.Add("Hotkey", "x20 Center" TKNameValue TKPosY, "")
-        newInfoControl := MyGui.Add("Edit", "x160 w490" InfoHeight InfoNameValue posY, "")
-    }
-    else{
-        newTkControl := MyGui.Add("Edit", "x20 w70 Center" TKNameValue TKPosY, "")
-        newInfoControl := MyGui.Add("Edit", "x100 w550" InfoHeight InfoNameValue posY, "")
-    }
-    
+    MySoftData.TabCtrl.UseTab(TableIndex)
+    newTkControl := MyGui.Add("Edit", "x20 w100 Center" TKNameValue TKPosY, "")
+    newInfoControl := MyGui.Add("Edit", "x130 w650" InfoHeight InfoNameValue posY, "")
 
-    newModeControl := MyGui.Add("Checkbox", Format("x670 w30 y{}", tableItem.underPosY + 5) ModeNameValue, "")
+    newKeyBtnControl := MyGui.Add("Button", Format("x790 w60 y{} h20", tableItem.underPosY), "触发键")
+    newKeyBtnControl.OnEvent("Click", GetTableClosureAction(EditTriggerAction, tableItem, index))
+
+    newModeControl := MyGui.Add("Checkbox", Format("x870 w30 y{}", tableItem.underPosY + 5) ModeNameValue, "")
     newModeControl.value := 0
-    newForbidControl := MyGui.Add("Checkbox", Format("x705 w30 y{}", tableItem.underPosY + 5) ForbidNameValue, "")
+    newForbidControl := MyGui.Add("Checkbox", Format("x905 w30 y{}", tableItem.underPosY + 5) ForbidNameValue, "")
     newForbidControl.value := 0
-    newProcessNameControl := MyGui.Add("Edit", Format("x740 w130 y{}", tableItem.underPosY - 5) ProcessNameValue, "")
+    newProcessNameControl := MyGui.Add("Edit", Format("x940 w130 y{}", tableItem.underPosY - 5) ProcessNameValue, "")
     newProcessNameControl.value := ""
-    if (isSpecialOrNormal) {
-        newLoosenStopControl := MyGui.Add("Checkbox", Format("x880 w30 y{}", tableItem.underPosY + 5) LoosenStopNameValue,
+    if (isMacro) {
+        newMacroBtnControl := MyGui.Add("Button", Format("x790 w60 y{} h20", tableItem.underPosY + 25), "宏指令")
+
+        newLoosenStopControl := MyGui.Add("Checkbox", Format("x1080 w30 y{}", tableItem.underPosY + 5) LoosenStopNameValue,
         "")
+        loosenStopVisible := GetTableLoosenStopVisible(index, A_Index)
+        newLoosenStopControl.Visible := loosenStopVisible
 
-        newRemarkTextControl := MyGui.Add("Text", Format("x670 y{} w60", tableItem.underPosY + 30), "备注:")
-        newRemarkControl := MyGui.Add("Edit", Format("x720 y{} w180", tableItem.underPosY + 25) RemarkNameValue, "")
+        newRemarkTextControl := MyGui.Add("Text", Format("x870 y{} w60", tableItem.underPosY + 30), "备注:")
+        newRemarkControl := MyGui.Add("Edit", Format("x920 y{} w180", tableItem.underPosY + 25) RemarkNameValue, "")
 
+        tableItem.MacroBtnConArr.Push(newMacroBtnControl)
         tableItem.LoosenStopConArr.Push(newLoosenStopControl)
         tableItem.RemarkConArr.Push(newRemarkControl)
         tableItem.RemarkTextConArr.Push(newRemarkTextControl)
     }
 
+    tableItem.KeyBtnConArr.Push(newKeyBtnControl)
     tableItem.TKConArr.Push(newTkControl)
     tableItem.InfoConArr.Push(newInfoControl)
     tableItem.ModeConArr.Push(newModeControl)
@@ -297,8 +324,8 @@ OnAddSetting(*) {
     UpdateUnderPosY(TableIndex, heightValue)
 
     maxY := MaxUnderPosY()
-    TabCtrl.UseTab()
-    TabCtrl.Move(10, TabPosY, 900, maxY - TabPosY)
+    MySoftData.TabCtrl.UseTab()
+    MySoftData.TabCtrl.Move(10, MySoftData.TabPosY, 1150, maxY - MySoftData.TabPosY)
 
     RefreshOperBtnPos()
     SaveWinPos()
@@ -306,14 +333,13 @@ OnAddSetting(*) {
 }
 
 OnRemoveSetting(*) {
-    global TabCtrl
-    TableIndex := TabCtrl.Value
-    tableItem := TableInfo[TableIndex]
-    isSpecialOrNormal := CheckIsSpecialOrNormalTable(TableIndex)
-    if (tableItem.ModeArr.Length == 0){
+    TableIndex := MySoftData.TabCtrl.Value
+    tableItem := MySoftData.TableInfo[TableIndex]
+    isMacro := CheckIsMacroTable(TableIndex)
+    if (tableItem.ModeArr.Length == 0) {
         return
     }
-    btnAdd.Visible := false
+    MySoftData.BtnAdd.Visible := false
     UpdateUnderPosY(TableIndex, -30)
     tableItem.ModeArr.Pop()
     tableItem.ForbidArr.Pop()
@@ -324,38 +350,42 @@ OnRemoveSetting(*) {
     if (tableItem.ProcessNameArr.Length > 0)
         tableItem.ProcessNameArr.Pop()
 
-
     tableItem.TKConArr.Pop().Visible := false
     tableItem.InfoConArr.Pop().Visible := false
     tableItem.ModeConArr.Pop().Visible := false
     tableItem.ForbidConArr.Pop().Visible := false
     tableItem.ProcessNameConArr.Pop().Visible := false
-    if (isSpecialOrNormal) {
+    tableItem.KeyBtnConArr.Pop().Visible := false
+
+    if (isMacro) {
         tableItem.LoosenStopConArr.Pop().Visible := false
         tableItem.RemarkConArr.Pop().Visible := false
         tableItem.RemarkTextConArr.Pop().Visible := false
+        tableItem.MacroBtnConArr.Pop().Visible := false
     }
 }
 
 AddRuleUI(index) {
 
-    posY := TabPosY
+    MyGui := MySoftData.MyGui
+    posY := MySoftData.TabPosY
     ; 配置规则说明
     posY += 30
 
     MyGui.Add("Text", Format("x20 y{} w130", posY), "按住时间浮动:")
-    ScriptInfo.HoldFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), ScriptInfo.HoldFloat)
+    MySoftData.HoldFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), MySoftData.HoldFloat)
 
     MyGui.Add("Text", Format("x270 y{} w130", posY), "图片搜索模糊度:")
-    ScriptInfo.ImageSearchBlurCtrl := MyGui.Add("Edit", Format("x380 y{} w70 center", posY - 4), ScriptInfo.ImageSearchBlur)
+    MySoftData.ImageSearchBlurCtrl := MyGui.Add("Edit", Format("x380 y{} w70 center", posY - 4), MySoftData.ImageSearchBlur
+    )
 
     posY += 30
     MyGui.Add("Text", Format("x20 y{} w130", posY), "连点间隔时间浮动:")
-    ScriptInfo.ClickFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), ScriptInfo.ClickFloat)
+    MySoftData.ClickFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), MySoftData.ClickFloat)
 
     posY += 30
     MyGui.Add("Text", Format("x20 y{} w130", posY), "按键间隔时间浮动:")
-    ScriptInfo.IntervalFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), ScriptInfo.IntervalFloat
+    MySoftData.IntervalFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), MySoftData.IntervalFloat
     )
 
     posY += 20
@@ -383,21 +413,23 @@ AddRuleUI(index) {
     posY += 20
     MyGui.Add("Text", Format("x20 y{}", posY), "案例:MouseMove_50_-50_20_R(鼠标速度20移动到相对当前坐标50,-50)")
     posY += 30
-    MyGui.Add("Text", Format("x20 y{}", posY), "图片搜索规则:ImageSearch_ImagePath[_X_Y_W_H](dosomething)(ImagePath为图片路径,X,Y为搜索区域左上角坐标,W,H为搜索区域右下角坐标)")
+    MyGui.Add("Text", Format("x20 y{}", posY),
+    "图片搜索规则:ImageSearch_ImagePath[_X_Y_W_H](dosomething)(ImagePath为图片路径,X,Y为搜索区域左上角坐标,W,H为搜索区域右下角坐标)")
     posY += 20
-    MyGui.Add("Text", Format("x20 y{}", posY), "案例:ImageSearch_ImagePath_300_300_500_500(lbutton_30_2_50)。从(300,300)到(500,500)搜索图片,找到后执行lbutton_30_2_50指令")
-
+    MyGui.Add("Text", Format("x20 y{}", posY),
+    "案例:ImageSearch_ImagePath_300_300_500_500(lbutton_30_2_50)。从(300,300)到(500,500)搜索图片,找到后执行lbutton_30_2_50指令")
 
     posY += 20
 
-    tableItem := TableInfo[index]
+    tableItem := MySoftData.TableInfo[index]
     tableItem.UnderPosY := posY
 }
 
 AddToolUI(index) {
     global ToolCheckInfo
 
-    posY := TabPosY
+    MyGui := MySoftData.MyGui
+    posY := MySoftData.TabPosY
     ; 配置规则说明
     posY += 30
     MyGui.Add("Text", Format("x20 y{}", posY), "鼠标下窗口信息：")
@@ -432,11 +464,10 @@ AddToolUI(index) {
     )
 
     posY += 20
-    TableInfo[index].underPosY := posY
+    MySoftData.TableInfo[index].underPosY := posY
 }
 
-SetToolCheckInfo(*)
-{
+SetToolCheckInfo() {
     global ToolCheckInfo
     CoordMode("Mouse", "Screen")
     MouseGetPos &mouseX, &mouseY, &winId
