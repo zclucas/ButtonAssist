@@ -98,6 +98,7 @@ Class SoftData
         this.TabCtrl := {}
         this.TableInfo := []
 
-        this.MyStick := {}
+        this.HoldKeyMap := Map()
+        this.TimerActionMap := Map()
     }
 }

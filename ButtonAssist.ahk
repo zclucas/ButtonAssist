@@ -27,3 +27,5 @@ LoadSetting()
 InitData()
 InitUI()
 BindKey()
+
+

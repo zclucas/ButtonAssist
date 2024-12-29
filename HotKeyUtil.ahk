@@ -1,5 +1,5 @@
 ;绑定热键
-BindKey(){
+BindKey() {
     BindPauseHotkey()
     BindToolCheckHotkey()
     BindTabHotKey()
@@ -126,7 +126,6 @@ OnTriggerMacroKey(tableItem, info, index) {
             A_Index++
         }
     }
-
 }
 
 OnLoosenMacroKey(tableItem, info, index) {
@@ -187,7 +186,7 @@ OnMouseMove(strArr) {
 
 OnPressJoyKeyCommand(tableItem, strArr, index) {
     key := strArr[1]
-    isJoyAxis :=  StrCompare(SubStr(strArr[1], 1, 7), "JoyAxis", false) == 0
+    isJoyAxis := StrCompare(SubStr(strArr[1], 1, 7), "JoyAxis", false) == 0
     holdTime := Integer(strArr[2])
     floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
     action := isJoyAxis ? SendJoyAxisClick : SendJoyBtnClick
@@ -299,7 +298,7 @@ OnTableEditTriggerKey(tableItem, index) {
     MyTriggerKeyGui.ShowGui(triggerKey)
 }
 
-OnTableEditTriggerStr(tableItem, index){
+OnTableEditTriggerStr(tableItem, index) {
     triggerStr := tableItem.TKConArr[index].Value
     MyTriggerStrGui.sureCallback := (sureTriggerStr) => tableItem.TKConArr[index].Value := sureTriggerStr
     MyTriggerStrGui.ShowGui(triggerStr)
@@ -364,9 +363,11 @@ SendGameModeKey(Key, state) {
 
     if (state == 1) {
         DllCall("keybd_event", "UChar", VK, "UChar", SC, "UInt", isExtendedKey ? 0x1 : 0, "UPtr", 0)
+        SoftData.HoldKeyMap[key] := "Game"
     }
     else {
         DllCall("keybd_event", "UChar", VK, "UChar", SC, "UInt", (isExtendedKey ? 0x3 : 0x2), "UPtr", 0)
+        SoftData.HoldKeyMap.Delete(key)
     }
 }
 
@@ -387,18 +388,17 @@ SendGameMouseKey(key, state) {
 
     if (state == 1) {
         DllCall("mouse_event", "UInt", mouseDown, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 0)
+        SoftData.HoldKeyMap[key] := "Game"
     }
     else {
         DllCall("mouse_event", "UInt", mouseUp, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 0)
+        SoftData.HoldKeyMap.Delete(key)
     }
 }
 
 SendNormalKeyClick(Key, holdTime := 30) {
-
-    keyDown := "{" Key " down}"
-    keyUp := "{" Key " up}"
-    Send(keyDown)
-    SetTimer(() => Send(keyUp), -holdTime)
+    SendNormalKey(Key, 1)
+    SetTimer(() => SendNormalKey(Key, 0), -holdTime)
 }
 
 SendNormalKey(Key, state) {
@@ -410,6 +410,13 @@ SendNormalKey(Key, state) {
     }
 
     Send(keySymbol)
+
+    if (state == 1) {
+        SoftData.HoldKeyMap[Key] := "Normal"
+    }
+    else {
+        SoftData.HoldKeyMap.Delete(Key)
+    }
 }
 
 SendJoyBtnClick(key, holdTime := 30) {
@@ -417,9 +424,16 @@ SendJoyBtnClick(key, holdTime := 30) {
     SetTimer(() => SendJoyBtnKey(key, 0), -holdTime)
 }
 
-SendJoyBtnKey(key, state){
+SendJoyBtnKey(key, state) {
     joyIndex := SubStr(key, 4)
     MyvJoy.SetBtn(state, joyIndex)
+
+    if (state == 1) {
+        SoftData.HoldKeyMap[key] := "Joy"
+    }
+    else {
+        SoftData.HoldKeyMap.Delete(key)
+    }
 }
 
 SendJoyAxisClick(key, holdTime := 30) {
@@ -427,12 +441,19 @@ SendJoyAxisClick(key, holdTime := 30) {
     SetTimer(() => SendJoyAxisKey(key, 0), -holdTime)
 }
 
-SendJoyAxisKey(key, state){
+SendJoyAxisKey(key, state) {
     percent := 50
-    if (state == 1){
-        percent :=MyvJoy.JoyAxisMap.Get(key)
+    if (state == 1) {
+        percent := MyvJoy.JoyAxisMap.Get(key)
     }
-    value :=  percent * 327.68
+    value := percent * 327.68
     index := Integer(SubStr(key, 7, StrLen(key) - 10))
     MyvJoy.SetAxisByIndex(value, index)
+
+    if (state == 1) {
+        SoftData.HoldKeyMap[key] := "JoyAxis"
+    }
+    else {
+        SoftData.HoldKeyMap.Delete(key)
+    }
 }
