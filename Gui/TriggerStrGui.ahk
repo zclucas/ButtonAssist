@@ -2,14 +2,16 @@
 
 class TriggerStrGui {
     __new() {
-        this.Gui := {}
+        this.Gui := ""
         this.ConMap := Map()
-        this.sureCallback := ""
-        this.saveCallback := ""
+        this.SureBtnAction := ""
+        this.SaveBtnAction := ""
         this.IsNoEndChar := true
         this.IsSubStr := true
         this.IsNoDelete := true
         this.Str := ""
+        this.SaveBtnCtrl := {}
+        this.showSaveBtn := false
         this.SettingTipCon := ""
         this.IsNoEndCharCon := {}
         this.IsSubStrCon := {}
@@ -20,10 +22,10 @@ class TriggerStrGui {
     OnCharBtnClick(char) {
         this.Str .= char
 
-        this.RefreshSettingInfo()
+        this.Refresh()
     }
 
-    RefreshSettingInfo() {
+    Refresh() {
         if (this.SettingTipCon == "")
             return
 
@@ -33,6 +35,7 @@ class TriggerStrGui {
         this.IsNoEndCharCon.Value := this.IsNoEndChar
         this.IsSubStrCon.Value := this.IsSubStr
         this.IsNoDeleteCon.Value := this.IsNoDelete
+        this.SaveBtnCtrl.Visible := this.showSaveBtn
     }
 
     GetTriggerStr() {
@@ -55,23 +58,29 @@ class TriggerStrGui {
         return triggerStr
     }
 
+    Backspace(){
+        str := SubStr(this.Str, 1, StrLen(this.Str) - 1)
+        this.Str := str
+        this.Refresh()
+    }
+
     ClearStr(){
         this.Str := ""
-        this.RefreshSettingInfo()
+        this.Refresh()
     }
 
     ;UI相关
-    ShowGui(triggerKey){
+    ShowGui(triggerKey, showSaveBtn){
         
-        if (this.Gui.HasOwnProp("Show")) {
+        if (this.Gui != "") {
             this.Gui.Show()
         }
         else{
             this.AddGui()
         }
 
-        this.InitData(triggerKey)
-        this.RefreshSettingInfo()
+        this.Init(triggerKey, showSaveBtn)
+        this.Refresh()
     }
 
     AddGui() {
@@ -450,6 +459,10 @@ class TriggerStrGui {
         this.SettingTipCon := con
 
         PosY += 30
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "Backspace")
+        btnCon.OnEvent("Click", (*) => this.Backspace())
+
+        PosX += 200
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "清空字串")
         btnCon.OnEvent("Click", (*) => this.ClearStr())
 
@@ -458,10 +471,10 @@ class TriggerStrGui {
         btnCon.OnEvent("Click", (*) => this.OnSureBtnClick())
 
         PosX += 200
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "应用并保存")
-        btnCon.OnEvent("Click", (*) => this.OnSaveBtnClick())
+        this.SaveBtnCtrl := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "应用并保存")
+        this.SaveBtnCtrl.OnEvent("Click", (*) => this.OnSaveBtnClick())
 
-        MyGui.Show(Format("w{} h{}", 1280, 550))
+        MyGui.Show(Format("w{} h{}", 1280, 500))
     }  
     
 
@@ -481,29 +494,29 @@ class TriggerStrGui {
         }
 
         this.Gui.Hide()
-        if (this.saveCallback != "") {
-            action := this.saveCallback
+        if (this.SaveBtnAction != "") {
+            action := this.SaveBtnAction
             action()
         }
     }
 
     OnClickNoEndCharCon() {
         this.IsNoEndChar := !this.IsNoEndChar
-        this.RefreshSettingInfo()
+        this.Refresh()
     }
 
     OnClickSubStrCon() {
         this.IsSubStr := !this.IsSubStr
-        this.RefreshSettingInfo()
+        this.Refresh()
     }
 
     OnClickNoDeleteCon() {
         this.IsNoDelete := !this.IsNoDelete
-        this.RefreshSettingInfo()
+        this.Refresh()
     }
 
     ;数据交互
-    InitData(triggerStr){
+    Init(triggerStr, showSaveBtn){
         isValid := SubStr(triggerStr, 1, 1) == ":"
         splitPos := 2
         IsNoEndChar := true
@@ -533,6 +546,7 @@ class TriggerStrGui {
         this.IsNoEndChar := IsNoEndChar
         this.IsSubStr := IsSubStr
         this.IsNoDelete := IsNoDelete
+        this.showSaveBtn := showSaveBtn
         return
     }
 
@@ -553,10 +567,10 @@ class TriggerStrGui {
 
         triggerStr := this.GetTriggerStr()
 
-        if (this.sureCallback != "") {
-            action := this.sureCallback
+        if (this.SureBtnAction != "") {
+            action := this.SureBtnAction
             action(triggerStr)
-            this.sureCallback := ""
+            this.SureBtnAction := ""
         }
         return true
     }

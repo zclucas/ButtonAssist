@@ -7,7 +7,7 @@ Class TableItem
         this.ModeArr := []
         this.ForbidArr := []
         this.ProcessNameArr := []
-        this.LoosenStopArr := []
+        this.LoopCountArr := []
         this.RemarkArr := []
         this.TKConArr := []
         this.InfoConArr := []
@@ -17,13 +17,16 @@ Class TableItem
         this.ModeConArr := []
         this.ForbidConArr := []
         this.ProcessNameConArr := []
-        this.LoosenStopConArr := []
+        this.LoopCountConArr := []
         this.RemarkTextConArr := []
         this.RemarkConArr := []
+        
+        this.KeyActionArr := []
+        this.ImageActionArr := []
+        this.KilledArr := []
+        this.ActionCount := []      ; 记录执行次数，用于循环次数判断
         this.UnderPosY := 0
-
-        this.LoosenState := []
-        this.TimerDoubleArr := []
+        this.Index := 0
     }
 }
 
@@ -72,6 +75,8 @@ Class SoftData
         this.PauseToggleCtrl := ""
         this.PauseHotkey := ""
         this.PauseHotkeyCtrl := ""
+        this.KillMacroHotkey := ""
+        this.KillMacroHotkeyCtrl := ""
         this.HoldFloat := 5
         this.HoldFloatCtrl := ""
         this.ClickFloat := 5
@@ -93,12 +98,17 @@ Class SoftData
         this.BtnAddSave := ""
         this.BtnRemove := ""
 
-        this.TabNameArr := ["按键宏", "按键宏2", "子串宏", "按键替换", "软件宏", "配置规则", "工具"]
-        this.TabSymbolArr := ["Normal", "Normal2", "String", "Replace", "Soft", "Rule", "Tool"]
+        this.EditHotKeyCtrl := ""
+        this.EditHotStrCtrl := ""
+
+        this.TabNameArr := ["按键宏", "子串宏", "按键替换", "软件宏", "配置规则", "工具"]
+        this.TabSymbolArr := ["Normal", "String", "Replace", "Soft", "Rule", "Tool"]
         this.TabCtrl := {}
         this.TableInfo := []
 
         this.HoldKeyMap := Map()
         this.TimerActionMap := Map()
+
+        this.SpecialKeyMap := Map("Browser_Back", 0, "Browser_Forward", 0, "Browser_Refresh", 0, "Browser_Stop", 0, "Browser_Search", 0, "Browser_Favorites", 0, "Browser_Home", 0, "Volume_Mute", 0, "Volume_Down", 0, "Volume_Up", 0, "Media_Next", 0, "Media_Prev", 0, "Media_Stop", 0, "Media_Play_Pause", 0, "Launch_Mail", 0, "Launch_Media", 0, "Launch_App1", 0, "Launch_App2", 0)
     }
 }

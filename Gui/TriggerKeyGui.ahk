@@ -2,13 +2,15 @@
 
 class TriggerKeyGui {
     __new() {
-        this.Gui := {}
+        this.Gui := ""
         this.CheckedBox := []
         this.ConMap := Map()
-        this.sureCallback := ""
-        this.saveCallback := ""
+        this.SureBtnAction := ""
+        this.SaveBtnAction := ""
         this.CheckedInfoCon := ""
         this.CheckedInvalidTipCon := ""
+        this.SaveBtnCtrl := {}
+        this.showSaveBtn := false
 
         this.ModifyKeys := ["Shift", "Alt", "Ctrl", "Win", "LShift", "RShift", "LAlt", "RAlt", "LCtrl", "RCtrl", "LWin",
             "RWin"]
@@ -52,7 +54,7 @@ class TriggerKeyGui {
             }
         }
 
-        this.RefreshCheckedInfo()
+        this.Refresh()
     }
 
     ClearCheckedBox() {
@@ -61,7 +63,7 @@ class TriggerKeyGui {
             con.Value := 0
         }
         this.CheckedBox := []
-        this.RefreshCheckedInfo()
+        this.Refresh()
     }
 
     CheckConfigValid() {
@@ -98,7 +100,7 @@ class TriggerKeyGui {
         return true
     }
 
-    InitCheckedBox(triggerKey) {
+    Init(triggerKey, showSaveBtn) {
         this.CheckedBox := []
         loopCount := 0
 
@@ -127,12 +129,15 @@ class TriggerKeyGui {
         for key, value in this.ConMap{
             if (StrCompare(key, triggerKey, false) == 0)
                 this.CheckedBox.Push(key)
+                
+            value.Value := 0
         }
 
         for index, value in this.CheckedBox {
             con := this.ConMap.Get(value)
             con.Value := 1
         }
+        this.showSaveBtn := showSaveBtn
     }
 
     ;按钮点击回调
@@ -152,24 +157,24 @@ class TriggerKeyGui {
         }     
 
         this.Gui.Hide()
-        if (this.saveCallback != "") {
-            action := this.saveCallback
+        if (this.SaveBtnAction != "") {
+            action := this.SaveBtnAction
             action()
         }
     }
 
     ;UI相关
-    ShowGui(triggerKey){
+    ShowGui(triggerKey, showSaveBtn){
         
-        if (this.Gui.HasOwnProp("Show")) {
+        if (this.Gui != "") {
             this.Gui.Show()
         }
         else{
             this.AddGui()
         }
 
-        this.InitCheckedBox(triggerKey)
-        this.RefreshCheckedInfo()
+        this.Init(triggerKey, showSaveBtn)
+        this.Refresh()
     }
 
     AddGui() {
@@ -1146,13 +1151,13 @@ class TriggerKeyGui {
         btnCon.OnEvent("Click", (*) => this.OnSureBtnClick())
 
         PosX += 200
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "应用并保存")
-        btnCon.OnEvent("Click", (*) => this.OnSaveBtnClick())
+        this.SaveBtnCtrl := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "应用并保存")
+        this.SaveBtnCtrl.OnEvent("Click", (*) => this.OnSaveBtnClick())
 
-        MyGui.Show(Format("w{} h{}", 1280, 750))
+        MyGui.Show(Format("w{} h{}", 1280, 730))
     }  
 
-    RefreshCheckedInfo() {
+    Refresh() {
         if (!this.HasOwnProp("CheckedInfoCon"))
             return
 
@@ -1172,6 +1177,7 @@ class TriggerKeyGui {
         isValid := this.CheckConfigValid()
         this.CheckedInvalidTipCon.Visible := !isValid
         this.CheckedInfoCon.Value := infoStr
+        this.SaveBtnCtrl.Visible := this.showSaveBtn
     }
 
     RefreshCheckedKeyState(){
@@ -1196,10 +1202,10 @@ class TriggerKeyGui {
             triggerKey .= subTriggerKey
         }
 
-        if (this.sureCallback != "") {
-            action := this.sureCallback
+        if (this.SureBtnAction != "") {
+            action := this.SureBtnAction
             action(triggerKey)
-            this.sureCallback := ""
+            this.SureBtnAction := ""
         }
         return true
     }

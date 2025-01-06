@@ -1,7 +1,8 @@
 ;绑定热键
 BindKey() {
     BindPauseHotkey()
-    BindToolCheckHotkey()
+    BindShortcut(MySoftData.KillMacroHotkey, OnKillAllMacro)
+    BindShortcut(ToolCheckInfo.ToolCheckHotKey, OnToolCheckHotkey)
     BindTabHotKey()
 }
 
@@ -13,11 +14,18 @@ BindPauseHotkey() {
     }
 }
 
-BindToolCheckHotkey() {
-    global ToolCheckInfo
-    if (ToolCheckInfo.ToolCheckHotKey != "") {
-        key := "$*" ToolCheckInfo.ToolCheckHotKey
-        Hotkey(key, OnToolCheckHotkey)
+BindShortcut(triggerInfo, action) {
+    if (triggerInfo == "")
+        return
+
+    isString := SubStr(triggerInfo, 1, 1) == ":"
+
+    if (isString) {
+        Hotstring(triggerInfo, action)
+    }
+    else {
+        key := "$*" triggerInfo
+        Hotkey(key, action)
     }
 }
 
@@ -27,13 +35,13 @@ BindTabHotKey() {
         tableItem := MySoftData.TableInfo[A_Index]
         tableIndex := A_Index
         for index, value in tableItem.ModeArr {
-            if (tableItem.TKArr[index] == "" || (Integer)(tableItem.ForbidArr[index]))
+            if (tableItem.TKArr.Length < index || tableItem.TKArr[index] == "" || (Integer)(tableItem.ForbidArr[index]))
                 continue
 
             key := "$*" tableItem.TKArr[index]
             actionArr := GetMacroAction(tableIndex, index)
             isJoyKey := SubStr(tableItem.TKArr[index], 1, 3) == "Joy"
-            isHotstring := CheckIsStringMacroTable(tableIndex)
+            isHotstring := SubStr(tableItem.TKArr[index], 1, 1) == ":"
             curProcessName := tableItem.ProcessNameArr.Length >= index ? tableItem.ProcessNameArr[index] : ""
 
             if (curProcessName != "") {
@@ -70,8 +78,7 @@ GetMacroAction(tableIndex, index) {
     actionUp := ""
 
     if (tableSymbol == "Normal" || tableSymbol == "Normal2" || tableSymbol == "String") {
-        actionDown := GetClosureAction(tableItem, info, index, OnTriggerMacroKey)
-        actionUp := GetClosureAction(tableItem, info, index, OnLoosenMacroKey)
+        actionDown := GetClosureAction(tableItem, info, index, OnTriggerMacroKeyAndInit)
     }
     else if (tableSymbol == "Replace") {
         actionDown := GetClosureAction(tableItem, info, index, OnReplaceDownKey)
@@ -90,14 +97,31 @@ GetClosureAction(tableItem, info, index, func) {     ;获取闭包函数
 }
 
 ;按键宏命令
+OnTriggerMacroKeyAndInit(tableItem, info, index) {
+    tableItem.KeyActionArr[index] := []
+    tableItem.KilledArr[index] := false
+    tableItem.ActionCount[index] := 0
+    tableItem.ImageActionArr[index] := Map()
+
+    loop {
+        if (tableItem.KilledArr[index])
+            break
+
+        if (tableItem.LoopCountArr[index] != -1 && tableItem.ActionCount[index] >= tableItem.LoopCountArr[index])
+            break
+
+        OnTriggerMacroKey(tableItem, info, index)
+        tableItem.ActionCount[index]++
+    }
+
+}
+
 OnTriggerMacroKey(tableItem, info, index) {
     global MySoftData
-    tableItem.LoosenState[index] := false
     infos := SplitCommand(info)
-    mode := tableItem.ModeArr[index]
 
     loop infos.Length {
-        if (MySoftData.IsPause || tableItem.LoosenState[index])
+        if (tableItem.KilledArr[index])
             break
 
         strArr := StrSplit(infos[A_Index], "_")
@@ -116,7 +140,7 @@ OnTriggerMacroKey(tableItem, info, index) {
             OnPressJoyKeyCommand(tableItem, strArr, index)
         }
         else {
-            OnPressKeyCommand(tableItem, strArr, index)
+            OnPressKeyboardCommand(tableItem, infos[A_Index], index)
         }
 
         if (infos.Length > A_Index) {
@@ -128,46 +152,87 @@ OnTriggerMacroKey(tableItem, info, index) {
     }
 }
 
-OnLoosenMacroKey(tableItem, info, index) {
-    isLoosenStop := tableItem.LoosenStopArr[index]
-    if (isLoosenStop) {
-        tableItem.LoosenState[index] := true
+OnImageSearch(tableItem, macro, index) {
+    splitIndex := RegExMatch(macro, "(\(.*\))", &match)
+    if (splitIndex == 0){
+        searchMacroArr := StrSplit(macro, "_")
+        findAfterMacro := ""
+    }
+    else{
+        searchMacroStr := SubStr(macro, 1, splitIndex - 1)
+        searchMacroArr := StrSplit(searchMacroStr, "_")
+        findAfterMacro := SubStr(match[1], 2, StrLen(match[1]) - 2)
+    }
+    searchCount := Integer(searchMacroArr[7])
+    searchInterval := Integer(searchMacroArr[8])
+
+    tableItem.ImageActionArr[index].Set(searchMacroArr[2], [])
+
+    OnImageSearchOnce(tableItem, macro, index)
+
+    loop searchCount {
+        if (A_Index == 1)
+            continue
+
+        if (!tableItem.ImageActionArr[index].Has(searchMacroArr[2]))
+            break
+
+        if (tableItem.KilledArr[index])
+            break
+
+        action := OnImageSearchOnce.Bind(tableItem, macro, index)
+        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (searchInterval * (A_Index - 1))
+        tableItem.ImageActionArr[index][searchMacroArr[2]].Push(action)
+        SetTimer action, -floatLeftTime
     }
 }
 
-OnImageSearch(tableItem, info, index) {
-    splitIndex := RegExMatch(info, "(\(.*\))", &match)
-    imageInfoStr := SubStr(info, 1, splitIndex - 1)
-    imageInfoArr := StrSplit(imageInfoStr, "_")
-    findAfterActionInfo := SubStr(match[1], 2, StrLen(match[1]) - 2)
-
-    ImageFile := Format("*{} *w0 *h0 {}", Integer(MySoftData.ImageSearchBlur), imageInfoArr[2])
-    if (imageInfoArr.Length > 3) {
-        X1 := Integer(imageInfoArr[3])
-        Y1 := Integer(imageInfoArr[4])
-        X2 := Integer(imageInfoArr[5])
-        Y2 := Integer(imageInfoArr[6])
+OnImageSearchOnce(tableItem, macro, index) {
+    splitIndex := RegExMatch(macro, "(\(.*\))", &match)
+    if (splitIndex == 0){
+        searchMacroArr := StrSplit(macro, "_")
+        findAfterMacro := ""
     }
-    else {
-        X1 := 0
-        Y1 := 0
-        X2 := A_ScreenWidth
-        Y2 := A_ScreenHeight
+    else{
+        searchMacroStr := SubStr(macro, 1, splitIndex - 1)
+        searchMacroArr := StrSplit(searchMacroStr, "_")
+        findAfterMacro := SubStr(match[1], 2, StrLen(match[1]) - 2)
     }
 
-    CoordMode("Mouse", "Screen")
-    result := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, ImageFile)
+    if (tableItem.KilledArr[index])
+        return
+
+    if (!tableItem.ImageActionArr[index].Has(searchMacroArr[2]))
+        return
+
+    ImageInfo := Format("*{} *w0 *h0 {}", Integer(MySoftData.ImageSearchBlur), searchMacroArr[2])
+    X1 := Integer(searchMacroArr[3])
+    Y1 := Integer(searchMacroArr[4])
+    X2 := Integer(searchMacroArr[5])
+    Y2 := Integer(searchMacroArr[6])
+
+    CoordMode("Pixel", "Screen")
+    result := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, ImageInfo)
 
     if (result) {
-        imageSize := GetImageSize(imageInfoArr[2])
+        if (tableItem.ImageActionArr[index].Has(searchMacroArr[2])) {
+            ActionArr := tableItem.ImageActionArr[index].Get(searchMacroArr[2])
+            loop ActionArr.Length {
+                action := ActionArr[A_Index]
+                SetTimer action, 0
+            }
+            tableItem.ImageActionArr[index].Delete(searchMacroArr[2])
+        }
+
+        imageSize := GetImageSize(searchMacroArr[2])
         Pos := [OutputVarX + imageSize[1] / 2, OutputVarY + imageSize[2] / 2]
+        CoordMode("Mouse", "Screen")
         MouseMove(Pos[1], Pos[2])
-        if (findAfterActionInfo == "")
+        if (findAfterMacro == "")
             return
 
-        OnTriggerMacroKey(tableItem, findAfterActionInfo, index)
+        OnTriggerMacroKey(tableItem, findAfterMacro, index)
     }
-
 }
 
 OnMouseMove(strArr) {
@@ -193,24 +258,21 @@ OnPressJoyKeyCommand(tableItem, strArr, index) {
     action(key, floatHoldTime)
 
     count := strArr.Length > 2 ? Integer(strArr[3]) : 1
-    if (count > 1) {
-        clickInterval := Integer(strArr[4])
-        loop count {
-            if (A_Index == 1)
-                continue
+    loop count {
+        if (A_Index == 1)
+            continue
 
-            floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
-            tempAction := OnContinuousPressKey.Bind(action, key, floatHoldTime, tableItem, index)
-
-            floatLeftTime := GetRandom(MySoftData.ClickFloat) + (clickInterval * (A_Index - 1))
-            tableItem.TimerDoubleArr[index].Push(tempAction)
-            SetTimer tempAction, -floatLeftTime
-        }
+        floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
+        tempAction := action.Bind(key, floatHoldTime)
+        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (Integer(strArr[4]) * (A_Index - 1))
+        tableItem.KeyActionArr[index].Push(tempAction)
+        SetTimer tempAction, -floatLeftTime
     }
 
 }
 
-OnPressKeyCommand(tableItem, strArr, index) {
+OnPressKeyboardCommand(tableItem, macro, index) {
+    strArr := SplitKeyCommand(macro)
     key := strArr[1]
     mode := tableItem.ModeArr[index]
     holdTime := Integer(strArr[2])
@@ -219,33 +281,16 @@ OnPressKeyCommand(tableItem, strArr, index) {
     action(key, floatHoldTime)
 
     count := strArr.Length > 2 ? Integer(strArr[3]) : 1
-    if (count > 1) {
-        clickInterval := Integer(strArr[4])
-        loop count {
-            if (A_Index == 1)
-                continue
+    loop count {
+        if (A_Index == 1)
+            continue
 
-            floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
-            tempAction := OnContinuousPressKey.Bind(action, key, floatHoldTime, tableItem, index)
-
-            floatLeftTime := GetRandom(MySoftData.ClickFloat) + (clickInterval * (A_Index - 1))
-            tableItem.TimerDoubleArr[index].Push(tempAction)
-            SetTimer tempAction, -floatLeftTime
-        }
+        floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
+        tempAction := action.Bind(key, floatHoldTime)
+        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (Integer(strArr[4]) * (A_Index - 1))
+        tableItem.KeyActionArr[index].Push(tempAction)
+        SetTimer tempAction, -floatLeftTime
     }
-}
-
-OnContinuousPressKey(action, key, time, tableItem, index) {
-    if (tableItem.LoosenState[index] || MySoftData.IsPause) {
-        timerActionArr := tableItem.TimerDoubleArr[index]
-        for index, value in timerActionArr {
-            SetTimer value, 0
-        }
-        tableItem.TimerDoubleArr[index] := []
-        return
-    }
-
-    action(key, time)
 }
 
 ;按键替换
@@ -292,16 +337,34 @@ GetTableClosureAction(action, TableItem, index) {
     return (*) => funcObj()
 }
 
+OnTableEditMacro(tableItem, index) {
+    macro := tableItem.InfoConArr[index].Value
+    MyMacroGui.SureBtnAction := (sureMacro) => tableItem.InfoConArr[index].Value := sureMacro
+    MyMacroGui.ShowGui(macro, true)
+}
+
 OnTableEditTriggerKey(tableItem, index) {
     triggerKey := tableItem.TKConArr[index].Value
-    MyTriggerKeyGui.sureCallback := (sureTriggerKey) => tableItem.TKConArr[index].Value := sureTriggerKey
-    MyTriggerKeyGui.ShowGui(triggerKey)
+    MyTriggerKeyGui.SureBtnAction := (sureTriggerKey) => tableItem.TKConArr[index].Value := sureTriggerKey
+    MyTriggerKeyGui.ShowGui(triggerKey, true)
 }
 
 OnTableEditTriggerStr(tableItem, index) {
     triggerStr := tableItem.TKConArr[index].Value
-    MyTriggerStrGui.sureCallback := (sureTriggerStr) => tableItem.TKConArr[index].Value := sureTriggerStr
-    MyTriggerStrGui.ShowGui(triggerStr)
+    MyTriggerStrGui.SureBtnAction := (sureTriggerStr) => tableItem.TKConArr[index].Value := sureTriggerStr
+    MyTriggerStrGui.ShowGui(triggerStr, true)
+}
+
+OnEditHotKey(*) {
+    triggerKey := MySoftData.EditHotKeyCtrl.Value
+    MyTriggerKeyGui.SureBtnAction := (sureTriggerKey) => MySoftData.EditHotKeyCtrl.Value := sureTriggerKey
+    MyTriggerKeyGui.ShowGui(triggerKey, false)
+}
+
+OnEditHotStr(*) {
+    triggerKey := MySoftData.EditHotStrCtrl.Value
+    MyTriggerStrGui.SureBtnAction := (sureTriggerStr) => MySoftData.EditHotStrCtrl.Value := sureTriggerStr
+    MyTriggerStrGui.ShowGui(triggerKey, false)
 }
 
 MenuReload(*) {
@@ -319,8 +382,33 @@ OnPauseHotkey(*) {
     global MySoftData ; 访问全局变量
     MySoftData.IsPause := !MySoftData.IsPause
     MySoftData.PauseToggleCtrl.Value := MySoftData.IsPause
+    OnKillAllMacro()
 
     Suspend(MySoftData.IsPause)
+}
+
+OnKillAllMacro(*) {
+    global MySoftData ; 访问全局变量
+
+    for key, value in MySoftData.HoldKeyMap {
+        if (value == "Game") {
+            SendGameModeKey(key, 0)
+        }
+        else if (value == "Normal") {
+            SendNormalKey(key, 0)
+        }
+        else if (value == "Joy") {
+            SendJoyBtnKey(key, 0)
+        }
+        else if (value == "JoyAxis") {
+            SendJoyAxisKey(key, 0)
+        }
+        else if (value == "GameMouse") {
+            SendGameMouseKey(key, 0)
+        }
+    }
+
+    KillTableItemMacro()
 }
 
 OnToolCheckHotkey(*) {
@@ -363,11 +451,13 @@ SendGameModeKey(Key, state) {
 
     if (state == 1) {
         DllCall("keybd_event", "UChar", VK, "UChar", SC, "UInt", isExtendedKey ? 0x1 : 0, "UPtr", 0)
-        SoftData.HoldKeyMap[key] := "Game"
+        MySoftData.HoldKeyMap[key] := "Game"
     }
     else {
         DllCall("keybd_event", "UChar", VK, "UChar", SC, "UInt", (isExtendedKey ? 0x3 : 0x2), "UPtr", 0)
-        SoftData.HoldKeyMap.Delete(key)
+        if (MySoftData.HoldKeyMap.Has(key)) {
+            MySoftData.HoldKeyMap.Delete(key)
+        }
     }
 }
 
@@ -388,11 +478,13 @@ SendGameMouseKey(key, state) {
 
     if (state == 1) {
         DllCall("mouse_event", "UInt", mouseDown, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 0)
-        SoftData.HoldKeyMap[key] := "Game"
+        MySoftData.HoldKeyMap[key] := "GameMouse"
     }
     else {
         DllCall("mouse_event", "UInt", mouseUp, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 0)
-        SoftData.HoldKeyMap.Delete(key)
+        if (MySoftData.HoldKeyMap.Has(key)) {
+            MySoftData.HoldKeyMap.Delete(key)
+        }
     }
 }
 
@@ -412,10 +504,12 @@ SendNormalKey(Key, state) {
     Send(keySymbol)
 
     if (state == 1) {
-        SoftData.HoldKeyMap[Key] := "Normal"
+        MySoftData.HoldKeyMap[Key] := "Normal"
     }
     else {
-        SoftData.HoldKeyMap.Delete(Key)
+        if (MySoftData.HoldKeyMap.Has(key)) {
+            MySoftData.HoldKeyMap.Delete(Key)
+        }
     }
 }
 
@@ -429,10 +523,12 @@ SendJoyBtnKey(key, state) {
     MyvJoy.SetBtn(state, joyIndex)
 
     if (state == 1) {
-        SoftData.HoldKeyMap[key] := "Joy"
+        MySoftData.HoldKeyMap[key] := "Joy"
     }
     else {
-        SoftData.HoldKeyMap.Delete(key)
+        if (MySoftData.HoldKeyMap.Has(key)) {
+            MySoftData.HoldKeyMap.Delete(key)
+        }
     }
 }
 
@@ -451,9 +547,12 @@ SendJoyAxisKey(key, state) {
     MyvJoy.SetAxisByIndex(value, index)
 
     if (state == 1) {
-        SoftData.HoldKeyMap[key] := "JoyAxis"
+        MySoftData.HoldKeyMap[key] := "JoyAxis"
     }
     else {
-        SoftData.HoldKeyMap.Delete(key)
+        if (MySoftData.HoldKeyMap.Has(key)) {
+            MySoftData.HoldKeyMap.Delete(key)
+        }
+
     }
 }

@@ -6,6 +6,7 @@
 #Include Gdip_All.ahk
 #Include Gui\TriggerKeyGui.ahk
 #Include Gui\TriggerStrGui.ahk
+#Include Gui\MacroGui.ahk
 
 #Include DataClass.ahk
 #Include AssetUtil.ahk
@@ -13,7 +14,7 @@
 #Include HotkeyUtil.ahk
 #Include UIUtil.ahk
 
-IniFile := "settings.ini"
+IniFile := "Settings.ini"
 IniSection := "UserSettings"
 
 global MySoftData := SoftData()
@@ -22,6 +23,7 @@ global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
 global MyTriggerKeyGui := TriggerKeyGui()
 global MyTriggerStrGui := TriggerStrGui()
 global MyJoyMacro := JoyMacro()
+global MyMacroGui := MacroGui()
 
 LoadSetting()
 InitData()
