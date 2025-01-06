@@ -875,47 +875,47 @@ class TriggerKeyGui {
             con.OnEvent("Click", (*) => this.OnCheckedKey("Joy1"))
             this.ConMap.Set("Joy1", con)
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "按钮2")
             con.OnEvent("Click", (*) => this.OnCheckedKey("Joy2"))
             this.ConMap.Set("Joy2", con)
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "按钮3")
             con.OnEvent("Click", (*) => this.OnCheckedKey("Joy3"))
             this.ConMap.Set("Joy3", con)
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "按钮4")
             con.OnEvent("Click", (*) => this.OnCheckedKey("Joy4"))
             this.ConMap.Set("Joy4", con)
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "按钮5")
             con.OnEvent("Click", (*) => this.OnCheckedKey("Joy5"))
             this.ConMap.Set("Joy5", con)
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "按钮6")
             con.OnEvent("Click", (*) => this.OnCheckedKey("Joy6"))
             this.ConMap.Set("Joy6", con)
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "按钮7")
             con.OnEvent("Click", (*) => this.OnCheckedKey("Joy7"))
             this.ConMap.Set("Joy7", con)
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "按钮8")
             con.OnEvent("Click", (*) => this.OnCheckedKey("Joy8"))
             this.ConMap.Set("Joy8", con)
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "按钮9")
             con.OnEvent("Click", (*) => this.OnCheckedKey("Joy9"))
             this.ConMap.Set("Joy9", con)
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "按钮10")
             con.OnEvent("Click", (*) => this.OnCheckedKey("Joy10"))
             this.ConMap.Set("Joy10", con)

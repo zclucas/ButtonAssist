@@ -353,13 +353,10 @@ KillTableItemMacro() {
             }
             tableItem.KeyActionArr[index] := []
 
-            loop tableItem.ImageActionArr[index].Length {
-                map := tableItem.ImageActionArr[index]
-                for key, value in map{
-                    loop value.Length {
-                        action := value[A_Index]
-                        SetTimer action, 0
-                    }
+            for key, value in tableItem.ImageActionArr[index] {
+                loop value.Length {
+                    action := value[A_Index]
+                    SetTimer action, 0
                 }
             }
             tableItem.ImageActionArr[index] := Map()

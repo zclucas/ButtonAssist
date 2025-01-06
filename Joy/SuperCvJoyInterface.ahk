@@ -309,71 +309,71 @@ Class SuperCvJoyInterface {
 
 	; === General driver data
 	vJoyEnabled(){
-		return DllCall("vJoyInterface\vJoyEnabled")
+		return DllCall("vJoyInterface\vJoyEnabled", "Cdecl")
 	}
 
 	GetvJoyVersion(){
-		return DllCall("vJoyInterface\GetvJoyVersion")
+		return DllCall("vJoyInterface\GetvJoyVersion", "Cdecl")
 	}
 
 	GetvJoyProductString(){
-		return DllCall("vJoyInterface\GetvJoyProductString")
+		return DllCall("vJoyInterface\GetvJoyProductString", "Cdecl")
 	}
 
 	GetvJoyManufacturerString(){
-		return DllCall("vJoyInterface\GetvJoyManufacturerString")
+		return DllCall("vJoyInterface\GetvJoyManufacturerString", "Cdecl")
 	}
 
 	GetvJoySerialNumberString(){
-		return DllCall("vJoyInterface\GetvJoySerialNumberString")
+		return DllCall("vJoyInterface\GetvJoySerialNumberString", "Cdecl")
 	}
 
 	; === Write access to vJoy Device
 	GetVJDStatus(rID){
-		return DllCall("vJoyInterface\GetVJDStatus", "UInt", rID)
+		return DllCall("vJoyInterface\GetVJDStatus", "UInt", rID, "Cdecl")
 	}
 
 	; Handle setting IsOwned property outside helper class, to allow mixing
 	AcquireVJD(rID){
-		this.Devices[rID].IsOwned := DllCall("vJoyInterface\AcquireVJD", "UInt", rID)
+		this.Devices[rID].IsOwned := DllCall("vJoyInterface\AcquireVJD", "UInt", rID, "Cdecl")
 		return this.Devices[rID].IsOwned
 	}
 
 	RelinquishVJD(rID){
-		DllCall("vJoyInterface\RelinquishVJD", "UInt", rID)
+		DllCall("vJoyInterface\RelinquishVJD", "UInt", rID, "Cdecl")
 		this.Devices[rID].IsOwned := 0
 		return this.Devices[rID].IsOwned
 	}
 
 	; Not sure if this one is good. What is a "PVOID"?
 	UpdateVJD(rID, pData){
-		return DllCall("vJoyInterface\UpdateVJD", "UInt", rID, "PVOID", pData)
+		return DllCall("vJoyInterface\UpdateVJD", "UInt", rID, "PVOID", pData, "Cdecl")
 	}
 
 	; === vJoy Device properties
 
 	GetVJDButtonNumber(rID){
-		return DllCall("vJoyInterface\GetVJDButtonNumber", "UInt", rID)
+		return DllCall("vJoyInterface\GetVJDButtonNumber", "UInt", rID, "Cdecl")
 	}
 
 	GetVJDDiscPovNumber(rID){
-		return DllCall("vJoyInterface\GetVJDDiscPovNumber", "UInt", rID)
+		return DllCall("vJoyInterface\GetVJDDiscPovNumber", "UInt", rID, "Cdecl")
 	}
 
 	GetVJDContPovNumber(rID){
-		return DllCall("vJoyInterface\GetVJDContPovNumber", "UInt", rID)
+		return DllCall("vJoyInterface\GetVJDContPovNumber", "UInt", rID, "Cdecl")
 	}
 
 	GetVJDAxisExist(rID, Axis){
-		return DllCall("vJoyInterface\GetVJDAxisExist", "UInt", rID, "Uint", Axis)
+		return DllCall("vJoyInterface\GetVJDAxisExist", "UInt", rID, "Uint", Axis, "Cdecl")
 	}
 
 	ResetVJD(rID){
-		return DllCall("vJoyInterface\ResetVJD", "UInt", rID)
+		return DllCall("vJoyInterface\ResetVJD", "UInt", rID, "Cdecl")
 	}
 
 	ResetAll(){
-		return DllCall("vJoyInterface\ResetAll")
+		return DllCall("vJoyInterface\ResetAll", "Cdecl")
 	}
 
 	ResetButtons(rID){
@@ -385,19 +385,19 @@ Class SuperCvJoyInterface {
 	}
 
 	SetAxis(Value, rID, Axis){
-		return DllCall("vJoyInterface\SetAxis", "Int", Value, "UInt", rID, "UInt", Axis)
+		return DllCall("vJoyInterface\SetAxis", "Int", Value, "UInt", rID, "UInt", Axis, "Cdecl")
 	}
 
 	SetBtn(Value, rID, nBtn){
-		return DllCall("vJoyInterface\SetBtn", "Int", Value, "UInt", rID, "UInt", nBtn)
+		return DllCall("vJoyInterface\SetBtn", "Int", Value, "UInt", rID, "UInt", nBtn, "Cdecl")
 	}
 
 	SetDiscPov(Value, rID, nPov){
-		return DllCall("vJoyInterface\SetDiscPov", "Int", Value, "UInt", rID, "UChar", nPov)
+		return DllCall("vJoyInterface\SetDiscPov", "Int", Value, "UInt", rID, "UChar", nPov, "Cdecl")
 	}
 
 	SetContPov(Value, rID, nPOV){
-		return DllCall("vJoyInterface\SetContPov", "Int", Value, "UInt", rID, "UChar", nPov)
+		return DllCall("vJoyInterface\SetContPov", "Int", Value, "UInt", rID, "UChar", nPov, "Cdecl")
 	}
 
 }

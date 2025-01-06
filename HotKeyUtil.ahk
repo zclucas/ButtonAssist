@@ -38,6 +38,9 @@ BindTabHotKey() {
             if (tableItem.TKArr.Length < index || tableItem.TKArr[index] == "" || (Integer)(tableItem.ForbidArr[index]))
                 continue
 
+            if (tableItem.InfoArr.Length < index || tableItem.InfoArr[index] == "")
+                continue
+
             key := "$*" tableItem.TKArr[index]
             actionArr := GetMacroAction(tableIndex, index)
             isJoyKey := SubStr(tableItem.TKArr[index], 1, 3) == "Joy"

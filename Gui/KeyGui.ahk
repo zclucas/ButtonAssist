@@ -31,7 +31,7 @@ class KeyGui {
     AddGui() {
         MyGui := Gui(,"按键指令编辑")
         this.Gui := MyGui
-        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", 10, 10, 1240, 440), "请从下面按钮中选择按键：")
+        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", 10, 10, 1240, 460), "请从下面按钮中选择按键：")
         PosX := 20
         PosY := 25
         {
@@ -712,47 +712,47 @@ class KeyGui {
             con.OnEvent("Click", (*) => this.OnCheckKey("Joy1"))
             
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮2")
             con.OnEvent("Click", (*) => this.OnCheckKey("Joy2"))
             
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮3")
             con.OnEvent("Click", (*) => this.OnCheckKey("Joy3"))
             
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮4")
             con.OnEvent("Click", (*) => this.OnCheckKey("Joy4"))
             
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮5")
             con.OnEvent("Click", (*) => this.OnCheckKey("Joy5"))
             
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮6")
             con.OnEvent("Click", (*) => this.OnCheckKey("Joy6"))
             
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮7")
             con.OnEvent("Click", (*) => this.OnCheckKey("Joy7"))
             
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮8")
             con.OnEvent("Click", (*) => this.OnCheckKey("Joy8"))
             
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮9")
             con.OnEvent("Click", (*) => this.OnCheckKey("Joy9"))
             
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮10")
             con.OnEvent("Click", (*) => this.OnCheckKey("Joy10"))
             
@@ -785,9 +785,9 @@ class KeyGui {
             PosX += 70
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮16")
             con.OnEvent("Click", (*) => this.OnCheckKey("Joy16"))
-            
 
-            PosX += 70
+            PosY += 30
+            PosX := 20
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮17")
             con.OnEvent("Click", (*) => this.OnCheckKey("Joy17"))
             
@@ -795,7 +795,62 @@ class KeyGui {
             PosX += 70
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮18")
             con.OnEvent("Click", (*) => this.OnCheckKey("Joy18"))
-            
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮19")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy19"))
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮20")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy20"))
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮21")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy21"))
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮22")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy22"))
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮23")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy23"))
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮24")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy24"))
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮25")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy25"))
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮26")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy26"))
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮27")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy27"))
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮28")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy28"))
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮29")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy29"))
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮30")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy30"))
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮31")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy31"))
+
+            PosX += 70
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "按钮32")
+            con.OnEvent("Click", (*) => this.OnCheckKey("Joy32"))
 
             PosY += 30
             PosX := 20
@@ -913,7 +968,7 @@ class KeyGui {
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
         
-        MyGui.Show(Format("w{} h{}", 1260, 580))
+        MyGui.Show(Format("w{} h{}", 1260, 600))
     }
 
     Init(){
