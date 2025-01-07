@@ -7,8 +7,8 @@ ahkv2语言实现的按键宏，鼠标宏，手柄宏，图片识别等功能的
 2.  运行vJoyConf.exe（点击Win键，然后搜索vJoy，点击Configure Joy）
 3.  修改界面的Number of Buttons值为32，然后点击apply
 4.  双击运行ButtonAssist.exe
-#### 使用说明
-参考视频：https://www.bilibili.com/video/BV13Lr1YREMr/?spm_id_from=333.1387.homepage.video_card.click&vd_source=480c0e372e628c3c87d566849dae7094
+#### 说明
+发布版本视频账号:[浮生若梦的兔子](https://space.bilibili.com/397441876?spm_id_from=333.1007.0.0) 欢迎关注私信反馈问题或者提供完善软件功能的想法。
 
 #### 参与贡献
 1.  Fork 本仓库
