@@ -1,36 +1,17 @@
 # ButtonAssist
+**Read this in other languages: [中文](README.md).**
+#### Introduce
+ahkv2 language to achieve the key macro, mouse macro, handle macro, image recognition and other functions of the tool
+#### Environment Configuration
+1. Double-click vJoySetup.exe in the Joy installation directory
+2. Run vJoyConf.exe (click the Win key, search for vJoy, and click Configure Joy)
+3. Change the Number of Buttons value on the interface to 32, then click Apply
+4. Double-click to run ButtonAssist.exe
+#### Illustrate
+Release version video account:[浮生若梦的兔子](https://space.bilibili.com/397441876?spm_id_from=333.1007.0.0) Welcome to send us feedback or provide ideas for improving software functions.
 
-#### Description
-就是简简单单自己实现一个可以自定义按键宏的工具分享
-
-#### Software Architecture
-Software architecture description
-
-#### Installation
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### Instructions
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### Contribution
-
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
-
-
-#### Gitee Feature
-
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+#### Contribute
+1. Fork this repository
+2. Create a new Feat_xxx branch
+3. Submit code
+4. Create a new Pull Request
