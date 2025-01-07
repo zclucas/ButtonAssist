@@ -3,16 +3,16 @@
 #Include Joy\SuperCvJoyInterface.ahk
 #Include Joy\JoyMacro.ahk
 
-#Include Gdip_All.ahk
 #Include Gui\TriggerKeyGui.ahk
 #Include Gui\TriggerStrGui.ahk
 #Include Gui\MacroGui.ahk
 
-#Include DataClass.ahk
-#Include AssetUtil.ahk
-#Include TimerUtil.ahk
-#Include HotkeyUtil.ahk
-#Include UIUtil.ahk
+#Include Main\Gdip_All.ahk
+#Include Main\DataClass.ahk
+#Include Main\AssetUtil.ahk
+#Include Main\TimerUtil.ahk
+#Include Main\HotkeyUtil.ahk
+#Include Main\UIUtil.ahk
 
 IniFile := "Settings.ini"
 IniSection := "UserSettings"
