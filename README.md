@@ -1,5 +1,5 @@
 # ButtonAssist
-
+**其他语言版本: [English](README.en.md).**
 #### 介绍
 ahkv2语言实现的按键宏，鼠标宏，手柄宏，图片识别等功能的工具
 #### 环境配置
