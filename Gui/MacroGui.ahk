@@ -3,6 +3,7 @@
 #Include KeyGui.ahk
 #Include MouseMoveGui.ahk
 #Include ImageSearchGui.ahk
+#Include FindColorGui.ahk
 
 class MacroGui{
     __new(){
@@ -34,6 +35,9 @@ class MacroGui{
 
         this.ImageSearchGui := ImageSearchGui()
         this.ImageSearchGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+
+        this.FindColorGui := FindColorGui()
+        this.FindColorGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
     }
 
     ShowGui(CommandStr, ShowSaveBtn){
@@ -80,6 +84,12 @@ class MacroGui{
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "图片搜索")
         btnCon.OnEvent("Click", (*) => this.ImageSearchGui.ShowGui())
         this.AllCommandBtnCon.Push(btnCon)
+
+        PosX += 150
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "颜色搜索")
+        btnCon.OnEvent("Click", (*) => this.FindColorGui.ShowGui())
+        this.AllCommandBtnCon.Push(btnCon)
+
 
         PosX := 20
         PosY += 160
