@@ -30,6 +30,5 @@ InitData()
 InitUI()
 BindKey()
 
-;测试提交
 
 
