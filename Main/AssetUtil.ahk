@@ -332,11 +332,13 @@ InitTableItemState() {
         tableItem.KilledArr := []
         tableItem.ActionCount := []
         tableItem.ImageActionArr := []
+        tableItem.ColorActionArr := []
         for index, value in tableItem.ModeArr {
             tableItem.KilledArr.Push(false)
             tableItem.KeyActionArr.Push([])
             tableItem.ActionCount.Push(0)
             tableItem.ImageActionArr.Push(Map())
+            tableItem.ColorActionArr.Push(Map())
         }
     }
 }
@@ -360,6 +362,14 @@ KillTableItemMacro() {
                 }
             }
             tableItem.ImageActionArr[index] := Map()
+
+            for key, value in tableItem.ColorActionArr[index] {
+                loop value.Length {
+                    action := value[A_Index]
+                    SetTimer action, 0
+                }
+            }
+            tableItem.ColorActionArr[index] := Map()
         }
     }
 }

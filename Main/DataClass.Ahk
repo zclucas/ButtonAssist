@@ -23,6 +23,7 @@ Class TableItem
         
         this.KeyActionArr := []
         this.ImageActionArr := []
+        this.ColorActionArr := []
         this.KilledArr := []
         this.ActionCount := []      ; 记录执行次数，用于循环次数判断
         this.UnderPosY := 0

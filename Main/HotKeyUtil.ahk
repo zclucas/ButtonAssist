@@ -105,6 +105,7 @@ OnTriggerMacroKeyAndInit(tableItem, info, index) {
     tableItem.KilledArr[index] := false
     tableItem.ActionCount[index] := 0
     tableItem.ImageActionArr[index] := Map()
+    tableItem.ColorActionArr[index] := Map()
 
     loop {
         if (tableItem.KilledArr[index])
@@ -132,6 +133,7 @@ OnTriggerMacroKey(tableItem, info, index) {
 
         IsMouseMove := StrCompare(curKey, "MouseMove", false) == 0
         IsImageSearch := StrCompare(curKey, "ImageSearch", false) == 0
+        IsFindColor := StrCompare(curKey, "FindColor", false) == 0
         IsJoyPress := StrCompare(SubStr(curKey, 1, 3), "Joy", false) == 0
         if (IsMouseMove) {
             OnMouseMove(strArr)
@@ -139,9 +141,13 @@ OnTriggerMacroKey(tableItem, info, index) {
         else if (IsImageSearch) {
             OnImageSearch(tableItem, infos[A_Index], index)
         }
+        else if (IsFindColor) {
+            OnFindColor(tableItem, infos[A_Index], index)
+        }
         else if (IsJoyPress) {
             OnPressJoyKeyCommand(tableItem, strArr, index)
         }
+
         else {
             OnPressKeyboardCommand(tableItem, infos[A_Index], index)
         }
@@ -169,6 +175,12 @@ OnImageSearch(tableItem, macro, index) {
     searchCount := Integer(searchMacroArr[7])
     searchInterval := Integer(searchMacroArr[8])
 
+    ; searchMacroArrStr := ""
+    ; for index, value in searchMacroArr {
+    ;     searchMacroArrStr .= value . ", "
+    ; }
+    ; MsgBox("searchMacroArr: " RTrim(searchMacroArrStr, ", "))
+    
     tableItem.ImageActionArr[index].Set(searchMacroArr[2], [])
 
     OnImageSearchOnce(tableItem, macro, index)
@@ -237,6 +249,117 @@ OnImageSearchOnce(tableItem, macro, index) {
         OnTriggerMacroKey(tableItem, findAfterMacro, index)
     }
 }
+; 颜色搜索算法
+OnFindColor(tableItem, macro, index) {
+    splitIndex := RegExMatch(macro, "(\(.*\))", &match)
+    if (splitIndex == 0){
+        searchMacroArr := StrSplit(macro, "_")
+        findAfterMacro := ""
+    }
+    else{
+        searchMacroStr := SubStr(macro, 1, splitIndex - 1)
+        searchMacroArr := StrSplit(searchMacroStr, "_")
+        findAfterMacro := SubStr(match[1], 2, StrLen(match[1]) - 2)
+    }
+
+    ; searchMacroArrStr := ""
+    ; for index, value in searchMacroArr {
+    ;     searchMacroArrStr .= value . ", "
+    ; }
+    ; MsgBox("searchMacroArr: " RTrim(searchMacroArrStr, ", "))
+
+    searchCount := Integer(searchMacroArr[7])
+    searchInterval := Integer(searchMacroArr[8])
+
+    tableItem.ColorActionArr[index].Set(searchMacroArr[2], [])
+
+    OnFindColorOnce(tableItem, macro, index)
+
+    loop searchCount {
+        if (A_Index == 1)
+            continue
+
+        if (!tableItem.ColorActionArr[index].Has(searchMacroArr[2]))
+            break
+
+        if (tableItem.KilledArr[index])
+            break
+
+        action := OnFindColorOnce.Bind(tableItem, macro, index)
+        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (searchInterval * (A_Index - 1))
+        tableItem.ColorActionArr[index][searchMacroArr[2]].Push(action)
+        SetTimer action, -floatLeftTime
+    }
+}
+
+OnFindColorOnce(tableItem, macro, index) {
+    splitIndex := RegExMatch(macro, "(\(.*\))", &match)
+    if (splitIndex == 0){
+        searchMacroArr := StrSplit(macro, "_")
+        findAfterMacro := ""
+    }
+    else{
+        searchMacroStr := SubStr(macro, 1, splitIndex - 1)
+        searchMacroArr := StrSplit(searchMacroStr, "_")
+        findAfterMacro := SubStr(match[1], 2, StrLen(match[1]) - 2)
+    }
+
+    if (tableItem.KilledArr[index])
+        return
+
+    if (!tableItem.ColorActionArr[index].Has(searchMacroArr[2]))
+        return
+
+    ; 获取颜色值
+    Color := searchMacroArr[2]
+    X1 := Integer(searchMacroArr[3])
+    Y1 := Integer(searchMacroArr[4])
+    X2 := Integer(searchMacroArr[5])
+    Y2 := Integer(searchMacroArr[6])
+
+    CoordMode("Pixel", "Screen")
+    found := false
+    foundColor := 0x000000
+
+    xIndex := 0  ; 初始化自定义计数器
+    loop X2 - X1 + 1 {
+        loop Y2 - Y1 + 1 {
+            PixelGetColor(foundColor, X1 + xIndex, Y1 + A_Index - 1)
+            if (foundColor = Color) {
+                OutputVarX := X1 + xIndex
+                OutputVarY := Y1 + A_Index - 1
+                found := true
+                break
+            }
+        }
+        
+        if (found)
+            break
+    
+        xIndex++  ; 更新 xIndex
+    }    
+
+    if (found) {
+        if (tableItem.ColorActionArr[index].Has(searchMacroArr[2])) {
+            ActionArr := tableItem.ColorActionArr[index].Get(searchMacroArr[2])
+            loop ActionArr.Length {
+                action := ActionArr[A_Index]
+                SetTimer action, 0
+            }
+            tableItem.ColorActionArr[index].Delete(searchMacroArr[2])
+        }
+
+        Pos := [OutputVarX, OutputVarY]
+        CoordMode("Mouse", "Screen")
+        MouseMove(Pos[1], Pos[2])
+
+        if (findAfterMacro == "")
+            return
+
+        OnTriggerMacroKey(tableItem, findAfterMacro, index)
+    }
+}
+
 
 OnMouseMove(strArr) {
     SendMode("Event")
