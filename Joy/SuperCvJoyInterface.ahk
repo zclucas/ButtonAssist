@@ -36,7 +36,7 @@ Class SuperCvJoyInterface {
 
 	Class CvJoyDevice {
 		IsOwned := 0
-		JoyAxisMap := Map("JoyAxis1Min", 0, "JoyAxis1Max", 100, "JoyAxis2Min", 0, "JoyAxis2Max", 100, "JoyAxis3Min", 0, "JoyAxis3Max", 100, "JoyAxis4Min", 0, "JoyAxis4Max", 100, "JoyAxis5Min", 0, "JoyAxis5Min", 100, "JoyAxis6Min", 0, "JoyAxis6Max", 100, "JoyAxis7Min", 0, "JoyAxis7Max", 100, "JoyAxis8Min", 0, "JoyAxis8Max", 100)
+		JoyAxisMap := Map("JoyAxis1Min", 0, "JoyAxis1Max", 100, "JoyAxis2Min", 0, "JoyAxis2Max", 100, "JoyAxis3Min", 0, "JoyAxis3Max", 100, "JoyAxis4Min", 0, "JoyAxis4Max", 100, "JoyAxis5Min", 0, "JoyAxis5Max", 100, "JoyAxis6Min", 0, "JoyAxis6Max", 100, "JoyAxis7Min", 0, "JoyAxis7Max", 100, "JoyAxis8Min", 0, "JoyAxis8Max", 100)
 	
 		GetStatus(){
 			return this.Interface.GetVJDStatus(this.DeviceID)

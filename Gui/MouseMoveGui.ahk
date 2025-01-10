@@ -8,12 +8,14 @@ class MouseMoveGui{
         this.PosY := 0
         this.Speed := 0
         this.IsRelative := false
+        this.IsOffset := false
         this.PosXCon := ""
         this.PosYCon := ""
         this.SpeedCon := ""
         this.CommandStr := ""
         this.CommandStrCon := ""
         this.RelativeCon := ""
+        this.OffsetCon := ""
 
         this.MousePosCon := ""
     }
@@ -64,6 +66,11 @@ class MouseMoveGui{
 
         PosY += 30
         PosX := 10
+        this.OffsetCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "偏移(可调整游戏视角)")
+        this.OffsetCon.OnEvent("Click", (*) => this.OnChangeEditValue())
+
+        PosY += 30
+        PosX := 10
         this.CommandStrCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 350), "当前指令:MouseMove_0_0_0")
 
         PosY += 40
@@ -72,25 +79,30 @@ class MouseMoveGui{
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.OnCloseGui())
-        MyGui.Show(Format("w{} h{}", 400, 200))
+        MyGui.Show(Format("w{} h{}", 400, 230))
     }
 
     Init(){
         this.PosX := 0
         this.PosY := 0
-        this.Speed := 0
+        this.Speed := 90
+        this.IsRelative := 0
+        this.IsOffset := 0
 
         this.PosXCon.Value := this.PosX
         this.PosYCon.Value := this.PosY
         this.SpeedCon.Value := this.Speed
+        this.RelativeCon.Value := this.IsRelative
+        this.OffsetCon.Value := this.IsOffset
     }
 
     UpdateCommandStr(){
-        speed := 100 - this.Speed
-        this.CommandStr := "MouseMove_" this.PosXCon.Value "_" this.PosYCon.Value "_" speed
-        if (this.IsRelative){
-            this.CommandStr .= "_R"
-        }
+        this.CommandStr := "MouseMove"
+        this.CommandStr .= "_" this.PosXCon.Value
+        this.CommandStr .= "_" this.PosYCon.Value
+        this.CommandStr .= "_" this.SpeedCon.Value
+        this.CommandStr .= "_" this.RelativeCon.Value
+        this.CommandStr .= "_" this.OffsetCon.Value
     }
 
     ToggleRefreshMousePos(state){
@@ -119,6 +131,7 @@ class MouseMoveGui{
         this.PosY := this.PosYCon.Value
         this.Speed := this.SpeedCon.Value
         this.IsRelative := this.RelativeCon.Value
+        this.IsOffset := this.OffsetCon.Value
         this.Refresh()
     }
 

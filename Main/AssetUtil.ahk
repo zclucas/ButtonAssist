@@ -106,8 +106,16 @@ SplitKeyCommand(macro){
 ;初始化数据
 InitData() {
     InitTableItemState()
-
+    InitJoyAxis()
     SetGuiBtnAction()
+}
+
+;手柄轴未使用时，状态会变为0，而非中间值
+InitJoyAxis(){
+    joyAxisNum := 8
+    loop joyAxisNum{
+        SendJoyAxisClick("JoyAxis" A_Index "Max", 30)
+    }
 }
 
 SetGuiBtnAction() {

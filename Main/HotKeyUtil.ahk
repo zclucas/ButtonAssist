@@ -245,14 +245,21 @@ OnSearchOnce(tableItem, cmd, index, isFinally) {
 OnMouseMove(paramArr) {
     SendMode("Event")
     CoordMode("Mouse", "Screen")
-    if (paramArr.Length == 3) {
-        MouseMove(Integer(paramArr[2]), Integer(paramArr[3]))
+    PosX:= Integer(paramArr[2])
+    PosY:= Integer(paramArr[3])
+    Speed := 100 - Integer(paramArr[4])
+    isRelative := Integer(paramArr[5])
+    isOffset := Integer(paramArr[6])
+    
+    if (isOffset){
+        MOUSEEVENTF_MOVE := 0x0001    
+        DllCall("mouse_event", "UInt", MOUSEEVENTF_MOVE, "UInt", PosX, "UInt", PosY, "UInt", 0, "UInt", 0)
     }
-    else if (paramArr.Length == 4) {
-        MouseMove(Integer(paramArr[2]), Integer(paramArr[3]), Integer(paramArr[4]))
+    else if (isRelative){
+        MouseMove(PosX, PosY, Speed, "R")
     }
-    else {
-        MouseMove(Integer(paramArr[2]), Integer(paramArr[3]), Integer(paramArr[4]), paramArr[5])
+    else{
+        MouseMove(PosX, PosY, Speed)
     }
 }
 
@@ -550,7 +557,7 @@ SendJoyAxisKey(key, state) {
         percent := MyvJoy.JoyAxisMap.Get(key)
     }
     value := percent * 327.68
-    index := Integer(SubStr(key, 7, StrLen(key) - 10))
+    index := Integer(SubStr(key, 8, StrLen(key) - 10))
     MyvJoy.SetAxisByIndex(value, index)
 
     if (state == 1) {
