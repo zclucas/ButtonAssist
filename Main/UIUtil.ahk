@@ -105,7 +105,7 @@ AddNormalHotkeyUI(index) {
 
     MyGui := MySoftData.MyGui
     MyGui.Add("Text", Format("x30 y{} w100", tableItem.underPosY), "宏触发按键")
-    MyGui.Add("Text", Format("x140 y{} w550", tableItem.underPosY), "宏指令     案例：ctrl_100,0,a_100(全选快捷键)")
+    MyGui.Add("Text", Format("x140 y{} w550", tableItem.underPosY), "宏指令")
     MyGui.Add("Text", Format("x810 y{} w50", tableItem.underPosY), "编辑")
     MyGui.Add("Text", Format("x860 y{} w50", tableItem.underPosY), "游戏")
     MyGui.Add("Text", Format("x900 y{} w50", tableItem.underPosY), "禁止")
@@ -126,7 +126,7 @@ AddStringHotkeyUI(index) {
 
     MyGui := MySoftData.MyGui
     MyGui.Add("Text", Format("x30 y{} w100", tableItem.underPosY), "宏触发子串")
-    MyGui.Add("Text", Format("x140 y{} w550", tableItem.underPosY), "宏指令     案例：ctrl_100,0,a_100(全选快捷键)")
+    MyGui.Add("Text", Format("x140 y{} w550", tableItem.underPosY), "宏指令")
     MyGui.Add("Text", Format("x810 y{} w50", tableItem.underPosY), "编辑")
     MyGui.Add("Text", Format("x860 y{} w50", tableItem.underPosY), "游戏")
     MyGui.Add("Text", Format("x900 y{} w50", tableItem.underPosY), "禁止")
@@ -162,7 +162,7 @@ AddSoftUI(index) {
     UpdateUnderPosY(index, 30)
     MyGui := MySoftData.MyGui
     MyGui.Add("Text", Format("x30 y{} w100", tableItem.underPosY), "触发键")
-    MyGui.Add("Text", Format("x140 y{} w550", tableItem.underPosY), "辅助键信息案例:Notepad.exe(进程名)")
+    MyGui.Add("Text", Format("x140 y{} w550", tableItem.underPosY), "软件信息案例:Notepad.exe(进程名) 或者 D:\Soft\QQNT\QQ.exe(软件绝对路径)")
     MyGui.Add("Text", Format("x810 y{} w50", tableItem.underPosY), "编辑")
     MyGui.Add("Text", Format("x860 y{} w50", tableItem.underPosY), "游戏")
     MyGui.Add("Text", Format("x900 y{} w50", tableItem.underPosY), "禁止")
