@@ -2,8 +2,7 @@
 #Include CommandIntervalGui.ahk
 #Include KeyGui.ahk
 #Include MouseMoveGui.ahk
-#Include ImageSearchGui.ahk
-#Include FindColorGui.ahk
+#Include SearchGui.ahk
 
 class MacroGui{
     __new(){
@@ -33,11 +32,8 @@ class MacroGui{
         this.MoveMoveGui := MouseMoveGui()
         this.MoveMoveGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
 
-        this.ImageSearchGui := ImageSearchGui()
-        this.ImageSearchGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-
-        this.FindColorGui := FindColorGui()
-        this.FindColorGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SearchGui := SearchGui()
+        this.SearchGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
     }
 
     ShowGui(CommandStr, ShowSaveBtn){
@@ -59,40 +55,37 @@ class MacroGui{
         PosX := 20
         PosY := 20
         MyGui.Add("GroupBox",Format("x{} y{} w{} h{}", 10, 10, 1000, 100) , "当前宏指令")
-        this.CommandTextCtrl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", 15, 25, 990, 80), "")
+        this.CommandTextCtrl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", 15, 25, 990, 120), "")
+
+        PosY += 140
+        MyGui.Add("Text", Format("x{} y{} w{}", 15, 150, 900), "规则1:指令之间必须用% 间隔 %指令衔接。形如：按键，间隔，鼠标移动，间隔，按键，间隔。")
         
-        PosY += 100
+        PosY += 20
         MyGui.Add("GroupBox",Format("x{} y{} w{} h{}", 10, PosY, 1000, 150) , "指令选项")
 
         PosY += 20
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "指令间隔")
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "间隔")
         btnCon.OnEvent("Click", (*) => this.CommandIntervalGui.ShowGui())
         this.CommandBtnIntervalCon := btnCon
         this.AllCommandBtnCon.Push(btnCon)
 
-        PosX += 150
+        PosX += 125
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "按键")
         btnCon.OnEvent("Click", (*) => this.KeyGui.ShowGui())
         this.AllCommandBtnCon.Push(btnCon)
 
-        PosX += 150
+        PosX += 125
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "鼠标移动")
         btnCon.OnEvent("Click", (*) => this.MoveMoveGui.ShowGui())
         this.AllCommandBtnCon.Push(btnCon)
 
-        PosX += 150
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "图片搜索")
-        btnCon.OnEvent("Click", (*) => this.ImageSearchGui.ShowGui())
+        PosX += 125
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "搜索")
+        btnCon.OnEvent("Click", (*) => this.SearchGui.ShowGui())
         this.AllCommandBtnCon.Push(btnCon)
-
-        PosX += 150
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "颜色搜索")
-        btnCon.OnEvent("Click", (*) => this.FindColorGui.ShowGui())
-        this.AllCommandBtnCon.Push(btnCon)
-
 
         PosX := 20
-        PosY += 160
+        PosY += 140
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "Backspace")
         btnCon.OnEvent("Click", (*) => this.Backspace())
 
@@ -101,14 +94,14 @@ class MacroGui{
         btnCon.OnEvent("Click", (*) => this.ClearStr())
 
         PosX += 200
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "确定选项")
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "确定")
         btnCon.OnEvent("Click", (*) => this.OnSureBtnClick())
 
         PosX += 200
         this.SaveBtnCtrl := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "应用并保存")
         this.SaveBtnCtrl.OnEvent("Click", (*) => this.OnSaveBtnClick())
 
-        MyGui.Show(Format("w{} h{}", 1020, 350))
+        MyGui.Show(Format("w{} h{}", 1020, 400))
     }
 
     Refresh(){

@@ -38,7 +38,7 @@ BindTabHotKey() {
             if (tableItem.TKArr.Length < index || tableItem.TKArr[index] == "" || (Integer)(tableItem.ForbidArr[index]))
                 continue
 
-            if (tableItem.InfoArr.Length < index || tableItem.InfoArr[index] == "")
+            if (tableItem.MacroArr.Length < index || tableItem.MacroArr[index] == "")
                 continue
 
             key := "$*" tableItem.TKArr[index]
@@ -75,37 +75,36 @@ BindTabHotKey() {
 
 GetMacroAction(tableIndex, index) {
     tableItem := MySoftData.TableInfo[tableIndex]
-    info := tableItem.InfoArr[index]
+    macro := tableItem.MacroArr[index]
     tableSymbol := GetTableSymbol(tableIndex)
     actionDown := ""
     actionUp := ""
 
-    if (tableSymbol == "Normal" || tableSymbol == "Normal2" || tableSymbol == "String") {
-        actionDown := GetClosureAction(tableItem, info, index, OnTriggerMacroKeyAndInit)
+    if (tableSymbol == "Normal" || tableSymbol == "String") {
+        actionDown := GetClosureAction(tableItem, macro, index, OnTriggerMacroKeyAndInit)
     }
     else if (tableSymbol == "Replace") {
-        actionDown := GetClosureAction(tableItem, info, index, OnReplaceDownKey)
-        actionUp := GetClosureAction(tableItem, info, index, OnReplaceUpKey)
+        actionDown := GetClosureAction(tableItem, macro, index, OnReplaceDownKey)
+        actionUp := GetClosureAction(tableItem, macro, index, OnReplaceUpKey)
     }
     else if (tableSymbol == "Soft") {
-        actionDown := GetClosureAction(tableItem, info, index, OnSoftTriggerKey)
+        actionDown := GetClosureAction(tableItem, macro, index, OnSoftTriggerKey)
     }
 
     return [actionDown, actionUp]
 }
 
-GetClosureAction(tableItem, info, index, func) {     ;获取闭包函数
-    funcObj := func.Bind(tableItem, info, index)
+GetClosureAction(tableItem, macro, index, func) {     ;获取闭包函数
+    funcObj := func.Bind(tableItem, macro, index)
     return (*) => funcObj()
 }
 
 ;按键宏命令
-OnTriggerMacroKeyAndInit(tableItem, info, index) {
+OnTriggerMacroKeyAndInit(tableItem, macro, index) {
     tableItem.KeyActionArr[index] := []
     tableItem.KilledArr[index] := false
     tableItem.ActionCount[index] := 0
-    tableItem.ImageActionArr[index] := Map()
-    tableItem.ColorActionArr[index] := Map()
+    tableItem.SearchActionArr[index] := Map()
 
     loop {
         if (tableItem.KilledArr[index])
@@ -114,46 +113,40 @@ OnTriggerMacroKeyAndInit(tableItem, info, index) {
         if (tableItem.LoopCountArr[index] != -1 && tableItem.ActionCount[index] >= tableItem.LoopCountArr[index])
             break
 
-        OnTriggerMacroKey(tableItem, info, index)
+        OnTriggerMacroOnce(tableItem, macro, index)
         tableItem.ActionCount[index]++
     }
 
 }
 
-OnTriggerMacroKey(tableItem, info, index) {
+OnTriggerMacroOnce(tableItem, macro, index) {
     global MySoftData
-    infos := SplitCommand(info)
+    cmdArr := SplitMacro(macro)
 
-    loop infos.Length {
+    loop cmdArr.Length {
         if (tableItem.KilledArr[index])
             break
 
-        strArr := StrSplit(infos[A_Index], "_")
-        curKey := strArr[1]
+        paramArr := StrSplit(cmdArr[A_Index], "_")
 
-        IsMouseMove := StrCompare(curKey, "MouseMove", false) == 0
-        IsImageSearch := StrCompare(curKey, "ImageSearch", false) == 0
-        IsFindColor := StrCompare(curKey, "FindColor", false) == 0
-        IsJoyPress := StrCompare(SubStr(curKey, 1, 3), "Joy", false) == 0
+        IsMouseMove := StrCompare(paramArr[1], "MouseMove", false) == 0
+        IsSearch := StrCompare(SubStr( paramArr[1], 1, 6), "Search", false) == 0
+        IsJoyPress := StrCompare(SubStr( paramArr[1], 1, 3), "Joy", false) == 0
         if (IsMouseMove) {
-            OnMouseMove(strArr)
+            OnMouseMove(paramArr)
         }
-        else if (IsImageSearch) {
-            OnImageSearch(tableItem, infos[A_Index], index)
-        }
-        else if (IsFindColor) {
-            OnFindColor(tableItem, infos[A_Index], index)
+        else if (IsSearch) {
+            OnSearch(tableItem, cmdArr[A_Index], index)
         }
         else if (IsJoyPress) {
-            OnPressJoyKeyCommand(tableItem, strArr, index)
+            OnPressJoyKeyCommand(tableItem, paramArr, index)
         }
-
         else {
-            OnPressKeyboardCommand(tableItem, infos[A_Index], index)
+            OnPressKeyboardCommand(tableItem, cmdArr[A_Index], index)
         }
 
-        if (infos.Length > A_Index) {
-            interval := Integer(infos[A_Index + 1])
+        if (cmdArr.Length > A_Index) {
+            interval := Integer(cmdArr[A_Index + 1])
             interval += GetRandom(MySoftData.IntervalFloat)
             Sleep(interval)
             A_Index++
@@ -161,259 +154,147 @@ OnTriggerMacroKey(tableItem, info, index) {
     }
 }
 
-OnImageSearch(tableItem, macro, index) {
-    splitIndex := RegExMatch(macro, "(\(.*\))", &match)
-    if (splitIndex == 0){
-        searchMacroArr := StrSplit(macro, "_")
-        findAfterMacro := ""
-    }
-    else{
-        searchMacroStr := SubStr(macro, 1, splitIndex - 1)
-        searchMacroArr := StrSplit(searchMacroStr, "_")
-        findAfterMacro := SubStr(match[1], 2, StrLen(match[1]) - 2)
-    }
-    searchCount := Integer(searchMacroArr[7])
-    searchInterval := Integer(searchMacroArr[8])
-
-    ; searchMacroArrStr := ""
-    ; for index, value in searchMacroArr {
-    ;     searchMacroArrStr .= value . ", "
-    ; }
-    ; MsgBox("searchMacroArr: " RTrim(searchMacroArrStr, ", "))
-    
-    tableItem.ImageActionArr[index].Set(searchMacroArr[2], [])
-
-    OnImageSearchOnce(tableItem, macro, index)
-
-    loop searchCount {
-        if (A_Index == 1)
-            continue
-
-        if (!tableItem.ImageActionArr[index].Has(searchMacroArr[2]))
-            break
-
-        if (tableItem.KilledArr[index])
-            break
-
-        action := OnImageSearchOnce.Bind(tableItem, macro, index)
-        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (searchInterval * (A_Index - 1))
-        tableItem.ImageActionArr[index][searchMacroArr[2]].Push(action)
-        SetTimer action, -floatLeftTime
-    }
-}
-
-OnImageSearchOnce(tableItem, macro, index) {
-    splitIndex := RegExMatch(macro, "(\(.*\))", &match)
-    if (splitIndex == 0){
-        searchMacroArr := StrSplit(macro, "_")
-        findAfterMacro := ""
-    }
-    else{
-        searchMacroStr := SubStr(macro, 1, splitIndex - 1)
-        searchMacroArr := StrSplit(searchMacroStr, "_")
-        findAfterMacro := SubStr(match[1], 2, StrLen(match[1]) - 2)
-    }
-
-    if (tableItem.KilledArr[index])
-        return
-
-    if (!tableItem.ImageActionArr[index].Has(searchMacroArr[2]))
-        return
-
-    ImageInfo := Format("*{} *w0 *h0 {}", Integer(MySoftData.ImageSearchBlur), searchMacroArr[2])
-    X1 := Integer(searchMacroArr[3])
-    Y1 := Integer(searchMacroArr[4])
-    X2 := Integer(searchMacroArr[5])
-    Y2 := Integer(searchMacroArr[6])
-
-    CoordMode("Pixel", "Screen")
-    result := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, ImageInfo)
-
-    if (result) {
-        if (tableItem.ImageActionArr[index].Has(searchMacroArr[2])) {
-            ActionArr := tableItem.ImageActionArr[index].Get(searchMacroArr[2])
-            loop ActionArr.Length {
-                action := ActionArr[A_Index]
-                SetTimer action, 0
-            }
-            tableItem.ImageActionArr[index].Delete(searchMacroArr[2])
-        }
-
-        imageSize := GetImageSize(searchMacroArr[2])
-        Pos := [OutputVarX + imageSize[1] / 2, OutputVarY + imageSize[2] / 2]
-        CoordMode("Mouse", "Screen")
-        MouseMove(Pos[1], Pos[2])
-        if (findAfterMacro == "")
-            return
-
-        OnTriggerMacroKey(tableItem, findAfterMacro, index)
-    }
-}
-; 颜色搜索算法
-OnFindColor(tableItem, macro, index) {
-    splitIndex := RegExMatch(macro, "(\(.*\))", &match)
-    if (splitIndex == 0){
-        searchMacroArr := StrSplit(macro, "_")
-        findAfterMacro := ""
-    }
-    else{
-        searchMacroStr := SubStr(macro, 1, splitIndex - 1)
-        searchMacroArr := StrSplit(searchMacroStr, "_")
-        findAfterMacro := SubStr(match[1], 2, StrLen(match[1]) - 2)
-    }
-
-    ; searchMacroArrStr := ""
-    ; for index, value in searchMacroArr {
-    ;     searchMacroArrStr .= value . ", "
-    ; }
-    ; MsgBox("searchMacroArr: " RTrim(searchMacroArrStr, ", "))
-
-    searchCount := Integer(searchMacroArr[7])
-    searchInterval := Integer(searchMacroArr[8])
-
-    tableItem.ColorActionArr[index].Set(searchMacroArr[2], [])
-
-    OnFindColorOnce(tableItem, macro, index)
-
-    loop searchCount {
-        if (A_Index == 1)
-            continue
-
-        if (!tableItem.ColorActionArr[index].Has(searchMacroArr[2]))
-            break
-
-        if (tableItem.KilledArr[index])
-            break
-
-        action := OnFindColorOnce.Bind(tableItem, macro, index)
-        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (searchInterval * (A_Index - 1))
-        tableItem.ColorActionArr[index][searchMacroArr[2]].Push(action)
-        SetTimer action, -floatLeftTime
-    }
-}
-
-OnFindColorOnce(tableItem, macro, index) {
-    splitIndex := RegExMatch(macro, "(\(.*\))", &match)
-    if (splitIndex == 0){
-        searchMacroArr := StrSplit(macro, "_")
-        findAfterMacro := ""
-    }
-    else{
-        searchMacroStr := SubStr(macro, 1, splitIndex - 1)
-        searchMacroArr := StrSplit(searchMacroStr, "_")
-        findAfterMacro := SubStr(match[1], 2, StrLen(match[1]) - 2)
-    }
-
-    if (tableItem.KilledArr[index])
-        return
-
-    if (!tableItem.ColorActionArr[index].Has(searchMacroArr[2]))
-        return
-
-    ; 获取颜色值
-    Color := searchMacroArr[2]
-    X1 := Integer(searchMacroArr[3])
-    Y1 := Integer(searchMacroArr[4])
-    X2 := Integer(searchMacroArr[5])
-    Y2 := Integer(searchMacroArr[6])
-
-    CoordMode("Pixel", "Screen")
-    found := false
-    foundColor := 0x000000
-
-    xIndex := 0  ; 初始化自定义计数器
-    loop X2 - X1 + 1 {
-        loop Y2 - Y1 + 1 {
-            PixelGetColor(foundColor, X1 + xIndex, Y1 + A_Index - 1)
-            if (foundColor = Color) {
-                OutputVarX := X1 + xIndex
-                OutputVarY := Y1 + A_Index - 1
-                found := true
-                break
-            }
-        }
-        
-        if (found)
-            break
-    
-        xIndex++  ; 更新 xIndex
-    }    
-
-    if (found) {
-        if (tableItem.ColorActionArr[index].Has(searchMacroArr[2])) {
-            ActionArr := tableItem.ColorActionArr[index].Get(searchMacroArr[2])
-            loop ActionArr.Length {
-                action := ActionArr[A_Index]
-                SetTimer action, 0
-            }
-            tableItem.ColorActionArr[index].Delete(searchMacroArr[2])
-        }
-
-        Pos := [OutputVarX, OutputVarY]
-        CoordMode("Mouse", "Screen")
-        MouseMove(Pos[1], Pos[2])
-
-        if (findAfterMacro == "")
-            return
-
-        OnTriggerMacroKey(tableItem, findAfterMacro, index)
-    }
-}
-
-
-OnMouseMove(strArr) {
-    SendMode("Event")
-    CoordMode("Mouse", "Screen")
-    if (strArr.Length == 3) {
-        MouseMove(Integer(strArr[2]), Integer(strArr[3]))
-    }
-    else if (strArr.Length == 4) {
-        MouseMove(Integer(strArr[2]), Integer(strArr[3]), Integer(strArr[4]))
+OnSearch(tableItem, cmd, index) {
+    splitIndex := RegExMatch(cmd, "(\(.*\))", &match)
+    if (splitIndex == 0) {
+        searchCmdArr := StrSplit(cmd, "_")
     }
     else {
-        MouseMove(Integer(strArr[2]), Integer(strArr[3]), Integer(strArr[4]), strArr[5])
+        searchMacroStr := SubStr(cmd, 1, splitIndex - 1)
+        searchCmdArr := StrSplit(searchMacroStr, "_")
+    }
+    searchCount := Integer(searchCmdArr[7])
+    searchInterval := Integer(searchCmdArr[8])
+
+    tableItem.SearchActionArr[index].Set(searchCmdArr[2], [])
+
+    OnSearchOnce(tableItem, cmd, index, searchCount == 1)
+    loop searchCount {
+        if (A_Index == 1)
+            continue
+
+        action := OnSearchOnce.Bind(tableItem, cmd, index, A_Index == searchCount)
+        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (searchInterval * (A_Index - 1))
+        tableItem.SearchActionArr[index][searchCmdArr[2]].Push(action)
+        SetTimer action, -floatLeftTime
     }
 }
 
-OnPressJoyKeyCommand(tableItem, strArr, index) {
-    key := strArr[1]
-    isJoyAxis := StrCompare(SubStr(strArr[1], 1, 7), "JoyAxis", false) == 0
-    holdTime := Integer(strArr[2])
+OnSearchOnce(tableItem, cmd, index, isFinally) {
+    macroArr := SplitCommand(cmd)
+    searchCmdArr := StrSplit(macroArr[1], "_") 
+
+    if (tableItem.KilledArr[index])
+        return
+
+    if (!tableItem.SearchActionArr[index].Has(searchCmdArr[2]))
+        return
+
+    X1 := Integer(searchCmdArr[3])
+    Y1 := Integer(searchCmdArr[4])
+    X2 := Integer(searchCmdArr[5])
+    Y2 := Integer(searchCmdArr[6])
+
+    CoordMode("Pixel", "Screen")
+    if (searchCmdArr[1] == "SearchImage") {
+        SearchInfo := Format("*{} *w0 *h0 {}", Integer(MySoftData.ImageSearchBlur), searchCmdArr[2])
+        found := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, SearchInfo)
+    }
+    else if (searchCmdArr[1] == "SearchColor") {
+        found := PixelSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, searchCmdArr[2], Integer(MySoftData.ImageSearchBlur
+        ))
+    }
+
+    if (found || isFinally) {
+        ;清除后续的搜索和搜索记录
+        if (tableItem.SearchActionArr[index].Has(searchCmdArr[2])) {
+            ActionArr := tableItem.SearchActionArr[index].Get(searchCmdArr[2])
+            loop ActionArr.Length {
+                action := ActionArr[A_Index]
+                SetTimer action, 0
+            }
+            tableItem.SearchActionArr[index].Delete(searchCmdArr[2])
+        }
+    }
+
+    if (found) {
+        ;自动移动鼠标
+        if (Integer(searchCmdArr[9])) {
+            Pos := [OutputVarX, OutputVarY]
+            if (searchCmdArr[1] == "SearchImage") {
+                imageSize := GetImageSize(searchCmdArr[2])
+                Pos := [OutputVarX + imageSize[1] / 2, OutputVarY + imageSize[2] / 2]
+            }
+
+            CoordMode("Mouse", "Screen")
+            MouseMove(Pos[1], Pos[2])
+        }
+
+        if (macroArr[2] == "")
+            return
+        OnTriggerMacroOnce(tableItem, macroArr[2], index)
+    }
+
+    if (isFinally && !found) {
+        if (macroArr[3] == "")
+            return
+        OnTriggerMacroOnce(tableItem, macroArr[3], index)
+    }
+}
+
+OnMouseMove(paramArr) {
+    SendMode("Event")
+    CoordMode("Mouse", "Screen")
+    if (paramArr.Length == 3) {
+        MouseMove(Integer(paramArr[2]), Integer(paramArr[3]))
+    }
+    else if (paramArr.Length == 4) {
+        MouseMove(Integer(paramArr[2]), Integer(paramArr[3]), Integer(paramArr[4]))
+    }
+    else {
+        MouseMove(Integer(paramArr[2]), Integer(paramArr[3]), Integer(paramArr[4]), paramArr[5])
+    }
+}
+
+OnPressJoyKeyCommand(tableItem, paramArr, index) {
+    key := paramArr[1]
+    isJoyAxis := StrCompare(SubStr(paramArr[1], 1, 7), "JoyAxis", false) == 0
+    holdTime := Integer(paramArr[2])
     floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
     action := isJoyAxis ? SendJoyAxisClick : SendJoyBtnClick
     action(key, floatHoldTime)
 
-    count := strArr.Length > 2 ? Integer(strArr[3]) : 1
+    count := paramArr.Length > 2 ? Integer(paramArr[3]) : 1
     loop count {
         if (A_Index == 1)
             continue
 
         floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
         tempAction := action.Bind(key, floatHoldTime)
-        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (Integer(strArr[4]) * (A_Index - 1))
+        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (Integer(paramArr[4]) * (A_Index - 1))
         tableItem.KeyActionArr[index].Push(tempAction)
         SetTimer tempAction, -floatLeftTime
     }
 
 }
 
-OnPressKeyboardCommand(tableItem, macro, index) {
-    strArr := SplitKeyCommand(macro)
-    key := strArr[1]
+OnPressKeyboardCommand(tableItem, cmd, index) {
+    paramArr := SplitKeyCommand(cmd)
+    key := paramArr[1]
     mode := tableItem.ModeArr[index]
-    holdTime := Integer(strArr[2])
+    holdTime := Integer(paramArr[2])
     floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
     action := mode == 1 ? SendGameModeKeyClick : SendNormalKeyClick
     action(key, floatHoldTime)
 
-    count := strArr.Length > 2 ? Integer(strArr[3]) : 1
+    count := paramArr.Length > 2 ? Integer(paramArr[3]) : 1
     loop count {
         if (A_Index == 1)
             continue
 
         floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
         tempAction := action.Bind(key, floatHoldTime)
-        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (Integer(strArr[4]) * (A_Index - 1))
+        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (Integer(paramArr[4]) * (A_Index - 1))
         tableItem.KeyActionArr[index].Push(tempAction)
         SetTimer tempAction, -floatLeftTime
     }

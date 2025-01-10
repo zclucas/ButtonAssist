@@ -22,7 +22,7 @@ GetImageSize(imageFile) {
     return [width, height]
 }
 
-SplitCommand(info) {
+SplitMacro(info) {
     resultArr := []
     lastSymbolIndex := 0
     leftBracket := 0
@@ -52,6 +52,38 @@ SplitCommand(info) {
 
     }
     return resultArr
+}
+
+SplitCommand(macro){
+    splitIndex := RegExMatch(macro, "(\(.*\))", &match)
+    if (splitIndex == 0){
+        return [macro, "", ""]
+    }
+    else{
+        macro1 := SubStr(macro, 1, splitIndex - 1)
+        result := [macro1]
+        lastSymbolIndex := 0
+        leftBracket := 0
+        loop parse match[1]{
+            if (A_LoopField == "(") {
+                leftBracket += 1
+                if (leftBracket == 1)
+                    lastSymbolIndex := A_Index
+            }
+    
+            if (A_LoopField == ")") {
+                leftBracket -= 1
+                if (leftBracket == 0){
+                    curMacro := SubStr(match[1], lastSymbolIndex + 1, A_Index - lastSymbolIndex - 1)
+                    result.Push(curMacro)
+                }
+            }
+        }
+        if (result.Length == 2){
+            result.Push("")
+        }
+        return result
+    }
 }
 
 SplitKeyCommand(macro){
@@ -119,7 +151,7 @@ ReadTableItemInfo(index) {
     symbol := GetTableSymbol(index)
     defaultInfo := GetTableItemDefaultInfo(index)
     savedTKArrStr := IniRead(IniFile, IniSection, symbol "TKArr", "")
-    savedInfoArrStr := IniRead(IniFile, IniSection, symbol "InfoArr", "")
+    savedMacroArrStr := IniRead(IniFile, IniSection, symbol "MacroArr", "")
     savedModeArrStr := IniRead(IniFile, IniSection, symbol "ModeArr", "")
     savedForbidArrStr := IniRead(IniFile, IniSection, symbol "ForbidArr", "")
     savedProcessNameStr := IniRead(IniFile, IniSection, symbol "ProcessNameArr", "")
@@ -129,8 +161,8 @@ ReadTableItemInfo(index) {
     if (!MySoftData.HasSaved) {
         if (savedTKArrStr == "")
             savedTKArrStr := defaultInfo[1]
-        if (savedInfoArrStr == "")
-            savedInfoArrStr := defaultInfo[2]
+        if (savedMacroArrStr == "")
+            savedMacroArrStr := defaultInfo[2]
         if (savedModeArrStr == "")
             savedModeArrStr := defaultInfo[3]
         if (savedForbidArrStr == "")
@@ -145,7 +177,7 @@ ReadTableItemInfo(index) {
 
     tableItem := MySoftData.TableInfo[index]
     SetArr(savedTKArrStr, "π", tableItem.TKArr)
-    SetArr(savedInfoArrStr, "π", tableItem.InfoArr)
+    SetArr(savedMacroArrStr, "π", tableItem.MacroArr)
     SetArr(savedModeArrStr, "π", tableItem.ModeArr)
     SetArr(savedForbidArrStr, "π", tableItem.ForbidArr)
     SetArr(savedProcessNameStr, "π", tableItem.ProcessNameArr)
@@ -181,7 +213,7 @@ SetIntArr(str, symbol, Arr) {
 
 GetTableItemDefaultInfo(index) {
     savedTKArrStr := ""
-    savedInfoArrStr := ""
+    savedMacroArrStr := ""
     savedModeArrStr := ""
     savedForbidArrStr := ""
     savedProcessNameStr := ""
@@ -191,7 +223,7 @@ GetTableItemDefaultInfo(index) {
 
     if (symbol == "Normal") {
         savedTKArrStr := "k"
-        savedInfoArrStr :=
+        savedMacroArrStr :=
             "a_30_30_50,3000"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
@@ -202,7 +234,7 @@ GetTableItemDefaultInfo(index) {
     }
     else if (symbol == "String") {
         savedTKArrStr := ":?*:AA"
-        savedInfoArrStr := "lbutton_200,50,MouseMove_100_100_10"
+        savedMacroArrStr := "lbutton_200,50,MouseMove_100_100_10"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
@@ -211,19 +243,19 @@ GetTableItemDefaultInfo(index) {
     }
     else if (symbol == "Replace") {
         savedTKArrStr := "lπoπp"
-        savedInfoArrStr := "leftπb,cπ"
+        savedMacroArrStr := "leftπb,cπ"
         savedModeArrStr := "0π0π0"
         savedForbidArrStr := "1π1π1"
         savedProcessNameStr := "ππ"
     }
     else if (symbol == "Soft") {
         savedTKArrStr := "!d"
-        savedInfoArrStr := "Notepad.exe"
+        savedMacroArrStr := "Notepad.exe"
         savedModeArrStr := "0"
         savedForbidArrStr := "0"
         savedProcessNameStr := ""
     }
-    return [savedTKArrStr, savedInfoArrStr, savedModeArrStr, savedForbidArrStr, savedProcessNameStr, savedRemarkArrStr, savedLoopCountStr]
+    return [savedTKArrStr, savedMacroArrStr, savedModeArrStr, savedForbidArrStr, savedProcessNameStr, savedRemarkArrStr, savedLoopCountStr]
 }
 
 ;资源保存
@@ -253,7 +285,7 @@ SaveTableItemInfo(index) {
     SavedInfo := GetSavedTableItemInfo(index)
     symbol := GetTableSymbol(index)
     IniWrite(SavedInfo[1], IniFile, IniSection, symbol "TKArr")
-    IniWrite(SavedInfo[2], IniFile, IniSection, symbol "InfoArr")
+    IniWrite(SavedInfo[2], IniFile, IniSection, symbol "MacroArr")
     IniWrite(SavedInfo[3], IniFile, IniSection, symbol "ModeArr")
     IniWrite(SavedInfo[4], IniFile, IniSection, symbol "ForbidArr")
     IniWrite(SavedInfo[5], IniFile, IniSection, symbol "ProcessNameArr")
@@ -264,7 +296,7 @@ SaveTableItemInfo(index) {
 GetSavedTableItemInfo(index) {
     Saved := MySoftData.MyGui.Submit()
     TKArrStr := ""
-    InfoArrStr := ""
+    MacroArrStr := ""
     ModeArrStr := ""
     ForbidArrStr := ""
     ProcessNameArrStr := ""
@@ -275,7 +307,7 @@ GetSavedTableItemInfo(index) {
 
     loop tableItem.ModeArr.Length {
         TKArrStr .= tableItem.TKConArr[A_Index].Value
-        InfoArrStr .= tableItem.InfoConArr[A_Index].Value
+        MacroArrStr .= tableItem.InfoConArr[A_Index].Value
         ModeArrStr .= tableItem.ModeConArr[A_Index].Value
         ForbidArrStr .= tableItem.ForbidConArr[A_Index].Value
         ProcessNameArrStr .= tableItem.ProcessNameConArr[A_Index].Value
@@ -284,7 +316,7 @@ GetSavedTableItemInfo(index) {
 
         if (tableItem.ModeArr.Length > A_Index) {
             TKArrStr .= "π"
-            InfoArrStr .= "π"
+            MacroArrStr .= "π"
             ModeArrStr .= "π"
             ForbidArrStr .= "π"
             ProcessNameArrStr .= "π"
@@ -292,7 +324,7 @@ GetSavedTableItemInfo(index) {
             LoopCountArrStr .= "π"
         }
     }
-    return [TKArrStr, InfoArrStr, ModeArrStr, ForbidArrStr, ProcessNameArrStr, RemarkArrStr, LoopCountArrStr]
+    return [TKArrStr, MacroArrStr, ModeArrStr, ForbidArrStr, ProcessNameArrStr, RemarkArrStr, LoopCountArrStr]
 }
 
 SaveWinPos() {
@@ -331,14 +363,12 @@ InitTableItemState() {
         tableItem.KeyActionArr := []
         tableItem.KilledArr := []
         tableItem.ActionCount := []
-        tableItem.ImageActionArr := []
-        tableItem.ColorActionArr := []
+        tableItem.SearchActionArr := []
         for index, value in tableItem.ModeArr {
             tableItem.KilledArr.Push(false)
             tableItem.KeyActionArr.Push([])
             tableItem.ActionCount.Push(0)
-            tableItem.ImageActionArr.Push(Map())
-            tableItem.ColorActionArr.Push(Map())
+            tableItem.SearchActionArr.Push(Map())
         }
     }
 }
@@ -355,21 +385,13 @@ KillTableItemMacro() {
             }
             tableItem.KeyActionArr[index] := []
 
-            for key, value in tableItem.ImageActionArr[index] {
+            for key, value in tableItem.SearchActionArr[index] {
                 loop value.Length {
                     action := value[A_Index]
                     SetTimer action, 0
                 }
             }
-            tableItem.ImageActionArr[index] := Map()
-
-            for key, value in tableItem.ColorActionArr[index] {
-                loop value.Length {
-                    action := value[A_Index]
-                    SetTimer action, 0
-                }
-            }
-            tableItem.ColorActionArr[index] := Map()
+            tableItem.SearchActionArr[index] := Map()
         }
     }
 }

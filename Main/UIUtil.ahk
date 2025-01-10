@@ -40,6 +40,7 @@ RefreshToolUI() {
     ToolCheckInfo.ToolProcessTileCtrl.Value := ToolCheckInfo.ProcessTile
     ToolCheckInfo.ToolProcessPidCtrl.Value := ToolCheckInfo.ProcessPid
     ToolCheckInfo.ToolProcessClassCtrl.Value := ToolCheckInfo.ProcessClass
+    ToolCheckInfo.ToolProcessIdCtrl.Value := ToolCheckInfo.ProcessId
 }
 
 ;UI元素相关函数
@@ -187,7 +188,7 @@ LoadSavedSettingUI(index) {
         newTkControl := MyGui.Add("Edit", "x20 w100 Center" TKPosY, "")
         newInfoControl := MyGui.Add("Edit", "x130 w650" InfoHeight posY, "")
         newTkControl.Value := tableItem.TKArr.Length >= A_Index ? tableItem.TKArr[A_Index] : ""
-        newInfoControl.Value := tableItem.InfoArr.Length >= A_Index ? tableItem.InfoArr[A_Index] : ""
+        newInfoControl.Value := tableItem.MacroArr.Length >= A_Index ? tableItem.MacroArr[A_Index] : ""
 
         newKeyBtnControl := MyGui.Add("Button", Format("x790 w60 y{} h20", tableItem.underPosY), "触发键")
         newKeyBtnControl.OnEvent("Click", GetTableClosureAction(EditTriggerAction, tableItem, A_Index))
@@ -250,7 +251,7 @@ OnAddSetting(*) {
     isTriggerStr := CheckIsStringMacroTable(TableIndex)
     EditTriggerAction := isTriggerStr ? OnTableEditTriggerStr : OnTableEditTriggerKey
     tableItem.TKArr.Push("")
-    tableItem.InfoArr.Push("")
+    tableItem.MacroArr.Push("")
     tableItem.ModeArr.Push(0)
     tableItem.ForbidArr.Push(0)
     tableItem.ProcessNameArr.Push("")
@@ -322,8 +323,8 @@ OnRemoveSetting(*) {
 
     if (tableItem.TKArr.Length > 0)
         tableItem.TKArr.Pop()
-    if (tableItem.InfoArr.Length > 0)
-        tableItem.InfoArr.Pop()
+    if (tableItem.MacroArr.Length > 0)
+        tableItem.MacroArr.Pop()
     if (tableItem.ProcessNameArr.Length > 0)
         tableItem.ProcessNameArr.Pop()
     if (tableItem.LoopCountArr.Length > 0)
@@ -356,7 +357,7 @@ AddRuleUI(index) {
     MyGui.Add("Text", Format("x20 y{} w130", posY), "按住时间浮动:")
     MySoftData.HoldFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), MySoftData.HoldFloat)
 
-    MyGui.Add("Text", Format("x270 y{} w130", posY), "图片搜索模糊度:")
+    MyGui.Add("Text", Format("x270 y{} w130", posY), "搜索模糊0~255:")
     MySoftData.ImageSearchBlurCtrl := MyGui.Add("Edit", Format("x380 y{} w70 center", posY - 4), MySoftData.ImageSearchBlur
     )
 
@@ -434,13 +435,16 @@ AddToolUI(index) {
     ToolCheckInfo.ToolProcessTileCtrl := MyGui.Add("Edit", Format("x120 y{} w250", posY - 5), ToolCheckInfo.ProcessTile
     )
 
-    MyGui.Add("Text", Format("x390 y{}", posY), "进程PID：")
+    MyGui.Add("Text", Format("x390 y{}", posY), "进程PID:")
     ToolCheckInfo.ToolProcessPidCtrl := MyGui.Add("Edit", Format("x450 y{} w250", posY - 5), ToolCheckInfo.ProcessPid)
 
     posY += 30
     MyGui.Add("Text", Format("x20 y{}", posY), "进程窗口类：")
     ToolCheckInfo.ToolProcessClassCtrl := MyGui.Add("Edit", Format("x120 y{} w250", posY - 5), ToolCheckInfo.ProcessClass
     )
+
+    MyGui.Add("Text", Format("x390 y{}", posY), "句柄Id:")
+    ToolCheckInfo.ToolProcessIdCtrl := MyGui.Add("Edit", Format("x450 y{} w250", posY - 5), ToolCheckInfo.ProcessId)
 
     posY += 20
     MySoftData.TableInfo[index].underPosY := posY
@@ -455,6 +459,7 @@ SetToolCheckInfo() {
     ToolCheckInfo.ProcessTile := WinGetTitle(winId)
     ToolCheckInfo.ProcessPid := WinGetPID(winId)
     ToolCheckInfo.ProcessClass := WinGetClass(winId)
+    ToolCheckInfo.ProcessId := winId
     RefreshToolUI()
 }
 

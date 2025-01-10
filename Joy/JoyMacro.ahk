@@ -79,7 +79,7 @@ class JoyMacro {
     CheckBtnMacro(joyBtnSymbol){
         loop this.controllerNum{
             if (GetKeyState(A_Index joyBtnSymbol)){
-                this.MacroMap.Get("Joy" A_Index).Action()
+                this.MacroMap.Get(joyBtnSymbol).Action()
                 return
             }
         }

@@ -3,7 +3,7 @@ Class TableItem
     __New()
     {
         this.TKArr := []
-        this.InfoArr := []
+        this.MacroArr := []
         this.ModeArr := []
         this.ForbidArr := []
         this.ProcessNameArr := []
@@ -22,8 +22,7 @@ Class TableItem
         this.RemarkConArr := []
         
         this.KeyActionArr := []
-        this.ImageActionArr := []
-        this.ColorActionArr := []
+        this.SearchActionArr := []
         this.KilledArr := []
         this.ActionCount := []      ; 记录执行次数，用于循环次数判断
         this.UnderPosY := 0
@@ -42,6 +41,7 @@ Class ToolCheck
         this.ToolProcessTileCtrl := ""
         this.ToolProcessPidCtrl := ""
         this.ToolProcessClassCtrl := ""
+        this.ToolProcessIdCtrl := ""
 
         this.IsToolCheck := false
         this.ToolCheckHotKey := ""
@@ -50,6 +50,7 @@ Class ToolCheck
         this.ProcessTile := ""
         this.ProcessPid := ""
         this.ProcessClass := ""
+        this.ProcessId := ""
         this.CheckTimer := ""
     }
 

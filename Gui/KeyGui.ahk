@@ -1006,37 +1006,40 @@ class KeyGui {
     }
 
     OnChangeEditValue() {
-        if (!IsInteger(this.HoldTimeCon.Value) || Integer(this.HoldTimeCon.Value) <= 0){
-            MsgBox("按键按住时间必须为大于零的整数！")
-        }
-
-        if (!IsInteger(this.KeyCountCon.Value) || Integer(this.KeyCountCon.Value) <= 0){
-            MsgBox("按键次数必须为大于零的整数！")
-        }
-
-        if (!IsInteger(this.PerIntervalCon.Value) || Integer(this.PerIntervalCon.Value) <= 0){
-            MsgBox("每次间隔必须为大于零的整数！")
-        }
-
-        this.HoldTime := Integer(this.HoldTimeCon.Value)
-        this.KeyCount := Integer(this.KeyCountCon.Value)
-        this.PerInterval := Integer(this.PerIntervalCon.Value)
+        this.HoldTime := this.HoldTimeCon.Value
+        this.KeyCount := this.KeyCountCon.Value
+        this.PerInterval := this.PerIntervalCon.Value
         this.Refresh()
     }
 
     OnClickSureBtn() {
-        if (this.SureBtnAction == "")
-            return
-
-        if (this.HoldTime >= this.PerInterval){
-            MsgBox("按键按住时间必须小于每次间隔！")
-            return
-        }
-
         if (this.KeyStr == ""){
             MsgBox("请选择按键！")
             return
         }
+
+        if (!IsInteger(this.HoldTimeCon.Value) || Integer(this.HoldTimeCon.Value) <= 0){
+            MsgBox("按键按住时间必须为大于零的整数！")
+            return
+        }
+
+        if (!IsInteger(this.KeyCountCon.Value) || Integer(this.KeyCountCon.Value) <= 0){
+            MsgBox("按键次数必须为大于零的整数！")
+            return
+        }
+
+        if (!IsInteger(this.PerIntervalCon.Value) || Integer(this.PerIntervalCon.Value) <= 0){
+            MsgBox("每次间隔必须为大于零的整数！")
+            return
+        }
+
+        if (Integer(this.KeyCount) > 1 && Integer(this.HoldTime) >= Integer(this.PerInterval)){
+            MsgBox("按键按住时间必须小于每次间隔！")
+            return
+        }
+
+        if (this.SureBtnAction == "")
+            return
 
         action := this.SureBtnAction
         action(this.CommandStr)
