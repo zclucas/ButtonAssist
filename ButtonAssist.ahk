@@ -30,5 +30,3 @@ InitData()
 InitUI()
 BindKey()
 
-
-

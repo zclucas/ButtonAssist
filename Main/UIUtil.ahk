@@ -240,6 +240,10 @@ AddOperBtnUI() {
     MySoftData.BtnRemove.OnEvent("Click", OnRemoveSetting)
     MySoftData.BtnSave := MyGui.Add("Button", "x500 w120 vbtnSure" YPos, "应用并保存")
     MySoftData.BtnSave.OnEvent("Click", OnSaveSetting)
+
+    MyTriggerKeyGui.SureFocusCon := MySoftData.BtnSave
+    MyTriggerStrGui.SureFocusCon := MySoftData.BtnSave
+    MyMacroGui.SureFocusCon := MySoftData.BtnSave
 }
 
 OnAddSetting(*) {

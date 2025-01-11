@@ -3,9 +3,11 @@
 class TriggerStrGui {
     __new() {
         this.Gui := ""
-        this.ConMap := Map()
         this.SureBtnAction := ""
         this.SaveBtnAction := ""
+        this.SureFocusCon := ""
+
+        this.ConMap := Map()
         this.IsNoEndChar := true
         this.IsSubStr := true
         this.IsNoDelete := true
@@ -42,13 +44,13 @@ class TriggerStrGui {
         triggerStr := ""
 
         triggerStr .= ":"
-        if (this.IsSubStr){
+        if (this.IsSubStr) {
             triggerStr .= "?"
         }
-        if (this.IsNoEndChar){
+        if (this.IsNoEndChar) {
             triggerStr .= "*"
         }
-        if (this.IsNoDelete){
+        if (this.IsNoDelete) {
             triggerStr .= "B0"
         }
 
@@ -58,24 +60,24 @@ class TriggerStrGui {
         return triggerStr
     }
 
-    Backspace(){
+    Backspace() {
         str := SubStr(this.Str, 1, StrLen(this.Str) - 1)
         this.Str := str
         this.Refresh()
     }
 
-    ClearStr(){
+    ClearStr() {
         this.Str := ""
         this.Refresh()
     }
 
     ;UI相关
-    ShowGui(triggerKey, showSaveBtn){
-        
+    ShowGui(triggerKey, showSaveBtn) {
+
         if (this.Gui != "") {
             this.Gui.Show()
         }
-        else{
+        else {
             this.AddGui()
         }
 
@@ -87,8 +89,8 @@ class TriggerStrGui {
         {
             MyGui := Gui()
             this.Gui := MyGui
+            MyGui.SetFont(, "Consolas")
             MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", 10, 10, 1150, 260), "请从下面字符中组合你想要触发宏的字串：")
-
 
             PosX := 20
             PosY := 40
@@ -166,7 +168,6 @@ class TriggerStrGui {
             con.OnEvent("Click", (*) => this.OnCharBtnClick("="))
             this.ConMap.Set("=", con)
 
-
             PosY += 40
             PosX := 20
             con := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 45), "!")
@@ -228,7 +229,6 @@ class TriggerStrGui {
             con.OnEvent("Click", (*) => this.OnCharBtnClick("]"))
             this.ConMap.Set("]", con)
 
-
             PosX += 75
             con := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 45), "{")
             con.OnEvent("Click", (*) => this.OnCharBtnClick("{"))
@@ -243,9 +243,6 @@ class TriggerStrGui {
             con := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 45), "|")
             con.OnEvent("Click", (*) => this.OnCharBtnClick("|"))
             this.ConMap.Set("|", con)
-
-            
-
 
             PosY += 40
             PosX := 20
@@ -312,18 +309,16 @@ class TriggerStrGui {
             con := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 45), ";")
             con.OnEvent("Click", (*) => this.OnCharBtnClick(";"))
             this.ConMap.Set(";", con)
-            
+
             PosX += 75
             con := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 45), ",")
             con.OnEvent("Click", (*) => this.OnCharBtnClick(","))
             this.ConMap.Set(",", con)
 
-            
             PosX += 75
             con := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 45), ".")
             con.OnEvent("Click", (*) => this.OnCharBtnClick("."))
             this.ConMap.Set(".", con)
-
 
             PosY += 40
             PosX := 20
@@ -386,7 +381,6 @@ class TriggerStrGui {
             con.OnEvent("Click", (*) => this.OnCharBtnClick("\"))
             this.ConMap.Set("\", con)
 
-
             PosY += 40
             PosX := 20
             con := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 45), "Z")
@@ -443,11 +437,13 @@ class TriggerStrGui {
 
         PosY += 40
         PosX := 20
-        con := MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000), "终止符说明：当输入字串时，需要输入一个终止符触发。终止符包含：-()[]{}':;/\,.?! Enter Space Tab以及引号")
+        con := MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000),
+        "终止符说明：当输入字串时，需要输入一个终止符触发。终止符包含：-()[]{}':;/\,.?! Enter Space Tab以及引号")
 
         PosY += 25
         PosX := 20
-        con := MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000), "子字串说明:字串在另一个单词中也会被触发,例如输入Word会触发rd、ord、word。如果非子字串,只会触发word。")
+        con := MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000),
+        "子字串说明:字串在另一个单词中也会被触发,例如输入Word会触发rd、ord、word。如果非子字串,只会触发word。")
 
         PosY += 25
         PosX := 20
@@ -475,29 +471,38 @@ class TriggerStrGui {
         this.SaveBtnCtrl.OnEvent("Click", (*) => this.OnSaveBtnClick())
 
         MyGui.Show(Format("w{} h{}", 1280, 500))
-    }  
-    
+    }
 
     ;按钮点击回调
     OnSureBtnClick() {
-        isSure := this.SureTriggerStr()
-
-        if (isSure) {
-            this.Gui.Hide()
-        }        
-    }
-
-    OnSaveBtnClick() {
-        isSure := this.SureTriggerStr()
-        if (!isSure) {
+        isValid := this.CheckConfigValid()
+        if (!isValid) {
+            MsgBox("字串长度必须大于1,但不能超过40,有异议请联系UP: 浮生若梦的兔子。")
             return
         }
 
+        triggerStr := this.GetTriggerStr()
+        action := this.SureBtnAction
+        action(triggerStr)
         this.Gui.Hide()
-        if (this.SaveBtnAction != "") {
-            action := this.SaveBtnAction
-            action()
+        this.SureFocusCon.Focus()
+    }
+
+    OnSaveBtnClick() {
+        isValid := this.CheckConfigValid()
+        if (!isValid) {
+            MsgBox("字串长度必须大于1,但不能超过40,有异议请联系UP: 浮生若梦的兔子。")
+            return
         }
+
+        triggerStr := this.GetTriggerStr()
+        action := this.SureBtnAction
+        action(triggerStr)
+
+        action := this.SaveBtnAction
+        action()
+        this.Gui.Hide()
+        this.SureFocusCon.Focus()
     }
 
     OnClickNoEndCharCon() {
@@ -516,7 +521,7 @@ class TriggerStrGui {
     }
 
     ;数据交互
-    Init(triggerStr, showSaveBtn){
+    Init(triggerStr, showSaveBtn) {
         isValid := SubStr(triggerStr, 1, 1) == ":"
         splitPos := 2
         IsNoEndChar := true
@@ -529,7 +534,7 @@ class TriggerStrGui {
             isValid := splitPos != 0 && splitPos <= 6
         }
 
-        if (isValid){
+        if (isValid) {
             pos := InStr(triggerStr, "*", false, 2)
             IsNoEndChar := pos != 0 && pos < splitPos
 
@@ -550,20 +555,20 @@ class TriggerStrGui {
         return
     }
 
-    CheckConfigValid(){
+    CheckConfigValid() {
         len := StrLen(this.Str)
         if (len >= 40 || len <= 1)
-             return false
+            return false
 
         return true
     }
 
-    SureTriggerStr(){
+    SureTriggerStr() {
         isValid := this.CheckConfigValid()
         if (!isValid) {
             MsgBox("字串长度必须大于1,但不能超过40,有异议请联系UP: 浮生若梦的兔子。")
             return false
-        }        
+        }
 
         triggerStr := this.GetTriggerStr()
 
@@ -574,5 +579,5 @@ class TriggerStrGui {
         }
         return true
     }
-    
+
 }

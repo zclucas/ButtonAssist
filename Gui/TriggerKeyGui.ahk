@@ -3,10 +3,12 @@
 class TriggerKeyGui {
     __new() {
         this.Gui := ""
-        this.CheckedBox := []
-        this.ConMap := Map()
         this.SureBtnAction := ""
         this.SaveBtnAction := ""
+        this.SureFocusCon := ""
+
+        this.CheckedBox := []
+        this.ConMap := Map()
         this.CheckedInfoCon := ""
         this.CheckedInvalidTipCon := ""
         this.SaveBtnCtrl := {}
@@ -104,12 +106,12 @@ class TriggerKeyGui {
         this.CheckedBox := []
         loopCount := 0
 
-        Loop{
+        loop {
             hasModifyKey := false
-            for key, value in this.ModifyKeyMap{
+            for key, value in this.ModifyKeyMap {
                 length := StrLen(value)
                 subTriggerKey := SubStr(triggerKey, 1, length)
-                if (subTriggerKey == value){
+                if (subTriggerKey == value) {
                     this.CheckedBox.Push(key)
                     triggerKey := SubStr(triggerKey, length + 1)
                     hasModifyKey := true
@@ -126,10 +128,10 @@ class TriggerKeyGui {
                 break
         }
 
-        for key, value in this.ConMap{
+        for key, value in this.ConMap {
             if (StrCompare(key, triggerKey, false) == 0)
                 this.CheckedBox.Push(key)
-                
+
             value.Value := 0
         }
 
@@ -140,36 +142,54 @@ class TriggerKeyGui {
         this.showSaveBtn := showSaveBtn
     }
 
+    GetTriggerKey() {
+        triggerKey := ""
+        for index, value in this.CheckedBox {
+            isKeyMap := this.ModifyKeyMap.Has(value)
+            subTriggerKey := isKeyMap ? this.ModifyKeyMap.Get(value) : value
+            triggerKey .= subTriggerKey
+        }
+
+        return triggerKey
+    }
+
     ;按钮点击回调
     OnSureBtnClick() {
-        isSure := this.SureTriggerKey()
-
-        if (isSure) {
-            this.Gui.Hide()
-        }        
+        isValid := this.CheckConfigValid()
+        if (!isValid) {
+            MsgBox("当前配置无效,请浏览勾选规则后，检查配置,有异议请联系UP: 浮生若梦的兔子。")
+            return false
+        }
+        triggerKey := this.GetTriggerKey()
+        action := this.SureBtnAction
+        action(triggerKey)
+        this.Gui.Hide()
+        this.SureFocusCon.Focus()
     }
 
     OnSaveBtnClick() {
-        isSure := this.SureTriggerKey()
-
-        if (!isSure) {
-            return
-        }     
-
-        this.Gui.Hide()
-        if (this.SaveBtnAction != "") {
-            action := this.SaveBtnAction
-            action()
+        isValid := this.CheckConfigValid()
+        if (!isValid) {
+            MsgBox("当前配置无效,请浏览勾选规则后，检查配置,有异议请联系UP: 浮生若梦的兔子。")
+            return false
         }
+        triggerKey := this.GetTriggerKey()
+        action := this.SureBtnAction
+        action(triggerKey)
+        this.Gui.Hide()
+
+        action := this.SaveBtnAction
+        action()
+        this.SureFocusCon.Focus()
     }
 
     ;UI相关
-    ShowGui(triggerKey, showSaveBtn){
-        
+    ShowGui(triggerKey, showSaveBtn) {
+
         if (this.Gui != "") {
             this.Gui.Show()
         }
-        else{
+        else {
             this.AddGui()
         }
 
@@ -181,6 +201,8 @@ class TriggerKeyGui {
         {
             MyGui := Gui()
             this.Gui := MyGui
+            MyGui.SetFont(, "Consolas")
+            
             MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", 10, 10, 1260, 500), "请从下面选框中勾选触发宏的按键：")
             PosX := 20
             PosY := 30
@@ -1155,7 +1177,7 @@ class TriggerKeyGui {
         this.SaveBtnCtrl.OnEvent("Click", (*) => this.OnSaveBtnClick())
 
         MyGui.Show(Format("w{} h{}", 1280, 730))
-    }  
+    }
 
     Refresh() {
         if (!this.HasOwnProp("CheckedInfoCon"))
@@ -1172,7 +1194,7 @@ class TriggerKeyGui {
         }
 
         if (this.CheckedBox.Length == 0)
-            infoStr.= "  无"
+            infoStr .= "  无"
 
         isValid := this.CheckConfigValid()
         this.CheckedInvalidTipCon.Visible := !isValid
@@ -1180,34 +1202,10 @@ class TriggerKeyGui {
         this.SaveBtnCtrl.Visible := this.showSaveBtn
     }
 
-    RefreshCheckedKeyState(){
+    RefreshCheckedKeyState() {
         for index, value in this.CheckedBox {
             con := this.ConMap.Get(value)
             con.Value := 1
         }
     }
-
-    ;数据交互
-    SureTriggerKey(){
-        isValid := this.CheckConfigValid()
-        if (!isValid) {
-            MsgBox("当前配置无效,请浏览勾选规则后，检查配置,有异议请联系UP: 浮生若梦的兔子。")
-            return false
-        }        
-
-        triggerKey := ""
-        for index, value in this.CheckedBox {
-            isKeyMap := this.ModifyKeyMap.Has(value)
-            subTriggerKey := isKeyMap ? this.ModifyKeyMap.Get(value) : value
-            triggerKey .= subTriggerKey
-        }
-
-        if (this.SureBtnAction != "") {
-            action := this.SureBtnAction
-            action(triggerKey)
-            this.SureBtnAction := ""
-        }
-        return true
-    }
-    
 }

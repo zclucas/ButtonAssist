@@ -101,7 +101,7 @@ GetClosureAction(tableItem, macro, index, func) {     ;获取闭包函数
 
 ;按键宏命令
 OnTriggerMacroKeyAndInit(tableItem, macro, index) {
-    tableItem.KeyActionArr[index] := []
+    tableItem.CmdActionArr[index] := []
     tableItem.KilledArr[index] := false
     tableItem.ActionCount[index] := 0
     tableItem.SearchActionArr[index] := Map()
@@ -130,19 +130,15 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         paramArr := StrSplit(cmdArr[A_Index], "_")
 
         IsMouseMove := StrCompare(paramArr[1], "MouseMove", false) == 0
-        IsSearch := StrCompare(SubStr( paramArr[1], 1, 6), "Search", false) == 0
-        IsJoyPress := StrCompare(SubStr( paramArr[1], 1, 3), "Joy", false) == 0
+        IsSearch := StrCompare(SubStr(paramArr[1], 1, 6), "Search", false) == 0
         if (IsMouseMove) {
-            OnMouseMove(paramArr)
+            OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
         else if (IsSearch) {
             OnSearch(tableItem, cmdArr[A_Index], index)
         }
-        else if (IsJoyPress) {
-            OnPressJoyKeyCommand(tableItem, paramArr, index)
-        }
         else {
-            OnPressKeyboardCommand(tableItem, cmdArr[A_Index], index)
+            OnPressKey(tableItem, cmdArr[A_Index], index)
         }
 
         if (cmdArr.Length > A_Index) {
@@ -182,13 +178,7 @@ OnSearch(tableItem, cmd, index) {
 
 OnSearchOnce(tableItem, cmd, index, isFinally) {
     macroArr := SplitCommand(cmd)
-    searchCmdArr := StrSplit(macroArr[1], "_") 
-
-    if (tableItem.KilledArr[index])
-        return
-
-    if (!tableItem.SearchActionArr[index].Has(searchCmdArr[2]))
-        return
+    searchCmdArr := StrSplit(macroArr[1], "_")
 
     X1 := Integer(searchCmdArr[3])
     Y1 := Integer(searchCmdArr[4])
@@ -242,67 +232,67 @@ OnSearchOnce(tableItem, cmd, index, isFinally) {
     }
 }
 
-OnMouseMove(paramArr) {
+OnMouseMove(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
+    count := Integer(paramArr[4])
+    interval := Integer(paramArr[5])
+    OnMouseMoveOnce(tableItem, cmd, index)
+
+    loop count {
+        if (A_Index == 1)
+            continue
+
+        tempAction := OnMouseMoveOnce.Bind(tableItem, cmd, index)
+        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (Integer(interval) * (A_Index - 1))
+        tableItem.CmdActionArr[index].Push(tempAction)
+        SetTimer tempAction, -floatLeftTime
+    }
+}
+
+OnMouseMoveOnce(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
     SendMode("Event")
     CoordMode("Mouse", "Screen")
-    PosX:= Integer(paramArr[2])
-    PosY:= Integer(paramArr[3])
-    Speed := 100 - Integer(paramArr[4])
-    isRelative := Integer(paramArr[5])
-    isOffset := Integer(paramArr[6])
-    
-    if (isOffset){
-        MOUSEEVENTF_MOVE := 0x0001    
+    PosX := Integer(paramArr[2])
+    PosY := Integer(paramArr[3])
+    Speed := 100 - Integer(paramArr[6])
+    isRelative := Integer(paramArr[7])
+    isOffset := Integer(paramArr[8])
+
+    if (isOffset) {
+        MOUSEEVENTF_MOVE := 0x0001
         DllCall("mouse_event", "UInt", MOUSEEVENTF_MOVE, "UInt", PosX, "UInt", PosY, "UInt", 0, "UInt", 0)
     }
-    else if (isRelative){
+    else if (isRelative) {
         MouseMove(PosX, PosY, Speed, "R")
     }
-    else{
+    else {
         MouseMove(PosX, PosY, Speed)
     }
 }
 
-OnPressJoyKeyCommand(tableItem, paramArr, index) {
-    key := paramArr[1]
-    isJoyAxis := StrCompare(SubStr(paramArr[1], 1, 7), "JoyAxis", false) == 0
-    holdTime := Integer(paramArr[2])
-    floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
-    action := isJoyAxis ? SendJoyAxisClick : SendJoyBtnClick
-    action(key, floatHoldTime)
-
-    count := paramArr.Length > 2 ? Integer(paramArr[3]) : 1
-    loop count {
-        if (A_Index == 1)
-            continue
-
-        floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
-        tempAction := action.Bind(key, floatHoldTime)
-        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (Integer(paramArr[4]) * (A_Index - 1))
-        tableItem.KeyActionArr[index].Push(tempAction)
-        SetTimer tempAction, -floatLeftTime
-    }
-
-}
-
-OnPressKeyboardCommand(tableItem, cmd, index) {
+OnPressKey(tableItem, cmd, index) {
     paramArr := SplitKeyCommand(cmd)
-    key := paramArr[1]
-    mode := tableItem.ModeArr[index]
+    isJoyKey := SubStr(paramArr[1], 1, 3) == "Joy"
+    isJoyAxis := StrCompare(SubStr(paramArr[1], 1, 7), "JoyAxis", false) == 0
+    action := tableItem.ModeArr[index] == 1 ? SendGameModeKeyClick : SendNormalKeyClick
+    action := isJoyKey ? SendJoyBtnClick : action
+    action := isJoyAxis ? SendJoyAxisClick : action
+
     holdTime := Integer(paramArr[2])
     floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
-    action := mode == 1 ? SendGameModeKeyClick : SendNormalKeyClick
-    action(key, floatHoldTime)
-
     count := paramArr.Length > 2 ? Integer(paramArr[3]) : 1
+
+    action(paramArr[1], floatHoldTime)
+
     loop count {
         if (A_Index == 1)
             continue
 
         floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
-        tempAction := action.Bind(key, floatHoldTime)
+        tempAction := action.Bind(paramArr[1], floatHoldTime)
         floatLeftTime := GetRandom(MySoftData.ClickFloat) + (Integer(paramArr[4]) * (A_Index - 1))
-        tableItem.KeyActionArr[index].Push(tempAction)
+        tableItem.CmdActionArr[index].Push(tempAction)
         SetTimer tempAction, -floatLeftTime
     }
 }

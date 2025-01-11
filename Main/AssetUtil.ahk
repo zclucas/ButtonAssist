@@ -54,41 +54,41 @@ SplitMacro(info) {
     return resultArr
 }
 
-SplitCommand(macro){
+SplitCommand(macro) {
     splitIndex := RegExMatch(macro, "(\(.*\))", &match)
-    if (splitIndex == 0){
+    if (splitIndex == 0) {
         return [macro, "", ""]
     }
-    else{
+    else {
         macro1 := SubStr(macro, 1, splitIndex - 1)
         result := [macro1]
         lastSymbolIndex := 0
         leftBracket := 0
-        loop parse match[1]{
+        loop parse match[1] {
             if (A_LoopField == "(") {
                 leftBracket += 1
                 if (leftBracket == 1)
                     lastSymbolIndex := A_Index
             }
-    
+
             if (A_LoopField == ")") {
                 leftBracket -= 1
-                if (leftBracket == 0){
+                if (leftBracket == 0) {
                     curMacro := SubStr(match[1], lastSymbolIndex + 1, A_Index - lastSymbolIndex - 1)
                     result.Push(curMacro)
                 }
             }
         }
-        if (result.Length == 2){
+        if (result.Length == 2) {
             result.Push("")
         }
         return result
     }
 }
 
-SplitKeyCommand(macro){
+SplitKeyCommand(macro) {
     realKey := ""
-    for key, value in MySoftData.SpecialKeyMap{
+    for key, value in MySoftData.SpecialKeyMap {
         newMacro := StrReplace(macro, key, "flagSymbol")
         if (newMacro != macro) {
             realKey := key
@@ -97,7 +97,7 @@ SplitKeyCommand(macro){
     }
 
     result := StrSplit(newMacro, "_")
-    if (realKey != ""){
+    if (realKey != "") {
         result[1] := realKey
     }
     return result
@@ -107,22 +107,23 @@ SplitKeyCommand(macro){
 InitData() {
     InitTableItemState()
     InitJoyAxis()
-    SetGuiBtnAction()
+    InitGui()
 }
 
 ;手柄轴未使用时，状态会变为0，而非中间值
-InitJoyAxis(){
+InitJoyAxis() {
     joyAxisNum := 8
-    loop joyAxisNum{
+    loop joyAxisNum {
         SendJoyAxisClick("JoyAxis" A_Index "Max", 30)
     }
 }
 
-SetGuiBtnAction() {
+InitGui() {
     MyTriggerKeyGui.SaveBtnAction := OnSaveSetting
     MyTriggerStrGui.SaveBtnAction := OnSaveSetting
-
     MyMacroGui.SaveBtnAction := OnSaveSetting
+
+    
 }
 
 SetSoftData() {
@@ -218,7 +219,6 @@ SetIntArr(str, symbol, Arr) {
     }
 }
 
-
 GetTableItemDefaultInfo(index) {
     savedTKArrStr := ""
     savedMacroArrStr := ""
@@ -263,7 +263,8 @@ GetTableItemDefaultInfo(index) {
         savedForbidArrStr := "0"
         savedProcessNameStr := ""
     }
-    return [savedTKArrStr, savedMacroArrStr, savedModeArrStr, savedForbidArrStr, savedProcessNameStr, savedRemarkArrStr, savedLoopCountStr]
+    return [savedTKArrStr, savedMacroArrStr, savedModeArrStr, savedForbidArrStr, savedProcessNameStr, savedRemarkArrStr,
+        savedLoopCountStr]
 }
 
 ;资源保存
@@ -366,41 +367,55 @@ CreateTableItemArr() {
 
 InitTableItemState() {
     loop MySoftData.TabNameArr.Length {
-        tableSymbol := GetTableSymbol(A_Index)
         tableItem := MySoftData.TableInfo[A_Index]
-        tableItem.KeyActionArr := []
-        tableItem.KilledArr := []
-        tableItem.ActionCount := []
-        tableItem.SearchActionArr := []
-        for index, value in tableItem.ModeArr {
-            tableItem.KilledArr.Push(false)
-            tableItem.KeyActionArr.Push([])
-            tableItem.ActionCount.Push(0)
-            tableItem.SearchActionArr.Push(Map())
-        }
+        InitSingleTableState(tableItem)
+    }
+
+    tableItem := MySoftData.SpecialtableItem
+    tableItem.ModeArr := []
+    tableItem.ModeArr.Push(0)
+    InitSingleTableState(tableItem)
+}
+
+InitSingleTableState(tableItem) {
+    tableItem.CmdActionArr := []
+    tableItem.KilledArr := []
+    tableItem.ActionCount := []
+    tableItem.SearchActionArr := []
+    for index, value in tableItem.ModeArr {
+        tableItem.KilledArr.Push(false)
+        tableItem.CmdActionArr.Push([])
+        tableItem.ActionCount.Push(0)
+        tableItem.SearchActionArr.Push(Map())
     }
 }
 
 KillTableItemMacro() {
     loop MySoftData.TableInfo.Length {
         tableItem := MySoftData.TableInfo[A_Index]
-        for index, value in tableItem.ModeArr {
-            tableItem.KilledArr[index] := true
+        KillSingleTableMacro(tableItem)
+    }
 
-            loop tableItem.KeyActionArr[index].Length {
-                action := tableItem.KeyActionArr[index][A_Index]
+    KillSingleTableMacro(MySoftData.SpecialtableItem)
+}
+
+KillSingleTableMacro(tableItem) {
+    for index, value in tableItem.ModeArr {
+        tableItem.KilledArr[index] := true
+
+        loop tableItem.CmdActionArr[index].Length {
+            action := tableItem.CmdActionArr[index][A_Index]
+            SetTimer action, 0
+        }
+        tableItem.CmdActionArr[index] := []
+
+        for key, value in tableItem.SearchActionArr[index] {
+            loop value.Length {
+                action := value[A_Index]
                 SetTimer action, 0
             }
-            tableItem.KeyActionArr[index] := []
-
-            for key, value in tableItem.SearchActionArr[index] {
-                loop value.Length {
-                    action := value[A_Index]
-                    SetTimer action, 0
-                }
-            }
-            tableItem.SearchActionArr[index] := Map()
         }
+        tableItem.SearchActionArr[index] := Map()
     }
 }
 
@@ -423,22 +438,21 @@ GetTableSymbol(index) {
     return MySoftData.TabSymbolArr[index]
 }
 
-GetItemSaveCountValue(tableIndex, Index){
+GetItemSaveCountValue(tableIndex, Index) {
     itemtable := MySoftData.TableInfo[tableIndex]
-    if (itemtable.LoopCountConArr.Length >= Index){
+    if (itemtable.LoopCountConArr.Length >= Index) {
         value := itemtable.LoopCountConArr[Index].Value
         if (value == "∞")
             return -1
-        if (IsInteger(value)){
+        if (IsInteger(value)) {
             if (Integer(value) < 0)
                 return -1
-            else 
+            else
                 return value
         }
     }
     return 1
 }
-
 
 CheckIsMacroTable(index) {
     symbol := GetTableSymbol(index)

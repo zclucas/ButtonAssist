@@ -7,7 +7,7 @@ class CommandIntervalGui{
         this.TimeTextCon := ""
     }
 
-    ShowGui(){
+    ShowGui(cmd){
         if (this.Gui != "") {
             this.Gui.Show()
         }
@@ -16,11 +16,15 @@ class CommandIntervalGui{
         }
 
         this.TimeTextCon.Value := ""
+        if (cmd != ""){
+            this.TimeTextCon.Value := cmd
+        }
     }
 
     AddGui() {
         MyGui := Gui(, "指令间隔编辑")
         this.Gui := MyGui
+        MyGui.SetFont(, "Consolas")
 
         PosX := 10
         PosY := 10
