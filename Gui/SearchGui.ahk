@@ -281,9 +281,10 @@ class SearchGui {
         this.CommandStr .= "_" this.StartPosYCon.Value
         this.CommandStr .= "_" this.EndPosXCon.Value
         this.CommandStr .= "_" this.EndPosYCon.Value
+        this.CommandStr .= "_" this.AutoMove
         this.CommandStr .= "_" this.SearchCountCon.Value
         this.CommandStr .= "_" this.SearchIntervalCon.Value
-        this.CommandStr .= "_" this.AutoMove
+        
         if (this.FoundCommandStr != "") {
             this.CommandStr .= "(" this.FoundCommandStr ")"
         }

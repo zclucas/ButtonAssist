@@ -35,7 +35,7 @@ class KeyGui {
         MyGui := Gui(, "按键指令编辑")
         this.Gui := MyGui
         MyGui.SetFont(, "Consolas")
-        
+
         PosX := 20
         PosY := 10
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 60, 20), "快捷方式:")
@@ -214,44 +214,44 @@ class KeyGui {
             con.OnEvent("Click", (*) => this.OnCheckKey("Tab"))
 
             PosX += 75
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "Q")
-            con.OnEvent("Click", (*) => this.OnCheckKey("Q"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "q")
+            con.OnEvent("Click", (*) => this.OnCheckKey("q"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "W")
-            con.OnEvent("Click", (*) => this.OnCheckKey("W"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "w")
+            con.OnEvent("Click", (*) => this.OnCheckKey("w"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "E")
-            con.OnEvent("Click", (*) => this.OnCheckKey("E"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "e")
+            con.OnEvent("Click", (*) => this.OnCheckKey("e"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "R")
-            con.OnEvent("Click", (*) => this.OnCheckKey("R"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "r")
+            con.OnEvent("Click", (*) => this.OnCheckKey("r"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "T")
-            con.OnEvent("Click", (*) => this.OnCheckKey("T"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "t")
+            con.OnEvent("Click", (*) => this.OnCheckKey("t"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "Y")
-            con.OnEvent("Click", (*) => this.OnCheckKey("Y"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "y")
+            con.OnEvent("Click", (*) => this.OnCheckKey("y"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "U")
-            con.OnEvent("Click", (*) => this.OnCheckKey("U"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "u")
+            con.OnEvent("Click", (*) => this.OnCheckKey("u"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "I")
-            con.OnEvent("Click", (*) => this.OnCheckKey("I"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "i")
+            con.OnEvent("Click", (*) => this.OnCheckKey("i"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "O")
-            con.OnEvent("Click", (*) => this.OnCheckKey("O"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "o")
+            con.OnEvent("Click", (*) => this.OnCheckKey("o"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "P")
-            con.OnEvent("Click", (*) => this.OnCheckKey("P"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "p")
+            con.OnEvent("Click", (*) => this.OnCheckKey("p"))
 
             PosX += 50
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "[")
@@ -299,40 +299,40 @@ class KeyGui {
             con.OnEvent("Click", (*) => this.OnCheckKey("CapsLock"))
 
             PosX += 90
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "A")
-            con.OnEvent("Click", (*) => this.OnCheckKey("A"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "a")
+            con.OnEvent("Click", (*) => this.OnCheckKey("a"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "S")
-            con.OnEvent("Click", (*) => this.OnCheckKey("S"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "s")
+            con.OnEvent("Click", (*) => this.OnCheckKey("s"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "D")
-            con.OnEvent("Click", (*) => this.OnCheckKey("D"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "d")
+            con.OnEvent("Click", (*) => this.OnCheckKey("d"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "F")
-            con.OnEvent("Click", (*) => this.OnCheckKey("F"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "f")
+            con.OnEvent("Click", (*) => this.OnCheckKey("f"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "G")
-            con.OnEvent("Click", (*) => this.OnCheckKey("G"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "g")
+            con.OnEvent("Click", (*) => this.OnCheckKey("g"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "H")
-            con.OnEvent("Click", (*) => this.OnCheckKey("H"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "h")
+            con.OnEvent("Click", (*) => this.OnCheckKey("h"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "J")
-            con.OnEvent("Click", (*) => this.OnCheckKey("J"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "j")
+            con.OnEvent("Click", (*) => this.OnCheckKey("j"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "K")
-            con.OnEvent("Click", (*) => this.OnCheckKey("K"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "k")
+            con.OnEvent("Click", (*) => this.OnCheckKey("k"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "L")
-            con.OnEvent("Click", (*) => this.OnCheckKey("L"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "l")
+            con.OnEvent("Click", (*) => this.OnCheckKey("l"))
 
             PosX += 50
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), ";")
@@ -364,32 +364,32 @@ class KeyGui {
             con.OnEvent("Click", (*) => this.OnCheckKey("LShift"))
 
             PosX += 110
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "Z")
-            con.OnEvent("Click", (*) => this.OnCheckKey("Z"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "z")
+            con.OnEvent("Click", (*) => this.OnCheckKey("z"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "X")
-            con.OnEvent("Click", (*) => this.OnCheckKey("X"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "x")
+            con.OnEvent("Click", (*) => this.OnCheckKey("x"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "C")
-            con.OnEvent("Click", (*) => this.OnCheckKey("C"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "c")
+            con.OnEvent("Click", (*) => this.OnCheckKey("c"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "V")
-            con.OnEvent("Click", (*) => this.OnCheckKey("V"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "v")
+            con.OnEvent("Click", (*) => this.OnCheckKey("v"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "B")
-            con.OnEvent("Click", (*) => this.OnCheckKey("B"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "b")
+            con.OnEvent("Click", (*) => this.OnCheckKey("b"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "N")
-            con.OnEvent("Click", (*) => this.OnCheckKey("N"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "n")
+            con.OnEvent("Click", (*) => this.OnCheckKey("n"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "M")
-            con.OnEvent("Click", (*) => this.OnCheckKey("M"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "m")
+            con.OnEvent("Click", (*) => this.OnCheckKey("m"))
 
             PosX += 50
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), ",")
@@ -845,12 +845,12 @@ class KeyGui {
         this.KeyCount := 1
         this.PerInterval := 100
 
-        if (cmd != ""){
+        if (cmd != "") {
             cmdArr := SplitKeyCommand(cmd)
-            this.KeyStr := cmdArr[1]
-            this.HoldTime := cmdArr[2]
-            this.KeyCount := cmdArr[3]
-            this.PerInterval := cmdArr[4]
+            this.KeyStr := cmdArr[2]
+            this.HoldTime := cmdArr[3]
+            this.KeyCount := cmdArr[4]
+            this.PerInterval := cmdArr[5]
         }
 
         this.HoldTimeCon.Value := this.HoldTime
@@ -889,15 +889,11 @@ class KeyGui {
     }
 
     UpdateCommandStr() {
-        CommandStr := this.KeyStr
-        CommandStr .= "_"
-        CommandStr .= this.HoldTime
-        if (this.KeyCount > 1) {
-            CommandStr .= "_"
-            CommandStr .= this.KeyCount
-            CommandStr .= "_"
-            CommandStr .= this.PerInterval
-        }
+        CommandStr := "PressKey"
+        CommandStr .= "_" this.KeyStr
+        CommandStr .= "_" this.HoldTime
+        CommandStr .= "_" this.KeyCount
+        CommandStr .= "_" this.PerInterval
         this.CommandStr := CommandStr
     }
 
@@ -906,12 +902,12 @@ class KeyGui {
         this.CommandStrCon.Value := "当前指令：" this.CommandStr
     }
 
-    ToggleFunc(state){
+    ToggleFunc(state) {
         MacroAction := (*) => this.TriggerMacro()
-        if (state){
+        if (state) {
             Hotkey("!l", MacroAction, "On")
         }
-        else{
+        else {
             Hotkey("!l", MacroAction, "Off")
         }
     }

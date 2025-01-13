@@ -1,7 +1,10 @@
 ; 功能函数
-GetRandom(floatTime) {
-    max := Abs(Integer(floatTime))
-    min := -max
+GetFloatTime(oriTime, floatValue){
+    oriTime := Integer(oriTime)
+    floatValue := Integer(floatValue)
+    value := Abs(oriTime * (floatValue * 0.01)) 
+    max := oriTime + value
+    min := oriTime - value
     return Random(min, max)
 }
 
@@ -40,7 +43,8 @@ SplitMacro(info) {
         if (A_LoopField == ",") {
             if (leftBracket == 0) {
                 curCmd := SubStr(info, lastSymbolIndex + 1, A_Index - lastSymbolIndex - 1)
-                resultArr.Push(curCmd)
+                if (curCmd != "")
+                    resultArr.Push(curCmd)
                 lastSymbolIndex := A_Index
             }
         }
@@ -97,9 +101,13 @@ SplitKeyCommand(macro) {
     }
 
     result := StrSplit(newMacro, "_")
-    if (realKey != "") {
-        result[1] := realKey
+    loop result.Length {
+        if (result[A_Index] == "flagSymbol"){
+            result[A_Index] := realKey
+            break
+        }
     }
+
     return result
 }
 
@@ -135,9 +143,9 @@ LoadSetting() {
     global ToolCheckInfo, MySoftData
     MySoftData.HasSaved := IniRead(IniFile, IniSection, "HasSaved", false)
     MySoftData.NormalPeriod := IniRead(IniFile, IniSection, "NormalPeriod", 50)
-    MySoftData.HoldFloat := IniRead(IniFile, IniSection, "HoldFloat", 5)
-    MySoftData.ClickFloat := IniRead(IniFile, IniSection, "ClickFloat", 5)
-    MySoftData.IntervalFloat := IniRead(IniFile, IniSection, "IntervalFloat", 5)
+    MySoftData.HoldFloat := IniRead(IniFile, IniSection, "HoldFloat", 0)
+    MySoftData.PreIntervalFloat := IniRead(IniFile, IniSection, "PreIntervalFloat", 0)
+    MySoftData.IntervalFloat := IniRead(IniFile, IniSection, "IntervalFloat", 0)
     MySoftData.ImageSearchBlur := IniRead(IniFile, IniSection, "ImageSearchBlur", 100)
     MySoftData.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
     MySoftData.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!p")
@@ -232,7 +240,7 @@ GetTableItemDefaultInfo(index) {
     if (symbol == "Normal") {
         savedTKArrStr := "k"
         savedMacroArrStr :=
-            "a_30_30_50,3000"
+            "PressKey_a_30_30_50,3000"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
@@ -242,7 +250,7 @@ GetTableItemDefaultInfo(index) {
     }
     else if (symbol == "String") {
         savedTKArrStr := ":?*:AA"
-        savedMacroArrStr := "lbutton_200,50,MouseMove_100_100_10"
+        savedMacroArrStr := "PressKey_lbutton_200,50,MouseMove_100_100_10"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
@@ -275,7 +283,7 @@ OnSaveSetting(*) {
     }
 
     IniWrite(MySoftData.HoldFloatCtrl.Value, IniFile, IniSection, "HoldFloat")
-    IniWrite(MySoftData.ClickFloatCtrl.Value, IniFile, IniSection, "ClickFloat")
+    IniWrite(MySoftData.PreIntervalFloatCtrl.Value, IniFile, IniSection, "PreIntervalFloat")
     IniWrite(MySoftData.IntervalFloatCtrl.Value, IniFile, IniSection, "IntervalFloat")
     IniWrite(MySoftData.ImageSearchBlurCtrl.Value, IniFile, IniSection, "ImageSearchBlur")
     IniWrite(MySoftData.PauseHotkeyCtrl.Value, IniFile, IniSection, "PauseHotkey")

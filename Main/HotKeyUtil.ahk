@@ -128,24 +128,21 @@ OnTriggerMacroOnce(tableItem, macro, index) {
             break
 
         paramArr := StrSplit(cmdArr[A_Index], "_")
-
         IsMouseMove := StrCompare(paramArr[1], "MouseMove", false) == 0
         IsSearch := StrCompare(SubStr(paramArr[1], 1, 6), "Search", false) == 0
+        IsPressKey := StrCompare(paramArr[1], "PressKey", false) == 0
+        IsInterval := StrCompare(paramArr[1], "Interval", false) == 0
         if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
         else if (IsSearch) {
             OnSearch(tableItem, cmdArr[A_Index], index)
         }
-        else {
+        else if (IsPressKey) {
             OnPressKey(tableItem, cmdArr[A_Index], index)
         }
-
-        if (cmdArr.Length > A_Index) {
-            interval := Integer(cmdArr[A_Index + 1])
-            interval += GetRandom(MySoftData.IntervalFloat)
-            Sleep(interval)
-            A_Index++
+        else if (IsInterval) {
+            OnInterval(tableItem, cmdArr[A_Index], index)
         }
     }
 }
@@ -159,8 +156,8 @@ OnSearch(tableItem, cmd, index) {
         searchMacroStr := SubStr(cmd, 1, splitIndex - 1)
         searchCmdArr := StrSplit(searchMacroStr, "_")
     }
-    searchCount := Integer(searchCmdArr[7])
-    searchInterval := Integer(searchCmdArr[8])
+    searchCount := Integer(searchCmdArr[8])
+    searchInterval := Integer(searchCmdArr[9])
 
     tableItem.SearchActionArr[index].Set(searchCmdArr[2], [])
 
@@ -170,9 +167,9 @@ OnSearch(tableItem, cmd, index) {
             continue
 
         action := OnSearchOnce.Bind(tableItem, cmd, index, A_Index == searchCount)
-        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (searchInterval * (A_Index - 1))
+        leftTime := GetFloatTime(searchInterval * (A_Index - 1), MySoftData.PreIntervalFloat)
         tableItem.SearchActionArr[index][searchCmdArr[2]].Push(action)
-        SetTimer action, -floatLeftTime
+        SetTimer action, -leftTime
     }
 }
 
@@ -209,7 +206,7 @@ OnSearchOnce(tableItem, cmd, index, isFinally) {
 
     if (found) {
         ;自动移动鼠标
-        if (Integer(searchCmdArr[9])) {
+        if (Integer(searchCmdArr[7])) {
             Pos := [OutputVarX, OutputVarY]
             if (searchCmdArr[1] == "SearchImage") {
                 imageSize := GetImageSize(searchCmdArr[2])
@@ -243,9 +240,9 @@ OnMouseMove(tableItem, cmd, index) {
             continue
 
         tempAction := OnMouseMoveOnce.Bind(tableItem, cmd, index)
-        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (Integer(interval) * (A_Index - 1))
+        leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
         tableItem.CmdActionArr[index].Push(tempAction)
-        SetTimer tempAction, -floatLeftTime
+        SetTimer tempAction, -leftTime
     }
 }
 
@@ -271,29 +268,36 @@ OnMouseMoveOnce(tableItem, cmd, index) {
     }
 }
 
+OnInterval(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
+    interval := Integer(paramArr[2])
+    interval := GetFloatTime(interval, MySoftData.IntervalFloat)
+    Sleep(interval)
+}
+
 OnPressKey(tableItem, cmd, index) {
     paramArr := SplitKeyCommand(cmd)
-    isJoyKey := SubStr(paramArr[1], 1, 3) == "Joy"
-    isJoyAxis := StrCompare(SubStr(paramArr[1], 1, 7), "JoyAxis", false) == 0
+    isJoyKey := SubStr(paramArr[2], 1, 3) == "Joy"
+    isJoyAxis := StrCompare(SubStr(paramArr[2], 1, 7), "JoyAxis", false) == 0
     action := tableItem.ModeArr[index] == 1 ? SendGameModeKeyClick : SendNormalKeyClick
     action := isJoyKey ? SendJoyBtnClick : action
     action := isJoyAxis ? SendJoyAxisClick : action
 
-    holdTime := Integer(paramArr[2])
-    floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
-    count := paramArr.Length > 2 ? Integer(paramArr[3]) : 1
+    holdTime := Integer(paramArr[3])
+    floatHoldTime := GetFloatTime(holdTime, MySoftData.HoldFloat)
+    count := paramArr.Length > 2 ? Integer(paramArr[4]) : 1
 
-    action(paramArr[1], floatHoldTime)
+    action(paramArr[2], floatHoldTime)
 
     loop count {
         if (A_Index == 1)
             continue
 
-        floatHoldTime := holdTime + GetRandom(MySoftData.HoldFloat)
-        tempAction := action.Bind(paramArr[1], floatHoldTime)
-        floatLeftTime := GetRandom(MySoftData.ClickFloat) + (Integer(paramArr[4]) * (A_Index - 1))
+        floatHoldTime := GetFloatTime(holdTime, MySoftData.HoldFloat)
+        tempAction := action.Bind(paramArr[2], floatHoldTime)
+        leftTime := GetFloatTime((Integer(paramArr[5])) * (A_Index - 1), MySoftData.PreIntervalFloat)
         tableItem.CmdActionArr[index].Push(tempAction)
-        SetTimer tempAction, -floatLeftTime
+        SetTimer tempAction, -leftTime
     }
 }
 

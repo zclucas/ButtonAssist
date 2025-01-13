@@ -1,6 +1,6 @@
 #Requires AutoHotkey v2.0
 
-class CommandIntervalGui{
+class IntervalGui{
     __new(){
         this.Gui := ""
         this.SureBtnAction := ""
@@ -17,7 +17,8 @@ class CommandIntervalGui{
 
         this.TimeTextCon.Value := ""
         if (cmd != ""){
-            this.TimeTextCon.Value := cmd
+            cmdArr := StrSplit(cmd, "_")
+            this.TimeTextCon.Value := cmdArr[2]
         }
     }
 
@@ -52,7 +53,7 @@ class CommandIntervalGui{
         }
 
         action := this.SureBtnAction
-        action(timeText)
+        action("Interval_" timeText)
         this.Gui.Hide()
     }
 }

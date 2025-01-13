@@ -29,4 +29,3 @@ LoadSetting()
 InitData()
 InitUI()
 BindKey()
-

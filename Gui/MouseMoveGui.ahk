@@ -89,26 +89,25 @@ class MouseMoveGui{
         this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY-5, 50))
         this.SpeedCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
-        PosX += 120
+        PosX += 80
         this.RelativeCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "相对位移")
         this.RelativeCon.OnEvent("Click", (*) => this.OnChangeEditValue())
 
-        PosY += 30
-        PosX := 10
-        this.OffsetCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "偏移(可调整游戏视角)")
+        PosX += 100
+        this.OffsetCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "游戏模式")
         this.OffsetCon.OnEvent("Click", (*) => this.OnChangeEditValue())
 
-        PosY += 30
+        PosY += 40
         PosX := 10
         this.CommandStrCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 350), "当前指令:MouseMove_0_0_0")
 
-        PosY += 40
+        PosY += 20
         PosX += 150
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 400, 280))
+        MyGui.Show(Format("w{} h{}", 400, 250))
     }
 
     Init(cmd){

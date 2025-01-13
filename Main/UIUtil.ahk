@@ -366,11 +366,11 @@ AddRuleUI(index) {
     )
 
     posY += 30
-    MyGui.Add("Text", Format("x20 y{} w130", posY), "连点间隔时间浮动:")
-    MySoftData.ClickFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), MySoftData.ClickFloat)
+    MyGui.Add("Text", Format("x20 y{} w130", posY), "每次间隔时间浮动:")
+    MySoftData.PreIntervalFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), MySoftData.PreIntervalFloat)
 
     posY += 30
-    MyGui.Add("Text", Format("x20 y{} w130", posY), "按键间隔时间浮动:")
+    MyGui.Add("Text", Format("x20 y{} w130", posY), "间隔指令时间浮动:")
     MySoftData.IntervalFloatCtrl := MyGui.Add("Edit", Format("x150 y{} w70 center", posY - 4), MySoftData.IntervalFloat
     )
 

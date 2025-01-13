@@ -79,11 +79,11 @@ Class SoftData
         this.PauseHotkeyCtrl := ""
         this.KillMacroHotkey := ""
         this.KillMacroHotkeyCtrl := ""
-        this.HoldFloat := 5
+        this.HoldFloat := 0
         this.HoldFloatCtrl := ""
-        this.ClickFloat := 5
-        this.ClickFloatCtrl := ""
-        this.IntervalFloat := 5
+        this.PreIntervalFloat := 0
+        this.PreIntervalFloatCtrl := ""
+        this.IntervalFloat := 0
         this.IntervalFloatCtrl := ""
         this.ImageSearchBlur := 100
         this.ImageSearchBlurCtrl := ""
