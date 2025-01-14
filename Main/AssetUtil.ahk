@@ -250,7 +250,7 @@ GetTableItemDefaultInfo(index) {
     }
     else if (symbol == "String") {
         savedTKArrStr := ":?*:AA"
-        savedMacroArrStr := "PressKey_lbutton_200,50,MouseMove_100_100_10"
+        savedMacroArrStr := "PressKey_LButton_50_1_100,50,MouseMove_100_100_1_1000_90_0_0"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
