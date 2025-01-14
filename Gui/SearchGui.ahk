@@ -234,9 +234,9 @@ class SearchGui {
             this.StartPosY := searchCmdArr[4]
             this.EndPosX := searchCmdArr[5]
             this.EndPosY := searchCmdArr[6]
-            this.SearchCount := searchCmdArr[7]
-            this.SearchInterval := searchCmdArr[8]
-            this.AutoMove := searchCmdArr[9]
+            this.AutoMove := searchCmdArr[7]
+            this.SearchCount := searchCmdArr[8]
+            this.SearchInterval := searchCmdArr[9]
 
             isSearchImage := searchCmdArr[1] == "SearchImage"
             if (isSearchImage) {
