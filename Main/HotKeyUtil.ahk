@@ -105,13 +105,29 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
     tableItem.KilledArr[index] := false
     tableItem.ActionCount[index] := 0
     tableItem.SearchActionArr[index] := Map()
+    isContinue := MySoftData.ContinueKeyMap.Has(tableItem.TKArr[index]) && tableItem.LoopCountArr[index] == 1
+    isLoop := tableItem.LoopCountArr[index] == -1
 
     loop {
+        isOver := tableItem.ActionCount[index] >= tableItem.LoopCountArr[index]
+        isFirst := tableItem.ActionCount[index] == 0
+        isSecond := tableItem.ActionCount[index] == 1
+
         if (tableItem.KilledArr[index])
             break
 
-        if (tableItem.LoopCountArr[index] != -1 && tableItem.ActionCount[index] >= tableItem.LoopCountArr[index])
+        if (!isLoop && !isContinue && isOver)
             break
+
+        if(!isFirst && isContinue){
+            key := MySoftData.ContinueKeyMap[tableItem.TKArr[index]]
+            interval := isSecond ? MySoftData.ContinueSecondIntervale : MySoftData.ContinueIntervale
+            Sleep(interval)
+
+            if (!GetKeyState(key, "P")) {
+                break
+            }
+        }
 
         OnTriggerMacroOnce(tableItem, macro, index)
         tableItem.ActionCount[index]++
