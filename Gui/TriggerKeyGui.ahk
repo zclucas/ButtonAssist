@@ -14,6 +14,8 @@ class TriggerKeyGui {
         this.SaveBtnCtrl := {}
         this.showSaveBtn := false
 
+        this.EnableTriggerKeyCon := ""
+
         this.ModifyKeys := ["Shift", "Alt", "Ctrl", "Win", "LShift", "RShift", "LAlt", "RAlt", "LCtrl", "RCtrl", "LWin",
             "RWin"]
         this.JoyAxises := ["JoyXMin", "JoyXMax", "JoyYMin", "JoyYMax", "JoyZMin", "JoyZMax", "JoyRMin", "JoyRMax",
@@ -105,7 +107,8 @@ class TriggerKeyGui {
     Init(triggerKey, showSaveBtn) {
         this.CheckedBox := []
         loopCount := 0
-
+        this.EnableTriggerKeyCon.Value := RegExMatch(triggerKey, "~")
+        triggerKey := RegExReplace(triggerKey, "~", "")
         loop {
             hasModifyKey := false
             for key, value in this.ModifyKeyMap {
@@ -139,17 +142,26 @@ class TriggerKeyGui {
             con := this.ConMap.Get(value)
             con.Value := 1
         }
+
         this.showSaveBtn := showSaveBtn
     }
 
     GetTriggerKey() {
         triggerKey := ""
+        hasJoy := false
         for index, value in this.CheckedBox {
+            isMatch := RegExMatch(value, "Joy")
+            if (isMatch) {
+                hasJoy := true
+            }
+
             isKeyMap := this.ModifyKeyMap.Has(value)
             subTriggerKey := isKeyMap ? this.ModifyKeyMap.Get(value) : value
             triggerKey .= subTriggerKey
         }
-
+        if (!hasJoy && this.EnableTriggerKeyCon.Value) {
+            triggerKey := "~" triggerKey
+        }
         return triggerKey
     }
 
@@ -1152,6 +1164,11 @@ class TriggerKeyGui {
         PosY += 20
         MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000), "勾选规则2:手柄按钮、摇杆只能单独选")
 
+        PosY += 20
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 180, 20), "保留触发键原本功能")
+        con.OnEvent("Click", (*) => this.OnChangeEnableTriggerKey())
+        this.EnableTriggerKeyCon := con
+
         PosY += 30
         PosX := 20
         con := MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000), "当前配置的触发键：无")
@@ -1176,15 +1193,20 @@ class TriggerKeyGui {
         this.SaveBtnCtrl := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "应用并保存")
         this.SaveBtnCtrl.OnEvent("Click", (*) => this.OnSaveBtnClick())
 
-        MyGui.Show(Format("w{} h{}", 1280, 730))
+        MyGui.Show(Format("w{} h{}", 1280, 750))
     }
 
     Refresh() {
-        if (!this.HasOwnProp("CheckedInfoCon"))
-            return
 
-        infoStr := "当前配置的触发键："
+        lable := "当前配置的触发键："
+        infoStr := ""
+        hasJoy := false
         for index, value in this.CheckedBox {
+            isMatch := RegExMatch(value, "Joy")
+            if (isMatch) {
+                hasJoy := true
+            }
+
             con := this.ConMap.Get(value)
             infoStr .= value
 
@@ -1194,11 +1216,24 @@ class TriggerKeyGui {
         }
 
         if (this.CheckedBox.Length == 0)
-            infoStr .= "  无"
+            infoStr := "  无"
+        else{
+            if (!hasJoy && this.EnableTriggerKeyCon.Value) {
+                infoStr := "~" infoStr
+            }
+        }
+
+        if (hasJoy){
+            this.EnableTriggerKeyCon.Value := 1
+            this.EnableTriggerKeyCon.Enabled := false
+        }
+        else{
+            this.EnableTriggerKeyCon.Enabled := true
+        }
 
         isValid := this.CheckConfigValid()
         this.CheckedInvalidTipCon.Visible := !isValid
-        this.CheckedInfoCon.Value := infoStr
+        this.CheckedInfoCon.Value := lable infoStr
         this.SaveBtnCtrl.Visible := this.showSaveBtn
     }
 
@@ -1207,5 +1242,9 @@ class TriggerKeyGui {
             con := this.ConMap.Get(value)
             con.Value := 1
         }
+    }
+
+    OnChangeEnableTriggerKey() {
+        this.Refresh()
     }
 }

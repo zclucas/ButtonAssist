@@ -43,7 +43,7 @@ BindTabHotKey() {
 
             key := "$*" tableItem.TKArr[index]
             actionArr := GetMacroAction(tableIndex, index)
-            isJoyKey := SubStr(tableItem.TKArr[index], 1, 3) == "Joy"
+            isJoyKey := RegExMatch(tableItem.TKArr[index], "Joy")
             isHotstring := SubStr(tableItem.TKArr[index], 1, 1) == ":"
             curProcessName := tableItem.ProcessNameArr.Length >= index ? tableItem.ProcessNameArr[index] : ""
 
