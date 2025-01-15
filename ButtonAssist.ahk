@@ -29,3 +29,11 @@ LoadSetting()
 InitData()
 InitUI()
 BindKey()
+
+fucc(*){
+    Sleep(1000)
+    Send("c")
+}
+
+Hotkey("<alt", fucc)
+Hotkey("z", fucc)

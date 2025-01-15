@@ -30,6 +30,7 @@ class TriggerKeyGui {
         isSelected := false
         arrayIndex := 0
         isModifyKey := false
+        isNormalIndex := 0
 
         for modifyKey, modifyValue in this.ModifyKeyMap {
             if (modifyKey == key) {
@@ -39,6 +40,10 @@ class TriggerKeyGui {
         }
 
         for index, value in this.CheckedBox {
+            if (!this.ModifyKeyMap.Has(value) && isNormalIndex == 0){
+                isNormalIndex := index
+            }
+
             if (value == key) {
                 isSelected := true
                 arrayIndex := index
@@ -51,7 +56,7 @@ class TriggerKeyGui {
         }
         else {
             if (isModifyKey) {
-                this.CheckedBox.InsertAt(1, key)
+                this.CheckedBox.InsertAt(isNormalIndex, key)
             }
             else {
                 this.CheckedBox.Push(key)
@@ -149,16 +154,24 @@ class TriggerKeyGui {
     GetTriggerKey() {
         triggerKey := ""
         hasJoy := false
+        onlyModifyKey := true
         for index, value in this.CheckedBox {
-            isMatch := RegExMatch(value, "Joy")
-            if (isMatch) {
+            if (RegExMatch(value, "Joy")) {
                 hasJoy := true
             }
 
+            if (!this.ModifyKeyMap.Has(value)){
+                onlyModifyKey := false
+            }
+        }
+
+        for index, value in this.CheckedBox{
             isKeyMap := this.ModifyKeyMap.Has(value)
-            subTriggerKey := isKeyMap ? this.ModifyKeyMap.Get(value) : value
+            isLast := index == this.CheckedBox.Length
+            subTriggerKey := (isKeyMap && !isLast) ? this.ModifyKeyMap.Get(value) : value
             triggerKey .= subTriggerKey
         }
+
         if (!hasJoy && this.EnableTriggerKeyCon.Value) {
             triggerKey := "~" triggerKey
         }
