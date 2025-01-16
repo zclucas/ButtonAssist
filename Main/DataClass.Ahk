@@ -42,6 +42,7 @@ Class ToolCheck
         this.ToolProcessPidCtrl := ""
         this.ToolProcessClassCtrl := ""
         this.ToolProcessIdCtrl := ""
+        this.ToolColorCtrl := ""
 
         this.IsToolCheck := false
         this.ToolCheckHotKey := ""
@@ -51,6 +52,7 @@ Class ToolCheck
         this.ProcessPid := ""
         this.ProcessClass := ""
         this.ProcessId := ""
+        this.Color := ""
         this.CheckTimer := ""
     }
 
@@ -95,6 +97,7 @@ Class SoftData
         this.HasSaved := false
 
         this.MyGui := {}
+        this.TabPosX := 0
         this.TabPosY := 0
         this.BtnAdd := ""
         this.BtnSave := ""
@@ -103,8 +106,8 @@ Class SoftData
         this.EditHotKeyCtrl := ""
         this.EditHotStrCtrl := ""
 
-        this.TabNameArr := ["按键宏", "子串宏", "按键替换", "软件宏", "配置规则", "工具"]
-        this.TabSymbolArr := ["Normal", "String", "Replace", "Soft", "Rule", "Tool"]
+        this.TabNameArr := ["按键宏", "子串宏", "按键替换", "软件宏", "工具", "设置"]
+        this.TabSymbolArr := ["Normal", "String", "Replace", "Soft", "Tool", "Setting"]
         this.TabCtrl := {}
         this.TableInfo := []
 
@@ -117,5 +120,9 @@ Class SoftData
         this.ContinueKeyMap := Map("LButton", "LButton", "~LButton", "LButton", "RButton", "RButton", "~RButton", "RButton", "MButton", "MButton", "~MButton", "MButton", "XButton1", "XButton1", "~XButton1", "XButton1", "XButton2", "XButton2", "~XButton2", "XButton2")
         this.ContinueSecondIntervale := 200
         this.ContinueIntervale := 50
+
+        this.GroupFixedCons := []
+        this.FixedCons := []
+        this.SB := ""
     }
 }

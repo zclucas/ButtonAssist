@@ -6,6 +6,7 @@
 #Include Gui\TriggerKeyGui.ahk
 #Include Gui\TriggerStrGui.ahk
 #Include Gui\MacroGui.ahk
+#Include Gui\ScrollBar.ahk
 
 #Include Main\Gdip_All.ahk
 #Include Main\DataClass.ahk
@@ -29,11 +30,3 @@ LoadSetting()
 InitData()
 InitUI()
 BindKey()
-
-fucc(*){
-    Sleep(1000)
-    Send("c")
-}
-
-Hotkey("<alt", fucc)
-Hotkey("z", fucc)

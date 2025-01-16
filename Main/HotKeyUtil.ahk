@@ -4,6 +4,20 @@ BindKey() {
     BindShortcut(MySoftData.KillMacroHotkey, OnKillAllMacro)
     BindShortcut(ToolCheckInfo.ToolCheckHotKey, OnToolCheckHotkey)
     BindTabHotKey()
+    BindScrollHotkey("WheelUp", OnChangeSrollValue)
+    BindScrollHotkey("WheelDown", OnChangeSrollValue)
+    BindScrollHotkey("+WheelUp", OnChangeSrollValue)
+    BindScrollHotkey("+WheelDown", OnChangeSrollValue)
+}
+
+BindScrollHotkey(key, action) {
+    if (MySoftData.SB == "")
+        return
+    
+    processInfo := Format("ahk_exe {}", "AutoHotkey64.exe")
+    HotIfWinActive(processInfo)
+    Hotkey(key, action)
+    HotIfWinActive
 }
 
 BindPauseHotkey() {
@@ -119,7 +133,7 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
         if (!isLoop && !isContinue && isOver)
             break
 
-        if(!isFirst && isContinue){
+        if (!isFirst && isContinue) {
             key := MySoftData.ContinueKeyMap[tableItem.TKArr[index]]
             interval := isSecond ? MySoftData.ContinueSecondIntervale : MySoftData.ContinueIntervale
             Sleep(interval)
@@ -433,6 +447,13 @@ OnKillAllMacro(*) {
     }
 
     KillTableItemMacro()
+}
+
+OnChangeSrollValue(*){
+    MySoftData.SB.ScrollMsg(InStr(A_ThisHotkey, "Down") ? 1 : 0, 0, GetKeyState("Shift") ? 0x114 : 0x115, MySoftData.MyGui.Hwnd)
+    for index, value in MySoftData.GroupFixedCons{
+        value.redraw()
+    }
 }
 
 OnToolCheckHotkey(*) {

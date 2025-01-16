@@ -8,6 +8,7 @@ class SearchGui {
 
         this.MousePosCon := ""
         this.MouseColorCon := ""
+        this.MouseColorTipCon := ""
 
         this.StartPosX := 0
         this.StartPosY := 0
@@ -81,11 +82,17 @@ class SearchGui {
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
         btnCon.OnEvent("Click", (*) => this.TriggerMacro())
 
+        PosY += 20
         PosX := 10
-        PosY += 30
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "S:确定起始坐标   E:确定终止坐标  C:选取当前颜色")
+
+        PosX := 10
+        PosY += 20
         this.MousePosCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "当前鼠标坐标:0,0")
         PosX += 180
-        this.MouseColorCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 170, 20), "当前鼠标颜色:FFFFFF")
+        this.MouseColorCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 140, 20), "当前鼠标颜色:FFFFFF")
+        PosX += 140
+        this.MouseColorTipCon := MyGui.Add("Text", Format("x{} y{} w{} Background{}", PosX, PosY, 20, "FF0000"), "")
 
         PosX := 10
         PosY += 30
@@ -210,7 +217,7 @@ class SearchGui {
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 450, 600))
+        MyGui.Show(Format("w{} h{}", 450, 610))
     }
 
     Init(cmd) {
@@ -244,7 +251,7 @@ class SearchGui {
                 this.ImagePath := searchCmdArr[2]
                 this.ImageCon.Value := ""
             }
-            else{
+            else {
                 this.SearchType := 2
                 this.HexColor := searchCmdArr[2]
             }
@@ -274,7 +281,7 @@ class SearchGui {
         }
         else if (this.SearchType == 2) {
             this.CommandStr := "SearchColor"
-            this.CommandStr .= "_0X" this.HexColor
+            this.CommandStr .= "_0X" this.HexColorCon.Value
         }
 
         this.CommandStr .= "_" this.StartPosXCon.Value
@@ -284,7 +291,7 @@ class SearchGui {
         this.CommandStr .= "_" this.AutoMove
         this.CommandStr .= "_" this.SearchCountCon.Value
         this.CommandStr .= "_" this.SearchIntervalCon.Value
-        
+
         if (this.FoundCommandStr != "") {
             this.CommandStr .= "(" this.FoundCommandStr ")"
         }
@@ -317,8 +324,8 @@ class SearchGui {
             return false
         }
 
-        if (this.SearchType == 2 && StrLen(this.HexColor) != 6) {
-            MsgBox("颜色HEX码必须为6位")
+        if (this.SearchType == 2 && !RegExMatch(this.HexColorCon.Value, "^([0-9A-Fa-f]{6})$")) {
+            MsgBox("请输入正确的颜色值")
             return false
         }
 
@@ -331,10 +338,16 @@ class SearchGui {
         if (state) {
             SetTimer PosAction, 100
             Hotkey("!l", MacroAction, "On")
+            Hotkey("S", (*) => this.SureStartCoord(), "On")
+            Hotkey("E", (*) => this.SureEndCoord(), "On")
+            Hotkey("C", (*) => this.SureColor(), "On")
         }
         else {
             SetTimer PosAction, 0
             Hotkey("!l", MacroAction, "Off")
+            Hotkey("S", (*) => this.SureStartCoord(), "Off")
+            Hotkey("E", (*) => this.SureEndCoord(), "Off")
+            Hotkey("C", (*) => this.SureColor(), "Off")
         }
     }
 
@@ -347,6 +360,8 @@ class SearchGui {
         Color := PixelGetColor(mouseX, mouseY, "Slow")
         ColorText := StrReplace(Color, "0x", "")
         this.MouseColorCon.Value := "当前鼠标颜色:" ColorText
+        this.MouseColorTipCon.Opt(Format("+Background0x{}", ColorText))
+        this.MouseColorTipCon.Redraw()
     }
 
     Refresh() {
@@ -429,13 +444,17 @@ class SearchGui {
         isColor := this.SearchType == 2
 
         showImageTip := isImage && this.ImagePath == ""
-        showColorTip := isColor && !RegExMatch(this.HexColor, "^([0-9A-Fa-f]{6})$")
+        showColorTip := isColor && RegExMatch(this.HexColorCon.Value, "^([0-9A-Fa-f]{6})$")
 
         this.ImageBtn.Enabled := isImage
         this.ImagePicTipCon.Visible := showImageTip
 
         this.HexColorCon.Enabled := isColor
         this.HexColorTipCon.Visible := showColorTip
+        if (showColorTip) {
+            this.HexColorTipCon.Opt(Format("+Background0x{}", this.HexColorCon.Value))
+            this.HexColorTipCon.Redraw()
+        }
     }
 
     OnChangeAutoMove() {
@@ -456,4 +475,36 @@ class SearchGui {
         tableItem.SearchActionArr[1] := Map()
         OnSearch(tableItem, this.CommandStr, 1)
     }
+
+    SureStartCoord() {
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
+        this.StartPosXCon.Value := mouseX
+        this.StartPosYCon.Value := mouseY
+        this.Refresh()
+    }
+
+    SureEndCoord() {
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
+        this.EndPosXCon.Value := mouseX
+        this.EndPosYCon.Value := mouseY
+        this.Refresh()
+    }
+
+    SureColor() {
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
+
+        CoordMode("Pixel", "Screen")
+        Color := PixelGetColor(mouseX, mouseY, "Slow")
+        ColorText := StrReplace(Color, "0x", "")
+        this.HexColorCon.Value := ColorText
+        this.HexColor := ColorText
+        this.HexColorTipCon.Visible := true
+        this.HexColorTipCon.Opt(Format("+Background0x{}", this.HexColorCon.Value))
+        this.HexColorTipCon.Redraw()
+        this.Refresh()
+    }
+
 }

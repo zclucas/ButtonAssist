@@ -240,7 +240,7 @@ GetTableItemDefaultInfo(index) {
     if (symbol == "Normal") {
         savedTKArrStr := "k"
         savedMacroArrStr :=
-            "PressKey_a_30_30_50,3000"
+            "PressKey_a_30_30_50,Interval_3000"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
@@ -250,7 +250,7 @@ GetTableItemDefaultInfo(index) {
     }
     else if (symbol == "String") {
         savedTKArrStr := ":?*:AA"
-        savedMacroArrStr := "PressKey_LButton_50_1_100,50,MouseMove_100_100_1_1000_90_0_0"
+        savedMacroArrStr := "PressKey_LButton_50_1_100,Interval_50,MouseMove_100_100_1_1000_90_0_0"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
@@ -268,7 +268,7 @@ GetTableItemDefaultInfo(index) {
         savedTKArrStr := "!d"
         savedMacroArrStr := "Notepad.exe"
         savedModeArrStr := "0"
-        savedForbidArrStr := "0"
+        savedForbidArrStr := "1"
         savedProcessNameStr := ""
     }
     return [savedTKArrStr, savedMacroArrStr, savedModeArrStr, savedForbidArrStr, savedProcessNameStr, savedRemarkArrStr,
@@ -427,14 +427,16 @@ KillSingleTableMacro(tableItem) {
     }
 }
 
-MaxUnderPosY() {
+GetTabHeight(){
     maxY := 0
     loop MySoftData.TabNameArr.Length {
         posY := MySoftData.TableInfo[A_Index].UnderPosY
         if (posY > maxY)
             maxY := posY
     }
-    return maxY
+
+    height := maxY - MySoftData.TabPosY
+    return Max(height, 500)
 }
 
 UpdateUnderPosY(tableIndex, value) {

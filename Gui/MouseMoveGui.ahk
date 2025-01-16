@@ -53,8 +53,12 @@ class MouseMoveGui{
         btnCon :=MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
         btnCon.OnEvent("Click", (*) => this.TriggerMacro())
 
+        PosY += 20
         PosX := 10
-        PosY += 30
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "E:选取当前坐标")
+
+        PosX := 10
+        PosY += 20
         this.MousePosCon :=MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 380, 20), "当前鼠标位置:0,0")
 
         PosY += 30
@@ -107,7 +111,7 @@ class MouseMoveGui{
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 400, 250))
+        MyGui.Show(Format("w{} h{}", 400, 255))
     }
 
     Init(cmd){
@@ -180,10 +184,12 @@ class MouseMoveGui{
         if (state){
             SetTimer PosAction, 100
             Hotkey("!l", MacroAction, "On")
+            Hotkey("E", (*)=> this.SureCoord(), "On")
         }
         else{
             SetTimer PosAction, 0
             Hotkey("!l", MacroAction, "Off")
+            Hotkey("E", (*)=> this.SureCoord(), "Off")
         }
     }
 
@@ -235,4 +241,15 @@ class MouseMoveGui{
 
         OnMouseMove(tableItem, this.CommandStr, 1)
     }
+
+    SureCoord(){
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
+        this.PosXCon.Value := mouseX
+        this.PosYCon.Value := mouseY
+        this.PosX := this.PosXCon.Value
+        this.PosY := this.PosYCon.Value
+        this.Refresh()
+    }
+
 }
