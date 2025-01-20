@@ -196,6 +196,9 @@ OnSearch(tableItem, cmd, index) {
         if (A_Index == 1)
             continue
 
+        if (!tableItem.SearchActionArr[index].Has(searchCmdArr[2])) ;第一次搜索成功就退出
+            break
+
         action := OnSearchOnce.Bind(tableItem, cmd, index, A_Index == searchCount)
         leftTime := GetFloatTime(searchInterval * (A_Index - 1), MySoftData.PreIntervalFloat)
         tableItem.SearchActionArr[index][searchCmdArr[2]].Push(action)

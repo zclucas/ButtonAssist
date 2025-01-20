@@ -427,54 +427,54 @@ class TriggerKeyGui {
             this.ConMap.Set("Tab", con)
 
             PosX += 75
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "Q")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("Q"))
-            this.ConMap.Set("Q", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "q")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("q"))
+            this.ConMap.Set("q", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "W")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("W"))
-            this.ConMap.Set("W", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "w")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("w"))
+            this.ConMap.Set("w", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "E")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("E"))
-            this.ConMap.Set("E", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "e")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("e"))
+            this.ConMap.Set("e", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "R")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("R"))
-            this.ConMap.Set("R", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "r")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("r"))
+            this.ConMap.Set("r", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "T")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("T"))
-            this.ConMap.Set("T", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "t")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("t"))
+            this.ConMap.Set("t", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "Y")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("Y"))
-            this.ConMap.Set("Y", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "y")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("y"))
+            this.ConMap.Set("y", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "U")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("U"))
-            this.ConMap.Set("U", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "u")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("u"))
+            this.ConMap.Set("u", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "I")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("I"))
-            this.ConMap.Set("I", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "i")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("i"))
+            this.ConMap.Set("i", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "O")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("O"))
-            this.ConMap.Set("O", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "o")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("o"))
+            this.ConMap.Set("o", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "P")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("P"))
-            this.ConMap.Set("P", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "p")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("p"))
+            this.ConMap.Set("p", con)
 
             PosX += 50
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "[")
@@ -533,49 +533,49 @@ class TriggerKeyGui {
             this.ConMap.Set("CapsLock", con)
 
             PosX += 90
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "A")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("A"))
-            this.ConMap.Set("A", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "a")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("a"))
+            this.ConMap.Set("a", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "S")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("S"))
-            this.ConMap.Set("S", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "s")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("s"))
+            this.ConMap.Set("s", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "D")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("D"))
-            this.ConMap.Set("D", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "d")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("d"))
+            this.ConMap.Set("d", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "F")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("F"))
-            this.ConMap.Set("F", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "f")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("f"))
+            this.ConMap.Set("f", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "G")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("G"))
-            this.ConMap.Set("G", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "g")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("g"))
+            this.ConMap.Set("g", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "H")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("H"))
-            this.ConMap.Set("H", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "h")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("h"))
+            this.ConMap.Set("h", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "J")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("J"))
-            this.ConMap.Set("J", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "j")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("j"))
+            this.ConMap.Set("j", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "K")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("K"))
-            this.ConMap.Set("K", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "k")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("k"))
+            this.ConMap.Set("k", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "L")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("L"))
-            this.ConMap.Set("L", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "l")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("l"))
+            this.ConMap.Set("l", con)
 
             PosX += 50
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), ";")
@@ -614,39 +614,39 @@ class TriggerKeyGui {
             this.ConMap.Set("LShift", con)
 
             PosX += 110
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "Z")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("Z"))
-            this.ConMap.Set("Z", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "z")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("z"))
+            this.ConMap.Set("z", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "X")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("X"))
-            this.ConMap.Set("X", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "x")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("x"))
+            this.ConMap.Set("x", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "C")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("C"))
-            this.ConMap.Set("C", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "c")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("c"))
+            this.ConMap.Set("c", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "V")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("V"))
-            this.ConMap.Set("V", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "v")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("v"))
+            this.ConMap.Set("v", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "B")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("B"))
-            this.ConMap.Set("B", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "b")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("b"))
+            this.ConMap.Set("b", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "N")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("N"))
-            this.ConMap.Set("N", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "n")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("n"))
+            this.ConMap.Set("n", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "M")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("M"))
-            this.ConMap.Set("M", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "m")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("m"))
+            this.ConMap.Set("m", con)
 
             PosX += 50
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), ",")

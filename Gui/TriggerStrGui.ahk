@@ -431,7 +431,7 @@ class TriggerStrGui {
         this.IsSubStrCon := con
 
         PosX += 200
-        con := MyGui.Add("Checkbox", Format("x{} y{} h{} w{}", PosX, PosY, 20, 100), "不删除触发字串")
+        con := MyGui.Add("Checkbox", Format("x{} y{} h{} w{}", PosX, PosY, 20, 150), "不删除触发字串")
         con.OnEvent("Click", (*) => this.OnClickNoDeleteCon())
         this.IsNoDeleteCon := con
 

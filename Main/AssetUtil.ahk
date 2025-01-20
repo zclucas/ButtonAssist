@@ -479,3 +479,16 @@ CheckIsStringMacroTable(index) {
         return true
     return false
 }
+
+CheckIsHotKey(key){
+    if(SubStr(key, 1, 1) == ":") 
+        return false
+
+    if(SubStr(key, 1, 3) == "Joy")
+        return false
+
+    if (MySoftData.SpecialKeyMap.Has(key))
+        return false
+
+    return true
+}
