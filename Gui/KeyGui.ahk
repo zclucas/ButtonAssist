@@ -856,7 +856,7 @@ class KeyGui {
         this.HoldTimeCon.Value := this.HoldTime
         this.KeyCountCon.Value := this.KeyCount
         this.PerIntervalCon.Value := this.PerInterval
-        this.GameModeCon.Value := MySoftData.SpecialtableItem.ModeArr[1]
+        this.GameModeCon.Value := MySoftData.SpecialTableItem.ModeArr[1]
     }
 
     CheckIfValid() {
@@ -921,7 +921,7 @@ class KeyGui {
         this.HoldTime := this.HoldTimeCon.Value
         this.KeyCount := this.KeyCountCon.Value
         this.PerInterval := this.PerIntervalCon.Value
-        MySoftData.SpecialtableItem.ModeArr[1] := this.GameModeCon.Value
+        MySoftData.SpecialTableItem.ModeArr[1] := this.GameModeCon.Value
         this.Refresh()
     }
 
@@ -942,7 +942,7 @@ class KeyGui {
             return
 
         this.UpdateCommandStr()
-        tableItem := MySoftData.SpecialtableItem
+        tableItem := MySoftData.SpecialTableItem
         tableItem.CmdActionArr[1] := []
         tableItem.KilledArr[1] := false
         tableItem.ActionCount[1] := 0

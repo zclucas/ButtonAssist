@@ -264,13 +264,6 @@ GetTableItemDefaultInfo(index) {
         savedForbidArrStr := "1π1π1"
         savedProcessNameStr := "ππ"
     }
-    else if (symbol == "Soft") {
-        savedTKArrStr := "!d"
-        savedMacroArrStr := "Notepad.exe"
-        savedModeArrStr := "0"
-        savedForbidArrStr := "1"
-        savedProcessNameStr := ""
-    }
     return [savedTKArrStr, savedMacroArrStr, savedModeArrStr, savedForbidArrStr, savedProcessNameStr, savedRemarkArrStr,
         savedLoopCountStr]
 }
@@ -379,7 +372,7 @@ InitTableItemState() {
         InitSingleTableState(tableItem)
     }
 
-    tableItem := MySoftData.SpecialtableItem
+    tableItem := MySoftData.SpecialTableItem
     tableItem.ModeArr := []
     tableItem.ModeArr.Push(0)
     InitSingleTableState(tableItem)
@@ -404,7 +397,7 @@ KillTableItemMacro() {
         KillSingleTableMacro(tableItem)
     }
 
-    KillSingleTableMacro(MySoftData.SpecialtableItem)
+    KillSingleTableMacro(MySoftData.SpecialTableItem)
 }
 
 KillSingleTableMacro(tableItem) {

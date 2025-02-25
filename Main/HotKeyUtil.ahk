@@ -162,6 +162,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsSearch := StrCompare(SubStr(paramArr[1], 1, 6), "Search", false) == 0
         IsPressKey := StrCompare(paramArr[1], "PressKey", false) == 0
         IsInterval := StrCompare(paramArr[1], "Interval", false) == 0
+        IsFile := StrCompare(paramArr[1], "File", false) == 0
         if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
@@ -173,6 +174,9 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         }
         else if (IsInterval) {
             OnInterval(tableItem, cmdArr[A_Index], index)
+        }
+        else if (IsFile) {
+            OnRunFile(tableItem, cmdArr[A_Index], index)
         }
     }
 }
@@ -260,6 +264,12 @@ OnSearchOnce(tableItem, cmd, index, isFinally) {
             return
         OnTriggerMacroOnce(tableItem, macroArr[3], index)
     }
+}
+
+OnRunFile(tableItem, cmd, index){
+    paramArr := StrSplit(cmd, "_")
+    filePath := SubStr(cmd, StrLen(paramArr[1]) + 2)
+    Run(filePath)
 }
 
 OnMouseMove(tableItem, cmd, index) {

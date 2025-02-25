@@ -233,7 +233,7 @@ class MouseMoveGui{
             return
 
         this.UpdateCommandStr()
-        tableItem := MySoftData.SpecialtableItem
+        tableItem := MySoftData.SpecialTableItem
         tableItem.CmdActionArr[1] := []
         tableItem.KilledArr[1] := false
         tableItem.ActionCount[1] := 0

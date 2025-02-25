@@ -1,5 +1,12 @@
 ;窗口&UI刷新
 InitUI() {
+    global MySoftData
+    MyGui := Gui(, "Super的按键辅助器")
+    MyGui.Opt("ToolWindow")
+    MyGui.SetFont(, "Consolas")
+    MyGui.Show(Format("w{} h{} center", 1030, 520))
+    MySoftData.MyGui := MyGui
+    
     AddUI()
     CustomTrayMenu()
     OnOpen()
@@ -8,7 +15,7 @@ InitUI() {
 OnOpen() {
     global MySoftData
 
-    if (!MySoftData.ShowWinCtrl.Value && !MySoftData.IsLastSaved)
+    if (!MySoftData.IsExecuteShow && !MySoftData.IsLastSaved)
         return
 
     RefreshGui()
@@ -21,6 +28,7 @@ RefreshGui() {
         MySoftData.MyGui.Show(Format("x{} y{} w{} h{}", MySoftData.WinPosX, MySoftData.WinPosY, 1030, 520))
     else
         MySoftData.MyGui.Show(Format("w{} h{} center", 1030, 520))
+
 }
 
 RefreshToolUI() {
@@ -38,13 +46,8 @@ RefreshToolUI() {
 ;UI元素相关函数
 AddUI() {
     global MySoftData
-    MyGui := Gui(, "Super的按键辅助器")
-    MyGui.Opt("ToolWindow")
-    MyGui.SetFont(, "Consolas")
-    MySoftData.MyGui := MyGui
-
+    MyGui := MySoftData.MyGui
     AddOperBtnUI()
-
     MySoftData.TabPosY := 10
     MySoftData.TabPosX := 130
     MySoftData.TabCtrl := MyGui.Add("Tab3", Format("x{} y{} w{} Choose{}",MySoftData.TabPosX, MySoftData.TabPosY, 870, MySoftData.TableIndex), MySoftData.TabNameArr)
@@ -120,7 +123,7 @@ AddOperBtnUI() {
 }
 
 GetUIAddFunc(index) {
-    UIAddFuncArr := [AddMacroHotkeyUI, AddMacroHotkeyUI, AddReplaceKeyUI, AddSoftUI,
+    UIAddFuncArr := [AddMacroHotkeyUI, AddMacroHotkeyUI, AddReplaceKeyUI,
         AddToolUI, AddSettingUI]
     return UIAddFuncArr[index]
 }
@@ -302,9 +305,6 @@ OnAddSetting(*) {
 
     SaveWinPos()
     RefreshGui()
-    SB := ScrollBar(MyGui, 100, 100)
-    MySoftData.SB := SB
-    SB.AddFixedControls(MySoftData.FixedCons)
 }
 
 OnRemoveSetting(*) {

@@ -3,6 +3,7 @@
 #Include KeyGui.ahk
 #Include MouseMoveGui.ahk
 #Include SearchGui.ahk
+#Include FileGui.ahk
 
 class MacroGui {
     __new() {
@@ -44,6 +45,10 @@ class MacroGui {
         this.SearchGui := SearchGui()
         this.SearchGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("Search", this.SearchGui)
+
+        this.FileGui := FileGui()
+        this.FileGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("File", this.FileGui)
     }
 
     GetSubGuiSymbol(subGui) {
@@ -93,23 +98,33 @@ class MacroGui {
         PosY += 20
         PosX := 20
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "间隔")
+        btnCon.SetFont((Format("S{} W{} Q{}", 18, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.IntervalGui))
         this.CmdBtnConMap.Set("Interval", btnCon)
 
         PosX += 125
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "按键")
+        btnCon.SetFont((Format("S{} W{} Q{}", 18, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.KeyGui))
         this.CmdBtnConMap.Set("PressKey", btnCon)
 
         PosX += 125
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "鼠标移动")
+        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.MoveMoveGui))
         this.CmdBtnConMap.Set("MouseMove", btnCon)
 
         PosX += 125
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "搜索")
+        btnCon.SetFont((Format("S{} W{} Q{}", 18, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.SearchGui))
         this.CmdBtnConMap.Set("Search", btnCon)
+
+        PosX += 125
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "文件")
+        btnCon.SetFont((Format("S{} W{} Q{}", 18, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.FileGui))
+        this.CmdBtnConMap.Set("File", btnCon)
 
         PosX := 20
         PosY += 140
@@ -181,27 +196,27 @@ class MacroGui {
     }
 
     GetMacroEditStr(macro) {
-        CammandArr := this.SplitMacro(macro)
+        CommandArr := this.SplitMacro(macro)
         macroEditStr := ""
         processedIndex := 0
-        for index, value in CammandArr {
+        for index, value in CommandArr {
             if (processedIndex >= index)
                 continue
             processedIndex := index
             isInterval := StrCompare(SubStr(value, 1, 8), "Interval", false) == 0
             if (isInterval) {
-                SubCammandArr := StrSplit(value, "_")
-                intervalValue := Integer(SubCammandArr[2])
+                SubCommandArr := StrSplit(value, "_")
+                intervalValue := Integer(SubCommandArr[2])
                 loop {
                     curIndex := index + A_Index
-                    if (curIndex > CammandArr.Length)
+                    if (curIndex > CommandArr.Length)
                         break
 
-                    SubCammandArr := StrSplit(CammandArr[curIndex], "_")
-                    isIntervaAgain := StrCompare(SubStr(SubCammandArr[1], 1, 8), "Interval", false) == 0
-                    if (!isIntervaAgain)
+                    SubCommandArr := StrSplit(CommandArr[curIndex], "_")
+                    isIntervalAgain := StrCompare(SubStr(SubCommandArr[1], 1, 8), "Interval", false) == 0
+                    if (!isIntervalAgain)
                         break
-                    intervalValue += Integer(SubCammandArr[2])
+                    intervalValue += Integer(SubCommandArr[2])
                     processedIndex := curIndex
                 }
                 macroEditStr := index == 1 ? macroEditStr : macroEditStr ","
@@ -214,14 +229,14 @@ class MacroGui {
                 macroEditStr .= value
                 loop {
                     curIndex := index + A_Index
-                    if (curIndex > CammandArr.Length)
+                    if (curIndex > CommandArr.Length)
                         break
 
-                    SubCammandArr := StrSplit(CammandArr[curIndex], "_")
-                    isPressKeyAgain := StrCompare(SubStr(SubCammandArr[1], 1, 8), "PressKey", false) == 0
+                    SubCommandArr := StrSplit(CommandArr[curIndex], "_")
+                    isPressKeyAgain := StrCompare(SubStr(SubCommandArr[1], 1, 8), "PressKey", false) == 0
                     if (!isPressKeyAgain)
                         break
-                    macroEditStr .= "," CammandArr[curIndex]
+                    macroEditStr .= "," CommandArr[curIndex]
                     processedIndex := curIndex
                 }
             }
@@ -243,9 +258,15 @@ class MacroGui {
                 macroEditStr .= value
             }
 
+            isFile := StrCompare(SubStr(value, 1, 4), "File", false) == 0
+            if (isFile) 
+            {
+                macroEditStr .= value
+            }
+
             nextIndex := processedIndex + 1
-            isNextInterval := nextIndex <= CammandArr.Length
-            isNextInterval := isNextInterval && StrCompare(SubStr(CammandArr[nextIndex], 1, 8), "Interval", false) == 0
+            isNextInterval := nextIndex <= CommandArr.Length
+            isNextInterval := isNextInterval && StrCompare(SubStr(CommandArr[nextIndex], 1, 8), "Interval", false) == 0
             if (!isNextInterval) {
                 macroEditStr .= "`n"
             }
@@ -299,7 +320,7 @@ class MacroGui {
         return macroStr
     }
 
-    GetFiniallyMacroStr() {
+    GetFinallyMacroStr() {
         MacroLineArr := StrSplit(this.MacroEditStrCon.Value, "`n")
         macro := this.GetMacroStr(MacroLineArr)
         for key, value in this.SubMacroMap {
@@ -342,10 +363,10 @@ class MacroGui {
     }
 
     Backspace() {
-        macro := this.GetFiniallyMacroStr()
-        CammandArr := this.SplitMacro(macro)
-        CammandArr.Pop()
-        macro := this.GetMacroStr(CammandArr)
+        macro := this.GetFinallyMacroStr()
+        CommandArr := this.SplitMacro(macro)
+        CommandArr.Pop()
+        macro := this.GetMacroStr(CommandArr)
         this.MacroEditStrCon.Value := this.GetMacroEditStr(macro)
     }
 
@@ -354,7 +375,7 @@ class MacroGui {
     }
 
     OnSaveBtnClick() {
-        macroStr := this.GetFiniallyMacroStr()
+        macroStr := this.GetFinallyMacroStr()
         action := this.SureBtnAction
         action(macroStr)
 
@@ -368,7 +389,7 @@ class MacroGui {
     }
 
     OnSureBtnClick() {
-        macroStr := this.GetFiniallyMacroStr()
+        macroStr := this.GetFinallyMacroStr()
         action := this.SureBtnAction
         action(macroStr)
 
@@ -414,6 +435,7 @@ class MacroGui {
             LineArr := this.OnInsertCmd(LineArr, CommandStr)
         }
         macro := this.GetMacroStr(LineArr)
+        aa := this.GetMacroEditStr(macro)
         this.MacroEditStrCon.Value := this.GetMacroEditStr(macro)
 
         this.DefaultFocusCon.Focus()
