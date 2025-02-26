@@ -96,13 +96,14 @@ GetMacroAction(tableIndex, index) {
 
     if (tableSymbol == "Normal" || tableSymbol == "String") {
         actionDown := GetClosureAction(tableItem, macro, index, OnTriggerMacroKeyAndInit)
+        actionUp := GetClosureAction(tableItem, macro, index, OnStopMacro)
+    }
+    else if (tableSymbol == "String"){
+        actionDown := GetClosureAction(tableItem, macro, index, OnTriggerMacroKeyAndInit)
     }
     else if (tableSymbol == "Replace") {
         actionDown := GetClosureAction(tableItem, macro, index, OnReplaceDownKey)
         actionUp := GetClosureAction(tableItem, macro, index, OnReplaceUpKey)
-    }
-    else if (tableSymbol == "Soft") {
-        actionDown := GetClosureAction(tableItem, macro, index, OnSoftTriggerKey)
     }
 
     return [actionDown, actionUp]
@@ -112,6 +113,8 @@ GetClosureAction(tableItem, macro, index, func) {     ;获取闭包函数
     funcObj := func.Bind(tableItem, macro, index)
     return (*) => funcObj()
 }
+
+
 
 ;按键宏命令
 OnTriggerMacroKeyAndInit(tableItem, macro, index) {
@@ -316,7 +319,15 @@ OnInterval(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     interval := Integer(paramArr[2])
     interval := GetFloatTime(interval, MySoftData.IntervalFloat)
-    Sleep(interval)
+    curTime := 0
+    clip := Min(500, interval)
+    while (curTime < interval){
+        if (tableItem.KilledArr[index])
+            break
+        Sleep(clip)
+        curTime += clip
+        clip := Min(500, interval - curTime)
+    }
 }
 
 OnPressKey(tableItem, cmd, index) {
@@ -331,18 +342,28 @@ OnPressKey(tableItem, cmd, index) {
     floatHoldTime := GetFloatTime(holdTime, MySoftData.HoldFloat)
     count := paramArr.Length > 2 ? Integer(paramArr[4]) : 1
 
-    action(paramArr[2], floatHoldTime)
+    action(paramArr[2], floatHoldTime, tableItem, index)
 
     loop count {
         if (A_Index == 1)
             continue
 
         floatHoldTime := GetFloatTime(holdTime, MySoftData.HoldFloat)
-        tempAction := action.Bind(paramArr[2], floatHoldTime)
+        tempAction := action.Bind(paramArr[2], floatHoldTime, tableItem, index)
         leftTime := GetFloatTime((Integer(paramArr[5])) * (A_Index - 1), MySoftData.PreIntervalFloat)
         tableItem.CmdActionArr[index].Push(tempAction)
         SetTimer tempAction, -leftTime
     }
+}
+
+;松开停止
+OnStopMacro(tableItem, macro, index) {
+    if (tableItem.LooseStopArr.Length < index)
+        return 
+    if (tableItem.LooseStopArr[index] == false)
+        return 
+    KillTableItemMacro(tableItem, index)
+
 }
 
 ;按键替换
@@ -353,10 +374,10 @@ OnReplaceDownKey(tableItem, info, index) {
     loop infos.Length {
         assistKey := infos[A_Index]
         if (mode == 1) {
-            SendGameModeKey(assistKey, 1)
+            SendGameModeKey(assistKey, 1, tableItem, index)
         }
         else {
-            SendNormalKey(assistKey, 1)
+            SendNormalKey(assistKey, 1, tableItem, index)
         }
     }
 
@@ -369,10 +390,10 @@ OnReplaceUpKey(tableItem, info, index) {
     loop infos.Length {
         assistKey := infos[A_Index]
         if (mode == 1) {
-            SendGameModeKey(assistKey, 0)
+            SendGameModeKey(assistKey, 0, tableItem, index)
         }
         else {
-            SendNormalKey(assistKey, 0)
+            SendNormalKey(assistKey, 0, tableItem, index)
         }
     }
 
@@ -387,6 +408,33 @@ OnSoftTriggerKey(tableItem, info, index) {
 GetTableClosureAction(action, TableItem, index) {
     funcObj := action.Bind(TableItem, index)
     return (*) => funcObj()
+}
+
+OnTableDelete(tableItem, index) {
+    TableIndex := MySoftData.TabCtrl.Value
+    isMacro := CheckIsMacroTable(TableIndex)
+    if (tableItem.ModeArr.Length == 0) {
+        return
+    }
+    result := MsgBox("是否删除当前配置", "提示", 1)
+    if (result == "Cancel") 
+        return
+
+    MySoftData.BtnAdd.Enabled := false
+    tableItem.ModeArr.RemoveAt(index)
+    tableItem.ForbidArr.RemoveAt(index)
+    tableItem.LooseStopArr.RemoveAt(index)
+    if (tableItem.TKArr.Length >= index)
+        tableItem.TKArr.RemoveAt(index)
+    if (tableItem.MacroArr.Length >= index)
+        tableItem.MacroArr.RemoveAt(index)
+    if (tableItem.ProcessNameArr.Length >= index)
+        tableItem.ProcessNameArr.RemoveAt(index)
+    if (tableItem.LoopCountArr.Length >= index)
+        tableItem.LoopCountArr.RemoveAt(index)
+    if (tableItem.RemarkArr.Length >= index)
+        tableItem.RemarkArr.RemoveAt(index)
+    OnSaveSetting()
 }
 
 OnTableEditMacro(tableItem, index) {
@@ -442,25 +490,12 @@ OnPauseHotkey(*) {
 OnKillAllMacro(*) {
     global MySoftData ; 访问全局变量
 
-    for key, value in MySoftData.HoldKeyMap {
-        if (value == "Game") {
-            SendGameModeKey(key, 0)
-        }
-        else if (value == "Normal") {
-            SendNormalKey(key, 0)
-        }
-        else if (value == "Joy") {
-            SendJoyBtnKey(key, 0)
-        }
-        else if (value == "JoyAxis") {
-            SendJoyAxisKey(key, 0)
-        }
-        else if (value == "GameMouse") {
-            SendGameMouseKey(key, 0)
-        }
+    loop MySoftData.TableInfo.Length {
+        tableItem := MySoftData.TableInfo[A_Index]
+        KillSingleTableMacro(tableItem)
     }
 
-    KillTableItemMacro()
+    KillSingleTableMacro(MySoftData.SpecialTableItem)
 }
 
 OnChangeSrollValue(*){
@@ -484,17 +519,17 @@ OnShowWinChanged(*) {
 }
 
 ;按键模拟
-SendGameModeKeyClick(key, holdTime := 30) {
-    SendGameModeKey(key, 1)
-    SetTimer(() => SendGameModeKey(key, 0), -holdTime)
+SendGameModeKeyClick(key, holdTime, tableItem, index) {
+    SendGameModeKey(key, 1, tableItem, index)
+    SetTimer(() => SendGameModeKey(key, 0, tableItem, index), -holdTime)
 }
 
-SendGameModeKey(Key, state) {
+SendGameModeKey(Key, state, tableItem, index) {
     VK := GetKeyVK(Key)
     SC := GetKeySC(Key)
 
     if (VK == 1 || VK == 2 || VK == 4) {   ; 鼠标左键、右键、中键
-        SendGameMouseKey(key, state)
+        SendGameMouseKey(key, state, tableItem, index)
         return
     }
 
@@ -510,17 +545,17 @@ SendGameModeKey(Key, state) {
 
     if (state == 1) {
         DllCall("keybd_event", "UChar", VK, "UChar", SC, "UInt", isExtendedKey ? 0x1 : 0, "UPtr", 0)
-        MySoftData.HoldKeyMap[key] := "Game"
+        tableItem.HoldKeyArr[index][key] := "Game"
     }
     else {
         DllCall("keybd_event", "UChar", VK, "UChar", SC, "UInt", (isExtendedKey ? 0x3 : 0x2), "UPtr", 0)
-        if (MySoftData.HoldKeyMap.Has(key)) {
-            MySoftData.HoldKeyMap.Delete(key)
+        if (tableItem.HoldKeyArr[index].Has(key)) {
+            tableItem.HoldKeyArr[index].Delete(key)
         }
     }
 }
 
-SendGameMouseKey(key, state) {
+SendGameMouseKey(key, state, tableItem, index) {
     ; 鼠标按下和松开的标志
     if (StrCompare(Key, "LButton", false) == 0) {
         mouseDown := 0x0002
@@ -537,22 +572,22 @@ SendGameMouseKey(key, state) {
 
     if (state == 1) {
         DllCall("mouse_event", "UInt", mouseDown, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 0)
-        MySoftData.HoldKeyMap[key] := "GameMouse"
+        tableItem.HoldKeyArr[index][key] := "GameMouse"
     }
     else {
         DllCall("mouse_event", "UInt", mouseUp, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 0)
-        if (MySoftData.HoldKeyMap.Has(key)) {
-            MySoftData.HoldKeyMap.Delete(key)
+        if (tableItem.HoldKeyArr[index].Has(key)) {
+            tableItem.HoldKeyArr[index].Delete(key)
         }
     }
 }
 
-SendNormalKeyClick(Key, holdTime := 30) {
-    SendNormalKey(Key, 1)
-    SetTimer(() => SendNormalKey(Key, 0), -holdTime)
+SendNormalKeyClick(Key, holdTime, tableItem, index) {
+    SendNormalKey(Key, 1, tableItem, index)
+    SetTimer(()=> SendNormalKey(Key, 0, tableItem, index), -holdTime)
 }
 
-SendNormalKey(Key, state) {
+SendNormalKey(Key, state, tableItem, index) {
     if (state == 1) {
         keySymbol := "{" Key " down}"
     }
@@ -561,50 +596,49 @@ SendNormalKey(Key, state) {
     }
 
     Send(keySymbol)
-
     if (state == 1) {
-        MySoftData.HoldKeyMap[Key] := "Normal"
+        tableItem.HoldKeyArr[index][Key] := "Normal"
     }
     else {
-        if (MySoftData.HoldKeyMap.Has(key)) {
-            MySoftData.HoldKeyMap.Delete(Key)
+        if (tableItem.HoldKeyArr[index].Has(Key)) {
+            tableItem.HoldKeyArr[index].Delete(Key)
         }
     }
 }
 
-SendJoyBtnClick(key, holdTime := 30) {
+SendJoyBtnClick(key, holdTime, tableItem, index) {
     if (!CheckIfInstallVjoy()){
         MsgBox("使用手柄功能前,请先安装Joy目录下的vJoy驱动!")
         return
     }
-    SendJoyBtnKey(key, 1)
-    SetTimer(() => SendJoyBtnKey(key, 0), -holdTime)
+    SendJoyBtnKey(key, 1, tableItem, index)
+    SetTimer(() => SendJoyBtnKey(key, 0, tableItem, index), -holdTime)
 }
 
-SendJoyBtnKey(key, state) {
+SendJoyBtnKey(key, state, tableItem, index) {
     joyIndex := SubStr(key, 4)
     MyvJoy.SetBtn(state, joyIndex)
 
     if (state == 1) {
-        MySoftData.HoldKeyMap[key] := "Joy"
+        tableItem.HoldKeyArr[index][key] := "Joy"
     }
     else {
-        if (MySoftData.HoldKeyMap.Has(key)) {
-            MySoftData.HoldKeyMap.Delete(key)
+        if (tableItem.HoldKeyArr[index].Has(key)) {
+            tableItem.HoldKeyArr[index].Delete(key)
         }
     }
 }
 
-SendJoyAxisClick(key, holdTime := 30) {
+SendJoyAxisClick(key, holdTime, tableItem, index) {
     if (!CheckIfInstallVjoy()){
         MsgBox("使用手柄功能前,请先安装Joy目录下的vJoy驱动!")
         return
     }
-    SendJoyAxisKey(key, 1)
-    SetTimer(() => SendJoyAxisKey(key, 0), -holdTime)
+    SendJoyAxisKey(key, 1, tableItem, index)
+    SetTimer(() => SendJoyAxisKey(key, 0, tableItem, index), -holdTime)
 }
 
-SendJoyAxisKey(key, state) {
+SendJoyAxisKey(key, state, tableItem, index) {
     percent := 50
     if (state == 1) {
         percent := MyvJoy.JoyAxisMap.Get(key)
@@ -614,11 +648,11 @@ SendJoyAxisKey(key, state) {
     MyvJoy.SetAxisByIndex(value, index)
 
     if (state == 1) {
-        MySoftData.HoldKeyMap[key] := "JoyAxis"
+        tableItem.HoldKeyArr[index][key] := "JoyAxis"
     }
     else {
-        if (MySoftData.HoldKeyMap.Has(key)) {
-            MySoftData.HoldKeyMap.Delete(key)
+        if (tableItem.HoldKeyArr[index].Has(key)){
+            tableItem.HoldKeyArr[index].Delete(key)
         }
 
     }

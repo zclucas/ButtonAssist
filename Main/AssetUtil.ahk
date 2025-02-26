@@ -1,8 +1,8 @@
 ; 功能函数
-GetFloatTime(oriTime, floatValue){
+GetFloatTime(oriTime, floatValue) {
     oriTime := Integer(oriTime)
     floatValue := Integer(floatValue)
-    value := Abs(oriTime * (floatValue * 0.01)) 
+    value := Abs(oriTime * (floatValue * 0.01))
     max := oriTime + value
     min := oriTime - value
     return Random(min, max)
@@ -102,7 +102,7 @@ SplitKeyCommand(macro) {
 
     result := StrSplit(newMacro, "_")
     loop result.Length {
-        if (result[A_Index] == "flagSymbol"){
+        if (result[A_Index] == "flagSymbol") {
             result[A_Index] := realKey
             break
         }
@@ -121,10 +121,12 @@ InitData() {
 ;手柄轴未使用时，状态会变为0，而非中间值
 InitJoyAxis() {
     if (!CheckIfInstallVjoy())
-        return 
+        return
     joyAxisNum := 8
+    tableItem := MySoftData.SpecialTableItem
+    tableItem.HoldKeyArr[1] := Map()
     loop joyAxisNum {
-        SendJoyAxisClick("JoyAxis" A_Index "Max", 30)
+        SendJoyAxisClick("JoyAxis" A_Index "Max", 30, tableItem, 1)
     }
 }
 
@@ -132,12 +134,6 @@ InitGui() {
     MyTriggerKeyGui.SaveBtnAction := OnSaveSetting
     MyTriggerStrGui.SaveBtnAction := OnSaveSetting
     MyMacroGui.SaveBtnAction := OnSaveSetting
-
-    
-}
-
-SetSoftData() {
-
 }
 
 ;资源读取
@@ -176,22 +172,25 @@ ReadTableItemInfo(index) {
     savedProcessNameStr := IniRead(IniFile, IniSection, symbol "ProcessNameArr", "")
     savedRemarkArrStr := IniRead(IniFile, IniSection, symbol "RemarkArr", "")
     savedLoopCountStr := IniRead(IniFile, IniSection, symbol "LoopCountArr", "")
+    savedLooseStopArrStr := IniRead(IniFile, IniSection, symbol "LooseStopArr", "")
 
     if (!MySoftData.HasSaved) {
         if (savedTKArrStr == "")
             savedTKArrStr := defaultInfo[1]
         if (savedMacroArrStr == "")
             savedMacroArrStr := defaultInfo[2]
+        if (savedLooseStopArrStr == "")
+            savedLooseStopArrStr := defaultInfo[3]
         if (savedModeArrStr == "")
-            savedModeArrStr := defaultInfo[3]
+            savedModeArrStr := defaultInfo[4]
         if (savedForbidArrStr == "")
-            savedForbidArrStr := defaultInfo[4]
+            savedForbidArrStr := defaultInfo[5]
         if (savedProcessNameStr == "")
-            savedProcessNameStr := defaultInfo[5]
+            savedProcessNameStr := defaultInfo[6]
         if (savedRemarkArrStr == "")
-            savedRemarkArrStr := defaultInfo[6]
+            savedRemarkArrStr := defaultInfo[7]
         if (savedLoopCountStr == "")
-            savedLoopCountStr := defaultInfo[7]
+            savedLoopCountStr := defaultInfo[8]
     }
 
     tableItem := MySoftData.TableInfo[index]
@@ -202,6 +201,7 @@ ReadTableItemInfo(index) {
     SetArr(savedProcessNameStr, "π", tableItem.ProcessNameArr)
     SetArr(savedRemarkArrStr, "π", tableItem.RemarkArr)
     SetIntArr(savedLoopCountStr, "π", tableItem.LoopCountArr)
+    SetArr(savedLooseStopArrStr, "π", tableItem.LooseStopArr)
 }
 
 SetArr(str, symbol, Arr) {
@@ -237,12 +237,13 @@ GetTableItemDefaultInfo(index) {
     savedProcessNameStr := ""
     savedRemarkArrStr := ""
     savedLoopCountStr := ""
+    savedLooseStopArrStr := ""
     symbol := GetTableSymbol(index)
 
     if (symbol == "Normal") {
         savedTKArrStr := "k"
-        savedMacroArrStr :=
-            "按键_a_30_30_50,间隔_3000"
+        savedMacroArrStr := "按键_a_30_30_50,间隔_3000"
+        savedLooseStopArrStr := "0"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
@@ -253,6 +254,7 @@ GetTableItemDefaultInfo(index) {
     else if (symbol == "String") {
         savedTKArrStr := ":?*:AA"
         savedMacroArrStr := "按键_LButton_50_1_100,间隔_50,移动_100_100_1_1000_90_0_0"
+        savedLooseStopArrStr := "0"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
@@ -262,11 +264,13 @@ GetTableItemDefaultInfo(index) {
     else if (symbol == "Replace") {
         savedTKArrStr := "lπoπp"
         savedMacroArrStr := "leftπb,cπ"
+        savedLooseStopArrStr := "0π0π0"
         savedModeArrStr := "0π0π0"
         savedForbidArrStr := "1π1π1"
         savedProcessNameStr := "ππ"
     }
-    return [savedTKArrStr, savedMacroArrStr, savedModeArrStr, savedForbidArrStr, savedProcessNameStr, savedRemarkArrStr,
+    return [savedTKArrStr, savedMacroArrStr, savedLooseStopArrStr, savedModeArrStr, savedForbidArrStr,
+        savedProcessNameStr, savedRemarkArrStr,
         savedLoopCountStr]
 }
 
@@ -299,10 +303,11 @@ SaveTableItemInfo(index) {
     IniWrite(SavedInfo[1], IniFile, IniSection, symbol "TKArr")
     IniWrite(SavedInfo[2], IniFile, IniSection, symbol "MacroArr")
     IniWrite(SavedInfo[3], IniFile, IniSection, symbol "ModeArr")
-    IniWrite(SavedInfo[4], IniFile, IniSection, symbol "ForbidArr")
-    IniWrite(SavedInfo[5], IniFile, IniSection, symbol "ProcessNameArr")
-    IniWrite(SavedInfo[6], IniFile, IniSection, symbol "RemarkArr")
-    IniWrite(SavedInfo[7], IniFile, IniSection, symbol "LoopCountArr")
+    IniWrite(SavedInfo[4], IniFile, IniSection, symbol "LooseStopArr")
+    IniWrite(SavedInfo[5], IniFile, IniSection, symbol "ForbidArr")
+    IniWrite(SavedInfo[6], IniFile, IniSection, symbol "ProcessNameArr")
+    IniWrite(SavedInfo[7], IniFile, IniSection, symbol "RemarkArr")
+    IniWrite(SavedInfo[8], IniFile, IniSection, symbol "LoopCountArr")
 }
 
 GetSavedTableItemInfo(index) {
@@ -310,6 +315,7 @@ GetSavedTableItemInfo(index) {
     TKArrStr := ""
     MacroArrStr := ""
     ModeArrStr := ""
+    LooseStopArrStr := ""
     ForbidArrStr := ""
     ProcessNameArrStr := ""
     RemarkArrStr := ""
@@ -322,6 +328,7 @@ GetSavedTableItemInfo(index) {
         MacroArrStr .= tableItem.InfoConArr[A_Index].Value
         ModeArrStr .= tableItem.ModeConArr[A_Index].Value
         ForbidArrStr .= tableItem.ForbidConArr[A_Index].Value
+        LooseStopArrStr .= tableItem.LooseStopConArr[A_Index].Value
         ProcessNameArrStr .= tableItem.ProcessNameConArr[A_Index].Value
         RemarkArrStr .= tableItem.RemarkConArr.Length >= A_Index ? tableItem.RemarkConArr[A_Index].Value : ""
         LoopCountArrStr .= GetItemSaveCountValue(tableItem.Index, A_Index)
@@ -330,13 +337,15 @@ GetSavedTableItemInfo(index) {
             TKArrStr .= "π"
             MacroArrStr .= "π"
             ModeArrStr .= "π"
+            LooseStopArrStr .= "π"
             ForbidArrStr .= "π"
             ProcessNameArrStr .= "π"
             RemarkArrStr .= "π"
             LoopCountArrStr .= "π"
         }
     }
-    return [TKArrStr, MacroArrStr, ModeArrStr, ForbidArrStr, ProcessNameArrStr, RemarkArrStr, LoopCountArrStr]
+    return [TKArrStr, MacroArrStr, ModeArrStr, LooseStopArrStr, ForbidArrStr, ProcessNameArrStr, RemarkArrStr,
+        LoopCountArrStr]
 }
 
 SaveWinPos() {
@@ -375,8 +384,7 @@ InitTableItemState() {
     }
 
     tableItem := MySoftData.SpecialTableItem
-    tableItem.ModeArr := []
-    tableItem.ModeArr.Push(0)
+    tableItem.ModeArr := [0]
     InitSingleTableState(tableItem)
 }
 
@@ -385,44 +393,58 @@ InitSingleTableState(tableItem) {
     tableItem.KilledArr := []
     tableItem.ActionCount := []
     tableItem.SearchActionArr := []
+    tableItem.HoldKeyArr := []
     for index, value in tableItem.ModeArr {
         tableItem.KilledArr.Push(false)
         tableItem.CmdActionArr.Push([])
         tableItem.ActionCount.Push(0)
         tableItem.SearchActionArr.Push(Map())
+        tableItem.HoldKeyArr.Push(Map())
     }
-}
-
-KillTableItemMacro() {
-    loop MySoftData.TableInfo.Length {
-        tableItem := MySoftData.TableInfo[A_Index]
-        KillSingleTableMacro(tableItem)
-    }
-
-    KillSingleTableMacro(MySoftData.SpecialTableItem)
 }
 
 KillSingleTableMacro(tableItem) {
     for index, value in tableItem.ModeArr {
-        tableItem.KilledArr[index] := true
-
-        loop tableItem.CmdActionArr[index].Length {
-            action := tableItem.CmdActionArr[index][A_Index]
-            SetTimer action, 0
-        }
-        tableItem.CmdActionArr[index] := []
-
-        for key, value in tableItem.SearchActionArr[index] {
-            loop value.Length {
-                action := value[A_Index]
-                SetTimer action, 0
-            }
-        }
-        tableItem.SearchActionArr[index] := Map()
+        KillTableItemMacro(tableItem, index)
     }
 }
 
-GetTabHeight(){
+KillTableItemMacro(tableItem, index) {
+    tableItem.KilledArr[index] := true
+    for key, value in tableItem.HoldKeyArr[index] {
+        if (value == "Game") {
+            SendGameModeKey(key, 0, tableItem, index)
+        }
+        else if (value == "Normal") {
+            SendNormalKey(key, 0, tableItem, index)
+        }
+        else if (value == "Joy") {
+            SendJoyBtnKey(key, 0, tableItem, index)
+        }
+        else if (value == "JoyAxis") {
+            SendJoyAxisKey(key, 0, tableItem, index)
+        }
+        else if (value == "GameMouse") {
+            SendGameMouseKey(key, 0, tableItem, index)
+        }
+    }
+
+    loop tableItem.CmdActionArr[index].Length {
+        action := tableItem.CmdActionArr[index][A_Index]
+        SetTimer action, 0
+    }
+    tableItem.CmdActionArr[index] := []
+
+    for key, value in tableItem.SearchActionArr[index] {
+        loop value.Length {
+            action := value[A_Index]
+            SetTimer action, 0
+        }
+    }
+    tableItem.SearchActionArr[index] := Map()
+}
+
+GetTabHeight() {
     maxY := 0
     loop MySoftData.TabNameArr.Length {
         posY := MySoftData.TableInfo[A_Index].UnderPosY
@@ -459,6 +481,13 @@ GetItemSaveCountValue(tableIndex, Index) {
     return 1
 }
 
+CheckIsNormalTable(index) {
+    symbol := GetTableSymbol(index)
+    if (symbol == "Normal")
+        return true
+    return false
+}
+
 CheckIsMacroTable(index) {
     symbol := GetTableSymbol(index)
     if (symbol == "Normal")
@@ -475,11 +504,11 @@ CheckIsStringMacroTable(index) {
     return false
 }
 
-CheckIsHotKey(key){
-    if(SubStr(key, 1, 1) == ":") 
+CheckIsHotKey(key) {
+    if (SubStr(key, 1, 1) == ":")
         return false
 
-    if(SubStr(key, 1, 3) == "Joy")
+    if (SubStr(key, 1, 3) == "Joy")
         return false
 
     if (MySoftData.SpecialKeyMap.Has(key))
@@ -488,8 +517,10 @@ CheckIsHotKey(key){
     return true
 }
 
-CheckIfInstallVjoy(){
-    vJoyFolder := RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{8E31F76F-74C3-47F1-9550-E041EEDC5FBB}_is1", "InstallLocation", "")
+CheckIfInstallVjoy() {
+    vJoyFolder := RegRead(
+        "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{8E31F76F-74C3-47F1-9550-E041EEDC5FBB}_is1",
+        "InstallLocation", "")
     if (!vJoyFolder)
         return false
     return true

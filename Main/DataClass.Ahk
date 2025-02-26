@@ -4,6 +4,7 @@ Class TableItem
     {
         this.TKArr := []
         this.MacroArr := []
+        this.LooseStopArr := []
         this.ModeArr := []
         this.ForbidArr := []
         this.ProcessNameArr := []
@@ -13,7 +14,8 @@ Class TableItem
         this.InfoConArr := []
         this.KeyBtnConArr := []
         this.MacroBtnConArr := []
-        this.ReplaceBtnConArr := []
+        this.DeleteBtnConArr := []
+        this.LooseStopConArr := []
         this.ModeConArr := []
         this.ForbidConArr := []
         this.ProcessNameConArr := []
@@ -23,6 +25,7 @@ Class TableItem
         
         this.CmdActionArr := []
         this.SearchActionArr := []
+        this.HoldKeyArr := []
         this.KilledArr := []
         this.ActionCount := []      ; 记录执行次数，用于循环次数判断
         this.UnderPosY := 0
@@ -101,7 +104,6 @@ Class SoftData
         this.TabPosY := 0
         this.BtnAdd := ""
         this.BtnSave := ""
-        this.BtnRemove := ""
 
         this.EditHotKeyCtrl := ""
         this.EditHotStrCtrl := ""
@@ -111,7 +113,6 @@ Class SoftData
         this.TabCtrl := {}
         this.TableInfo := []
 
-        this.HoldKeyMap := Map()
         this.TimerActionMap := Map()
 
         this.SpecialKeyMap := Map("Browser_Back", 0, "Browser_Forward", 0, "Browser_Refresh", 0, "Browser_Stop", 0, "Browser_Search", 0, "Browser_Favorites", 0, "Browser_Home", 0, "Volume_Mute", 0, "Volume_Down", 0, "Volume_Up", 0, "Media_Next", 0, "Media_Prev", 0, "Media_Stop", 0, "Media_Play_Pause", 0, "Launch_Mail", 0, "Launch_Media", 0, "Launch_App1", 0, "Launch_App2", 0)
