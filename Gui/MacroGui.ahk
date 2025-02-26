@@ -20,11 +20,16 @@ class MacroGui {
         this.NeedCommandInterval := false
         this.EditModeType := 1
         this.EditModeCon := ""
+        this.RecordMacroCon := ""
         this.DefaultFocusCon := ""
         this.CurEditLineNum := 0
         this.EditLineNum := 0
         this.SubMacroMap := Map()
         this.SubMacroLastIndex := 0
+
+        this.RecordKeyboardArr := []
+        this.RecordNodeArr := []
+
         this.InitSubGui()
 
     }
@@ -90,6 +95,11 @@ class MacroGui {
         this.EditModeCon := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 150, 100), ["末尾追加指令",
             "调整光标行指令", "光标行插入指令"])
         this.EditModeCon.OnEvent("Change", (*) => this.OnChangeEditMode())
+
+        PosX += 180
+        this.RecordMacroCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 100, 20), "指令录制")
+        this.RecordMacroCon.Value := false
+        this.RecordMacroCon.OnEvent("Click", (*) => this.OnChangeRecordMode())
 
         PosY += 20
         PosX := 10
@@ -167,7 +177,7 @@ class MacroGui {
                 value.Enabled := cmd != ""
             }
         }
-        else  if (this.EditModeType == 3) {
+        else if (this.EditModeType == 3) {
             for key, value in this.CmdBtnConMap {
                 value.Enabled := true
             }
@@ -259,8 +269,7 @@ class MacroGui {
             }
 
             isFile := StrCompare(SubStr(value, 1, 2), "文件", false) == 0
-            if (isFile) 
-            {
+            if (isFile) {
                 macroEditStr .= value
             }
 
@@ -273,7 +282,7 @@ class MacroGui {
         }
         return macroEditStr
     }
-    
+
     SplitMacro(macro) {
         resultArr := []
         lastSymbolIndex := 0
@@ -316,7 +325,7 @@ class MacroGui {
             }
         }
         macroStr := Trim(macroStr, ",")
-        macroStr := RegExReplace(macroStr, ",+" , ",")
+        macroStr := RegExReplace(macroStr, ",+", ",")
         return macroStr
     }
 
@@ -331,7 +340,7 @@ class MacroGui {
 
     GetMacroStrLineArr() {
         MacroLineArr := StrSplit(this.MacroEditStrCon.Value, "`n")
-        if (MacroLineArr.Length == 0){
+        if (MacroLineArr.Length == 0) {
             MacroLineArr.Push("")
         }
         return MacroLineArr
@@ -350,7 +359,7 @@ class MacroGui {
                 break
             }
 
-            if(symbol == "搜索" && SubStr(curSymbol, 1, 2) == "搜索"){
+            if (symbol == "搜索" && SubStr(curSymbol, 1, 2) == "搜索") {
                 cmd := value
                 break
             }
@@ -418,7 +427,7 @@ class MacroGui {
 
     OnSubGuiSureBtnClick(CommandStr) {
         splitIndex := RegExMatch(CommandStr, "(\(.*\))", &match)
-        if (splitIndex){
+        if (splitIndex) {
             this.SubMacroLastIndex += 1
             CommandStr := StrReplace(CommandStr, match[1], Format("({})", "SubMacro" this.SubMacroLastIndex))
             this.SubMacroMap.Set(this.SubMacroLastIndex, match[1])
@@ -431,17 +440,16 @@ class MacroGui {
         else if (this.EditModeType == 2) {
             LineArr := this.OnModifyCmd(LineArr, CommandStr)
         }
-        else if (this.EditModeType == 3){
+        else if (this.EditModeType == 3) {
             LineArr := this.OnInsertCmd(LineArr, CommandStr)
         }
         macro := this.GetMacroStr(LineArr)
-        aa := this.GetMacroEditStr(macro)
         this.MacroEditStrCon.Value := this.GetMacroEditStr(macro)
 
         this.DefaultFocusCon.Focus()
     }
 
-    OnAddCmd(LineArr, CommandStr){
+    OnAddCmd(LineArr, CommandStr) {
         value := LineArr[LineArr.Length]
         if (value == "") {
             LineArr[LineArr.Length] := CommandStr
@@ -452,7 +460,7 @@ class MacroGui {
         return LineArr
     }
 
-    OnModifyCmd(LineArr, CommandStr){
+    OnModifyCmd(LineArr, CommandStr) {
         value := LineArr[this.EditLineNum]
         cmdArr := StrSplit(value, ",")
         curCmdSymbol := StrSplit(CommandStr, "_")[1]
@@ -472,7 +480,7 @@ class MacroGui {
         return LineArr
     }
 
-    OnInsertCmd(LineArr, CommandStr){
+    OnInsertCmd(LineArr, CommandStr) {
         LineArr.InsertAt(this.EditLineNum, CommandStr)
         return LineArr
     }
@@ -481,6 +489,85 @@ class MacroGui {
         this.EditModeType := this.EditModeCon.Value
         this.CurEditLineNum := 1
         this.RefreshCommandBtn()
+        this.DefaultFocusCon.Focus()
+    }
+
+    OnChangeRecordMode() {
+        state := this.RecordMacroCon.Value
+        StateSymbol := state ? "On" : "Off"
+        loop 255 {
+            vk := Format("$~vk{:X}", A_Index)
+            try {
+                Hotkey(vk, (*) =>this.OnKeyDown(), StateSymbol)
+                Hotkey(vk " Up",(*)=> this.OnKeyUp(), StateSymbol)
+            }
+            catch {
+                continue
+            }
+        }
+
+        if (state) {
+            this.RecordNodeArr := []
+            this.RecordKeyboardArr := []
+
+            node := RecordNodeData()
+            node.StartTime := GetCurMSec()
+            this.RecordNodeArr.Push(node)
+        }
+        else {
+            node := this.RecordNodeArr[this.RecordNodeArr.Length]
+            node.EndTime := GetCurMSec()
+
+            this.OnShowRecordMacro()
+        }
+    }
+
+    OnKeyDown(*) {
+        key := StrReplace(A_ThisHotkey, "$", "")
+        key := StrReplace(key, "~", "")
+        keyName := GetKeyName(key)
+
+        node := this.RecordNodeArr[this.RecordNodeArr.Length]
+        node.EndTime := GetCurMSec()
+
+        data := KeyboardData()
+        data.StartTime := GetCurMSec()
+        data.NodeSerial := this.RecordNodeArr.Length
+        data.keyName := keyName
+        this.RecordKeyboardArr.Push(data)
+
+        node := RecordNodeData()
+        node.StartTime := GetCurMSec()
+        this.RecordNodeArr.Push(node)
+    }
+
+    OnKeyUp(*) {
+        key := StrReplace(A_ThisHotkey, "$", "")
+        key := StrReplace(key, "~", "")
+        key := StrReplace(key, " Up", "")
+        keyName := GetKeyName(key)
+
+        for index, value in this.RecordKeyboardArr {
+            if (value.keyName == keyName && value.EndTime == 0) {
+                value.EndTime := GetCurMSec()
+                break
+            }
+        }
+    }
+
+    OnShowRecordMacro() {
+        macro := ""
+        for index, value in this.RecordNodeArr {
+            macro .= "间隔_" value.Span() ","
+            for key, value in this.RecordKeyboardArr {
+                if (value.NodeSerial == index) {
+                    macro .= "按键_" value.keyName "_" value.Span() "_1_100,"
+                }
+            }
+        }
+
+        macro := Trim(macro, ",")
+        this.MacroEditStrCon.Value := this.GetMacroEditStr(macro)
         this.DefaultFocusCon.Focus()
     }
 }

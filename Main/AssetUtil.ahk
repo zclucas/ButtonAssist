@@ -8,6 +8,10 @@ GetFloatTime(oriTime, floatValue) {
     return Random(min, max)
 }
 
+GetCurMSec(){
+    return A_Hour * 3600 * 1000 + A_Min * 60 * 1000 + A_Sec * 1000 + A_mSec
+}
+
 GetProcessName() {
     MouseGetPos &mouseX, &mouseY, &winId
     name := WinGetProcessName(winId)

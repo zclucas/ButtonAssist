@@ -127,3 +127,27 @@ Class SoftData
         this.SB := ""
     }
 }
+
+Class KeyboardData{
+    __New(){
+        this.NodeSerial := 0
+        this.KeyName := ""
+        this.StartTime := 0
+        this.EndTime := 0
+    }
+
+    Span(){
+        return this.EndTime - this.StartTime
+    }
+}
+
+Class RecordNodeData{
+    __New(){
+        this.StartTime := 0
+        this.EndTime := 0
+    }
+
+    Span(){
+        return this.EndTime - this.StartTime
+    }
+}
