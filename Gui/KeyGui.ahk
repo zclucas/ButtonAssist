@@ -806,19 +806,19 @@ class KeyGui {
 
         PosY += 60
         PosX := 20
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 85), "按键按住时间:")
-        PosX += 85
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 85), "按键时间:")
+        PosX += 60
         this.HoldTimeCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), this.HoldTime)
         this.HoldTimeCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosX += 100
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 60), "按键次数:")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 60), "循环次数:")
         PosX += 60
         this.KeyCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), this.KeyCount)
         this.KeyCountCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosX += 100
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 60), "每次间隔:")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 60), "循环间隔:")
         PosX += 60
         this.PerIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), this.PerInterval)
         this.PerIntervalCon.OnEvent("Change", (*) => this.OnChangeEditValue())
@@ -828,7 +828,7 @@ class KeyGui {
 
         PosY += 25
         PosX := 20
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 1000), "备注：请点击按键按钮，并设置按键按住时间、按键次数、每次间隔，最后点击确定按钮。")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 1000), "备注：请点击按键按钮，并设置按键时间、循环次数、循环间隔，最后点击确定按钮。")
 
         PosY += 30
         PosX := 500
@@ -889,7 +889,7 @@ class KeyGui {
     }
 
     UpdateCommandStr() {
-        CommandStr := "PressKey"
+        CommandStr := "按键"
         CommandStr .= "_" this.KeyStr
         CommandStr .= "_" this.HoldTime
         CommandStr .= "_" this.KeyCount

@@ -81,6 +81,7 @@ AddOperBtnUI() {
     posY += 20
     con := MyGui.Add("Hotkey", Format("x{} y{} w{} h{}", 15, posY, 100, 20), MySoftData.PauseHotkey)
     con.Enabled := false
+    MySoftData.FixedCons.Push(con)
     posY += 40
 
     ;终止模块
@@ -92,6 +93,7 @@ AddOperBtnUI() {
     CtrlType := isHotKey ? "Hotkey" :"Text"
     con := MyGui.Add(CtrlType, Format("x{} y{} w{} h{}", 15, posY, 100, 20), MySoftData.KillMacroHotkey)
     con.Enabled := false
+    MySoftData.FixedCons.Push(con)
     posY += 40
 
 

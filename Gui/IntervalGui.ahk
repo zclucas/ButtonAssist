@@ -53,7 +53,7 @@ class IntervalGui{
         }
 
         action := this.SureBtnAction
-        action("Interval_" timeText)
+        action("间隔_" timeText)
         this.Gui.Hide()
     }
 }

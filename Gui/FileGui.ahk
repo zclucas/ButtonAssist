@@ -158,7 +158,7 @@ class FileGui {
     }
 
     UpdateCommandStr(){
-        this.CommandStr := "File_"
+        this.CommandStr := "文件_"
         if (this.PathTextCon.Value != ""){
             this.CommandStr .= this.PathTextCon.Value
         }

@@ -32,23 +32,23 @@ class MacroGui {
     InitSubGui() {
         this.IntervalGui := IntervalGui()
         this.IntervalGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.SubGuiMap.Set("Interval", this.IntervalGui)
+        this.SubGuiMap.Set("间隔", this.IntervalGui)
 
         this.KeyGui := KeyGui()
         this.KeyGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.SubGuiMap.Set("PressKey", this.KeyGui)
+        this.SubGuiMap.Set("按键", this.KeyGui)
 
         this.MoveMoveGui := MouseMoveGui()
         this.MoveMoveGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.SubGuiMap.Set("MouseMove", this.MoveMoveGui)
+        this.SubGuiMap.Set("移动", this.MoveMoveGui)
 
         this.SearchGui := SearchGui()
         this.SearchGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.SubGuiMap.Set("Search", this.SearchGui)
+        this.SubGuiMap.Set("搜索", this.SearchGui)
 
         this.FileGui := FileGui()
         this.FileGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.SubGuiMap.Set("File", this.FileGui)
+        this.SubGuiMap.Set("文件", this.FileGui)
     }
 
     GetSubGuiSymbol(subGui) {
@@ -97,34 +97,34 @@ class MacroGui {
 
         PosY += 20
         PosX := 20
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "间隔")
-        btnCon.SetFont((Format("S{} W{} Q{}", 18, 400, 5)))
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "间隔")
+        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.IntervalGui))
-        this.CmdBtnConMap.Set("Interval", btnCon)
+        this.CmdBtnConMap.Set("间隔", btnCon)
 
-        PosX += 125
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "按键")
-        btnCon.SetFont((Format("S{} W{} Q{}", 18, 400, 5)))
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "按键")
+        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.KeyGui))
-        this.CmdBtnConMap.Set("PressKey", btnCon)
+        this.CmdBtnConMap.Set("按键", btnCon)
 
-        PosX += 125
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "鼠标移动")
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "移动")
         btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.MoveMoveGui))
-        this.CmdBtnConMap.Set("MouseMove", btnCon)
+        this.CmdBtnConMap.Set("移动", btnCon)
 
-        PosX += 125
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "搜索")
-        btnCon.SetFont((Format("S{} W{} Q{}", 18, 400, 5)))
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "搜索")
+        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.SearchGui))
-        this.CmdBtnConMap.Set("Search", btnCon)
+        this.CmdBtnConMap.Set("搜索", btnCon)
 
-        PosX += 125
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "文件")
-        btnCon.SetFont((Format("S{} W{} Q{}", 18, 400, 5)))
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "文件")
+        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.FileGui))
-        this.CmdBtnConMap.Set("File", btnCon)
+        this.CmdBtnConMap.Set("文件", btnCon)
 
         PosX := 20
         PosY += 140
@@ -203,7 +203,7 @@ class MacroGui {
             if (processedIndex >= index)
                 continue
             processedIndex := index
-            isInterval := StrCompare(SubStr(value, 1, 8), "Interval", false) == 0
+            isInterval := StrCompare(SubStr(value, 1, 2), "间隔", false) == 0
             if (isInterval) {
                 SubCommandArr := StrSplit(value, "_")
                 intervalValue := Integer(SubCommandArr[2])
@@ -213,18 +213,18 @@ class MacroGui {
                         break
 
                     SubCommandArr := StrSplit(CommandArr[curIndex], "_")
-                    isIntervalAgain := StrCompare(SubStr(SubCommandArr[1], 1, 8), "Interval", false) == 0
+                    isIntervalAgain := StrCompare(SubStr(SubCommandArr[1], 1, 2), "间隔", false) == 0
                     if (!isIntervalAgain)
                         break
                     intervalValue += Integer(SubCommandArr[2])
                     processedIndex := curIndex
                 }
                 macroEditStr := index == 1 ? macroEditStr : macroEditStr ","
-                macroEditStr .= "Interval_" intervalValue "`n"
+                macroEditStr .= "间隔_" intervalValue "`n"
                 continue
             }
 
-            isPressKey := StrCompare(SubStr(value, 1, 8), "PressKey", false) == 0
+            isPressKey := StrCompare(SubStr(value, 1, 2), "按键", false) == 0
             if (isPressKey) {
                 macroEditStr .= value
                 loop {
@@ -233,7 +233,7 @@ class MacroGui {
                         break
 
                     SubCommandArr := StrSplit(CommandArr[curIndex], "_")
-                    isPressKeyAgain := StrCompare(SubStr(SubCommandArr[1], 1, 8), "PressKey", false) == 0
+                    isPressKeyAgain := StrCompare(SubStr(SubCommandArr[1], 1, 2), "按键", false) == 0
                     if (!isPressKeyAgain)
                         break
                     macroEditStr .= "," CommandArr[curIndex]
@@ -241,7 +241,7 @@ class MacroGui {
                 }
             }
 
-            isSearch := StrCompare(SubStr(value, 1, 6), "Search", false) == 0
+            isSearch := StrCompare(SubStr(value, 1, 2), "搜索", false) == 0
             if (isSearch) {
                 splitIndex := RegExMatch(value, "(\(.*\))", &match)
                 isSubMacro := splitIndex && RegExMatch(match[1], "SubMacro")
@@ -253,12 +253,12 @@ class MacroGui {
                 macroEditStr .= value
             }
 
-            isMouseMove := StrCompare(SubStr(value, 1, 9), "MouseMove", false) == 0
+            isMouseMove := StrCompare(SubStr(value, 1, 2), "移动", false) == 0
             if (isMouseMove) {
                 macroEditStr .= value
             }
 
-            isFile := StrCompare(SubStr(value, 1, 4), "File", false) == 0
+            isFile := StrCompare(SubStr(value, 1, 2), "文件", false) == 0
             if (isFile) 
             {
                 macroEditStr .= value
@@ -266,7 +266,7 @@ class MacroGui {
 
             nextIndex := processedIndex + 1
             isNextInterval := nextIndex <= CommandArr.Length
-            isNextInterval := isNextInterval && StrCompare(SubStr(CommandArr[nextIndex], 1, 8), "Interval", false) == 0
+            isNextInterval := isNextInterval && StrCompare(SubStr(CommandArr[nextIndex], 1, 2), "间隔", false) == 0
             if (!isNextInterval) {
                 macroEditStr .= "`n"
             }
@@ -350,7 +350,7 @@ class MacroGui {
                 break
             }
 
-            if(symbol == "Search" && SubStr(curSymbol, 1, 6) == "Search"){
+            if(symbol == "搜索" && SubStr(curSymbol, 1, 2) == "搜索"){
                 cmd := value
                 break
             }

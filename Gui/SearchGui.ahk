@@ -245,7 +245,7 @@ class SearchGui {
             this.SearchCount := searchCmdArr[8]
             this.SearchInterval := searchCmdArr[9]
 
-            isSearchImage := searchCmdArr[1] == "SearchImage"
+            isSearchImage := searchCmdArr[1] == "搜索图片"
             if (isSearchImage) {
                 this.SearchType := 1
                 this.ImagePath := searchCmdArr[2]
@@ -276,12 +276,12 @@ class SearchGui {
 
     UpdateCommandStr() {
         if (this.SearchType == 1) {
-            this.CommandStr := "SearchImage"
+            this.CommandStr := "搜索图片"
             this.CommandStr .= "_" this.ImagePath
         }
         else if (this.SearchType == 2) {
-            this.CommandStr := "SearchColor"
-            this.CommandStr .= "_0X" this.HexColorCon.Value
+            this.CommandStr := "搜索颜色"
+            this.CommandStr .= "_" this.HexColorCon.Value
         }
 
         this.CommandStr .= "_" this.StartPosXCon.Value

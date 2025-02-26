@@ -158,11 +158,11 @@ OnTriggerMacroOnce(tableItem, macro, index) {
             break
 
         paramArr := StrSplit(cmdArr[A_Index], "_")
-        IsMouseMove := StrCompare(paramArr[1], "MouseMove", false) == 0
-        IsSearch := StrCompare(SubStr(paramArr[1], 1, 6), "Search", false) == 0
-        IsPressKey := StrCompare(paramArr[1], "PressKey", false) == 0
-        IsInterval := StrCompare(paramArr[1], "Interval", false) == 0
-        IsFile := StrCompare(paramArr[1], "File", false) == 0
+        IsMouseMove := StrCompare(paramArr[1], "移动", false) == 0
+        IsSearch := StrCompare(SubStr(paramArr[1], 1, 2), "搜索", false) == 0
+        IsPressKey := StrCompare(paramArr[1], "按键", false) == 0
+        IsInterval := StrCompare(paramArr[1], "间隔", false) == 0
+        IsFile := StrCompare(paramArr[1], "文件", false) == 0
         if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
@@ -220,12 +220,13 @@ OnSearchOnce(tableItem, cmd, index, isFinally) {
     Y2 := Integer(searchCmdArr[6])
 
     CoordMode("Pixel", "Screen")
-    if (searchCmdArr[1] == "SearchImage") {
+    if (searchCmdArr[1] == "搜索图片") {
         SearchInfo := Format("*{} *w0 *h0 {}", Integer(MySoftData.ImageSearchBlur), searchCmdArr[2])
         found := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, SearchInfo)
     }
-    else if (searchCmdArr[1] == "SearchColor") {
-        found := PixelSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, searchCmdArr[2], Integer(MySoftData.ImageSearchBlur
+    else if (searchCmdArr[1] == "搜索颜色") {
+        color := "0X" searchCmdArr[2]
+        found := PixelSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, color, Integer(MySoftData.ImageSearchBlur
         ))
     }
 
@@ -245,7 +246,7 @@ OnSearchOnce(tableItem, cmd, index, isFinally) {
         ;自动移动鼠标
         if (Integer(searchCmdArr[7])) {
             Pos := [OutputVarX, OutputVarY]
-            if (searchCmdArr[1] == "SearchImage") {
+            if (searchCmdArr[1] == "搜索图片") {
                 imageSize := GetImageSize(searchCmdArr[2])
                 Pos := [OutputVarX + imageSize[1] / 2, OutputVarY + imageSize[2] / 2]
             }
@@ -572,6 +573,10 @@ SendNormalKey(Key, state) {
 }
 
 SendJoyBtnClick(key, holdTime := 30) {
+    if (!CheckIfInstallVjoy()){
+        MsgBox("使用手柄功能前,请先安装Joy目录下的vJoy驱动!")
+        return
+    }
     SendJoyBtnKey(key, 1)
     SetTimer(() => SendJoyBtnKey(key, 0), -holdTime)
 }
@@ -591,6 +596,10 @@ SendJoyBtnKey(key, state) {
 }
 
 SendJoyAxisClick(key, holdTime := 30) {
+    if (!CheckIfInstallVjoy()){
+        MsgBox("使用手柄功能前,请先安装Joy目录下的vJoy驱动!")
+        return
+    }
     SendJoyAxisKey(key, 1)
     SetTimer(() => SendJoyAxisKey(key, 0), -holdTime)
 }

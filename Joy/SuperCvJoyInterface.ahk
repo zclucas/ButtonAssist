@@ -39,6 +39,9 @@ Class SuperCvJoyInterface {
 		JoyAxisMap := Map("JoyAxis1Min", 0, "JoyAxis1Max", 100, "JoyAxis2Min", 0, "JoyAxis2Max", 100, "JoyAxis3Min", 0, "JoyAxis3Max", 100, "JoyAxis4Min", 0, "JoyAxis4Max", 100, "JoyAxis5Min", 0, "JoyAxis5Max", 100, "JoyAxis6Min", 0, "JoyAxis6Max", 100, "JoyAxis7Min", 0, "JoyAxis7Max", 100, "JoyAxis8Min", 0, "JoyAxis8Max", 100)
 	
 		GetStatus(){
+			if (!CheckIfInstallVjoy())
+				return 3
+
 			return this.Interface.GetVJDStatus(this.DeviceID)
 		}
 	
@@ -239,7 +242,7 @@ Class SuperCvJoyInterface {
 		if (A_Is64bitOS && A_PtrSize != 8){
 			SetRegView(64)
 		}
-		vJoyFolder := RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{8E31F76F-74C3-47F1-9550-E041EEDC5FBB}_is1", "InstallLocation")
+		vJoyFolder := RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{8E31F76F-74C3-47F1-9550-E041EEDC5FBB}_is1", "InstallLocation", "")
 
 		if (!vJoyFolder){
 			this.LoadLibraryLog .= "ERROR: Could not find the vJoy Registry Key.`n`nvJoy does not appear to be installed.`nPlease ensure you have installed vJoy from`n`nhttp://vjoystick.sourceforge.net."
@@ -255,7 +258,7 @@ Class SuperCvJoyInterface {
 			; 32-Bit AHK
 			DllKey := "DllX86Location"
 		}
-		DllFolder := RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{8E31F76F-74C3-47F1-9550-E041EEDC5FBB}_is1", DllKey)
+		DllFolder := RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{8E31F76F-74C3-47F1-9550-E041EEDC5FBB}_is1", DllKey, "")
 
 		if (!DllFolder){
 			; Could not find registry entry. Advise vJoy update.

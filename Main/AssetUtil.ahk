@@ -120,6 +120,8 @@ InitData() {
 
 ;手柄轴未使用时，状态会变为0，而非中间值
 InitJoyAxis() {
+    if (!CheckIfInstallVjoy())
+        return 
     joyAxisNum := 8
     loop joyAxisNum {
         SendJoyAxisClick("JoyAxis" A_Index "Max", 30)
@@ -240,7 +242,7 @@ GetTableItemDefaultInfo(index) {
     if (symbol == "Normal") {
         savedTKArrStr := "k"
         savedMacroArrStr :=
-            "PressKey_a_30_30_50,Interval_3000"
+            "按键_a_30_30_50,间隔_3000"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
@@ -250,7 +252,7 @@ GetTableItemDefaultInfo(index) {
     }
     else if (symbol == "String") {
         savedTKArrStr := ":?*:AA"
-        savedMacroArrStr := "PressKey_LButton_50_1_100,Interval_50,MouseMove_100_100_1_1000_90_0_0"
+        savedMacroArrStr := "按键_LButton_50_1_100,间隔_50,移动_100_100_1_1000_90_0_0"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
@@ -483,5 +485,12 @@ CheckIsHotKey(key){
     if (MySoftData.SpecialKeyMap.Has(key))
         return false
 
+    return true
+}
+
+CheckIfInstallVjoy(){
+    vJoyFolder := RegRead("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{8E31F76F-74C3-47F1-9550-E041EEDC5FBB}_is1", "InstallLocation", "")
+    if (!vJoyFolder)
+        return false
     return true
 }

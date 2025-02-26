@@ -168,7 +168,7 @@ class MouseMoveGui{
     }
 
     UpdateCommandStr(){
-        this.CommandStr := "MouseMove"
+        this.CommandStr := "移动"
         this.CommandStr .= "_" this.PosXCon.Value
         this.CommandStr .= "_" this.PosYCon.Value
         this.CommandStr .= "_" this.CountCon.Value
