@@ -28,6 +28,7 @@ class MacroGui {
         this.SubMacroLastIndex := 0
 
         this.RecordKeyboardArr := []
+        this.RecordMoveArr := []
         this.RecordNodeArr := []
 
         this.InitSubGui()
@@ -498,8 +499,8 @@ class MacroGui {
         loop 255 {
             vk := Format("$~vk{:X}", A_Index)
             try {
-                Hotkey(vk, (*) =>this.OnKeyDown(), StateSymbol)
-                Hotkey(vk " Up",(*)=> this.OnKeyUp(), StateSymbol)
+                Hotkey(vk, (*) => this.OnKeyDown(), StateSymbol)
+                Hotkey(vk " Up", (*) => this.OnKeyUp(), StateSymbol)
             }
             catch {
                 continue
@@ -509,6 +510,7 @@ class MacroGui {
         if (state) {
             this.RecordNodeArr := []
             this.RecordKeyboardArr := []
+            this.RecordMoveArr := []
 
             node := RecordNodeData()
             node.StartTime := GetCurMSec()
@@ -529,6 +531,22 @@ class MacroGui {
 
         node := this.RecordNodeArr[this.RecordNodeArr.Length]
         node.EndTime := GetCurMSec()
+
+        if (keyName == "LButton" || keyName == "RButton" || keyName == "MButton") {
+            CoordMode("Mouse", "Screen")
+            MouseGetPos &mouseX, &mouseY
+            isSame := this.RecordMoveArr.Length > 0
+            lastData := this.RecordMoveArr.Length > 0 ? this.RecordMoveArr[this.RecordMoveArr.Length] : ""
+            isSame := isSame && lastData.EndPosX == mouseX && lastData.EndPosY == mouseY
+
+            if (!isSame) {
+                data := MoveData()
+                data.EndPosX := mouseX
+                data.EndPosY := mouseY
+                data.NodeSerial := this.RecordNodeArr.Length
+                this.RecordMoveArr.Push(data)
+            }
+        }
 
         data := KeyboardData()
         data.StartTime := GetCurMSec()
@@ -559,6 +577,13 @@ class MacroGui {
         macro := ""
         for index, value in this.RecordNodeArr {
             macro .= "间隔_" value.Span() ","
+
+            for key, value in this.RecordMoveArr {
+                if (value.NodeSerial == index) {
+                    macro .= "移动_" value.EndPosX "_" value.EndPosY "_1_100_100_0_0,"
+                }
+            }
+
             for key, value in this.RecordKeyboardArr {
                 if (value.NodeSerial == index) {
                     macro .= "按键_" value.keyName "_" value.Span() "_1_100,"

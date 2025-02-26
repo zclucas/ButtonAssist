@@ -151,3 +151,12 @@ Class RecordNodeData{
         return this.EndTime - this.StartTime
     }
 }
+
+Class MoveData{
+    __New(){
+        this.EndPosX := 0
+        this.EndPosY := 0
+        this.NodeSerial := 0
+    }
+}
+
