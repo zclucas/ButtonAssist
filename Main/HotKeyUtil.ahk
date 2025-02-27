@@ -434,6 +434,16 @@ OnTableDelete(tableItem, index) {
         tableItem.LoopCountArr.RemoveAt(index)
     if (tableItem.RemarkArr.Length >= index)
         tableItem.RemarkArr.RemoveAt(index)
+
+    tableItem.ModeConArr.RemoveAt(index)
+    tableItem.ForbidConArr.RemoveAt(index)
+    tableItem.LooseStopConArr.RemoveAt(index)
+    tableItem.TKConArr.RemoveAt(index)
+    tableItem.InfoConArr.RemoveAt(index)
+    tableItem.ProcessNameConArr.RemoveAt(index)
+    tableItem.LoopCountConArr.RemoveAt(index)
+    tableItem.RemarkConArr.RemoveAt(index)
+
     OnSaveSetting()
 }
 
