@@ -590,7 +590,8 @@ class MacroGui {
                 }
             }
         }
-
+        macroStr := this.GetFinallyMacroStr()
+        macro := macroStr "," macro
         macro := Trim(macro, ",")
         this.MacroEditStrCon.Value := this.GetMacroEditStr(macro)
         this.DefaultFocusCon.Focus()
