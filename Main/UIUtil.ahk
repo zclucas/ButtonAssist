@@ -382,6 +382,8 @@ AddSettingUI(index) {
     posY += 20
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "游戏：勾选为游戏模式。若游戏内仍然无效请以管理员身份运行软件，如果非游戏模式功能正常，请忽略此项")
     posY += 20
+    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "松止：勾选后，当松开触发键时，停止对应触发的宏")
+    posY += 20
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "指定进程名：填写后，仅在该进程获得焦点时生效，否则对所有进程生效（可通过工具模块获取进程名）")
     posY += 20
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "循环次数：-1为无限循环(通过终止所有宏按键取消循环),大于0的整数为循环次数")
