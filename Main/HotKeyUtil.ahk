@@ -654,8 +654,8 @@ SendJoyAxisKey(key, state, tableItem, index) {
         percent := MyvJoy.JoyAxisMap.Get(key)
     }
     value := percent * 327.68
-    index := Integer(SubStr(key, 8, StrLen(key) - 10))
-    MyvJoy.SetAxisByIndex(value, index)
+    axisIndex := Integer(SubStr(key, 8, StrLen(key) - 10))
+    MyvJoy.SetAxisByIndex(value, axisIndex)
 
     if (state == 1) {
         tableItem.HoldKeyArr[index][key] := "JoyAxis"
