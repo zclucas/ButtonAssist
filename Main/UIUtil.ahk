@@ -4,7 +4,6 @@ InitUI() {
     MyGui := Gui(, "Super的按键辅助器")
     MyGui.Opt("ToolWindow")
     MyGui.SetFont(, "Consolas")
-    MyGui.Show(Format("w{} h{} center", 1080, 520))
     MySoftData.MyGui := MyGui
 
     AddUI()
