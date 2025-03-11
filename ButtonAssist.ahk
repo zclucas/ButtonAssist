@@ -6,6 +6,7 @@
 #Include Gui\TriggerKeyGui.ahk
 #Include Gui\TriggerStrGui.ahk
 #Include Gui\MacroGui.ahk
+#Include Gui\ReplaceKeyGui.ahk
 #Include Gui\ScrollBar.ahk
 
 #Include Main\Gdip_All.ahk
@@ -25,6 +26,7 @@ global MyTriggerKeyGui := TriggerKeyGui()
 global MyTriggerStrGui := TriggerStrGui()
 global MyJoyMacro := JoyMacro()
 global MyMacroGui := MacroGui()
+global MyReplaceKeyGui := ReplaceKeyGui()
 
 LoadSetting()
 InitData()

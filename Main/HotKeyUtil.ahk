@@ -453,6 +453,12 @@ OnTableEditMacro(tableItem, index) {
     MyMacroGui.ShowGui(macro, true)
 }
 
+OnTableEditReplaceKey(tableItem, index) {
+    replaceKey := tableItem.InfoConArr[index].Value
+    MyReplaceKeyGui.SureBtnAction := (sureReplaceKey) => tableItem.InfoConArr[index].Value := sureReplaceKey
+    MyReplaceKeyGui.ShowGui(replaceKey)
+}
+
 OnTableEditTriggerKey(tableItem, index) {
     triggerKey := tableItem.TKConArr[index].Value
     MyTriggerKeyGui.SureBtnAction := (sureTriggerKey) => tableItem.TKConArr[index].Value := sureTriggerKey

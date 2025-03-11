@@ -115,6 +115,7 @@ AddOperBtnUI() {
     MyTriggerKeyGui.SureFocusCon := MySoftData.BtnSave
     MyTriggerStrGui.SureFocusCon := MySoftData.BtnSave
     MyMacroGui.SureFocusCon := MySoftData.BtnSave
+    MyReplaceKeyGui.SureFocusCon := MySoftData.BtnSave
 }
 
 GetUIAddFunc(index) {
@@ -175,6 +176,7 @@ LoadSavedSettingUI(index) {
     TabPosX := MySoftData.TabPosX
     isTriggerStr := CheckIsStringMacroTable(index)
     EditTriggerAction := isTriggerStr ? OnTableEditTriggerStr : OnTableEditTriggerKey
+    EditMacroAction := isMacro ? OnTableEditMacro : OnTableEditReplaceKey
     loop tableItem.ModeArr.Length {
         heightValue := 60
         TKPosY := tableItem.underPosY + 10
@@ -206,7 +208,7 @@ LoadSavedSettingUI(index) {
         "宏指令")
         newDeleteBtnControl := MyGui.Add("Button", Format("x{} y{} w50 h20", TabPosX + 600, tableItem.underPosY + 25),
         "删除")
-        newMacroBtnControl.OnEvent("Click", GetTableClosureAction(OnTableEditMacro, tableItem, A_Index))
+        newMacroBtnControl.OnEvent("Click", GetTableClosureAction(EditMacroAction, tableItem, A_Index))
         newDeleteBtnControl.OnEvent("Click", GetTableClosureAction(OnTableDelete, tableItem, A_Index))
         newRemarkTextControl := MyGui.Add("Text", Format("x{} y{} w60", TabPosX + 660, tableItem.underPosY + 30), "备注:"
         )
@@ -248,6 +250,7 @@ OnAddSetting(*) {
     isNormal := CheckIsNormalTable(TableIndex)
     isTriggerStr := CheckIsStringMacroTable(TableIndex)
     EditTriggerAction := isTriggerStr ? OnTableEditTriggerStr : OnTableEditTriggerKey
+    EditMacroAction := isMacro ? OnTableEditMacro : OnTableEditReplaceKey
     tableItem.TKArr.Push("")
     tableItem.MacroArr.Push("")
     tableItem.ModeArr.Push(0)
@@ -285,7 +288,7 @@ OnAddSetting(*) {
     "宏指令")
     newDeleteBtnControl := MyGui.Add("Button", Format("x{} y{} w50 h20", TabPosX + 600, tableItem.underPosY + 25),
     "删除")
-    newMacroBtnControl.OnEvent("Click", GetTableClosureAction(OnTableEditMacro, tableItem, index))
+    newMacroBtnControl.OnEvent("Click", GetTableClosureAction(EditMacroAction, tableItem, index))
     newDeleteBtnControl.OnEvent("Click", GetTableClosureAction(OnTableDelete, tableItem, index))
 
     newRemarkTextControl := MyGui.Add("Text", Format("x{} y{} w60", TabPosX + 660, tableItem.underPosY + 30), "备注:"
