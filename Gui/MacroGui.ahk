@@ -28,7 +28,6 @@ class MacroGui {
         this.SubMacroLastIndex := 0
 
         this.RecordKeyboardArr := []
-        this.RecordMoveArr := []
         this.RecordNodeArr := []
 
         this.InitSubGui()
@@ -497,7 +496,7 @@ class MacroGui {
         state := this.RecordMacroCon.Value
         StateSymbol := state ? "On" : "Off"
         loop 255 {
-            vk := Format("$~vk{:X}", A_Index)
+            vk := Format("$*~vk{:X}", A_Index)
             try {
                 Hotkey(vk, (*) => this.OnKeyDown(), StateSymbol)
                 Hotkey(vk " Up", (*) => this.OnKeyUp(), StateSymbol)
@@ -510,7 +509,6 @@ class MacroGui {
         if (state) {
             this.RecordNodeArr := []
             this.RecordKeyboardArr := []
-            this.RecordMoveArr := []
 
             node := RecordNodeData()
             node.StartTime := GetCurMSec()
@@ -526,32 +524,19 @@ class MacroGui {
 
     OnKeyDown(*) {
         key := StrReplace(A_ThisHotkey, "$", "")
-        key := StrReplace(key, "~", "")
+        key := StrReplace(key, "*~", "")
         keyName := GetKeyName(key)
 
         node := this.RecordNodeArr[this.RecordNodeArr.Length]
         node.EndTime := GetCurMSec()
 
-        if (keyName == "LButton" || keyName == "RButton" || keyName == "MButton") {
-            CoordMode("Mouse", "Screen")
-            MouseGetPos &mouseX, &mouseY
-            isSame := this.RecordMoveArr.Length > 0
-            lastData := this.RecordMoveArr.Length > 0 ? this.RecordMoveArr[this.RecordMoveArr.Length] : ""
-            isSame := isSame && lastData.EndPosX == mouseX && lastData.EndPosY == mouseY
-
-            if (!isSame) {
-                data := MoveData()
-                data.EndPosX := mouseX
-                data.EndPosY := mouseY
-                data.NodeSerial := this.RecordNodeArr.Length
-                this.RecordMoveArr.Push(data)
-            }
-        }
-
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
         data := KeyboardData()
         data.StartTime := GetCurMSec()
         data.NodeSerial := this.RecordNodeArr.Length
         data.keyName := keyName
+        data.StartPos := [mouseX, mouseY]
         this.RecordKeyboardArr.Push(data)
 
         node := RecordNodeData()
@@ -561,13 +546,16 @@ class MacroGui {
 
     OnKeyUp(*) {
         key := StrReplace(A_ThisHotkey, "$", "")
-        key := StrReplace(key, "~", "")
+        key := StrReplace(key, "*~", "")
         key := StrReplace(key, " Up", "")
         keyName := GetKeyName(key)
 
         for index, value in this.RecordKeyboardArr {
             if (value.keyName == keyName && value.EndTime == 0) {
+                CoordMode("Mouse", "Screen")
+                MouseGetPos &mouseX, &mouseY
                 value.EndTime := GetCurMSec()
+                value.EndPos := [mouseX, mouseY]
                 break
             }
         }
@@ -578,15 +566,21 @@ class MacroGui {
         for index, value in this.RecordNodeArr {
             macro .= "间隔_" value.Span() ","
 
-            for key, value in this.RecordMoveArr {
-                if (value.NodeSerial == index) {
-                    macro .= "移动_" value.EndPosX "_" value.EndPosY "_1_100_100_0_0,"
-                }
-            }
-
             for key, value in this.RecordKeyboardArr {
-                if (value.NodeSerial == index) {
+                if (value.NodeSerial != index)
+                    continue
+
+                keyName := value.keyName
+
+                if (keyName == "LButton" || keyName == "RButton" || keyName == "MButton") {
+                    macro .= "移动_" value.StartPos[1] "_" value.StartPos[2] "_1_100_100_0_0,"
                     macro .= "按键_" value.keyName "_" value.Span() "_1_100,"
+                    if (value.StartPos[1] != value.EndPos[1] || value.StartPos[2] != value.EndPos[2]){
+                        macro .= "移动_" value.EndPos[1] "_" value.EndPos[2] "_1_100_90_0_0,"
+                    }
+                }
+                else{
+                     macro .= "按键_" value.keyName "_" value.Span() "_1_100,"
                 }
             }
         }

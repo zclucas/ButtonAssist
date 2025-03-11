@@ -4,10 +4,10 @@ BindKey() {
     BindShortcut(MySoftData.KillMacroHotkey, OnKillAllMacro)
     BindShortcut(ToolCheckInfo.ToolCheckHotKey, OnToolCheckHotkey)
     BindTabHotKey()
-    BindScrollHotkey("WheelUp", OnChangeSrollValue)
-    BindScrollHotkey("WheelDown", OnChangeSrollValue)
-    BindScrollHotkey("+WheelUp", OnChangeSrollValue)
-    BindScrollHotkey("+WheelDown", OnChangeSrollValue)
+    BindScrollHotkey("~WheelUp", OnChangeSrollValue)
+    BindScrollHotkey("~WheelDown", OnChangeSrollValue)
+    BindScrollHotkey("~+WheelUp", OnChangeSrollValue)
+    BindScrollHotkey("~+WheelDown", OnChangeSrollValue)
 }
 
 BindScrollHotkey(key, action) {
@@ -23,7 +23,7 @@ BindScrollHotkey(key, action) {
 BindPauseHotkey() {
     global MySoftData
     if (MySoftData.PauseHotkey != "") {
-        key := "$*" MySoftData.PauseHotkey
+        key := "$*~" MySoftData.PauseHotkey
         Hotkey(key, OnPauseHotkey, "S")
     }
 }
@@ -38,7 +38,7 @@ BindShortcut(triggerInfo, action) {
         Hotstring(triggerInfo, action)
     }
     else {
-        key := "$*" triggerInfo
+        key := "$*~" triggerInfo
         Hotkey(key, action)
     }
 }
@@ -605,10 +605,10 @@ SendNormalKeyClick(Key, holdTime, tableItem, index) {
 
 SendNormalKey(Key, state, tableItem, index) {
     if (state == 1) {
-        keySymbol := "{" Key " down}"
+        keySymbol := "{Blind}{" Key " down}"
     }
     else {
-        keySymbol := "{" Key " up}"
+        keySymbol := "{Blind}{" Key " up}"
     }
 
     Send(keySymbol)

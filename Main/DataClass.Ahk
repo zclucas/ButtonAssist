@@ -134,6 +134,8 @@ Class KeyboardData{
         this.KeyName := ""
         this.StartTime := 0
         this.EndTime := 0
+        this.StartPos := []
+        this.EndPos := []
     }
 
     Span(){
