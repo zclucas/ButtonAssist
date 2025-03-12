@@ -8,7 +8,7 @@ GetFloatTime(oriTime, floatValue) {
     return Random(min, max)
 }
 
-GetCurMSec(){
+GetCurMSec() {
     return A_Hour * 3600 * 1000 + A_Min * 60 * 1000 + A_Sec * 1000 + A_mSec
 }
 
@@ -16,6 +16,46 @@ GetProcessName() {
     MouseGetPos &mouseX, &mouseY, &winId
     name := WinGetProcessName(winId)
     return name
+}
+
+SaveClipToBitmap(filePath) {
+    pToken := Gdip_Startup()
+    ; 保存位图到文件; 检查剪切板中是否有位图
+    if !DllCall("IsClipboardFormatAvailable", "uint", 2)  ; 2 是 CF_BITMAP
+    {
+        MsgBox("剪切板中没有位图")
+    }
+
+    ; 打开剪切板
+    if !DllCall("OpenClipboard", "ptr", 0) {
+        MsgBox("无法打开剪切板")
+        return
+    }
+
+    ; 获取剪切板中的位图句柄
+    hBitmap := DllCall("GetClipboardData", "uint", 2, "ptr")  ; 2 是 CF_BITMAP
+    if !hBitmap {
+        MsgBox("无法获取位图句柄")
+        DllCall("CloseClipboard")
+        return
+    }
+
+    ; 关闭剪切板
+    DllCall("CloseClipboard")
+
+    ; 创建 GDI+ 位图对象
+    pBitmap := Gdip_CreateBitmapFromHBITMAP(hBitmap)
+    if !pBitmap {
+        MsgBox("无法创建 GDI+ 位图对象")
+        return
+    }
+
+    ; 保存位图到文件
+    Gdip_SaveBitmapToFile(pBitmap, filePath)
+
+    ; 释放 GDI+ 位图对象
+    Gdip_DisposeImage(pBitmap)
+    Gdip_Shutdown(pToken)
 }
 
 GetImageSize(imageFile) {

@@ -26,7 +26,7 @@ class SearchGui {
         this.ImagePath := ""
         this.ImageCon := ""
         this.ImageBtn := ""
-        this.ImagePicTipCon := ""
+        this.ScreenshotBtn := ""
 
         this.HexColor := ""
         this.HexColorCon := ""
@@ -163,8 +163,9 @@ class SearchGui {
         this.ImageBtn := btnCon
 
         PosX += 100
-        this.ImagePicTipCon := MyGui.Add("Text", Format("x{} y{} w{} h{} Background{}", PosX, PosY, 80, 20, "FF0000"),
-        "请选择图片")
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "截图")
+        btnCon.OnEvent("Click", (*) => this.OnScreenShotBtnClick())
+        this.ScreenshotBtn := btnCon
 
         PosY += 30
         PosX := 220
@@ -402,6 +403,13 @@ class SearchGui {
         this.Refresh()
     }
 
+    OnScreenShotBtnClick() {
+        A_Clipboard := ""  ; 清空剪贴板
+        Run("ms-screenclip:")
+        action := () => this.CheckClipboard()
+        SetTimer(action, 500)  ; 每 500 毫秒检查一次剪贴板
+    }
+
     OnSureFoundMacroBtnClick(CommandStr) {
         this.FoundCommandStr := CommandStr
         this.FoundCommandStrCon.Value := CommandStr
@@ -447,7 +455,7 @@ class SearchGui {
         showColorTip := isColor && RegExMatch(this.HexColorCon.Value, "^([0-9A-Fa-f]{6})$")
 
         this.ImageBtn.Enabled := isImage
-        this.ImagePicTipCon.Visible := showImageTip
+        this.ScreenshotBtn.Enabled := isImage
 
         this.HexColorCon.Enabled := isColor
         this.HexColorTipCon.Visible := showColorTip
@@ -507,4 +515,24 @@ class SearchGui {
         this.Refresh()
     }
 
+    CheckClipboard(*) {
+        ; 如果剪贴板中有图像
+        if DllCall("IsClipboardFormatAvailable", "uint", 8)  ; 8 是 CF_BITMAP 格式
+        {
+            ; 获取当前日期和时间，用于生成唯一的文件名
+            CurrentDateTime := FormatTime(, "HHmmss")
+            filePath := A_WorkingDir "\Images\" CurrentDateTime ".png"
+            if (!DirExist(A_WorkingDir "\Images")){
+                DirCreate(A_WorkingDir "\Images")
+            }
+
+            ; MyWinClip.SaveBitmap(filePath, "png")
+            SaveClipToBitmap(filePath)
+            this.ImagePath := filePath
+            this.ImageCon.Value := filePath
+            this.Refresh()
+            ; 停止监听
+            SetTimer(, 0)
+        }
+    }
 }
