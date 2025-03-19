@@ -1,4 +1,9 @@
 ;绑定热键
+OnExitSoft(*) {
+    global MyPToken
+    Gdip_Shutdown(MyPToken)
+}
+
 BindKey() {
     BindPauseHotkey()
     BindShortcut(MySoftData.KillMacroHotkey, OnKillAllMacro)
@@ -13,7 +18,7 @@ BindKey() {
 BindScrollHotkey(key, action) {
     if (MySoftData.SB == "")
         return
-    
+
     processInfo := Format("ahk_exe {}", "AutoHotkey64.exe")
     HotIfWinActive(processInfo)
     Hotkey(key, action)
@@ -98,7 +103,7 @@ GetMacroAction(tableIndex, index) {
         actionDown := GetClosureAction(tableItem, macro, index, OnTriggerMacroKeyAndInit)
         actionUp := GetClosureAction(tableItem, macro, index, OnStopMacro)
     }
-    else if (tableSymbol == "String"){
+    else if (tableSymbol == "String") {
         actionDown := GetClosureAction(tableItem, macro, index, OnTriggerMacroKeyAndInit)
     }
     else if (tableSymbol == "Replace") {
@@ -113,8 +118,6 @@ GetClosureAction(tableItem, macro, index, func) {     ;获取闭包函数
     funcObj := func.Bind(tableItem, macro, index)
     return (*) => funcObj()
 }
-
-
 
 ;按键宏命令
 OnTriggerMacroKeyAndInit(tableItem, macro, index) {
@@ -232,6 +235,10 @@ OnSearchOnce(tableItem, cmd, index, isFinally) {
         found := PixelSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, color, Integer(MySoftData.ImageSearchBlur
         ))
     }
+    else if (searchCmdArr[1] == "搜索文本") {
+        text := searchCmdArr[2]
+        found := TextSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text)
+    }
 
     if (found || isFinally) {
         ;清除后续的搜索和搜索记录
@@ -270,7 +277,79 @@ OnSearchOnce(tableItem, cmd, index, isFinally) {
     }
 }
 
-OnRunFile(tableItem, cmd, index){
+TextSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text) {
+    global MyOcr
+    isContain := false
+    width := X2 - X1
+    height := Y2 - Y1
+    pBitmap := Gdip_BitmapFromScreen(X1 "|" Y1 "|" width "|" height)
+
+    ; 获取位图的宽度和高度
+    Width := Gdip_GetImageWidth(pBitmap)
+    Height := Gdip_GetImageHeight(pBitmap)
+
+    ; 锁定位图以获取位图数据
+    Gdip_LockBits(pBitmap, 0, 0, Width, Height, &Stride, &Scan0, &BitmapData)
+
+    ; 创建 BITMAP_DATA 结构
+    BITMAP_DATA := Buffer(24)  ; BITMAP_DATA 结构大小为 24 字节
+    NumPut("ptr", Scan0, BITMAP_DATA, 0)  ; bits
+    NumPut("uint", Stride, BITMAP_DATA, 8)  ; pitch
+    NumPut("int", Width, BITMAP_DATA, 12)  ; width
+    NumPut("int", Height, BITMAP_DATA, 16)  ; height
+    NumPut("int", 4, BITMAP_DATA, 20)  ; bytespixel (假设是 32 位图像)
+
+    ; 调用 ocr_from_bitmapdata 方法
+    result := MyOcr.ocr_from_bitmapdata(BITMAP_DATA, , true)
+
+    ; 解锁位图
+    Gdip_UnlockBits(pBitmap, &BitmapData)
+    ; 释放位图
+    Gdip_DisposeImage(pBitmap)
+
+    for index, value in result {
+        isContain := CheckContainText(value.text, text)
+        if (isContain) {
+            pointX := value.boxPoint[1].x + value.boxPoint[2].x + value.boxPoint[3].x + value.boxPoint[4].x
+            pointY := value.boxPoint[1].y + value.boxPoint[2].y + value.boxPoint[3].y + value.boxPoint[4].y
+            OutputVarX := X1 + pointX / 4
+            OutputVarY := Y1 + pointY / 4
+            break
+        }
+    }
+    return isContain
+}
+
+; TextSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text) {
+;     global MyOcr
+;     isContain := false
+;     width := X2 - X1
+;     height := Y2 - Y1
+;     pBitmap := Gdip_BitmapFromScreen(X1 "|" Y1 "|" width "|" height)
+;     CurrentDateTime := FormatTime(, "HHmmss")
+;     screenshotPath := A_ScriptDir "\Images\Temp\" CurrentDateTime ".png"
+;     if (!DirExist(A_ScriptDir "\Images\Temp")) {
+;         DirCreate(A_ScriptDir "\Images\Temp")
+;     }
+;     Gdip_SaveBitmapToFile(pBitmap, screenshotPath)
+;     Gdip_DisposeImage(pBitmap)
+;     res := MyOcr.ocr_from_file(screenshotPath, , true)
+;     for index, value in res {
+;         isContain := CheckContainText(value.text, text)
+;         if (isContain) {
+;             pointX := value.boxPoint[1].x + value.boxPoint[2].x + value.boxPoint[3].x + value.boxPoint[4].x
+;             pointY := value.boxPoint[1].y + value.boxPoint[2].y + value.boxPoint[3].y + value.boxPoint[4].y
+;             OutputVarX := X1 + pointX / 4
+;             OutputVarY := Y1 + pointY / 4
+;             break
+;         }
+;     }
+
+;     FileDelete(screenshotPath)
+;     return isContain
+; }
+
+OnRunFile(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     filePath := SubStr(cmd, StrLen(paramArr[1]) + 2)
     Run(filePath)
@@ -321,7 +400,7 @@ OnInterval(tableItem, cmd, index) {
     interval := GetFloatTime(interval, MySoftData.IntervalFloat)
     curTime := 0
     clip := Min(500, interval)
-    while (curTime < interval){
+    while (curTime < interval) {
         if (tableItem.KilledArr[index])
             break
         Sleep(clip)
@@ -359,9 +438,9 @@ OnPressKey(tableItem, cmd, index) {
 ;松开停止
 OnStopMacro(tableItem, macro, index) {
     if (tableItem.LooseStopArr.Length < index)
-        return 
+        return
     if (tableItem.LooseStopArr[index] == false)
-        return 
+        return
     KillTableItemMacro(tableItem, index)
 
 }
@@ -417,7 +496,7 @@ OnTableDelete(tableItem, index) {
         return
     }
     result := MsgBox("是否删除当前配置", "提示", 1)
-    if (result == "Cancel") 
+    if (result == "Cancel")
         return
 
     MySoftData.BtnAdd.Enabled := false
@@ -514,9 +593,10 @@ OnKillAllMacro(*) {
     KillSingleTableMacro(MySoftData.SpecialTableItem)
 }
 
-OnChangeSrollValue(*){
-    MySoftData.SB.ScrollMsg(InStr(A_ThisHotkey, "Down") ? 1 : 0, 0, GetKeyState("Shift") ? 0x114 : 0x115, MySoftData.MyGui.Hwnd)
-    for index, value in MySoftData.GroupFixedCons{
+OnChangeSrollValue(*) {
+    MySoftData.SB.ScrollMsg(InStr(A_ThisHotkey, "Down") ? 1 : 0, 0, GetKeyState("Shift") ? 0x114 : 0x115, MySoftData.MyGui
+    .Hwnd)
+    for index, value in MySoftData.GroupFixedCons {
         value.redraw()
     }
 }
@@ -532,6 +612,19 @@ OnShowWinChanged(*) {
     global MySoftData ; 访问全局变量
     MySoftData.IsExecuteShow := !MySoftData.IsExecuteShow
     IniWrite(MySoftData.IsExecuteShow, IniFile, IniSection, "IsExecuteShow")
+}
+
+OnBootStartChanged(*) {
+    global MySoftData ; 访问全局变量
+    MySoftData.IsBootStart := !MySoftData.IsBootStart
+    regPath := "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run"
+    softPath := A_ScriptFullPath
+    if (MySoftData.IsBootStart) {
+        RegWrite(softPath, "REG_SZ", regPath, "ButtonAssist")
+    }
+    else {
+        RegDelete(regPath, "ButtonAssist")
+    }
 }
 
 ;按键模拟
@@ -600,7 +693,7 @@ SendGameMouseKey(key, state, tableItem, index) {
 
 SendNormalKeyClick(Key, holdTime, tableItem, index) {
     SendNormalKey(Key, 1, tableItem, index)
-    SetTimer(()=> SendNormalKey(Key, 0, tableItem, index), -holdTime)
+    SetTimer(() => SendNormalKey(Key, 0, tableItem, index), -holdTime)
 }
 
 SendNormalKey(Key, state, tableItem, index) {
@@ -623,7 +716,7 @@ SendNormalKey(Key, state, tableItem, index) {
 }
 
 SendJoyBtnClick(key, holdTime, tableItem, index) {
-    if (!CheckIfInstallVjoy()){
+    if (!CheckIfInstallVjoy()) {
         MsgBox("使用手柄功能前,请先安装Joy目录下的vJoy驱动!")
         return
     }
@@ -646,7 +739,7 @@ SendJoyBtnKey(key, state, tableItem, index) {
 }
 
 SendJoyAxisClick(key, holdTime, tableItem, index) {
-    if (!CheckIfInstallVjoy()){
+    if (!CheckIfInstallVjoy()) {
         MsgBox("使用手柄功能前,请先安装Joy目录下的vJoy驱动!")
         return
     }
@@ -667,7 +760,7 @@ SendJoyAxisKey(key, state, tableItem, index) {
         tableItem.HoldKeyArr[index][key] := "JoyAxis"
     }
     else {
-        if (tableItem.HoldKeyArr[index].Has(key)){
+        if (tableItem.HoldKeyArr[index].Has(key)) {
             tableItem.HoldKeyArr[index].Delete(key)
         }
 

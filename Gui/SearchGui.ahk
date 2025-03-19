@@ -32,6 +32,9 @@ class SearchGui {
         this.HexColorCon := ""
         this.HexColorTipCon := ""
 
+        this.Text := ""
+        this.TextCon := ""
+
         this.SearchCount := 1
         this.SearchCountCon := ""
 
@@ -101,7 +104,8 @@ class SearchGui {
         PosX += 210
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 60), "搜索类型:")
         PosX += 60
-        this.SearchTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 80, 100), ["图片", "颜色"])
+        this.SearchTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 80, 100), ["图片", "颜色",
+            "文本"])
         this.SearchTypeCon.OnEvent("Change", (*) => this.OnChangeSearchType())
         this.SearchTypeCon.Value := 1
 
@@ -148,7 +152,7 @@ class SearchGui {
         this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
         this.SearchIntervalCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
-        PosY += 20
+        PosY += 30
         PosX := 10
         con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 180), "找到后鼠标移动至目标点")
         con.OnEvent("Click", (*) => this.OnChangeAutoMove())
@@ -178,6 +182,13 @@ class SearchGui {
         this.HexColorCon.OnEvent("Change", (*) => this.OnChangeEditValue())
         PosX += 90
         this.HexColorTipCon := MyGui.Add("Text", Format("x{} y{} w{} Background{}", PosX, PosY, 20, "FF0000"), "")
+
+        PosY += 35
+        PosX := 220
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 40), "文本:")
+        PosX += 40
+        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 150, 20), "检索文本")
+        this.TextCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosY := EndSplitPosY
         PosX := 10
@@ -246,15 +257,21 @@ class SearchGui {
             this.SearchCount := searchCmdArr[8]
             this.SearchInterval := searchCmdArr[9]
 
+            isSearchColor := searchCmdArr[1] == "搜索颜色"
             isSearchImage := searchCmdArr[1] == "搜索图片"
+            isSearchText := searchCmdArr[1] == "搜索文本"
             if (isSearchImage) {
                 this.SearchType := 1
                 this.ImagePath := searchCmdArr[2]
                 this.ImageCon.Value := ""
             }
-            else {
+            if (isSearchColor) {
                 this.SearchType := 2
                 this.HexColor := searchCmdArr[2]
+            }
+            if (isSearchText){
+                this.SearchType := 3
+                this.Text := searchCmdArr[2]
             }
 
             this.FoundCommandStr := cmdArr[2]
@@ -269,6 +286,7 @@ class SearchGui {
         this.SearchCountCon.Value := this.SearchCount
         this.SearchIntervalCon.Value := this.SearchInterval
         this.HexColorCon.Value := this.HexColor
+        this.TextCon.Value := this.Text
         this.SearchTypeCon.Value := this.SearchType
         this.AutoMoveCon.Value := this.AutoMove
         this.FoundCommandStrCon.Value := this.FoundCommandStr
@@ -283,6 +301,10 @@ class SearchGui {
         else if (this.SearchType == 2) {
             this.CommandStr := "搜索颜色"
             this.CommandStr .= "_" this.HexColorCon.Value
+        }
+        else if (this.SearchType == 3) {
+            this.CommandStr := "搜索文本"
+            this.CommandStr .= "_" this.TextCon.Value
         }
 
         this.CommandStr .= "_" this.StartPosXCon.Value
@@ -381,6 +403,7 @@ class SearchGui {
         this.FoundCommandStr := this.FoundCommandStrCon.Value
         this.UnFoundCommandStr := this.UnFoundCommandStrCon.Value
         this.HexColor := this.HexColorCon.Value
+        this.Text := this.TextCon.Value
         this.Refresh()
     }
 
@@ -450,6 +473,7 @@ class SearchGui {
     RefreshSearchEnabled() {
         isImage := this.SearchType == 1
         isColor := this.SearchType == 2
+        isText := this.SearchType == 3
 
         showImageTip := isImage && this.ImagePath == ""
         showColorTip := isColor && RegExMatch(this.HexColorCon.Value, "^([0-9A-Fa-f]{6})$")
@@ -463,6 +487,8 @@ class SearchGui {
             this.HexColorTipCon.Opt(Format("+Background0x{}", this.HexColorCon.Value))
             this.HexColorTipCon.Redraw()
         }
+
+        this.TextCon.Enabled := isText
     }
 
     OnChangeAutoMove() {
@@ -522,7 +548,7 @@ class SearchGui {
             ; 获取当前日期和时间，用于生成唯一的文件名
             CurrentDateTime := FormatTime(, "HHmmss")
             filePath := A_WorkingDir "\Images\" CurrentDateTime ".png"
-            if (!DirExist(A_WorkingDir "\Images")){
+            if (!DirExist(A_WorkingDir "\Images")) {
                 DirCreate(A_WorkingDir "\Images")
             }
 

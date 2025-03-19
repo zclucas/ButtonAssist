@@ -19,7 +19,6 @@ GetProcessName() {
 }
 
 SaveClipToBitmap(filePath) {
-    pToken := Gdip_Startup()
     ; 保存位图到文件; 检查剪切板中是否有位图
     if !DllCall("IsClipboardFormatAvailable", "uint", 2)  ; 2 是 CF_BITMAP
     {
@@ -55,17 +54,14 @@ SaveClipToBitmap(filePath) {
 
     ; 释放 GDI+ 位图对象
     Gdip_DisposeImage(pBitmap)
-    Gdip_Shutdown(pToken)
 }
 
 GetImageSize(imageFile) {
-    pToken := Gdip_Startup()
     pBm := Gdip_CreateBitmapFromFile(imageFile)
     width := Gdip_GetImageWidth(pBm)
     height := Gdip_GetImageHeight(pBm)
 
     Gdip_DisposeImage(pBm)
-    Gdip_Shutdown(pToken)
     return [width, height]
 }
 
@@ -195,6 +191,7 @@ LoadSetting() {
     ToolCheckInfo.IsToolCheck := IniRead(IniFile, IniSection, "IsToolCheck", false)
     ToolCheckInfo.ToolCheckHotKey := IniRead(IniFile, IniSection, "ToolCheckHotKey", "!q")
     MySoftData.IsExecuteShow := IniRead(IniFile, IniSection, "IsExecuteShow", true)
+    MySoftData.IsBootStart := IniRead(IniFile, IniSection, "IsBootStart", false)
     MySoftData.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
     MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
     MySoftData.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
@@ -333,6 +330,7 @@ OnSaveSetting(*) {
     IniWrite(MySoftData.KillMacroHotkeyCtrl.Value, IniFile, IniSection, "KillMacroHotkey")
     IniWrite(true, IniFile, IniSection, "LastSaved")
     IniWrite(MySoftData.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
+    IniWrite(MySoftData.BootStartCtrl.Value, IniFile, IniSection, "IsBootStart")
     IniWrite(ToolCheckInfo.IsToolCheck, IniFile, IniSection, "IsToolCheck")
     IniWrite(ToolCheckInfo.ToolCheckHotKeyCtrl.Value, IniFile, IniSection, "ToolCheckHotKey")
     IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
@@ -568,4 +566,20 @@ CheckIfInstallVjoy() {
     if (!vJoyFolder)
         return false
     return true
+}
+
+CheckAutoStart() {
+    regPath := "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run"
+    try {
+        ; 尝试读取注册表项
+        RegRead(regPath, "ButtonAssist")
+        return true
+    } catch {
+        return false
+    }
+}
+
+CheckContainText(source, text) {
+    ; 返回布尔值：true 表示包含，false 表示不包含
+    return InStr(source, text) > 0
 }

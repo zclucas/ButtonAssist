@@ -78,6 +78,8 @@ Class SoftData
     {
         this.IsExecuteShow := true
         this.ShowWinCtrl := ""
+        this.IsBootStart := false
+        this.BootStartCtrl := ""
         this.IsPause := false
         this.PauseToggleCtrl := ""
         this.PauseHotkey := ""

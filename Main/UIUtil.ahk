@@ -379,6 +379,10 @@ AddSettingUI(index) {
     MySoftData.ShowWinCtrl.Value := MySoftData.IsExecuteShow
     MySoftData.ShowWinCtrl.OnEvent("Click", OnShowWinChanged)
 
+    MySoftData.BootStartCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 520, posY), "开机启动")
+    MySoftData.BootStartCtrl.Value := MySoftData.IsBootStart
+    MySoftData.BootStartCtrl.OnEvent("Click", OnBootStartChanged)
+
     posY += 30
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "禁止：勾选后对应配置不生效")
     posY += 20
