@@ -190,6 +190,11 @@ LoadSetting() {
     MySoftData.KillMacroHotkey := IniRead(IniFile, IniSection, "KillMacroHotkey", "!k")
     ToolCheckInfo.IsToolCheck := IniRead(IniFile, IniSection, "IsToolCheck", false)
     ToolCheckInfo.ToolCheckHotKey := IniRead(IniFile, IniSection, "ToolCheckHotKey", "!q")
+    ToolCheckInfo.ToolRecordMacroHotKey := IniRead(IniFile, IniSection, "RecordMacroHotKey", "!r")
+    ToolCheckInfo.ToolTextFilterHotKey := IniRead(IniFile, IniSection, "ToolTextFilterHotKey", "!w")
+    ToolCheckInfo.RecordKeyboardValue := IniRead(IniFile, IniSection, "RecordKeyboardValue", true)
+    ToolCheckInfo.RecordMouseValue := IniRead(IniFile, IniSection, "RecordMouseValue", true)
+    ToolCheckInfo.RecordMouseRelativeValue := IniRead(IniFile, IniSection, "RecordMouseRelativeValue", false)
     MySoftData.IsExecuteShow := IniRead(IniFile, IniSection, "IsExecuteShow", true)
     MySoftData.IsBootStart := IniRead(IniFile, IniSection, "IsBootStart", false)
     MySoftData.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
@@ -333,6 +338,11 @@ OnSaveSetting(*) {
     IniWrite(MySoftData.BootStartCtrl.Value, IniFile, IniSection, "IsBootStart")
     IniWrite(ToolCheckInfo.IsToolCheck, IniFile, IniSection, "IsToolCheck")
     IniWrite(ToolCheckInfo.ToolCheckHotKeyCtrl.Value, IniFile, IniSection, "ToolCheckHotKey")
+    IniWrite(ToolCheckInfo.ToolRecordMacroHotKeyCtrl.Value, IniFile, IniSection, "RecordMacroHotKey")
+    IniWrite(ToolCheckInfo.ToolTextFilterHotKeyCtrl.Value, IniFile, IniSection, "ToolTextFilterHotKey")
+    IniWrite(ToolCheckInfo.RecordKeyboardCtrl.Value, IniFile, IniSection, "RecordKeyboardValue")
+    IniWrite(ToolCheckInfo.RecordMouseCtrl.Value, IniFile, IniSection, "RecordMouseValue")
+    IniWrite(ToolCheckInfo.RecordMouseRelativeCtrl.Value, IniFile, IniSection, "RecordMouseRelativeValue")
     IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
     IniWrite(true, IniFile, IniSection, "HasSaved")
     SaveWinPos()
@@ -386,6 +396,7 @@ GetSavedTableItemInfo(index) {
             LoopCountArrStr .= "π"
         }
     }
+    MacroArrStr := StrReplace(MacroArrStr, "`n", ",")
     return [TKArrStr, MacroArrStr, ModeArrStr, LooseStopArrStr, ForbidArrStr, ProcessNameArrStr, RemarkArrStr,
         LoopCountArrStr]
 }
@@ -522,6 +533,69 @@ GetItemSaveCountValue(tableIndex, Index) {
     }
     return 1
 }
+
+
+GetRecordMacroEditStr(macro) {
+    CommandArr := SplitMacro(macro)
+    macroEditStr := ""
+    processedIndex := 0
+    for index, value in CommandArr {
+        if (processedIndex >= index)
+            continue
+        processedIndex := index
+        isInterval := StrCompare(SubStr(value, 1, 2), "间隔", false) == 0
+        if (isInterval) {
+            SubCommandArr := StrSplit(value, "_")
+            intervalValue := Integer(SubCommandArr[2])
+            loop {
+                curIndex := index + A_Index
+                if (curIndex > CommandArr.Length)
+                    break
+
+                SubCommandArr := StrSplit(CommandArr[curIndex], "_")
+                isIntervalAgain := StrCompare(SubStr(SubCommandArr[1], 1, 2), "间隔", false) == 0
+                if (!isIntervalAgain)
+                    break
+                intervalValue += Integer(SubCommandArr[2])
+                processedIndex := curIndex
+            }
+            macroEditStr := index == 1 ? macroEditStr : macroEditStr ","
+            macroEditStr .= "间隔_" intervalValue "`n"
+            continue
+        }
+
+        isPressKey := StrCompare(SubStr(value, 1, 2), "按键", false) == 0
+        if (isPressKey) {
+            macroEditStr .= value
+            loop {
+                curIndex := index + A_Index
+                if (curIndex > CommandArr.Length)
+                    break
+
+                SubCommandArr := StrSplit(CommandArr[curIndex], "_")
+                isPressKeyAgain := StrCompare(SubStr(SubCommandArr[1], 1, 2), "按键", false) == 0
+                if (!isPressKeyAgain)
+                    break
+                macroEditStr .= "," CommandArr[curIndex]
+                processedIndex := curIndex
+            }
+        }
+
+        isMouseMove := StrCompare(SubStr(value, 1, 2), "移动", false) == 0
+        if (isMouseMove) {
+            macroEditStr .= value
+        }
+
+        nextIndex := processedIndex + 1
+        isNextInterval := nextIndex <= CommandArr.Length
+        isNextInterval := isNextInterval && StrCompare(SubStr(CommandArr[nextIndex], 1, 2), "间隔", false) == 0
+        if (!isNextInterval) {
+            macroEditStr .= "`n"
+        }
+    }
+    return macroEditStr
+}
+
 
 CheckIsNormalTable(index) {
     symbol := GetTableSymbol(index)

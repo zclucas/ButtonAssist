@@ -87,7 +87,7 @@ class SearchGui {
 
         PosY += 20
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "S:确定起始坐标   E:确定终止坐标  C:选取当前颜色")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "F1:选取搜索范围  F2:选取当前颜色")
 
         PosX := 10
         PosY += 20
@@ -192,9 +192,9 @@ class SearchGui {
 
         PosY := EndSplitPosY
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 120, 20), "找到后的指令:")
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "找到后的指令:（可选）")
 
-        PosX += 120
+        PosX += 160
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 5, 80, 20), "编辑指令")
         btnCon.OnEvent("Click", (*) => this.OnEditFoundMacroBtnClick())
 
@@ -205,9 +205,9 @@ class SearchGui {
 
         PosY += 60
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 120, 20), "未找到后的指令:")
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "未找到后的指令:（可选）")
 
-        PosX += 120
+        PosX += 160
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 5, 80, 20), "编辑指令")
         btnCon.OnEvent("Click", (*) => this.OnEditUnFoundMacroBtnClick())
 
@@ -269,7 +269,7 @@ class SearchGui {
                 this.SearchType := 2
                 this.HexColor := searchCmdArr[2]
             }
-            if (isSearchText){
+            if (isSearchText) {
                 this.SearchType := 3
                 this.Text := searchCmdArr[2]
             }
@@ -337,6 +337,11 @@ class SearchGui {
             return false
         }
 
+        if (!IsNumber(this.SearchCountCon.Value) || Number(this.SearchCountCon.Value) <= 0) {
+            MsgBox("搜索次数请输入大于0的数字")
+            return false
+        }
+
         if (RegExMatch(this.ImagePath, "_")) {
             MsgBox("图片路径中不能包含下划线")
             return false
@@ -361,16 +366,14 @@ class SearchGui {
         if (state) {
             SetTimer PosAction, 100
             Hotkey("!l", MacroAction, "On")
-            Hotkey("S", (*) => this.SureStartCoord(), "On")
-            Hotkey("E", (*) => this.SureEndCoord(), "On")
-            Hotkey("C", (*) => this.SureColor(), "On")
+            Hotkey("F1", (*)=> this.EnableSelectAerea(), "On")
+            Hotkey("F2", (*) => this.SureColor(), "On")
         }
         else {
             SetTimer PosAction, 0
             Hotkey("!l", MacroAction, "Off")
-            Hotkey("S", (*) => this.SureStartCoord(), "Off")
-            Hotkey("E", (*) => this.SureEndCoord(), "Off")
-            Hotkey("C", (*) => this.SureColor(), "Off")
+            Hotkey("F1", (*)=> this.EnableSelectAerea(), "Off")
+            Hotkey("F2", (*) => this.SureColor(), "Off")
         }
     }
 
@@ -510,19 +513,51 @@ class SearchGui {
         OnSearch(tableItem, this.CommandStr, 1)
     }
 
-    SureStartCoord() {
-        CoordMode("Mouse", "Screen")
-        MouseGetPos &mouseX, &mouseY
-        this.StartPosXCon.Value := mouseX
-        this.StartPosYCon.Value := mouseY
-        this.Refresh()
+    EnableSelectAerea() {
+        Hotkey("LButton", (*)=>this.SelectArea(), "On")
+        Hotkey("LButton Up", (*)=>this.DisSelectArea(), "On")
     }
 
-    SureEndCoord() {
+    DisSelectArea(*) {
+        Hotkey("LButton", (*)=>this.SelectArea(), "Off")
+        Hotkey("LButton Up", (*)=>this.DisSelectArea(), "Off")
+    }
+
+    SelectArea(*) {
+        ; 获取起始点坐标
+        startX := startY := endX := endY := 0
         CoordMode("Mouse", "Screen")
-        MouseGetPos &mouseX, &mouseY
-        this.EndPosXCon.Value := mouseX
-        this.EndPosYCon.Value := mouseY
+        MouseGetPos(&startX, &startY)
+
+        ; 创建 GUI 用于绘制矩形框
+        MyGui := Gui("+ToolWindow -Caption +AlwaysOnTop -DPIScale")
+        MyGui.BackColor := "Red"
+        WinSetTransColor(" 150", MyGui)
+        MyGui.Opt("+LastFound")
+        GuiHwnd := WinExist()
+
+        ; 显示初始 GUI
+        MyGui.Show("NA x" startX " y" startY " w1 h1")
+
+        ; 跟踪鼠标移动
+        while GetKeyState("LButton", "P") {
+            CoordMode("Mouse", "Screen")
+            MouseGetPos(&endX, &endY)
+            width := Abs(endX - startX)
+            height := Abs(endY - startY)
+            x := Min(startX, endX)
+            y := Min(startY, endY)
+
+            MyGui.Show("NA x" x " y" y " w" width " h" height)
+        }
+        ; 销毁 GUI
+        MyGui.Destroy()
+        ; 返回坐标
+
+        this.StartPosXCon.Value := Min(startX, endX)
+        this.StartPosYCon.Value := Min(startY, endY)
+        this.EndPosXCon.Value := Max(startX, endX)
+        this.EndPosYCon.Value := Max(startY, endY)
         this.Refresh()
     }
 

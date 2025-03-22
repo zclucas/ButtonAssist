@@ -1,5 +1,5 @@
 #Requires AutoHotkey v2.0
-#SingleInstance Force
+#SingleInstance Force 
 #Include Joy\SuperCvJoyInterface.ahk
 #Include Joy\JoyMacro.ahk
 #Include RapidOcr\RapidOcr.ahk

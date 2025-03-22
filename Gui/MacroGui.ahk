@@ -494,98 +494,18 @@ class MacroGui {
 
     OnChangeRecordMode() {
         state := this.RecordMacroCon.Value
-        StateSymbol := state ? "On" : "Off"
-        loop 255 {
-            vk := Format("$*~vk{:X}", A_Index)
-            try {
-                Hotkey(vk, (*) => this.OnKeyDown(), StateSymbol)
-                Hotkey(vk " Up", (*) => this.OnKeyUp(), StateSymbol)
-            }
-            catch {
-                continue
-            }
-        }
-
-        if (state) {
-            this.RecordNodeArr := []
-            this.RecordKeyboardArr := []
-
-            node := RecordNodeData()
-            node.StartTime := GetCurMSec()
-            this.RecordNodeArr.Push(node)
-        }
-        else {
-            node := this.RecordNodeArr[this.RecordNodeArr.Length]
-            node.EndTime := GetCurMSec()
-
-            this.OnShowRecordMacro()
+        OnToolRecordMacro()
+        if (!state){
+            this.OnFinishRecordMacro()
         }
     }
 
-    OnKeyDown(*) {
-        key := StrReplace(A_ThisHotkey, "$", "")
-        key := StrReplace(key, "*~", "")
-        keyName := GetKeyName(key)
 
-        node := this.RecordNodeArr[this.RecordNodeArr.Length]
-        node.EndTime := GetCurMSec()
-
-        CoordMode("Mouse", "Screen")
-        MouseGetPos &mouseX, &mouseY
-        data := KeyboardData()
-        data.StartTime := GetCurMSec()
-        data.NodeSerial := this.RecordNodeArr.Length
-        data.keyName := keyName
-        data.StartPos := [mouseX, mouseY]
-        this.RecordKeyboardArr.Push(data)
-
-        node := RecordNodeData()
-        node.StartTime := GetCurMSec()
-        this.RecordNodeArr.Push(node)
-    }
-
-    OnKeyUp(*) {
-        key := StrReplace(A_ThisHotkey, "$", "")
-        key := StrReplace(key, "*~", "")
-        key := StrReplace(key, " Up", "")
-        keyName := GetKeyName(key)
-
-        for index, value in this.RecordKeyboardArr {
-            if (value.keyName == keyName && value.EndTime == 0) {
-                CoordMode("Mouse", "Screen")
-                MouseGetPos &mouseX, &mouseY
-                value.EndTime := GetCurMSec()
-                value.EndPos := [mouseX, mouseY]
-                break
-            }
-        }
-    }
-
-    OnShowRecordMacro() {
-        macro := ""
-        for index, value in this.RecordNodeArr {
-            macro .= "间隔_" value.Span() ","
-
-            for key, value in this.RecordKeyboardArr {
-                if (value.NodeSerial != index)
-                    continue
-
-                keyName := value.keyName
-
-                if (keyName == "LButton" || keyName == "RButton" || keyName == "MButton") {
-                    macro .= "移动_" value.StartPos[1] "_" value.StartPos[2] "_1_100_100_0_0,"
-                    macro .= "按键_" value.keyName "_" value.Span() "_1_100,"
-                    if (value.StartPos[1] != value.EndPos[1] || value.StartPos[2] != value.EndPos[2]){
-                        macro .= "移动_" value.EndPos[1] "_" value.EndPos[2] "_1_100_90_0_0,"
-                    }
-                }
-                else{
-                     macro .= "按键_" value.keyName "_" value.Span() "_1_100,"
-                }
-            }
-        }
+    OnFinishRecordMacro(){
         macroStr := this.GetFinallyMacroStr()
-        macro := macroStr "," macro
+        
+        macroArr := StrSplit(ToolCheckInfo.ToolTextCtrl.Value, "`n")
+        macro := macroStr "," this.GetMacroStr(macroArr)
         macro := Trim(macro, ",")
         this.MacroEditStrCon.Value := this.GetMacroEditStr(macro)
         this.DefaultFocusCon.Focus()

@@ -840,18 +840,11 @@ class KeyGui {
     }
 
     Init(cmd) {
-        this.KeyStr := ""
-        this.HoldTime := 50
-        this.KeyCount := 1
-        this.PerInterval := 100
-
-        if (cmd != "") {
-            cmdArr := SplitKeyCommand(cmd)
-            this.KeyStr := cmdArr[2]
-            this.HoldTime := cmdArr[3]
-            this.KeyCount := cmdArr[4]
-            this.PerInterval := cmdArr[5]
-        }
+        cmdArr := cmd != "" ? SplitKeyCommand(cmd) : []
+        this.KeyStr := cmdArr.Length >= 2 ? cmdArr[2] : ""
+        this.HoldTime := cmdArr.Length >= 3 ? cmdArr[3] : 50
+        this.KeyCount := cmdArr.Length >= 4 ? cmdArr[4] : 1
+        this.PerInterval := cmdArr.Length >= 5 ? cmdArr[5] : 100
 
         this.HoldTimeCon.Value := this.HoldTime
         this.KeyCountCon.Value := this.KeyCount
@@ -892,8 +885,11 @@ class KeyGui {
         CommandStr := "按键"
         CommandStr .= "_" this.KeyStr
         CommandStr .= "_" this.HoldTime
-        CommandStr .= "_" this.KeyCount
-        CommandStr .= "_" this.PerInterval
+        if (this.KeyCount > 1){
+            CommandStr .= "_" this.KeyCount
+            CommandStr .= "_" this.PerInterval
+        }
+        
         this.CommandStr := CommandStr
     }
 

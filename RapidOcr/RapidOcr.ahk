@@ -31,8 +31,11 @@ class RapidOcr {
         if (!init) {
             init := DllCall('LoadLibrary', 'str', dllpath ?? A_LineFile '\..\' (A_PtrSize * 8) 'bit\RapidOcrOnnx.dll',
             'ptr')
-            if (!init)
-                throw OSError()
+            if (!init){
+                ; throw OSError()
+                return  ;部分电脑无法加载，那么就直接返回吧
+            }
+                
         }
         if !IsSet(config)
             config := { models: A_LineFile '\..\models' }
@@ -68,7 +71,8 @@ class RapidOcr {
                     throw ValueError('No value is specified: ' k)
             } else if !FileExist(%k%)
                 throw TargetError('file "' k '" does not exist')
-            this.ptr := DllCall('RapidOcrOnnx\OcrInit', 'str', det_model, 'str', cls_model, 'str', rec_model, 'str', keys_dict, 'int', numThread, 'ptr')
+        this.ptr := DllCall('RapidOcrOnnx\OcrInit', 'str', det_model, 'str', cls_model, 'str', rec_model, 'str',
+            keys_dict, 'int', numThread, 'ptr')
     }
     __Delete() => this.ptr && DllCall('RapidOcrOnnx\OcrDestroy', 'ptr', this)
 

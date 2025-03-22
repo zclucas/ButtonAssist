@@ -98,7 +98,7 @@ class MouseMoveGui{
         this.RelativeCon.OnEvent("Click", (*) => this.OnChangeEditValue())
 
         PosX += 100
-        this.OffsetCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "游戏模式")
+        this.OffsetCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "游戏视角")
         this.OffsetCon.OnEvent("Click", (*) => this.OnChangeEditValue())
 
         PosY += 40
@@ -115,24 +115,14 @@ class MouseMoveGui{
     }
 
     Init(cmd){
-        this.PosX := 0
-        this.PosY := 0
-        this.Count := 1
-        this.PerInterval := 1000
-        this.Speed := 90
-        this.IsRelative := 0
-        this.IsOffset := 0
-
-        if (cmd != ""){
-            cmdArr := StrSplit(cmd, "_")
-            this.PosX := cmdArr[2]
-            this.PosY := cmdArr[3]
-            this.Count := cmdArr[4]
-            this.PerInterval := cmdArr[5]
-            this.Speed := cmdArr[6]
-            this.IsRelative := cmdArr[7]
-            this.IsOffset := cmdArr[8]
-        }
+        cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
+        this.PosX := cmdArr.Length >= 2 ? cmdArr[2] : 0
+        this.PosY := cmdArr.Length >= 3 ? cmdArr[3] : 0
+        this.Speed := cmdArr.Length >= 4 ? cmdArr[4] : 90
+        this.IsRelative := cmdArr.Length >= 5 ? cmdArr[5] : 0
+        this.IsOffset := cmdArr.Length >= 6 ? cmdArr[6] : 0
+        this.Count := cmdArr.Length >= 7 ? cmdArr[7] : 1
+        this.PerInterval := cmdArr.Length >= 8 ? cmdArr[8] : 1000
 
         this.PosXCon.Value := this.PosX
         this.PosYCon.Value := this.PosY
@@ -159,6 +149,11 @@ class MouseMoveGui{
             return false
         }
 
+        if (!IsNumber(this.CountCon.Value) || Number(this.CountCon.Value) <= 0){
+            MsgBox("移动次数请输入大于0的数字")
+            return false
+        }
+
         if (IsInteger(this.SpeedCon.Value) && ((Integer(this.SpeedCon.Value) < 0 || Integer(this.SpeedCon.Value) > 100))){
             MsgBox("移动速度请输入0~100的整数")
             return false
@@ -171,11 +166,19 @@ class MouseMoveGui{
         this.CommandStr := "移动"
         this.CommandStr .= "_" this.PosXCon.Value
         this.CommandStr .= "_" this.PosYCon.Value
-        this.CommandStr .= "_" this.CountCon.Value
-        this.CommandStr .= "_" this.PerIntervalCon.Value
-        this.CommandStr .= "_" this.SpeedCon.Value
-        this.CommandStr .= "_" this.RelativeCon.Value
-        this.CommandStr .= "_" this.OffsetCon.Value
+        if (this.SpeedCon.Value != 100){
+            this.CommandStr .= "_" this.SpeedCon.Value
+        }
+        
+        if (this.RelativeCon.Value == 1 || this.OffsetCon.Value == 1){
+            this.CommandStr .= "_" this.RelativeCon.Value
+            this.CommandStr .= "_" this.OffsetCon.Value
+        }
+        
+        if (Number(this.CountCon.Value) > 1){
+            this.CommandStr .= "_" this.CountCon.Value
+            this.CommandStr .= "_" this.PerIntervalCon.Value
+        }
     }
 
     ToggleFunc(state){
@@ -184,12 +187,12 @@ class MouseMoveGui{
         if (state){
             SetTimer PosAction, 100
             Hotkey("!l", MacroAction, "On")
-            Hotkey("E", (*)=> this.SureCoord(), "On")
+            Hotkey("F1", (*)=> this.SureCoord(), "On")
         }
         else{
             SetTimer PosAction, 0
             Hotkey("!l", MacroAction, "Off")
-            Hotkey("E", (*)=> this.SureCoord(), "Off")
+            Hotkey("F1", (*)=> this.SureCoord(), "Off")
         }
     }
 

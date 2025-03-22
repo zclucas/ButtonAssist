@@ -8,6 +8,8 @@ BindKey() {
     BindPauseHotkey()
     BindShortcut(MySoftData.KillMacroHotkey, OnKillAllMacro)
     BindShortcut(ToolCheckInfo.ToolCheckHotKey, OnToolCheckHotkey)
+    BindShortcut(ToolCheckInfo.ToolTextFilterHotKey, OnToolTextFilterScreenShot)
+    BindShortcut(ToolCheckInfo.ToolRecordMacroHotKey, OnToolRecordMacro)
     BindTabHotKey()
     BindScrollHotkey("~WheelUp", OnChangeSrollValue)
     BindScrollHotkey("~WheelDown", OnChangeSrollValue)
@@ -320,35 +322,6 @@ TextSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text) {
     return isContain
 }
 
-; TextSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text) {
-;     global MyOcr
-;     isContain := false
-;     width := X2 - X1
-;     height := Y2 - Y1
-;     pBitmap := Gdip_BitmapFromScreen(X1 "|" Y1 "|" width "|" height)
-;     CurrentDateTime := FormatTime(, "HHmmss")
-;     screenshotPath := A_ScriptDir "\Images\Temp\" CurrentDateTime ".png"
-;     if (!DirExist(A_ScriptDir "\Images\Temp")) {
-;         DirCreate(A_ScriptDir "\Images\Temp")
-;     }
-;     Gdip_SaveBitmapToFile(pBitmap, screenshotPath)
-;     Gdip_DisposeImage(pBitmap)
-;     res := MyOcr.ocr_from_file(screenshotPath, , true)
-;     for index, value in res {
-;         isContain := CheckContainText(value.text, text)
-;         if (isContain) {
-;             pointX := value.boxPoint[1].x + value.boxPoint[2].x + value.boxPoint[3].x + value.boxPoint[4].x
-;             pointY := value.boxPoint[1].y + value.boxPoint[2].y + value.boxPoint[3].y + value.boxPoint[4].y
-;             OutputVarX := X1 + pointX / 4
-;             OutputVarY := Y1 + pointY / 4
-;             break
-;         }
-;     }
-
-;     FileDelete(screenshotPath)
-;     return isContain
-; }
-
 OnRunFile(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     filePath := SubStr(cmd, StrLen(paramArr[1]) + 2)
@@ -357,8 +330,8 @@ OnRunFile(tableItem, cmd, index) {
 
 OnMouseMove(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    count := Integer(paramArr[4])
-    interval := Integer(paramArr[5])
+    count := paramArr.Length >= 7 ? Integer(paramArr[7]) : 1
+    interval := paramArr.Length >= 8 ? Integer(paramArr[8]) : 100
     OnMouseMoveOnce(tableItem, cmd, index)
 
     loop count {
@@ -378,9 +351,9 @@ OnMouseMoveOnce(tableItem, cmd, index) {
     CoordMode("Mouse", "Screen")
     PosX := Integer(paramArr[2])
     PosY := Integer(paramArr[3])
-    Speed := 100 - Integer(paramArr[6])
-    isRelative := Integer(paramArr[7])
-    isOffset := Integer(paramArr[8])
+    Speed := paramArr.Length >= 4 ? 100 - Integer(paramArr[4]) : 0
+    isRelative := paramArr.Length >= 5 ? Integer(paramArr[5]) : 0
+    isOffset := paramArr.Length >= 6 ? Integer(paramArr[6]) : 0
 
     if (isOffset) {
         MOUSEEVENTF_MOVE := 0x0001
@@ -419,7 +392,7 @@ OnPressKey(tableItem, cmd, index) {
 
     holdTime := Integer(paramArr[3])
     floatHoldTime := GetFloatTime(holdTime, MySoftData.HoldFloat)
-    count := paramArr.Length > 2 ? Integer(paramArr[4]) : 1
+    count := paramArr.Length > 3 ? Integer(paramArr[4]) : 1
 
     action(paramArr[2], floatHoldTime, tableItem, index)
 
@@ -605,7 +578,180 @@ OnToolCheckHotkey(*) {
     global ToolCheckInfo
     ToolCheckInfo.IsToolCheck := !ToolCheckInfo.IsToolCheck
     ToolCheckInfo.ToolCheckCtrl.Value := ToolCheckInfo.IsToolCheck
-    ToolCheckInfo.ResetTimer()
+    ToolCheckInfo.MouseInfoSwitch()
+}
+
+OnToolRecordMacro(*) {
+    global ToolCheckInfo
+    ToolCheckInfo.IsToolRecord := !ToolCheckInfo.IsToolRecord
+    ToolCheckInfo.ToolCheckRecordMacroCtrl.Value := ToolCheckInfo.IsToolRecord
+    state := ToolCheckInfo.IsToolRecord
+    StateSymbol := state ? "On" : "Off"
+    loop 255 {
+        key := Format("$*~vk{:X}", A_Index)
+        if (ToolCheckInfo.RecordSpecialKeyMap.Has(A_Index)){
+            keyName := GetKeyName(Format("vk{:X}", A_Index))
+            key := Format("$*~sc{:X}", GetKeySC(keyName))
+        }
+
+        try {
+            Hotkey(key, OnRecordMacroKeyDonw, StateSymbol)
+            Hotkey(key " Up", OnRecordMacroKeyUp, StateSymbol)
+        }
+        catch {
+            continue
+        }
+    }
+
+    if (state) {
+        ToolCheckInfo.RecordNodeArr := []
+        ToolCheckInfo.RecordKeyboardArr := []
+        ToolCheckInfo.RecordHoldKeyMap := Map()
+
+        node := RecordNodeData()
+        node.StartTime := GetCurMSec()
+        ToolCheckInfo.RecordNodeArr.Push(node)
+
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
+        ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
+    }
+    else {
+        node := ToolCheckInfo.RecordNodeArr[ToolCheckInfo.RecordNodeArr.Length]
+        node.EndTime := GetCurMSec()
+
+        OnFinishRecordMacro()
+    }
+}
+
+OnRecordMacroKeyDonw(*) {
+    key := StrReplace(A_ThisHotkey, "$", "")
+    key := StrReplace(key, "*~", "")
+    keyName := GetKeyName(key)
+    if (ToolCheckInfo.RecordHoldKeyMap.Has(keyName))
+        return
+    ToolCheckInfo.RecordHoldKeyMap.Set(keyName, true)
+
+    node := ToolCheckInfo.RecordNodeArr[ToolCheckInfo.RecordNodeArr.Length]
+    node.EndTime := GetCurMSec()
+
+    CoordMode("Mouse", "Screen")
+    MouseGetPos &mouseX, &mouseY
+    data := KeyboardData()
+    data.StartTime := GetCurMSec()
+    data.NodeSerial := ToolCheckInfo.RecordNodeArr.Length
+    data.keyName := keyName
+    data.StartPos := [mouseX, mouseY]
+    ToolCheckInfo.RecordKeyboardArr.Push(data)
+
+    node := RecordNodeData()
+    node.StartTime := GetCurMSec()
+    ToolCheckInfo.RecordNodeArr.Push(node)
+
+}
+
+OnRecordMacroKeyUp(*) {
+    key := StrReplace(A_ThisHotkey, "$", "")
+    key := StrReplace(key, "*~", "")
+    key := StrReplace(key, " Up", "")
+    keyName := GetKeyName(key)
+    if (ToolCheckInfo.RecordHoldKeyMap.Has(keyName))
+        ToolCheckInfo.RecordHoldKeyMap.Delete(keyName)
+
+    for index, value in ToolCheckInfo.RecordKeyboardArr {
+        if (value.keyName == keyName && value.EndTime == 0) {
+            CoordMode("Mouse", "Screen")
+            MouseGetPos &mouseX, &mouseY
+            value.EndTime := GetCurMSec()
+            value.EndPos := [mouseX, mouseY]
+            break
+        }
+    }
+}
+
+OnFinishRecordMacro() {
+    macro := ""
+    for index, value in ToolCheckInfo.RecordNodeArr {
+        macro .= "间隔_" value.Span() ","
+
+        for key, value in ToolCheckInfo.RecordKeyboardArr {
+            if (value.NodeSerial != index || value.EndTime == 0)
+                continue
+            keyName := value.keyName
+            IsMouse := keyName == "LButton" || keyName == "RButton" || keyName == "MButton"
+            IsKeyboard := !IsMouse
+
+            if (IsMouse && ToolCheckInfo.RecordMouseValue){
+                isRelative := ToolCheckInfo.RecordMouseRelativeValue
+                posX := isRelative ? value.StartPos[1] - ToolCheckInfo.RecordLastMousePos[1] : value.StartPos[1]
+                posY := isRelative ? value.StartPos[2] - ToolCheckInfo.RecordLastMousePos[2] : value.StartPos[2]
+                symbol := isRelative ? "_100_1" : ""
+                macro .= "移动_" posX "_" posY symbol ","
+                macro .= "按键_" value.keyName "_" value.Span() ","
+
+                if (value.StartPos[1] != value.EndPos[1] || value.StartPos[2] != value.EndPos[2]) {
+                    posX := isRelative ? value.EndPos[1] - value.StartPos[1] : value.EndPos[1]
+                    posY := isRelative ? value.EndPos[2] - value.StartPos[2] : value.EndPos[2]
+                    speed := Max(100 - Integer(value.Span() * 0.02), 90)
+                    symbol := isRelative ? "_" speed "_1" : "_" speed
+                    macro .= "移动_" posX "_" posY symbol ","
+                }
+
+                ToolCheckInfo.RecordLastMousePos[1] := value.EndPos[1]
+                ToolCheckInfo.RecordLastMousePos[2] := value.EndPos[2]
+            }
+
+            if (IsKeyboard && ToolCheckInfo.RecordKeyboardValue){
+                macro .= "按键_" value.keyName "_" value.Span() ","
+            }
+        }
+    }
+    macro := Trim(macro, ",")
+    macro := GetRecordMacroEditStr(macro)
+    ToolCheckInfo.ToolTextCtrl.Value := macro
+    A_Clipboard := macro
+}
+
+OnChangeRecordOption(*) {
+    ToolCheckInfo.RecordKeyboardValue := ToolCheckInfo.RecordKeyboardCtrl.Value
+    ToolCheckInfo.RecordMouseValue := ToolCheckInfo.RecordMouseCtrl.Value
+    ToolCheckInfo.RecordMouseRelativeValue := ToolCheckInfo.RecordMouseRelativeCtrl.value
+}
+
+OnToolTextFilterSelectImage(*) {
+    global ToolCheckInfo
+    path := FileSelect(, , "选择图片")
+    result := MyOcr.ocr_from_file(path)
+    ToolCheckInfo.ToolTextCtrl.Value := result
+    A_Clipboard := result
+}
+
+OnClearToolText(*){
+    ToolCheckInfo.ToolTextCtrl.Value := ""
+}
+
+OnToolTextFilterScreenShot(*) {
+    A_Clipboard := ""  ; 清空剪贴板
+    Run("ms-screenclip:")
+    SetTimer(OnToolTextCheckScreenShot, 500)  ; 每 500 毫秒检查一次剪贴板
+}
+
+OnToolTextCheckScreenShot() {
+    ; 如果剪贴板中有图像
+    if DllCall("IsClipboardFormatAvailable", "uint", 8)  ; 8 是 CF_BITMAP 格式
+    {
+        filePath := A_WorkingDir "\Images\TextFilter.png"
+        if (!DirExist(A_WorkingDir "\Images")) {
+            DirCreate(A_WorkingDir "\Images")
+        }
+
+        SaveClipToBitmap(filePath)
+        result := MyOcr.ocr_from_file(filePath)
+        ToolCheckInfo.ToolTextCtrl.Value := result
+        A_Clipboard := result
+        ; 停止监听
+        SetTimer(, 0)
+    }
 }
 
 OnShowWinChanged(*) {
