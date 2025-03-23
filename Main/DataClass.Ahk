@@ -22,7 +22,7 @@ class TableItem {
         this.RemarkConArr := []
 
         this.CmdActionArr := []
-        this.SearchActionArr := []
+        this.ActionArr := []
         this.HoldKeyArr := []
         this.KilledArr := []
         this.ActionCount := []      ; 记录执行次数，用于循环次数判断
@@ -187,4 +187,21 @@ class MoveData {
         this.EndPosY := 0
         this.NodeSerial := 0
     }
+}
+
+class CompareData{
+    __New() {
+        this.SerialStr := ""
+        this.TextFilter := ""
+        this.TrueCommandStr := ""
+        this.FalseCommandStr := ""
+        this.BaseVariableArr := []
+        this.VariableArr := []
+        this.VariableOperatorArr := ["x", "y", "w", "h"]
+        this.ComparEnableArr := [1, 0, 0, 0]
+        this.ComparTypeArr := [1, 1, 1, 1]
+        this.ComparValueArr := [0, 0, 0, 0]
+    }
+
+    
 }

@@ -4,6 +4,7 @@
 #Include MouseMoveGui.ahk
 #Include SearchGui.ahk
 #Include FileGui.ahk
+#Include CompareGui.ahk
 
 class MacroGui {
     __new() {
@@ -54,6 +55,10 @@ class MacroGui {
         this.FileGui := FileGui()
         this.FileGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("文件", this.FileGui)
+        
+        this.CompareGui := CompareGui()
+        this.CompareGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("比较", this.CompareGui)
     }
 
     GetSubGuiSymbol(subGui) {
@@ -135,6 +140,12 @@ class MacroGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.FileGui))
         this.CmdBtnConMap.Set("文件", btnCon)
+
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "比较")
+        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CompareGui))
+        this.CmdBtnConMap.Set("比较", btnCon)
 
         PosX := 20
         PosY += 140
@@ -270,6 +281,11 @@ class MacroGui {
 
             isFile := StrCompare(SubStr(value, 1, 2), "文件", false) == 0
             if (isFile) {
+                macroEditStr .= value
+            }
+
+            isCompare := StrCompare(SubStr(value, 1, 2), "比较", false) == 0
+            if (isCompare) {
                 macroEditStr .= value
             }
 

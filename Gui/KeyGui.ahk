@@ -942,7 +942,7 @@ class KeyGui {
         tableItem.CmdActionArr[1] := []
         tableItem.KilledArr[1] := false
         tableItem.ActionCount[1] := 0
-        tableItem.SearchActionArr[1] := Map()
+        tableItem.ActionArr[1] := Map()
 
         OnPressKey(tableItem, this.CommandStr, 1)
     }

@@ -233,49 +233,34 @@ class SearchGui {
     }
 
     Init(cmd) {
-        this.StartPosX := 0
-        this.StartPosY := 0
-        this.EndPosX := A_ScreenWidth
-        this.EndPosY := A_ScreenHeight
-        this.SearchCount := 1
-        this.SearchInterval := 1000
-        this.HexColor := "FFFFFF"
-        this.SearchType := 1
-        this.AutoMove := 1
-        this.ImagePath := ""
-        this.FoundCommandStr := ""
-        this.UnFoundCommandStr := ""
+        cmdArr := cmd != "" ? SplitCommand(cmd) : []
+        searchCmdArr := cmdArr.Length >= 1 ? StrSplit(cmdArr[1], "_") : []
+        isSearchColor := searchCmdArr.Length >= 1 ? searchCmdArr[1] == "搜索颜色" : false
+        isSearchImage := searchCmdArr.Length >= 1 ? searchCmdArr[1] == "搜索图片" : false
+        isSearchText := searchCmdArr.Length >= 1 ? searchCmdArr[1] == "搜索文本" : false
 
-        if (cmd != "") {
-            cmdArr := SplitCommand(cmd)
-            searchCmdArr := StrSplit(cmdArr[1], "_")
-            this.StartPosX := searchCmdArr[3]
-            this.StartPosY := searchCmdArr[4]
-            this.EndPosX := searchCmdArr[5]
-            this.EndPosY := searchCmdArr[6]
-            this.AutoMove := searchCmdArr[7]
-            this.SearchCount := searchCmdArr[8]
-            this.SearchInterval := searchCmdArr[9]
+        this.StartPosX := searchCmdArr.Length >= 3 ? searchCmdArr[3] : 0
+        this.StartPosY := searchCmdArr.Length >= 4 ? searchCmdArr[4] : 0
+        this.EndPosX := searchCmdArr.Length >= 5 ? searchCmdArr[5] : A_ScreenWidth
+        this.EndPosY := searchCmdArr.Length >= 6 ? searchCmdArr[6] : A_ScreenHeight
+        this.AutoMove := searchCmdArr.Length >= 7 ? searchCmdArr[7] : 1
+        this.SearchCount := searchCmdArr.Length >= 8 ? searchCmdArr[8] : 1
+        this.SearchInterval := searchCmdArr.Length >= 9 ? searchCmdArr[9] : 1000
+        this.FoundCommandStr := cmdArr.Length >= 2 ? cmdArr[2] : ""
+        this.UnFoundCommandStr := cmdArr.Length >= 3 ? cmdArr[3] : ""
 
-            isSearchColor := searchCmdArr[1] == "搜索颜色"
-            isSearchImage := searchCmdArr[1] == "搜索图片"
-            isSearchText := searchCmdArr[1] == "搜索文本"
-            if (isSearchImage) {
-                this.SearchType := 1
-                this.ImagePath := searchCmdArr[2]
-                this.ImageCon.Value := ""
-            }
-            if (isSearchColor) {
-                this.SearchType := 2
-                this.HexColor := searchCmdArr[2]
-            }
-            if (isSearchText) {
-                this.SearchType := 3
-                this.Text := searchCmdArr[2]
-            }
-
-            this.FoundCommandStr := cmdArr[2]
-            this.UnFoundCommandStr := cmdArr[3]
+        if (isSearchImage) {
+            this.SearchType := 1
+            this.ImagePath := searchCmdArr[2]
+            this.ImageCon.Value := ""
+        }
+        if (isSearchColor) {
+            this.SearchType := 2
+            this.HexColor := searchCmdArr[2]
+        }
+        if (isSearchText) {
+            this.SearchType := 3
+            this.Text := searchCmdArr[2]
         }
 
         this.ImageCon.Value := this.ImagePath
@@ -509,7 +494,7 @@ class SearchGui {
         tableItem.CmdActionArr[1] := []
         tableItem.KilledArr[1] := false
         tableItem.ActionCount[1] := 0
-        tableItem.SearchActionArr[1] := Map()
+        tableItem.ActionArr[1] := Map()
         OnSearch(tableItem, this.CommandStr, 1)
     }
 

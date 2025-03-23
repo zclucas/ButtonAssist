@@ -126,7 +126,7 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
     tableItem.CmdActionArr[index] := []
     tableItem.KilledArr[index] := false
     tableItem.ActionCount[index] := 0
-    tableItem.SearchActionArr[index] := Map()
+    tableItem.ActionArr[index] := Map()
     isContinue := MySoftData.ContinueKeyMap.Has(tableItem.TKArr[index]) && tableItem.LoopCountArr[index] == 1
     isLoop := tableItem.LoopCountArr[index] == -1
 
@@ -171,6 +171,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsPressKey := StrCompare(paramArr[1], "按键", false) == 0
         IsInterval := StrCompare(paramArr[1], "间隔", false) == 0
         IsFile := StrCompare(paramArr[1], "文件", false) == 0
+        IsCompare := StrCompare(paramArr[1], "比较", false) == 0
         if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
@@ -185,6 +186,9 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         }
         else if (IsFile) {
             OnRunFile(tableItem, cmdArr[A_Index], index)
+        }
+        else if (IsCompare){
+            OnCompare(tableItem, cmdArr[A_Index], index)
         }
     }
 }
@@ -201,19 +205,19 @@ OnSearch(tableItem, cmd, index) {
     searchCount := Integer(searchCmdArr[8])
     searchInterval := Integer(searchCmdArr[9])
 
-    tableItem.SearchActionArr[index].Set(searchCmdArr[2], [])
+    tableItem.ActionArr[index].Set(searchCmdArr[2], [])
 
     OnSearchOnce(tableItem, cmd, index, searchCount == 1)
     loop searchCount {
         if (A_Index == 1)
             continue
 
-        if (!tableItem.SearchActionArr[index].Has(searchCmdArr[2])) ;第一次搜索成功就退出
+        if (!tableItem.ActionArr[index].Has(searchCmdArr[2])) ;第一次搜索成功就退出
             break
 
         action := OnSearchOnce.Bind(tableItem, cmd, index, A_Index == searchCount)
         leftTime := GetFloatTime(searchInterval * (A_Index - 1), MySoftData.PreIntervalFloat)
-        tableItem.SearchActionArr[index][searchCmdArr[2]].Push(action)
+        tableItem.ActionArr[index][searchCmdArr[2]].Push(action)
         SetTimer action, -leftTime
     }
 }
@@ -239,18 +243,18 @@ OnSearchOnce(tableItem, cmd, index, isFinally) {
     }
     else if (searchCmdArr[1] == "搜索文本") {
         text := searchCmdArr[2]
-        found := TextSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text)
+        found := CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text)
     }
 
     if (found || isFinally) {
         ;清除后续的搜索和搜索记录
-        if (tableItem.SearchActionArr[index].Has(searchCmdArr[2])) {
-            ActionArr := tableItem.SearchActionArr[index].Get(searchCmdArr[2])
+        if (tableItem.ActionArr[index].Has(searchCmdArr[2])) {
+            ActionArr := tableItem.ActionArr[index].Get(searchCmdArr[2])
             loop ActionArr.Length {
                 action := ActionArr[A_Index]
                 SetTimer action, 0
             }
-            tableItem.SearchActionArr[index].Delete(searchCmdArr[2])
+            tableItem.ActionArr[index].Delete(searchCmdArr[2])
         }
     }
 
@@ -279,53 +283,83 @@ OnSearchOnce(tableItem, cmd, index, isFinally) {
     }
 }
 
-TextSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text) {
-    global MyOcr
-    isContain := false
-    width := X2 - X1
-    height := Y2 - Y1
-    pBitmap := Gdip_BitmapFromScreen(X1 "|" Y1 "|" width "|" height)
-
-    ; 获取位图的宽度和高度
-    Width := Gdip_GetImageWidth(pBitmap)
-    Height := Gdip_GetImageHeight(pBitmap)
-
-    ; 锁定位图以获取位图数据
-    Gdip_LockBits(pBitmap, 0, 0, Width, Height, &Stride, &Scan0, &BitmapData)
-
-    ; 创建 BITMAP_DATA 结构
-    BITMAP_DATA := Buffer(24)  ; BITMAP_DATA 结构大小为 24 字节
-    NumPut("ptr", Scan0, BITMAP_DATA, 0)  ; bits
-    NumPut("uint", Stride, BITMAP_DATA, 8)  ; pitch
-    NumPut("int", Width, BITMAP_DATA, 12)  ; width
-    NumPut("int", Height, BITMAP_DATA, 16)  ; height
-    NumPut("int", 4, BITMAP_DATA, 20)  ; bytespixel (假设是 32 位图像)
-
-    ; 调用 ocr_from_bitmapdata 方法
-    result := MyOcr.ocr_from_bitmapdata(BITMAP_DATA, , true)
-
-    ; 解锁位图
-    Gdip_UnlockBits(pBitmap, &BitmapData)
-    ; 释放位图
-    Gdip_DisposeImage(pBitmap)
-
-    for index, value in result {
-        isContain := CheckContainText(value.text, text)
-        if (isContain) {
-            pointX := value.boxPoint[1].x + value.boxPoint[2].x + value.boxPoint[3].x + value.boxPoint[4].x
-            pointY := value.boxPoint[1].y + value.boxPoint[2].y + value.boxPoint[3].y + value.boxPoint[4].y
-            OutputVarX := X1 + pointX / 4
-            OutputVarY := Y1 + pointY / 4
-            break
-        }
-    }
-    return isContain
-}
 
 OnRunFile(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     filePath := SubStr(cmd, StrLen(paramArr[1]) + 2)
     Run(filePath)
+}
+
+OnCompare(tableItem, cmd, index){
+    paramArr := StrSplit(cmd, "_")
+    count := paramArr.Length >= 9 ? Integer(paramArr[9]) : 1
+    interval := paramArr.Length >= 10 ? Integer(paramArr[10]) : 100
+    saveStr := IniRead(CompareFile, IniSection, paramArr[8], "")
+    compareData := JSON.parse(saveStr, , false)
+    tableItem.ActionArr[index].Set(paramArr[8], [])
+    isVaild := CheckIfValid(compareData)
+    if (!isVaild)
+        return
+
+    OnCompareOnce(tableItem, cmd, index, compareData, count == 1)
+    loop count {
+        if (A_Index == 1)
+            continue
+
+        if (!tableItem.ActionArr[index].Has(paramArr[8])) ;第一次比较成功就退出
+            break
+
+        tempAction := OnCompareOnce.Bind(tableItem, cmd, index, compareData, A_Index == count)
+        leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
+        tableItem.ActionArr[index][paramArr[8]].Push(tempAction)
+        SetTimer tempAction, -leftTime
+    }
+}
+
+OnCompareOnce(tableItem, cmd, index, compareData, isFinally){
+    paramArr := StrSplit(cmd, "_")
+    X1 := Integer(paramArr[3])
+    Y1 := Integer(paramArr[4])
+    X2 := Integer(paramArr[5])
+    Y2 := Integer(paramArr[6])
+    isAutoMove := Integer(paramArr[7])
+    TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2)
+    TextObjs := TextObjs == "" ? [] : TextObjs
+    isOk := false
+    macthTextObj := ""
+
+    for index, value in TextObjs{
+        baseVariableArr := ExtractNumbers(value.Text, compareData.TextFilter)
+        if (baseVariableArr == "")
+            continue
+        macthTextObj := value
+        isOk := GetCompareResult(compareData, baseVariableArr)
+        break
+    }
+
+    if (isOk || isFinally){
+        ;清除后续的搜索和搜索记录
+        if (tableItem.ActionArr[index].Has(paramArr[7])) {
+            ActionArr := tableItem.ActionArr[index].Get(paramArr[7])
+            loop ActionArr.Length {
+                action := ActionArr[A_Index]
+                SetTimer action, 0
+            }
+            tableItem.ActionArr[index].Delete(paramArr[7])
+        }
+    }
+
+    if (isOk && isAutoMove){
+        posArr := GetMatchCoord(macthTextObj, X1, Y1)
+        CoordMode("Mouse", "Screen")
+        MouseMove(posArr[1], posArr[2])
+    }
+
+    if (isOk && compareData.TrueCommandStr != "")
+        OnTriggerMacroOnce(tableItem, compareData.TrueCommandStr, index)
+
+    if (isFinally && !isOk && compareData.FalseCommandStr != "")
+        OnTriggerMacroOnce(tableItem, compareData.FalseCommandStr, index)
 }
 
 OnMouseMove(tableItem, cmd, index) {

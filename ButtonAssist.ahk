@@ -16,8 +16,10 @@
 #Include Main\TimerUtil.ahk
 #Include Main\HotkeyUtil.ahk
 #Include Main\UIUtil.ahk
+#Include Main\JsonUtil.ahk
 
 IniFile := "Settings.ini"
+CompareFile := "Compare.ini"
 IniSection := "UserSettings"
 
 global MySoftData := SoftData()

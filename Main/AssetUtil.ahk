@@ -445,13 +445,13 @@ InitSingleTableState(tableItem) {
     tableItem.CmdActionArr := []
     tableItem.KilledArr := []
     tableItem.ActionCount := []
-    tableItem.SearchActionArr := []
+    tableItem.ActionArr := []
     tableItem.HoldKeyArr := []
     for index, value in tableItem.ModeArr {
         tableItem.KilledArr.Push(false)
         tableItem.CmdActionArr.Push([])
         tableItem.ActionCount.Push(0)
-        tableItem.SearchActionArr.Push(Map())
+        tableItem.ActionArr.Push(Map())
         tableItem.HoldKeyArr.Push(Map())
     }
 }
@@ -488,13 +488,13 @@ KillTableItemMacro(tableItem, index) {
     }
     tableItem.CmdActionArr[index] := []
 
-    for key, value in tableItem.SearchActionArr[index] {
+    for key, value in tableItem.ActionArr[index] {
         loop value.Length {
             action := value[A_Index]
             SetTimer action, 0
         }
     }
-    tableItem.SearchActionArr[index] := Map()
+    tableItem.ActionArr[index] := Map()
 }
 
 GetTabHeight() {
@@ -656,4 +656,186 @@ CheckAutoStart() {
 CheckContainText(source, text) {
     ; 返回布尔值：true 表示包含，false 表示不包含
     return InStr(source, text) > 0
+}
+
+GetScreenTextObjArr(X1, Y1, X2, Y2) {
+    global MyOcr
+    width := X2 - X1
+    height := Y2 - Y1
+    pBitmap := Gdip_BitmapFromScreen(X1 "|" Y1 "|" width "|" height)
+
+    ; 获取位图的宽度和高度
+    Width := Gdip_GetImageWidth(pBitmap)
+    Height := Gdip_GetImageHeight(pBitmap)
+
+    ; 锁定位图以获取位图数据
+    Gdip_LockBits(pBitmap, 0, 0, Width, Height, &Stride, &Scan0, &BitmapData)
+
+    ; 创建 BITMAP_DATA 结构
+    BITMAP_DATA := Buffer(24)  ; BITMAP_DATA 结构大小为 24 字节
+    NumPut("ptr", Scan0, BITMAP_DATA, 0)  ; bits
+    NumPut("uint", Stride, BITMAP_DATA, 8)  ; pitch
+    NumPut("int", Width, BITMAP_DATA, 12)  ; width
+    NumPut("int", Height, BITMAP_DATA, 16)  ; height
+    NumPut("int", 4, BITMAP_DATA, 20)  ; bytespixel (假设是 32 位图像)
+
+    ; 调用 ocr_from_bitmapdata 方法
+    result := MyOcr.ocr_from_bitmapdata(BITMAP_DATA, , true)
+
+    ; 解锁位图
+    Gdip_UnlockBits(pBitmap, &BitmapData)
+    ; 释放位图
+    Gdip_DisposeImage(pBitmap)
+    return result
+}
+
+CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text){
+    result := GetScreenTextObjArr(X1, Y1, X2, Y2)
+    for index, value in result {
+        isContain := CheckContainText(value.text, text)
+        if (isContain) {
+            pos := GetMatchCoord(value, X1, Y1)
+            OutputVarX := pos[0]
+            OutputVarY := pos[1]
+            break
+        }
+    }
+    return isContain
+}
+
+GetMatchCoord(screenTextObj, x1, y1){
+    value := screenTextObj
+    pointX := value.boxPoint[1].x + value.boxPoint[2].x + value.boxPoint[3].x + value.boxPoint[4].x
+    pointY := value.boxPoint[1].y + value.boxPoint[2].y + value.boxPoint[3].y + value.boxPoint[4].y
+    OutputVarX := x1 + pointX / 4
+    OutputVarY := y1 + pointY / 4
+    return [OutputVarX, OutputVarY]
+}
+
+ExtractNumbers(Text, Pattern) {
+    ; 转义Pattern中的特殊字符（如括号）
+    Pattern := RegExReplace(Pattern, "[.*+?()\[\]{}|^$\\]", "\$0")
+
+    ; 将Pattern中的x, y, z, w替换为正则表达式的捕获组
+    Pattern := RegExReplace(Pattern, "x", "(\d+\.?\d*)")
+    Pattern := RegExReplace(Pattern, "y", "(\d+\.?\d*)")
+    Pattern := RegExReplace(Pattern, "z", "(\d+\.?\d*)")
+    Pattern := RegExReplace(Pattern, "w", "(\d+\.?\d*)")
+
+    ; 使用正则表达式匹配Text
+    if (RegExMatch(Text, Pattern, &Match)) {
+        ; 提取匹配的数字
+        Result := []
+        for i, Value in Match {
+            if (i == 0)
+                continue ; 跳过第一个匹配项（整个匹配文本）
+            tempValue := IsFloat(Value) ? Format("{:.4g}", Value) : Integer(Value)
+            Result.Push(tempValue) 
+        }
+        return Result
+    }
+    return "" ; 如果没有匹配到，返回空字符串
+}
+
+ExtractOperatorsAndNumbers(expression) {
+    ; 初始化两个数组
+    operators := []
+    numbers := []
+
+    ; 定义支持的运算符
+    symbolMap := Map("+", 1, "-", 1, "*", 1, "/", 1, "^", 1)
+
+    ; 遍历表达式，逐个字符检查是否为运算符
+    for i, char in StrSplit(expression) {
+        if (symbolMap.Has(char)){
+            operators.Push(char)
+        }
+    }
+
+    while (RegExMatch(expression, "\d+\.?\d*", &match)) {
+        numbers.Push(match[0])
+        ; 从表达式中移除已匹配的部分
+        expression := RegExReplace(expression, match[0], "", , 1)
+    }
+
+    return {operators: operators, numbers: numbers }
+}
+
+GetUpdateVariableValue(baseValue, expression){
+    res := ExtractOperatorsAndNumbers(expression)
+    sum := baseValue
+    for index, value in res.operators{
+        if (value == "+")
+            sum += Number(res.numbers[index])
+        if (value == "-")
+            sum -= Number(res.numbers[index])
+        if (value == "*")
+            sum *= Number(res.numbers[index])
+        if (value == "/")
+            sum /= Number(res.numbers[index])
+        if (value == "^")
+            sum ^= Number(res.numbers[index])
+    }
+    return sum
+}
+
+
+CheckIfValid(compareData){
+    disCount := 0
+    for index, value in compareData.ComparEnableArr{
+        if (value == 0)
+            disCount++
+    }
+
+    if (disCount == 4)
+        return false
+    return true
+}
+
+GetCompareResult(compareData, baseVariableArr){
+    compareData.BaseVariableArr := baseVariableArr
+    UpdateVariable(compareData)
+    for index, value in compareData.ComparEnableArr{
+        if (value == 0)
+            continue
+
+        res := GetCompareResultIndex(compareData, index)
+        if (!res)
+            return false
+    }
+    return true
+}
+
+UpdateVariable(compareData){
+    compareData.VariableArr := []
+    for index, value in compareData.BaseVariableArr{
+        variable := GetUpdateVariableValue(value, compareData.VariableOperatorArr[index])
+        compareData.VariableArr.Push(variable)
+    }
+}
+
+GetCompareResultIndex(compareData, index){
+    leftValue := compareData.VariableArr[index]
+    rightValue := compareData.ComparValueArr[index]
+    rightValue := rightValue == "x" ? compareData.VariableArr[1] : rightValue
+    rightValue := rightValue == "y" ? compareData.VariableArr[2] : rightValue
+    rightValue := rightValue == "w" ? compareData.VariableArr[3] : rightValue
+    rightValue := rightValue == "h" ? compareData.VariableArr[4] : rightValue
+    if (compareData.ComparTypeArr[index] == 1){
+        return leftValue > rightValue
+    }
+    else if (compareData.ComparTypeArr[index] == 2){
+        return leftValue >= rightValue
+    }
+    else if (compareData.ComparTypeArr[index] == 3){
+        return leftValue == rightValue
+    }
+    else if (compareData.ComparTypeArr[index] == 4){
+        return leftValue <= rightValue
+    }
+    else if (compareData.ComparTypeArr[index] == 5){
+        return leftValue < rightValue
+    }
+
+    return false
 }
