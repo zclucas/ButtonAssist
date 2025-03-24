@@ -293,13 +293,13 @@ GetTableItemDefaultInfo(index) {
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
-        savedRemarkArrStr := "演示配置"
+        savedRemarkArrStr := "取消禁止配置才能生效"
         savedLoopCountStr := "1"
 
     }
     else if (symbol == "String") {
         savedTKArrStr := ":?*:AA"
-        savedMacroArrStr := "按键_LButton_50_1_100,间隔_50,移动_100_100_1_1000_90_0_0"
+        savedMacroArrStr := "按键_LButton_50,间隔_50,移动_100_100_90"
         savedLooseStopArrStr := "0"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
@@ -308,12 +308,12 @@ GetTableItemDefaultInfo(index) {
         savedLoopCountStr := "1"
     }
     else if (symbol == "Replace") {
-        savedTKArrStr := "lπoπp"
-        savedMacroArrStr := "leftπb,cπ"
-        savedLooseStopArrStr := "0π0π0"
-        savedModeArrStr := "0π0π0"
-        savedForbidArrStr := "1π1π1"
-        savedProcessNameStr := "ππ"
+        savedTKArrStr := "l"
+        savedMacroArrStr := "left,a"
+        savedLooseStopArrStr := "0"
+        savedModeArrStr := "0"
+        savedForbidArrStr := "1"
+        savedProcessNameStr := ""
     }
     return [savedTKArrStr, savedMacroArrStr, savedLooseStopArrStr, savedModeArrStr, savedForbidArrStr,
         savedProcessNameStr, savedRemarkArrStr,
@@ -712,130 +712,11 @@ GetMatchCoord(screenTextObj, x1, y1){
     return [OutputVarX, OutputVarY]
 }
 
-ExtractNumbers(Text, Pattern) {
-    ; 转义Pattern中的特殊字符（如括号）
-    Pattern := RegExReplace(Pattern, "[.*+?()\[\]{}|^$\\]", "\$0")
-
-    ; 将Pattern中的x, y, z, w替换为正则表达式的捕获组
-    Pattern := RegExReplace(Pattern, "x", "(\d+\.?\d*)")
-    Pattern := RegExReplace(Pattern, "y", "(\d+\.?\d*)")
-    Pattern := RegExReplace(Pattern, "z", "(\d+\.?\d*)")
-    Pattern := RegExReplace(Pattern, "w", "(\d+\.?\d*)")
-
-    ; 使用正则表达式匹配Text
-    if (RegExMatch(Text, Pattern, &Match)) {
-        ; 提取匹配的数字
-        Result := []
-        for i, Value in Match {
-            if (i == 0)
-                continue ; 跳过第一个匹配项（整个匹配文本）
-            tempValue := IsFloat(Value) ? Format("{:.4g}", Value) : Integer(Value)
-            Result.Push(tempValue) 
-        }
-        return Result
-    }
-    return "" ; 如果没有匹配到，返回空字符串
-}
-
-ExtractOperatorsAndNumbers(expression) {
-    ; 初始化两个数组
-    operators := []
-    numbers := []
-
-    ; 定义支持的运算符
-    symbolMap := Map("+", 1, "-", 1, "*", 1, "/", 1, "^", 1)
-
-    ; 遍历表达式，逐个字符检查是否为运算符
-    for i, char in StrSplit(expression) {
-        if (symbolMap.Has(char)){
-            operators.Push(char)
-        }
-    }
-
-    while (RegExMatch(expression, "\d+\.?\d*", &match)) {
-        numbers.Push(match[0])
-        ; 从表达式中移除已匹配的部分
-        expression := RegExReplace(expression, match[0], "", , 1)
-    }
-
-    return {operators: operators, numbers: numbers }
-}
-
-GetUpdateVariableValue(baseValue, expression){
-    res := ExtractOperatorsAndNumbers(expression)
-    sum := baseValue
-    for index, value in res.operators{
-        if (value == "+")
-            sum += Number(res.numbers[index])
-        if (value == "-")
-            sum -= Number(res.numbers[index])
-        if (value == "*")
-            sum *= Number(res.numbers[index])
-        if (value == "/")
-            sum /= Number(res.numbers[index])
-        if (value == "^")
-            sum ^= Number(res.numbers[index])
-    }
-    return sum
-}
-
-
-CheckIfValid(compareData){
-    disCount := 0
-    for index, value in compareData.ComparEnableArr{
-        if (value == 0)
-            disCount++
-    }
-
-    if (disCount == 4)
-        return false
-    return true
-}
-
-GetCompareResult(compareData, baseVariableArr){
-    compareData.BaseVariableArr := baseVariableArr
-    UpdateVariable(compareData)
-    for index, value in compareData.ComparEnableArr{
-        if (value == 0)
-            continue
-
-        res := GetCompareResultIndex(compareData, index)
-        if (!res)
-            return false
-    }
-    return true
-}
-
-UpdateVariable(compareData){
-    compareData.VariableArr := []
-    for index, value in compareData.BaseVariableArr{
-        variable := GetUpdateVariableValue(value, compareData.VariableOperatorArr[index])
-        compareData.VariableArr.Push(variable)
-    }
-}
-
-GetCompareResultIndex(compareData, index){
-    leftValue := compareData.VariableArr[index]
-    rightValue := compareData.ComparValueArr[index]
-    rightValue := rightValue == "x" ? compareData.VariableArr[1] : rightValue
-    rightValue := rightValue == "y" ? compareData.VariableArr[2] : rightValue
-    rightValue := rightValue == "w" ? compareData.VariableArr[3] : rightValue
-    rightValue := rightValue == "h" ? compareData.VariableArr[4] : rightValue
-    if (compareData.ComparTypeArr[index] == 1){
-        return leftValue > rightValue
-    }
-    else if (compareData.ComparTypeArr[index] == 2){
-        return leftValue >= rightValue
-    }
-    else if (compareData.ComparTypeArr[index] == 3){
-        return leftValue == rightValue
-    }
-    else if (compareData.ComparTypeArr[index] == 4){
-        return leftValue <= rightValue
-    }
-    else if (compareData.ComparTypeArr[index] == 5){
-        return leftValue < rightValue
-    }
-
+IsClipboardText() {
+    ; 检查是否存在文本格式
+    if DllCall("IsClipboardFormatAvailable", "UInt", 1)  ; CF_TEXT = 1
+        return true
+    if DllCall("IsClipboardFormatAvailable", "UInt", 13) ; CF_UNICODETEXT = 13
+        return true
     return false
 }

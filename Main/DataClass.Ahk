@@ -189,7 +189,7 @@ class MoveData {
     }
 }
 
-class CompareData{
+class CompareData {
     __New() {
         this.SerialStr := ""
         this.TextFilter := ""
@@ -197,11 +197,22 @@ class CompareData{
         this.FalseCommandStr := ""
         this.BaseVariableArr := []
         this.VariableArr := []
+        this.ExtractType := 1       ;1屏幕  2 剪切板
         this.VariableOperatorArr := ["x", "y", "w", "h"]
         this.ComparEnableArr := [1, 0, 0, 0]
-        this.ComparTypeArr := [1, 1, 1, 1]
+        this.ComparTypeArr := [1, 1, 1, 1]  ;1大于 2大于等于 3等于 4小于等 5小于
         this.ComparValueArr := [0, 0, 0, 0]
     }
+}
 
-    
+class CoordData {
+    __New() {
+        this.SerialStr := ""
+        this.TextFilter := ""
+        this.BaseVariableArr := []
+        this.VariableArr := []
+        this.ExtractType := 1       ;1屏幕  2 剪切板
+        this.IsAbsolute:= 1         ;绝对位移
+        this.VariableOperatorArr := ["x", "y"]
+    }
 }

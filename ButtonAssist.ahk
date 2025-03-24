@@ -17,9 +17,11 @@
 #Include Main\HotkeyUtil.ahk
 #Include Main\UIUtil.ahk
 #Include Main\JsonUtil.ahk
+#Include Main\CompareUtil.ahk
 
 IniFile := "Settings.ini"
 CompareFile := "Compare.ini"
+CoordFile := "CoordFile.ini"
 IniSection := "UserSettings"
 
 global MySoftData := SoftData()
@@ -30,8 +32,6 @@ global MyTriggerStrGui := TriggerStrGui()
 global MyJoyMacro := JoyMacro()
 global MyMacroGui := MacroGui()
 global MyReplaceKeyGui := ReplaceKeyGui()
-global MyOcr := RapidOcr()
-global MyPToken := Gdip_Startup()
 
 LoadSetting()
 InitData()
@@ -39,3 +39,5 @@ InitUI()
 BindKey()
 OnExit(OnExitSoft)
 
+global MyOcr := RapidOcr()
+global MyPToken := Gdip_Startup()

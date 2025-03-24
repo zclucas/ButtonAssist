@@ -5,6 +5,7 @@
 #Include SearchGui.ahk
 #Include FileGui.ahk
 #Include CompareGui.ahk
+#Include CoordGui.ahk
 
 class MacroGui {
     __new() {
@@ -59,6 +60,10 @@ class MacroGui {
         this.CompareGui := CompareGui()
         this.CompareGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("比较", this.CompareGui)
+
+        this.CoordGui := CoordGui()
+        this.CoordGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("坐标", this.CoordGui)
     }
 
     GetSubGuiSymbol(subGui) {
@@ -146,6 +151,12 @@ class MacroGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CompareGui))
         this.CmdBtnConMap.Set("比较", btnCon)
+
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "坐标")
+        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CoordGui))
+        this.CmdBtnConMap.Set("坐标", btnCon)
 
         PosX := 20
         PosY += 140

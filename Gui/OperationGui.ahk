@@ -90,7 +90,7 @@ class OperationGui{
 
     OnBackspaceBtnClick() {
         expression := this.OperatorCon.Value
-        res := ExtractOperatorsAndNumbers(expression)
+        res := CompareExtractOperAndNum(expression)
         endIndex := res.operators.Length > 0 ? res.operators.Length - 1 : 0
         text := this.variableStr
         for index, value in res.operators{
@@ -117,7 +117,7 @@ class OperationGui{
     }
 
     UpdateExampleValue(){
-        sum := GetUpdateVariableValue(Number(this.BaseValueCon.Value), this.OperatorCon.Value)
+        sum := UpdateBaseValue(Number(this.BaseValueCon.Value), this.OperatorCon.Value)
         this.BaseResultCon.Value := sum
     }
 }

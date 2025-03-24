@@ -172,6 +172,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsInterval := StrCompare(paramArr[1], "间隔", false) == 0
         IsFile := StrCompare(paramArr[1], "文件", false) == 0
         IsCompare := StrCompare(paramArr[1], "比较", false) == 0
+        IsCoord := StrCompare(paramArr[1], "坐标", false) == 0
         if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
@@ -187,8 +188,12 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         else if (IsFile) {
             OnRunFile(tableItem, cmdArr[A_Index], index)
         }
-        else if (IsCompare){
+        else if (IsCompare) {
             OnCompare(tableItem, cmdArr[A_Index], index)
+        }
+        else if (IsCoord){
+            OnCoord(tableItem, cmdArr[A_Index], index)
+
         }
     }
 }
@@ -283,21 +288,20 @@ OnSearchOnce(tableItem, cmd, index, isFinally) {
     }
 }
 
-
 OnRunFile(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     filePath := SubStr(cmd, StrLen(paramArr[1]) + 2)
     Run(filePath)
 }
 
-OnCompare(tableItem, cmd, index){
+OnCompare(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     count := paramArr.Length >= 9 ? Integer(paramArr[9]) : 1
     interval := paramArr.Length >= 10 ? Integer(paramArr[10]) : 100
     saveStr := IniRead(CompareFile, IniSection, paramArr[8], "")
     compareData := JSON.parse(saveStr, , false)
     tableItem.ActionArr[index].Set(paramArr[8], [])
-    isVaild := CheckIfValid(compareData)
+    isVaild := CompareCheckIfValid(compareData)
     if (!isVaild)
         return
 
@@ -316,28 +320,39 @@ OnCompare(tableItem, cmd, index){
     }
 }
 
-OnCompareOnce(tableItem, cmd, index, compareData, isFinally){
+OnCompareOnce(tableItem, cmd, index, compareData, isFinally) {
     paramArr := StrSplit(cmd, "_")
     X1 := Integer(paramArr[3])
     Y1 := Integer(paramArr[4])
     X2 := Integer(paramArr[5])
     Y2 := Integer(paramArr[6])
     isAutoMove := Integer(paramArr[7])
-    TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2)
-    TextObjs := TextObjs == "" ? [] : TextObjs
+    if (compareData.ExtractType == 1) {
+        TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2)
+        TextObjs := TextObjs == "" ? [] : TextObjs
+    }
+    else {
+        if (!IsClipboardText())
+            return
+        TextObjs := []
+        obj := Object()
+        obj.Text := A_Clipboard
+        TextObjs.Push(obj)
+    }
+
     isOk := false
     macthTextObj := ""
 
-    for index, value in TextObjs{
+    for index, value in TextObjs {
         baseVariableArr := ExtractNumbers(value.Text, compareData.TextFilter)
         if (baseVariableArr == "")
             continue
         macthTextObj := value
-        isOk := GetCompareResult(compareData, baseVariableArr)
+        isOk := CompareGetResult(compareData, baseVariableArr)
         break
     }
 
-    if (isOk || isFinally){
+    if (isOk || isFinally) {
         ;清除后续的搜索和搜索记录
         if (tableItem.ActionArr[index].Has(paramArr[7])) {
             ActionArr := tableItem.ActionArr[index].Get(paramArr[7])
@@ -349,7 +364,7 @@ OnCompareOnce(tableItem, cmd, index, compareData, isFinally){
         }
     }
 
-    if (isOk && isAutoMove){
+    if (isOk && isAutoMove && compareData.ExtractType == 1) {
         posArr := GetMatchCoord(macthTextObj, X1, Y1)
         CoordMode("Mouse", "Screen")
         MouseMove(posArr[1], posArr[2])
@@ -360,6 +375,79 @@ OnCompareOnce(tableItem, cmd, index, compareData, isFinally){
 
     if (isFinally && !isOk && compareData.FalseCommandStr != "")
         OnTriggerMacroOnce(tableItem, compareData.FalseCommandStr, index)
+}
+
+OnCoord(tableItem, cmd, index){
+    paramArr := StrSplit(cmd, "_")
+    count := paramArr.Length >= 8 ? Integer(paramArr[8]) : 1
+    interval := paramArr.Length >= 9 ? Integer(paramArr[9]) : 100
+    saveStr := IniRead(CoordFile, IniSection, paramArr[7], "")
+    coordData := JSON.parse(saveStr, , false)
+    tableItem.ActionArr[index].Set(paramArr[7], [])
+
+
+    OnCoordOnce(tableItem, cmd, index, coordData, count == 1)
+    loop count {
+        if (A_Index == 1)
+            continue
+
+        if (!tableItem.ActionArr[index].Has(paramArr[7])) ;第一次比较成功就退出
+            break
+
+        tempAction := OnCoordOnce.Bind(tableItem, cmd, index, coordData, A_Index == count)
+        leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
+        tableItem.ActionArr[index][paramArr[7]].Push(tempAction)
+        SetTimer tempAction, -leftTime
+    }
+}
+
+OnCoordOnce(tableItem, cmd, index, coordData, isFinally){
+    paramArr := StrSplit(cmd, "_")
+    X1 := Integer(paramArr[3])
+    Y1 := Integer(paramArr[4])
+    X2 := Integer(paramArr[5])
+    Y2 := Integer(paramArr[6])
+
+    if (coordData.ExtractType == 1) {
+        TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2)
+        TextObjs := TextObjs == "" ? [] : TextObjs
+    }
+    else {
+        if (!IsClipboardText())
+            return
+        TextObjs := []
+        obj := Object()
+        obj.Text := A_Clipboard
+        TextObjs.Push(obj)
+    }
+
+    isOk := false
+    for index, value in TextObjs {
+        baseVariableArr := ExtractNumbers(value.Text, coordData.TextFilter)
+        if (baseVariableArr == "")
+            continue
+        CoordUpdateVariable(coordData, baseVariableArr)
+        isOk := true
+        break
+    }
+
+    if (isOk) {
+        posArr := coordData.VariableArr
+        CoordMode("Mouse", "Screen")
+        MouseMove(posArr[1], posArr[2])
+    }
+
+    if (isOk || isFinally) {
+        ;清除后续的搜索和搜索记录
+        if (tableItem.ActionArr[index].Has(paramArr[7])) {
+            ActionArr := tableItem.ActionArr[index].Get(paramArr[7])
+            loop ActionArr.Length {
+                action := ActionArr[A_Index]
+                SetTimer action, 0
+            }
+            tableItem.ActionArr[index].Delete(paramArr[7])
+        }
+    }
 }
 
 OnMouseMove(tableItem, cmd, index) {
@@ -506,6 +594,15 @@ OnTableDelete(tableItem, index) {
     if (result == "Cancel")
         return
 
+    deleteMacro := tableItem.LoopCountArr.Length >= index ? tableItem.MacroArr[index] : ""
+    RegExMatch(deleteMacro, "(Compare\d+)", &match)
+    match := match != "" ? match : [] 
+    for id, value in match{
+        if (value == "")
+            continue
+        IniDelete(CompareFile, IniSection, value)
+    }
+
     MySoftData.BtnAdd.Enabled := false
     tableItem.ModeArr.RemoveAt(index)
     tableItem.ForbidArr.RemoveAt(index)
@@ -623,7 +720,7 @@ OnToolRecordMacro(*) {
     StateSymbol := state ? "On" : "Off"
     loop 255 {
         key := Format("$*~vk{:X}", A_Index)
-        if (ToolCheckInfo.RecordSpecialKeyMap.Has(A_Index)){
+        if (ToolCheckInfo.RecordSpecialKeyMap.Has(A_Index)) {
             keyName := GetKeyName(Format("vk{:X}", A_Index))
             key := Format("$*~sc{:X}", GetKeySC(keyName))
         }
@@ -715,7 +812,7 @@ OnFinishRecordMacro() {
             IsMouse := keyName == "LButton" || keyName == "RButton" || keyName == "MButton"
             IsKeyboard := !IsMouse
 
-            if (IsMouse && ToolCheckInfo.RecordMouseValue){
+            if (IsMouse && ToolCheckInfo.RecordMouseValue) {
                 isRelative := ToolCheckInfo.RecordMouseRelativeValue
                 posX := isRelative ? value.StartPos[1] - ToolCheckInfo.RecordLastMousePos[1] : value.StartPos[1]
                 posY := isRelative ? value.StartPos[2] - ToolCheckInfo.RecordLastMousePos[2] : value.StartPos[2]
@@ -735,7 +832,7 @@ OnFinishRecordMacro() {
                 ToolCheckInfo.RecordLastMousePos[2] := value.EndPos[2]
             }
 
-            if (IsKeyboard && ToolCheckInfo.RecordKeyboardValue){
+            if (IsKeyboard && ToolCheckInfo.RecordKeyboardValue) {
                 macro .= "按键_" value.keyName "_" value.Span() ","
             }
         }
@@ -760,7 +857,7 @@ OnToolTextFilterSelectImage(*) {
     A_Clipboard := result
 }
 
-OnClearToolText(*){
+OnClearToolText(*) {
     ToolCheckInfo.ToolTextCtrl.Value := ""
 }
 
@@ -824,7 +921,7 @@ SendGameModeKey(Key, state, tableItem, index) {
 
     ; 检测是否为扩展键
     isExtendedKey := false
-    extendedArr := [0x25, 0x26, 0x27, 0x28]    ; 左、上、右、下箭头
+    extendedArr := [0x25, 0x26, 0x27, 0x28, 0X2D, 0X2E, 0X23, 0X24, 0X21, 0X22]    ; 左、上、右、下箭头
     for index, value in extendedArr {
         if (VK == value) {
             isExtendedKey := true
