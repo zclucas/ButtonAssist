@@ -28,6 +28,9 @@ class CoordGui {
         this.CommandStr := ""
         this.CommandStrCon := ""
 
+        this.IsRelativeCon := ""
+        this.SpeedCon := ""
+
         this.coordData := ""
         this.VariableFilterCon := ""
         this.ExtractTypeCon := ""
@@ -119,7 +122,7 @@ class CoordGui {
         EndSplitPosY := PosY + 30
 
         PosY := SplitPosY
-        PosX := 240
+        PosX := 200
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 100), "变量更新:")
 
         PosY += 30
@@ -143,10 +146,17 @@ class CoordGui {
         this.SearchCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 75, PosY - 5, 50))
         this.SearchCountCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX + 180, PosY, 120), "移动速度(0~100):")
+        this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 290, PosY - 5, 50), "90")
+        this.SpeedCon.OnEvent("Change", (*) => this.OnChangeEditValue())
+
         PosY += 30
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "每次间隔:")
         this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 75, PosY - 5, 50))
         this.SearchIntervalCon.OnEvent("Change", (*) => this.OnChangeEditValue())
+
+        this.IsRelativeCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX + 180, PosY - 5, 120), "相对位移")
+        this.IsRelativeCon.OnEvent("Click", (*) => this.OnChangeEditValue())
 
         PosY := EndSplitPosY
         PosX := 10
@@ -171,9 +181,9 @@ class CoordGui {
         this.StartPosY := searchCmdArr.Length >= 4 ? searchCmdArr[4] : 0
         this.EndPosX := searchCmdArr.Length >= 5 ? searchCmdArr[5] : A_ScreenWidth
         this.EndPosY := searchCmdArr.Length >= 6 ? searchCmdArr[6] : A_ScreenHeight
-        this.SerialStr := searchCmdArr.Length >= 8 ? searchCmdArr[7] : this.GetSerialStr()
-        this.SearchCount := searchCmdArr.Length >= 9 ? searchCmdArr[8] : 1
-        this.SearchInterval := searchCmdArr.Length >= 10 ? searchCmdArr[9] : 1000
+        this.SerialStr := searchCmdArr.Length >= 7 ? searchCmdArr[7] : this.GetSerialStr()
+        this.SearchCount := searchCmdArr.Length >= 8 ? searchCmdArr[8] : 1
+        this.SearchInterval := searchCmdArr.Length >= 9 ? searchCmdArr[9] : 1000
 
         this.VariableFilterCon.Value := VariableFilterText
         this.StartPosXCon.Value := this.StartPosX
@@ -185,13 +195,15 @@ class CoordGui {
 
         this.coordData := this.GetCoordData(this.SerialStr)
         this.ExtractTypeCon.Value := this.coordData.ExtractType
+        this.SpeedCon.Value := this.coordData.Speed
+        this.IsRelativeCon.Value := this.coordData.isRelative
         loop 2 {
             this.VariableOperatorConArr[A_Index].Value := this.coordData.VariableOperatorArr[A_Index]
         }
     }
 
     UpdateCommandStr() {
-        this.CommandStr := "比较"
+        this.CommandStr := "坐标"
         this.CommandStr .= "_" this.VariableFilterCon.Value
         this.CommandStr .= "_" this.StartPosXCon.Value
         this.CommandStr .= "_" this.StartPosYCon.Value
@@ -367,6 +379,8 @@ class CoordGui {
         data.SerialStr := this.SerialStr
         data.TextFilter := this.VariableFilterCon.Value
         data.ExtractType := this.ExtractTypeCon.Value
+        data.isRelative := this.IsRelativeCon.Value
+        data.Speed := Number(this.SpeedCon.Value)
 
         data.VariableOperatorArr := []
         loop 2 {

@@ -366,6 +366,7 @@ OnCompareOnce(tableItem, cmd, index, compareData, isFinally) {
 
     if (isOk && isAutoMove && compareData.ExtractType == 1) {
         posArr := GetMatchCoord(macthTextObj, X1, Y1)
+        SendMode("Event")
         CoordMode("Mouse", "Screen")
         MouseMove(posArr[1], posArr[2])
     }
@@ -433,8 +434,15 @@ OnCoordOnce(tableItem, cmd, index, coordData, isFinally){
 
     if (isOk) {
         posArr := coordData.VariableArr
+        SendMode("Event")
         CoordMode("Mouse", "Screen")
-        MouseMove(posArr[1], posArr[2])
+        Speed := 100 - coordData.Speed
+        if (coordData.isRelative){
+            MouseMove(posArr[1], posArr[2], Speed, "R")
+        }
+        else
+            MouseMove(posArr[1], posArr[2], Speed)
+        
     }
 
     if (isOk || isFinally) {
@@ -595,13 +603,7 @@ OnTableDelete(tableItem, index) {
         return
 
     deleteMacro := tableItem.LoopCountArr.Length >= index ? tableItem.MacroArr[index] : ""
-    RegExMatch(deleteMacro, "(Compare\d+)", &match)
-    match := match != "" ? match : [] 
-    for id, value in match{
-        if (value == "")
-            continue
-        IniDelete(CompareFile, IniSection, value)
-    }
+    ClearUselessSetting(deleteMacro)
 
     MySoftData.BtnAdd.Enabled := false
     tableItem.ModeArr.RemoveAt(index)

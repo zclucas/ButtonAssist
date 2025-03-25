@@ -212,7 +212,8 @@ class CoordData {
         this.BaseVariableArr := []
         this.VariableArr := []
         this.ExtractType := 1       ;1屏幕  2 剪切板
-        this.IsAbsolute:= 1         ;绝对位移
+        this.isRelative:= 0         ;相对位移
+        this.Speed := 90           ;移动速度
         this.VariableOperatorArr := ["x", "y"]
     }
 }

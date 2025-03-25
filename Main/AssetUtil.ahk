@@ -720,3 +720,23 @@ IsClipboardText() {
         return true
     return false
 }
+
+ClearUselessSetting(deleteMacro){
+    if (deleteMacro == "")
+        return
+    RegExMatch(deleteMacro, "(Compare\d+)", &match)
+    match := match != "" ? match : [] 
+    for id, value in match{
+        if (value == "")
+            continue
+        IniDelete(CompareFile, IniSection, value)
+    }
+
+    RegExMatch(deleteMacro, "(Coord\d+)", &match)
+    match := match != "" ? match : [] 
+    for id, value in match{
+        if (value == "")
+            continue
+        IniDelete(CoordFile, IniSection, value)
+    }
+}

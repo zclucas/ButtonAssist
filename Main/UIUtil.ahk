@@ -366,7 +366,7 @@ AddSettingUI(index) {
     )
 
     posY += 40
-    MyGui.Add("Text", Format("x{} y{} w130", posX + 20, posY), "按住时间浮动:")
+    MyGui.Add("Text", Format("x{} y{} w130", posX + 20, posY), "按住时间浮动:(%)")
     MySoftData.HoldFloatCtrl := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 140, posY - 4), MySoftData.HoldFloat
     )
 

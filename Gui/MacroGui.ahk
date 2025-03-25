@@ -118,43 +118,43 @@ class MacroGui {
         PosY += 20
         PosX := 20
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "间隔")
-        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.IntervalGui))
         this.CmdBtnConMap.Set("间隔", btnCon)
 
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "按键")
-        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.KeyGui))
         this.CmdBtnConMap.Set("按键", btnCon)
 
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "移动")
-        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.MoveMoveGui))
         this.CmdBtnConMap.Set("移动", btnCon)
 
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "搜索")
-        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.SearchGui))
         this.CmdBtnConMap.Set("搜索", btnCon)
 
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "文件")
-        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.FileGui))
         this.CmdBtnConMap.Set("文件", btnCon)
 
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "比较")
-        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CompareGui))
         this.CmdBtnConMap.Set("比较", btnCon)
 
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "坐标")
-        btnCon.SetFont((Format("S{} W{} Q{}", 15, 400, 5)))
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CoordGui))
         this.CmdBtnConMap.Set("坐标", btnCon)
 
@@ -296,6 +296,11 @@ class MacroGui {
             }
 
             isCompare := StrCompare(SubStr(value, 1, 2), "比较", false) == 0
+            if (isCompare) {
+                macroEditStr .= value
+            }
+
+            isCompare := StrCompare(SubStr(value, 1, 2), "坐标", false) == 0
             if (isCompare) {
                 macroEditStr .= value
             }
