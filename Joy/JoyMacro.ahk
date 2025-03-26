@@ -105,7 +105,7 @@ class JoyMacro {
             joyAxisName := SubStr(joyAxisSymbol, 1, 4)
             state := GetKeyState(A_Index joyAxisName)
             valueSection := this.GetAxisTriggerSection(joyAxisSymbol, false)
-            if (IsNumber(state) && state >= valueSection[0] && state <= valueSection[1]){
+            if (IsNumber(state) && state >= valueSection[1] && state <= valueSection[2]){
                 this.MacroMap.Get(joyAxisSymbol).Action()
                 return
             }
@@ -132,7 +132,7 @@ class JoyMacro {
         if (value == 0)
             return
         
-        if (value >= valueSection[0] && value <= valueSection[1]){
+        if (value >= valueSection[1] && value <= valueSection[2]){
             this.MacroMap.Get(joyAxisSymbol).Action()
         }
     }
