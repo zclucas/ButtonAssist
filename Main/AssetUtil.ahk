@@ -309,7 +309,7 @@ GetTableItemDefaultInfo(index) {
     }
     else if (symbol == "Replace") {
         savedTKArrStr := "l"
-        savedMacroArrStr := "left,a"
+        savedMacroArrStr := "Left,a"
         savedLooseStopArrStr := "0"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"

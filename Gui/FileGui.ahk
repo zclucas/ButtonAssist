@@ -12,6 +12,7 @@ class FileGui {
         this.Path := ""
         this.ProcessName := ""
         this.CommandStr := ""
+        this.RefreshAction := () => this.RefreshProcessName()
     }
 
     ShowGui(cmd) {
@@ -44,7 +45,7 @@ class FileGui {
 
         PosY += 20
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "E:确定鼠标下进程")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "F1:确定鼠标下进程")
 
         PosX := 10
         PosY += 20
@@ -73,13 +74,17 @@ class FileGui {
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 300, 20), "支持文件后缀:exe、txt、bat、mp4等等")
 
-        PosY += 30
+        PosY += 40
+        PosX := 10
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 300, 20), "进程、绝对路径两者只要填写其中一项就行")
+
+        PosY += 25
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
         
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 320, 280))
+        MyGui.Show(Format("w{} h{}", 320, 320))
     }
 
     Init(cmd){
@@ -102,17 +107,16 @@ class FileGui {
     }
 
     ToggleFunc(state) {
-        RefreshAction := () => this.RefreshProcessName()
         MacroAction := (*) => this.TriggerMacro()
         if (state) {
-            SetTimer RefreshAction, 100
+            SetTimer this.RefreshAction, 100
             Hotkey("!l", MacroAction, "On")
-            Hotkey("E", (*) => this.SureProcessName(), "On")
+            Hotkey("F1", (*) => this.SureProcessName(), "On")
         }
         else {
-            SetTimer RefreshAction, 0
+            SetTimer this.RefreshAction, 0
             Hotkey("!l", MacroAction, "Off")
-            Hotkey("E", (*) => this.SureProcessName(), "Off")
+            Hotkey("F1", (*) => this.SureProcessName(), "Off")
         }
     }
 
@@ -143,6 +147,7 @@ class FileGui {
         if (!valid)
             return
 
+        this.ToggleFunc(false)
         this.UpdateCommandStr()
         action := this.SureBtnAction
         action(this.CommandStr)

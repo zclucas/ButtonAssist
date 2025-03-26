@@ -50,7 +50,7 @@ class KeyGui {
         PosX += 90
         this.GameModeCon := MyGui.Add("CheckBox", Format("x{} y{} w{} h{}", PosX, PosY - 5, 60, 20), "游戏")
         this.GameModeCon.OnEvent("Click", (*) => this.OnChangeEditValue())
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX + 80, PosY - 3, 300), "(测试功能：用于测试指令的执行效果，功能选项不会对最终结果产生影响)")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX + 80, PosY - 3, 500), "(测试功能：用于测试指令的执行效果，功能选项不会对最终结果产生影响)")
         
 
         PosY += 30

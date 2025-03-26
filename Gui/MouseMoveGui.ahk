@@ -4,6 +4,7 @@ class MouseMoveGui{
     __new(){
         this.Gui := ""
         this.SureBtnAction := ""
+        this.PosAction := () => this.RefreshMousePos()
         this.PosX := 0
         this.PosY := 0
         this.Speed := 0
@@ -55,7 +56,7 @@ class MouseMoveGui{
 
         PosY += 20
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "E:选取当前坐标")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "F1:选取当前坐标")
 
         PosX := 10
         PosY += 20
@@ -182,15 +183,14 @@ class MouseMoveGui{
     }
 
     ToggleFunc(state){
-        PosAction := () => this.RefreshMousePos()
         MacroAction := (*) => this.TriggerMacro()
         if (state){
-            SetTimer PosAction, 100
+            SetTimer this.PosAction, 100
             Hotkey("!l", MacroAction, "On")
             Hotkey("F1", (*)=> this.SureCoord(), "On")
         }
         else{
-            SetTimer PosAction, 0
+            SetTimer this.PosAction, 0
             Hotkey("!l", MacroAction, "Off")
             Hotkey("F1", (*)=> this.SureCoord(), "Off")
         }

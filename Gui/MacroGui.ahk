@@ -12,6 +12,7 @@ class MacroGui {
         this.Gui := ""
         this.ShowSaveBtn := false
         this.SureFocusCon := ""
+        this.checkAction := () => this.CheckIfChangeLineNum()
 
         this.SureBtnAction := ""
         this.SaveBtnAction := ""
@@ -207,12 +208,11 @@ class MacroGui {
     }
 
     ToggleFunc(state) {
-        checkAction := () => this.CheckIfChangeLineNum()
         if (state) {
-            SetTimer checkAction, 100
+            SetTimer this.checkAction, 100
         }
         else {
-            SetTimer checkAction, 0
+            SetTimer this.checkAction, 0
         }
     }
 

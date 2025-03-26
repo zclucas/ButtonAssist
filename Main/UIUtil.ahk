@@ -105,6 +105,22 @@ AddOperBtnUI() {
     MySoftData.BtnAdd.OnEvent("Click", OnAddSetting)
     posY += 40
 
+    posY := 250
+    con := MyGui.Add("Picture", Format("x{} y{} w{} h{} center", 15, posY, 100, 100), "Images\advertise.png")
+    MySoftData.FixedCons.Push(con)
+
+    posY := 350
+    con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY, 100), "游戏项目")
+    MySoftData.FixedCons.Push(con)
+    con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 20, 100), "为爱发电")
+    MySoftData.FixedCons.Push(con)
+    con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 40, 100), "诚邀美术、程序")
+    MySoftData.FixedCons.Push(con)
+    con := MyGui.Add("Link", Format("x{} y{} w{} center", 25, posY + 60, 100), '<a href="https://www.bilibili.com/video/BV1jPwTe3EtB">项目演示链接</a>')
+    MySoftData.FixedCons.Push(con)    
+    con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 80, 100), "QQ:2660681757")
+    MySoftData.FixedCons.Push(con)
+
     posY := 470
     MySoftData.BtnSave := MyGui.Add("Button", Format("x{} y{} w{} h{} center", 15, posY, 100, 30), "应用并保存")
     MySoftData.BtnSave.OnEvent("Click", OnSaveSetting)
@@ -414,6 +430,9 @@ AddSettingUI(index) {
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "按键宏的触发键与字串宏的触发键可以混用。")
     posY += 20
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "所有操作只有点击%应用并保存%按钮后才会生效。")
+
+    posY += 20
+    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "软件使用交流QQ群:837661891")
 
     posY += 20
 

@@ -5,6 +5,7 @@ class SearchGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
+        this.PosAction := () => this.RefreshMouseInfo()
 
         this.MousePosCon := ""
         this.MouseColorCon := ""
@@ -346,16 +347,15 @@ class SearchGui {
     }
 
     ToggleFunc(state) {
-        PosAction := () => this.RefreshMouseInfo()
         MacroAction := (*) => this.TriggerMacro()
         if (state) {
-            SetTimer PosAction, 100
+            SetTimer this.PosAction, 100
             Hotkey("!l", MacroAction, "On")
             Hotkey("F1", (*)=> this.EnableSelectAerea(), "On")
             Hotkey("F2", (*) => this.SureColor(), "On")
         }
         else {
-            SetTimer PosAction, 0
+            SetTimer this.PosAction, 0
             Hotkey("!l", MacroAction, "Off")
             Hotkey("F1", (*)=> this.EnableSelectAerea(), "Off")
             Hotkey("F2", (*) => this.SureColor(), "Off")
