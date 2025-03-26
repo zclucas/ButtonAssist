@@ -691,12 +691,14 @@ GetScreenTextObjArr(X1, Y1, X2, Y2) {
 
 CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text){
     result := GetScreenTextObjArr(X1, Y1, X2, Y2)
+    if (result == "" || !result)
+        return false
     for index, value in result {
         isContain := CheckContainText(value.text, text)
         if (isContain) {
             pos := GetMatchCoord(value, X1, Y1)
-            OutputVarX := pos[0]
-            OutputVarY := pos[1]
+            OutputVarX := pos[1]
+            OutputVarY := pos[2]
             break
         }
     }
