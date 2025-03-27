@@ -205,11 +205,11 @@ class ScrollBar {
     }
 
     HiWord(wParam) {
-        Return (wParam >> 16)
+        return (wParam >> 16)
     }
 
     LoWord(wParam) {
-        Return (wParam & 0xFFFF)
+        return (wParam & 0xFFFF)
     }
 
     ; The ScrollMsg function is called when the window receives a WM_HSCROLL or WM_VSCROLL message.
@@ -286,7 +286,7 @@ class ScrollBar {
         ; Get a list of all controls in guiObj
         ControlList := WinGetControls(this.guiObj.Hwnd)
         ; Loops through all controls and finds the farthest sides
-        For i in ControlList {
+        for i in ControlList {
 
             if (SubStr(i, 1, 1) == "#")
                 continue
@@ -334,7 +334,8 @@ class ScrollBar {
     ; the page size, and the position of the scroll box (thumb). The function also redraws the scroll bar, if requested.
     ; The return value is the current position of the scroll box.
     SetScrollInfo(typeOfScrollBar, redraw) {
-        return DllCall("SetScrollInfo", "ptr", this.guiObj.Hwnd, "int", typeOfScrollBar, "ptr", this.ScrollInf.Ptr, "int", redraw)
+        return DllCall("SetScrollInfo", "ptr", this.guiObj.Hwnd, "int", typeOfScrollBar, "ptr", this.ScrollInf.Ptr,
+            "int", redraw)
     }
 
     ; The GetScrollRange function retrieves the current minimum and maximum scroll box (thumb) positions for the specified scroll bar.
@@ -342,7 +343,8 @@ class ScrollBar {
     GetScrollRange(typeOfScrollBar, &minPos, &maxPos) {
         minnn := Buffer(4)
         maxxx := Buffer(4)
-        r := DllCall("GetScrollRange", "ptr", this.guiObj.Hwnd, "int", typeOfScrollBar, "ptr", minnn.Ptr, "ptr", maxxx.Ptr)
+        r := DllCall("GetScrollRange", "ptr", this.guiObj.Hwnd, "int", typeOfScrollBar, "ptr", minnn.Ptr, "ptr", maxxx.Ptr
+        )
         minPos := NumGet(minnn, "int"), maxPos := NumGet(maxxx, "int")
         return r
     }
@@ -350,6 +352,15 @@ class ScrollBar {
     ; The ScrollWindow function scrolls the contents of the specified window's client area.
     ; If the function succeeds, the return value is nonzero.
     ScrollWindow(xamount, yamount) {
-        return DllCall("ScrollWindow", "ptr", this.guiObj.Hwnd, "int", xamount, "int", yamount, "ptr", 0, "ptr", 0, "int")
+        return DllCall("ScrollWindow", "ptr", this.guiObj.Hwnd, "int", xamount, "int", yamount, "ptr", 0, "ptr", 0,
+            "int")
+    }
+
+    ResetVerticalValue() {
+        oldPos := this.ScrollInf.nPos
+        this.ScrollInf.nPos := 0
+        this.SetScrollInfo(this.SB_VERT, true)
+        this.ScrollWindow(0, oldPos)
+        this.UpdateFixedControlsPosition()
     }
 }

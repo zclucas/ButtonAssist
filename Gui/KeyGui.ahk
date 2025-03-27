@@ -435,8 +435,8 @@ class KeyGui {
             con.OnEvent("Click", (*) => this.OnCheckKey("LCtrl"))
 
             PosX += 75
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "Win")
-            con.OnEvent("Click", (*) => this.OnCheckKey("Win"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "LWin")
+            con.OnEvent("Click", (*) => this.OnCheckKey("LWin"))
 
             PosX += 50
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "LAlt")

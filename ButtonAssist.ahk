@@ -41,3 +41,4 @@ OnExit(OnExitSoft)
 
 global MyOcr := RapidOcr()
 global MyPToken := Gdip_Startup()
+

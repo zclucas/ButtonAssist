@@ -116,8 +116,9 @@ AddOperBtnUI() {
     MySoftData.FixedCons.Push(con)
     con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 40, 100), "诚邀美术、程序")
     MySoftData.FixedCons.Push(con)
-    con := MyGui.Add("Link", Format("x{} y{} w{} center", 25, posY + 60, 100), '<a href="https://www.bilibili.com/video/BV1jPwTe3EtB">项目演示链接</a>')
-    MySoftData.FixedCons.Push(con)    
+    con := MyGui.Add("Link", Format("x{} y{} w{} center", 25, posY + 60, 100),
+    '<a href="https://www.bilibili.com/video/BV1jPwTe3EtB">项目演示链接</a>')
+    MySoftData.FixedCons.Push(con)
     con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 80, 100), "QQ:2660681757")
     MySoftData.FixedCons.Push(con)
 
@@ -258,6 +259,9 @@ LoadSavedSettingUI(index) {
 }
 
 OnAddSetting(*) {
+    global MySoftData
+    MySoftData.SB.ResetVerticalValue()
+
     MyGui := MySoftData.MyGui
     TableIndex := MySoftData.TabCtrl.Value
     tableItem := MySoftData.TableInfo[TableIndex]
@@ -292,7 +296,7 @@ OnAddSetting(*) {
     newLooseStopControl := MyGui.Add("Checkbox", Format("x{} y{} w30", TabPosX + 600, tableItem.underPosY + 5), "")
     newLooseStopControl.value := 0
     newLooseStopControl.Enabled := isNormal
-    
+
     newModeControl := MyGui.Add("Checkbox", Format("x{} y{} w30", TabPosX + 635, tableItem.underPosY + 5), "")
     newModeControl.value := 0
     newForbidControl := MyGui.Add("Checkbox", Format("x{} y{} w30", TabPosX + 670, tableItem.underPosY + 5), "")
@@ -335,14 +339,15 @@ OnAddSetting(*) {
     MySoftData.TabCtrl.UseTab()
     height := GetTabHeight()
     MySoftData.TabCtrl.Move(MySoftData.TabPosX, MySoftData.TabPosY, 920, height)
-
+    MySoftData.SB.UpdateScrollBars()
+    for index, value in MySoftData.GroupFixedCons {
+        value.redraw()
+    }
     SaveWinPos()
     RefreshGui()
 }
 
-
 AddSettingUI(index) {
-
     MyGui := MySoftData.MyGui
     posY := MySoftData.TabPosY
     posX := MySoftData.TabPosX
@@ -374,11 +379,13 @@ AddSettingUI(index) {
 
     posY += 30
     con := MyGui.Add("Text", Format("x{} y{} w130", posX + 20, posY), "指令录制快捷方式:")
-    ToolCheckInfo.ToolRecordMacroHotKeyCtrl := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 140, posY - 4), ToolCheckInfo.ToolRecordMacroHotKey
+    ToolCheckInfo.ToolRecordMacroHotKeyCtrl := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 140, posY - 4),
+    ToolCheckInfo.ToolRecordMacroHotKey
     )
 
     con := MyGui.Add("Text", Format("x{} y{} w130", posX + 290, posY), "文本提取快捷方式:")
-    ToolCheckInfo.ToolTextFilterHotKeyCtrl := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 410, posY - 4), ToolCheckInfo.ToolTextFilterHotKey
+    ToolCheckInfo.ToolTextFilterHotKeyCtrl := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 410, posY - 4),
+    ToolCheckInfo.ToolTextFilterHotKey
     )
 
     posY += 40
@@ -501,7 +508,8 @@ AddToolUI(index) {
 
     isHotKey := CheckIsHotKey(ToolCheckInfo.ToolRecordMacroHotKey)
     CtrlType := isHotKey ? "Hotkey" : "Text"
-    con := MyGui.Add(CtrlType, Format("x{} y{} w{} h{}", posX + 210, posY - 5, 100, 20), ToolCheckInfo.ToolRecordMacroHotKey)
+    con := MyGui.Add(CtrlType, Format("x{} y{} w{} h{}", posX + 210, posY - 5, 100, 20), ToolCheckInfo.ToolRecordMacroHotKey
+    )
     con.Enabled := false
 
     posY += 25
@@ -529,7 +537,8 @@ AddToolUI(index) {
 
     isHotKey := CheckIsHotKey(ToolCheckInfo.ToolTextFilterHotKey)
     CtrlType := isHotKey ? "Hotkey" : "Text"
-    con := MyGui.Add(CtrlType, Format("x{} y{} w{} h{}", posX + 280, posY - 5, 100, 20), ToolCheckInfo.ToolTextFilterHotKey)
+    con := MyGui.Add(CtrlType, Format("x{} y{} w{} h{}", posX + 280, posY - 5, 100, 20), ToolCheckInfo.ToolTextFilterHotKey
+    )
     con.Enabled := false
 
     posY += 40

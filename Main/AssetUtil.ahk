@@ -506,7 +506,8 @@ GetTabHeight() {
     }
 
     height := maxY - MySoftData.TabPosY
-    return Max(height, 500)
+    return height
+    ; return Max(height, 500)
 }
 
 UpdateUnderPosY(tableIndex, value) {
