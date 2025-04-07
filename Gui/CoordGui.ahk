@@ -175,25 +175,23 @@ class CoordGui {
 
     Init(cmd) {
         searchCmdArr := cmd != "" ? StrSplit(cmd, "_") : []
-        VariableFilterText := searchCmdArr.Length >= 1 ? searchCmdArr[2] : "坐标（x，y）"
+        this.SerialStr := searchCmdArr.Length >= 2 ? searchCmdArr[2] : this.GetSerialStr()
+        this.coordData := this.GetCoordData(this.SerialStr)
 
-        this.StartPosX := searchCmdArr.Length >= 3 ? searchCmdArr[3] : 0
-        this.StartPosY := searchCmdArr.Length >= 4 ? searchCmdArr[4] : 0
-        this.EndPosX := searchCmdArr.Length >= 5 ? searchCmdArr[5] : A_ScreenWidth
-        this.EndPosY := searchCmdArr.Length >= 6 ? searchCmdArr[6] : A_ScreenHeight
-        this.SerialStr := searchCmdArr.Length >= 7 ? searchCmdArr[7] : this.GetSerialStr()
-        this.SearchCount := searchCmdArr.Length >= 8 ? searchCmdArr[8] : 1
-        this.SearchInterval := searchCmdArr.Length >= 9 ? searchCmdArr[9] : 1000
+        this.StartPosX := this.coordData.StartPosX
+        this.StartPosY := this.coordData.StartPosY
+        this.EndPosX := this.coordData.EndPosX
+        this.EndPosY := this.coordData.EndPosY
+        this.SearchCount :=  this.coordData.SearchCount
+        this.SearchInterval := this.coordData.SearchInterval
 
-        this.VariableFilterCon.Value := VariableFilterText
+        this.VariableFilterCon.Value := this.coordData.TextFilter
         this.StartPosXCon.Value := this.StartPosX
         this.StartPosYCon.Value := this.StartPosY
         this.EndPosXCon.Value := this.EndPosX
         this.EndPosYCon.Value := this.EndPosY
         this.SearchCountCon.Value := this.SearchCount
         this.SearchIntervalCon.Value := this.SearchInterval
-
-        this.coordData := this.GetCoordData(this.SerialStr)
         this.ExtractTypeCon.Value := this.coordData.ExtractType
         this.SpeedCon.Value := this.coordData.Speed
         this.IsRelativeCon.Value := this.coordData.isRelative
@@ -204,16 +202,7 @@ class CoordGui {
 
     UpdateCommandStr() {
         this.CommandStr := "坐标"
-        this.CommandStr .= "_" this.VariableFilterCon.Value
-        this.CommandStr .= "_" this.StartPosXCon.Value
-        this.CommandStr .= "_" this.StartPosYCon.Value
-        this.CommandStr .= "_" this.EndPosXCon.Value
-        this.CommandStr .= "_" this.EndPosYCon.Value
         this.CommandStr .= "_" this.SerialStr
-        if (Number(this.SearchCountCon.Value) > 1) {
-            this.CommandStr .= "_" this.SearchCountCon.Value
-            this.CommandStr .= "_" this.SearchIntervalCon.Value
-        }
     }
 
     CheckIfValid() {
@@ -376,6 +365,12 @@ class CoordGui {
 
     SaveCoordData() {
         data := this.coordData
+        data.StartPosX := this.StartPosXCon.Value
+        data.StartPosY := this.StartPosYCon.Value
+        data.EndPosX := this.EndPosXCon.Value
+        data.EndPosY := this.EndPosYCon.Value
+        data.SearchCount := this.SearchCountCon.Value
+        data.SearchInterval := this.SearchIntervalCon.Value
         data.SerialStr := this.SerialStr
         data.TextFilter := this.VariableFilterCon.Value
         data.ExtractType := this.ExtractTypeCon.Value

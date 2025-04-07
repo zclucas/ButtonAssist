@@ -380,11 +380,11 @@ OnCompareOnce(tableItem, cmd, index, compareData, isFinally) {
 
 OnCoord(tableItem, cmd, index){
     paramArr := StrSplit(cmd, "_")
-    count := paramArr.Length >= 8 ? Integer(paramArr[8]) : 1
-    interval := paramArr.Length >= 9 ? Integer(paramArr[9]) : 100
-    saveStr := IniRead(CoordFile, IniSection, paramArr[7], "")
+    saveStr := IniRead(CoordFile, IniSection, paramArr[2], "")
     coordData := JSON.parse(saveStr, , false)
-    tableItem.ActionArr[index].Set(paramArr[7], [])
+    count := coordData.SearchCount
+    interval := coordData.SearchInterval
+    tableItem.ActionArr[index].Set(paramArr[2], [])
 
 
     OnCoordOnce(tableItem, cmd, index, coordData, count == 1)
@@ -392,22 +392,21 @@ OnCoord(tableItem, cmd, index){
         if (A_Index == 1)
             continue
 
-        if (!tableItem.ActionArr[index].Has(paramArr[7])) ;第一次比较成功就退出
+        if (!tableItem.ActionArr[index].Has(paramArr[2])) ;第一次比较成功就退出
             break
 
         tempAction := OnCoordOnce.Bind(tableItem, cmd, index, coordData, A_Index == count)
         leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
-        tableItem.ActionArr[index][paramArr[7]].Push(tempAction)
+        tableItem.ActionArr[index][paramArr[2]].Push(tempAction)
         SetTimer tempAction, -leftTime
     }
 }
 
 OnCoordOnce(tableItem, cmd, index, coordData, isFinally){
-    paramArr := StrSplit(cmd, "_")
-    X1 := Integer(paramArr[3])
-    Y1 := Integer(paramArr[4])
-    X2 := Integer(paramArr[5])
-    Y2 := Integer(paramArr[6])
+    X1 := Integer(coordData.StartPosX)
+    Y1 := Integer(coordData.StartPosY)
+    X2 := Integer(coordData.EndPosX)
+    Y2 := Integer(coordData.EndPosY)
 
     if (coordData.ExtractType == 1) {
         TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2)
@@ -447,13 +446,13 @@ OnCoordOnce(tableItem, cmd, index, coordData, isFinally){
 
     if (isOk || isFinally) {
         ;清除后续的搜索和搜索记录
-        if (tableItem.ActionArr[index].Has(paramArr[7])) {
-            ActionArr := tableItem.ActionArr[index].Get(paramArr[7])
+        if (tableItem.ActionArr[index].Has(coordData.SerialStr)) {
+            ActionArr := tableItem.ActionArr[index].Get(coordData.SerialStr)
             loop ActionArr.Length {
                 action := ActionArr[A_Index]
                 SetTimer action, 0
             }
-            tableItem.ActionArr[index].Delete(paramArr[7])
+            tableItem.ActionArr[index].Delete(coordData.SerialStr)
         }
     }
 }
@@ -978,12 +977,21 @@ SendNormalKeyClick(Key, holdTime, tableItem, index) {
 }
 
 SendNormalKey(Key, state, tableItem, index) {
+    if (MySoftData.SpecialNumKeyMap.Has(Key)){
+        if(state == 0)
+            return
+        keySymbol := "{Blind}{" Key " 1}"
+        Send(keySymbol)
+        return
+    }
+
     if (state == 1) {
         keySymbol := "{Blind}{" Key " down}"
     }
     else {
         keySymbol := "{Blind}{" Key " up}"
     }
+
 
     Send(keySymbol)
     if (state == 1) {

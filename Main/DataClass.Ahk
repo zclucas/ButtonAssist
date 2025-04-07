@@ -130,7 +130,7 @@ class SoftData {
         this.EditHotKeyCtrl := ""
         this.EditHotStrCtrl := ""
 
-        this.TabNameArr := ["按键宏", "子串宏", "按键替换", "工具", "设置"]
+        this.TabNameArr := ["按键宏", "字串宏", "按键替换", "工具", "设置"]
         this.TabSymbolArr := ["Normal", "String", "Replace", "Tool", "Setting"]
         this.TabCtrl := {}
         this.TableInfo := []
@@ -146,6 +146,7 @@ class SoftData {
         this.ContinueKeyMap := Map("LButton", "LButton", "~LButton", "LButton", "RButton", "RButton", "~RButton",
             "RButton", "MButton", "MButton", "~MButton", "MButton", "XButton1", "XButton1", "~XButton1", "XButton1",
             "XButton2", "XButton2", "~XButton2", "XButton2")
+        this.SpecialNumKeyMap := Map("WheelDown", 0, "WheelUp", 0)
         this.ContinueSecondIntervale := 200
         this.ContinueIntervale := 50
 
@@ -207,6 +208,13 @@ class CompareData {
 
 class CoordData {
     __New() {
+        this.StartPosX := 0
+        this.StartPosY := 0
+        this.EndPosX := A_ScreenWidth
+        this.EndPosY := A_ScreenHeight
+        this.SearchCount := 1
+        this.SearchInterval := 1000
+
         this.SerialStr := ""
         this.TextFilter := ""
         this.BaseVariableArr := []

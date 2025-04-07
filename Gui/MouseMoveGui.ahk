@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0
 
-class MouseMoveGui{
-    __new(){
+class MouseMoveGui {
+    __new() {
         this.Gui := ""
         this.SureBtnAction := ""
         this.PosAction := () => this.RefreshMousePos()
@@ -25,11 +25,11 @@ class MouseMoveGui{
         this.MousePosCon := ""
     }
 
-    ShowGui(cmd){
+    ShowGui(cmd) {
         if (this.Gui != "") {
             this.Gui.Show()
         }
-        else{
+        else {
             this.AddGui()
         }
 
@@ -39,7 +39,7 @@ class MouseMoveGui{
     }
 
     AddGui() {
-        MyGui := Gui(,"鼠标移动指令编辑")
+        MyGui := Gui(, "鼠标移动指令编辑")
         this.Gui := MyGui
         MyGui.SetFont(, "Consolas")
 
@@ -51,7 +51,7 @@ class MouseMoveGui{
         con.Enabled := false
 
         PosX += 90
-        btnCon :=MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
         btnCon.OnEvent("Click", (*) => this.TriggerMacro())
 
         PosY += 20
@@ -60,38 +60,38 @@ class MouseMoveGui{
 
         PosX := 10
         PosY += 20
-        this.MousePosCon :=MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 380, 20), "当前鼠标位置:0,0")
+        this.MousePosCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 380, 20), "当前鼠标位置:0,0")
 
         PosY += 30
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "坐标位置X:")
         PosX += 80
-        this.PosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY-5, 50))
+        this.PosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
         this.PosXCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosX += 120
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "坐标位置Y:")
         PosX += 80
-        this.PosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY-5, 50))
+        this.PosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
         this.PosYCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosX := 10
         PosY += 30
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "移动次数:")
         PosX += 80
-        this.CountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY-5, 50), 1)
+        this.CountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), 1)
         this.CountCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosX += 120
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "每次间隔:")
         PosX += 80
-        this.PerIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY-5, 50), 1000)
+        this.PerIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), 1000)
         this.PerIntervalCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "移动速度(0~100):")
         PosX += 120
-        this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY-5, 50), "90")
+        this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "90")
         this.SpeedCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosX += 80
@@ -115,7 +115,7 @@ class MouseMoveGui{
         MyGui.Show(Format("w{} h{}", 400, 255))
     }
 
-    Init(cmd){
+    Init(cmd) {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
         this.PosX := cmdArr.Length >= 2 ? cmdArr[2] : 0
         this.PosY := cmdArr.Length >= 3 ? cmdArr[3] : 0
@@ -134,28 +134,28 @@ class MouseMoveGui{
         this.OffsetCon.Value := this.IsOffset
     }
 
-    CheckIfValid(){
-        if (!IsNumber(this.PosXCon.Value)){
+    CheckIfValid() {
+        if (!IsNumber(this.PosXCon.Value)) {
             MsgBox("坐标X请输入数字")
             return false
         }
 
-        if (!IsNumber(this.PosYCon.Value)){
+        if (!IsNumber(this.PosYCon.Value)) {
             MsgBox("坐标Y请输入数字")
             return false
         }
-        
-        if (!IsInteger(this.SpeedCon.Value)){
+
+        if (!IsInteger(this.SpeedCon.Value)) {
             MsgBox("移动速度请输入整数")
             return false
         }
 
-        if (!IsNumber(this.CountCon.Value) || Number(this.CountCon.Value) <= 0){
+        if (!IsNumber(this.CountCon.Value) || Number(this.CountCon.Value) <= 0) {
             MsgBox("移动次数请输入大于0的数字")
             return false
         }
 
-        if (IsInteger(this.SpeedCon.Value) && ((Integer(this.SpeedCon.Value) < 0 || Integer(this.SpeedCon.Value) > 100))){
+        if (IsInteger(this.SpeedCon.Value) && ((Integer(this.SpeedCon.Value) < 0 || Integer(this.SpeedCon.Value) > 100))) {
             MsgBox("移动速度请输入0~100的整数")
             return false
         }
@@ -163,51 +163,56 @@ class MouseMoveGui{
         return true
     }
 
-    UpdateCommandStr(){
+    UpdateCommandStr() {
+        showCount := Number(this.CountCon.Value) > 1
+        showState := this.RelativeCon.Value == 1 || this.OffsetCon.Value == 1 || showCount
+        showSpeed := this.SpeedCon.Value != 100 || showState
+
         this.CommandStr := "移动"
         this.CommandStr .= "_" this.PosXCon.Value
         this.CommandStr .= "_" this.PosYCon.Value
-        if (this.SpeedCon.Value != 100){
+
+        if (showSpeed) {
             this.CommandStr .= "_" this.SpeedCon.Value
         }
-        
-        if (this.RelativeCon.Value == 1 || this.OffsetCon.Value == 1){
+
+        if (showState) {
             this.CommandStr .= "_" this.RelativeCon.Value
             this.CommandStr .= "_" this.OffsetCon.Value
         }
-        
-        if (Number(this.CountCon.Value) > 1){
+
+        if (showCount) {
             this.CommandStr .= "_" this.CountCon.Value
             this.CommandStr .= "_" this.PerIntervalCon.Value
         }
     }
 
-    ToggleFunc(state){
+    ToggleFunc(state) {
         MacroAction := (*) => this.TriggerMacro()
-        if (state){
+        if (state) {
             SetTimer this.PosAction, 100
             Hotkey("!l", MacroAction, "On")
-            Hotkey("F1", (*)=> this.SureCoord(), "On")
+            Hotkey("F1", (*) => this.SureCoord(), "On")
         }
-        else{
+        else {
             SetTimer this.PosAction, 0
             Hotkey("!l", MacroAction, "Off")
-            Hotkey("F1", (*)=> this.SureCoord(), "Off")
+            Hotkey("F1", (*) => this.SureCoord(), "Off")
         }
     }
 
-    RefreshMousePos(){
+    RefreshMousePos() {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY
         this.MousePosCon.Value := "当前鼠标位置:" mouseX "," mouseY
     }
 
-    Refresh(){
+    Refresh() {
         this.UpdateCommandStr()
         this.CommandStrCon.Value := "当前指令:" this.CommandStr
     }
 
-    OnChangeEditValue(){
+    OnChangeEditValue() {
         this.PosX := this.PosXCon.Value
         this.PosY := this.PosYCon.Value
         this.Speed := this.SpeedCon.Value
@@ -218,7 +223,7 @@ class MouseMoveGui{
         this.Refresh()
     }
 
-    OnClickSureBtn(){
+    OnClickSureBtn() {
         valid := this.CheckIfValid()
         if (!valid)
             return
@@ -230,7 +235,7 @@ class MouseMoveGui{
         this.Gui.Hide()
     }
 
-    TriggerMacro(){
+    TriggerMacro() {
         valid := this.CheckIfValid()
         if (!valid)
             return
@@ -245,7 +250,7 @@ class MouseMoveGui{
         OnMouseMove(tableItem, this.CommandStr, 1)
     }
 
-    SureCoord(){
+    SureCoord() {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY
         this.PosXCon.Value := mouseX

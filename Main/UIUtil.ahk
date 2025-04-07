@@ -2,7 +2,7 @@
 InitUI() {
     global MySoftData
     MyGui := Gui(, "Super的按键辅助器")
-    MyGui.Opt("ToolWindow")
+    ; MyGui.Opt("ToolWindow")
     MyGui.SetFont(, "Consolas")
     MySoftData.MyGui := MyGui
 
