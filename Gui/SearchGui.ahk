@@ -77,8 +77,8 @@ class SearchGui {
 
         PosX := 10
         PosY := 10
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 60, 20), "快捷方式:")
-        PosX += 60
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "快捷方式:")
+        PosX += 80
         con := MyGui.Add("Hotkey", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 70, 20), "!l")
         con.Enabled := false
 
@@ -103,8 +103,8 @@ class SearchGui {
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 100), "搜索范围:")
 
         PosX += 210
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 60), "搜索类型:")
-        PosX += 60
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索类型:")
+        PosX += 80
         this.SearchTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 80, 100), ["图片", "颜色",
             "文本"])
         this.SearchTypeCon.OnEvent("Change", (*) => this.OnChangeSearchType())
@@ -193,9 +193,9 @@ class SearchGui {
 
         PosY := EndSplitPosY
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "找到后的指令:（可选）")
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 170, 20), "找到后的指令:（可选）")
 
-        PosX += 160
+        PosX += 180
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 5, 80, 20), "编辑指令")
         btnCon.OnEvent("Click", (*) => this.OnEditFoundMacroBtnClick())
 
@@ -206,9 +206,9 @@ class SearchGui {
 
         PosY += 60
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "未找到后的指令:（可选）")
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 170, 20), "未找到后的指令:（可选）")
 
-        PosX += 160
+        PosX += 180
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 5, 80, 20), "编辑指令")
         btnCon.OnEvent("Click", (*) => this.OnEditUnFoundMacroBtnClick())
 

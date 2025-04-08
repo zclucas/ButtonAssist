@@ -34,8 +34,8 @@ class FileGui {
 
         PosX := 10
         PosY := 10
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 60, 20), "快捷方式:")
-        PosX += 60
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "快捷方式:")
+        PosX += 80
         con := MyGui.Add("Hotkey", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 70, 20), "!l")
         con.Enabled := false
 
@@ -53,7 +53,7 @@ class FileGui {
 
         PosX := 10
         PosY += 40
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 300, 20), "通过进程运行软件(系统软件，等通过安装的软件)")
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 350, 20), "通过进程运行软件(系统软件，等通过安装的软件)")
 
         PosY += 20
         this.ProcessTextCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY, 300))
@@ -84,7 +84,7 @@ class FileGui {
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
         
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 320, 320))
+        MyGui.Show(Format("w{} h{}", 360, 320))
     }
 
     Init(cmd){

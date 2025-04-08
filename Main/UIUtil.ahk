@@ -340,9 +340,7 @@ OnAddSetting(*) {
     height := GetTabHeight()
     MySoftData.TabCtrl.Move(MySoftData.TabPosX, MySoftData.TabPosY, 920, height)
     MySoftData.SB.UpdateScrollBars()
-    for index, value in MySoftData.GroupFixedCons {
-        value.redraw()
-    }
+
     SaveWinPos()
     RefreshGui()
 }
@@ -428,9 +426,9 @@ AddSettingUI(index) {
     posY += 20
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "备注：对按键宏的备注信息(这是网友在Gitee上提的第一个需求,加上以示尊重)")
     posY += 20
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "快捷键：通过%工具%下的编辑快捷键获取配置")
+    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "快捷键：通过%设置%下的编辑快捷键获取配置")
     posY += 20
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "快捷方式：通过%工具%下的 编辑快捷 或者 编辑字串 获取配置")
+    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "快捷方式：通过%设置%下的 编辑快捷 或者 编辑字串 获取配置")
     posY += 30
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "其他说明：")
     posY += 20
@@ -529,10 +527,10 @@ AddToolUI(index) {
     posY += 40
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "图片文本提取：")
 
-    con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 120, posY - 5, 60, 25), "选择图片")
+    con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 120, posY - 5, 80, 25), "选择图片")
     con.OnEvent("Click", OnToolTextFilterSelectImage)
 
-    con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 200, posY - 5, 60, 25), "截图")
+    con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 220, posY - 5, 60, 25), "截图")
     con.OnEvent("Click", OnToolTextFilterScreenShot)
 
     isHotKey := CheckIsHotKey(ToolCheckInfo.ToolTextFilterHotKey)
@@ -544,7 +542,7 @@ AddToolUI(index) {
     posY += 40
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "录制的指令或提取的文本内容：")
 
-    con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 200, posY - 5, 60, 25), "清空内容")
+    con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 220, posY - 5, 80, 25), "清空内容")
     con.OnEvent("Click", OnClearToolText)
 
     posY += 25

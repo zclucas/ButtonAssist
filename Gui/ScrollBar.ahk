@@ -159,9 +159,11 @@ class ScrollBar {
         ; Gets left-most, right-most, top-most, bottom-most control positions
         this.GetEdges(&Left, &Right, &Top, &Bottom)
 
+        standardDPI := 96
+        scaleValue := A_ScreenDPI /standardDPI
         ; Calculate the scroll width and height
-        ScrollWidth := (Right - Left) * 1.25
-        ScrollHeight := (Bottom - Top) * 1.25
+        ScrollWidth := (Right - Left) * scaleValue
+        ScrollHeight := (Bottom - Top) * scaleValue
 
         ; Set the mask to update the range and page size of the scroll bar
         this.ScrollInf.fMask := this.SIF_RANGE | this.SIF_PAGE

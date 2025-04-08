@@ -38,8 +38,8 @@ class KeyGui {
 
         PosX := 20
         PosY := 10
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 60, 20), "快捷方式:")
-        PosX += 60
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "快捷方式:")
+        PosX += 80
         con := MyGui.Add("Hotkey", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 70, 20), "!l")
         con.Enabled := false
 
