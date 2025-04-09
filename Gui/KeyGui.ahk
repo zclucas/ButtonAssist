@@ -393,9 +393,9 @@ class KeyGui {
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "m")
             con.OnEvent("Click", (*) => this.OnCheckKey("m"))
 
-            PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), ",")
-            con.OnEvent("Click", (*) => this.OnCheckKey(","))
+            PosX += 40
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "逗号")
+            con.OnEvent("Click", (*) => this.OnCheckKey("逗号"))
 
             PosX += 50
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), ".")

@@ -191,7 +191,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         else if (IsCompare) {
             OnCompare(tableItem, cmdArr[A_Index], index)
         }
-        else if (IsCoord){
+        else if (IsCoord) {
             OnCoord(tableItem, cmdArr[A_Index], index)
 
         }
@@ -378,14 +378,13 @@ OnCompareOnce(tableItem, cmd, index, compareData, isFinally) {
         OnTriggerMacroOnce(tableItem, compareData.FalseCommandStr, index)
 }
 
-OnCoord(tableItem, cmd, index){
+OnCoord(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     saveStr := IniRead(CoordFile, IniSection, paramArr[2], "")
     coordData := JSON.parse(saveStr, , false)
     count := coordData.SearchCount
     interval := coordData.SearchInterval
     tableItem.ActionArr[index].Set(paramArr[2], [])
-
 
     OnCoordOnce(tableItem, cmd, index, coordData, count == 1)
     loop count {
@@ -402,7 +401,7 @@ OnCoord(tableItem, cmd, index){
     }
 }
 
-OnCoordOnce(tableItem, cmd, index, coordData, isFinally){
+OnCoordOnce(tableItem, cmd, index, coordData, isFinally) {
     X1 := Integer(coordData.StartPosX)
     Y1 := Integer(coordData.StartPosY)
     X2 := Integer(coordData.EndPosX)
@@ -436,12 +435,12 @@ OnCoordOnce(tableItem, cmd, index, coordData, isFinally){
         SendMode("Event")
         CoordMode("Mouse", "Screen")
         Speed := 100 - coordData.Speed
-        if (coordData.isRelative){
+        if (coordData.isRelative) {
             MouseMove(posArr[1], posArr[2], Speed, "R")
         }
         else
             MouseMove(posArr[1], posArr[2], Speed)
-        
+
     }
 
     if (isOk || isFinally) {
@@ -914,6 +913,8 @@ SendGameModeKeyClick(key, holdTime, tableItem, index) {
 }
 
 SendGameModeKey(Key, state, tableItem, index) {
+    if (Key == "逗号")
+        Key := ","
     VK := GetKeyVK(Key)
     SC := GetKeySC(Key)
 
@@ -977,8 +978,10 @@ SendNormalKeyClick(Key, holdTime, tableItem, index) {
 }
 
 SendNormalKey(Key, state, tableItem, index) {
-    if (MySoftData.SpecialNumKeyMap.Has(Key)){
-        if(state == 0)
+    if (Key == "逗号")
+        Key := ","
+    if (MySoftData.SpecialNumKeyMap.Has(Key)) {
+        if (state == 0)
             return
         keySymbol := "{Blind}{" Key " 1}"
         Send(keySymbol)
@@ -991,7 +994,6 @@ SendNormalKey(Key, state, tableItem, index) {
     else {
         keySymbol := "{Blind}{" Key " up}"
     }
-
 
     Send(keySymbol)
     if (state == 1) {
