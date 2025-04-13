@@ -296,37 +296,37 @@ OnRunFile(tableItem, cmd, index) {
 
 OnCompare(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    count := paramArr.Length >= 9 ? Integer(paramArr[9]) : 1
-    interval := paramArr.Length >= 10 ? Integer(paramArr[10]) : 100
-    saveStr := IniRead(CompareFile, IniSection, paramArr[8], "")
+    saveStr := IniRead(CompareFile, IniSection, paramArr[2], "")
     compareData := JSON.parse(saveStr, , false)
-    tableItem.ActionArr[index].Set(paramArr[8], [])
+
+    count := compareData.SearchCount
+    interval := compareData.SearchInterval
+    tableItem.ActionArr[index].Set(compareData.TextFilter, [])
     isVaild := CompareCheckIfValid(compareData)
     if (!isVaild)
         return
 
-    OnCompareOnce(tableItem, cmd, index, compareData, count == 1)
+    OnCompareOnce(tableItem, index, compareData, count == 1)
     loop count {
         if (A_Index == 1)
             continue
 
-        if (!tableItem.ActionArr[index].Has(paramArr[8])) ;第一次比较成功就退出
+        if (!tableItem.ActionArr[index].Has(compareData.TextFilter)) ;第一次比较成功就退出
             break
 
-        tempAction := OnCompareOnce.Bind(tableItem, cmd, index, compareData, A_Index == count)
+        tempAction := OnCompareOnce.Bind(tableItem, index, compareData, A_Index == count)
         leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
-        tableItem.ActionArr[index][paramArr[8]].Push(tempAction)
+        tableItem.ActionArr[index][compareData.TextFilter].Push(tempAction)
         SetTimer tempAction, -leftTime
     }
 }
 
-OnCompareOnce(tableItem, cmd, index, compareData, isFinally) {
-    paramArr := StrSplit(cmd, "_")
-    X1 := Integer(paramArr[3])
-    Y1 := Integer(paramArr[4])
-    X2 := Integer(paramArr[5])
-    Y2 := Integer(paramArr[6])
-    isAutoMove := Integer(paramArr[7])
+OnCompareOnce(tableItem, index, compareData, isFinally) {
+    X1 := compareData.StartPosX
+    Y1 := compareData.StartPosY
+    X2 := compareData.EndPosX
+    Y2 := compareData.EndPosY
+    isAutoMove := Integer(compareData.AutoMove)
     if (compareData.ExtractType == 1) {
         TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2)
         TextObjs := TextObjs == "" ? [] : TextObjs
@@ -354,13 +354,13 @@ OnCompareOnce(tableItem, cmd, index, compareData, isFinally) {
 
     if (isOk || isFinally) {
         ;清除后续的搜索和搜索记录
-        if (tableItem.ActionArr[index].Has(paramArr[7])) {
-            ActionArr := tableItem.ActionArr[index].Get(paramArr[7])
+        if (tableItem.ActionArr[index].Has(compareData.TextFilter)) {
+            ActionArr := tableItem.ActionArr[index].Get(compareData.TextFilter)
             loop ActionArr.Length {
                 action := ActionArr[A_Index]
                 SetTimer action, 0
             }
-            tableItem.ActionArr[index].Delete(paramArr[7])
+            tableItem.ActionArr[index].Delete(compareData.TextFilter)
         }
     }
 
@@ -386,7 +386,7 @@ OnCoord(tableItem, cmd, index) {
     interval := coordData.SearchInterval
     tableItem.ActionArr[index].Set(paramArr[2], [])
 
-    OnCoordOnce(tableItem, cmd, index, coordData, count == 1)
+    OnCoordOnce(tableItem, index, coordData, count == 1)
     loop count {
         if (A_Index == 1)
             continue
@@ -394,14 +394,14 @@ OnCoord(tableItem, cmd, index) {
         if (!tableItem.ActionArr[index].Has(paramArr[2])) ;第一次比较成功就退出
             break
 
-        tempAction := OnCoordOnce.Bind(tableItem, cmd, index, coordData, A_Index == count)
+        tempAction := OnCoordOnce.Bind(tableItem, index, coordData, A_Index == count)
         leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
         tableItem.ActionArr[index][paramArr[2]].Push(tempAction)
         SetTimer tempAction, -leftTime
     }
 }
 
-OnCoordOnce(tableItem, cmd, index, coordData, isFinally) {
+OnCoordOnce(tableItem, index, coordData, isFinally) {
     X1 := Integer(coordData.StartPosX)
     Y1 := Integer(coordData.StartPosY)
     X2 := Integer(coordData.EndPosX)

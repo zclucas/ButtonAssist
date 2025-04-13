@@ -263,40 +263,29 @@ class CompareGui {
         PosY += 55
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 350), "当前指令:（若未提取到变量，则不执行任何指令）")
         PosY += 25
-        this.CommandStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 550, 60))
+        this.CommandStrCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 550))
 
-        PosY += 70
+        PosY += 30
         PosX += 250
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 600, 650))
+        MyGui.Show(Format("w{} h{}", 600, 600))
     }
 
     Init(cmd) {
         searchCmdArr := cmd != "" ? StrSplit(cmd, "_") : []
-        VariableFilterText := searchCmdArr.Length >= 1 ? searchCmdArr[2] : "坐标（x，y）"
-
-        this.StartPosX := searchCmdArr.Length >= 3 ? searchCmdArr[3] : 0
-        this.StartPosY := searchCmdArr.Length >= 4 ? searchCmdArr[4] : 0
-        this.EndPosX := searchCmdArr.Length >= 5 ? searchCmdArr[5] : A_ScreenWidth
-        this.EndPosY := searchCmdArr.Length >= 6 ? searchCmdArr[6] : A_ScreenHeight
-        this.AutoMove := searchCmdArr.Length >= 7 ? searchCmdArr[7] : 1
-        this.SerialStr := searchCmdArr.Length >= 8 ? searchCmdArr[8] : this.GetSerialStr()
-        this.SearchCount := searchCmdArr.Length >= 9 ? searchCmdArr[9] : 1
-        this.SearchInterval := searchCmdArr.Length >= 10 ? searchCmdArr[10] : 1000
-
-        this.VariableFilterCon.Value := VariableFilterText
-        this.StartPosXCon.Value := this.StartPosX
-        this.StartPosYCon.Value := this.StartPosY
-        this.EndPosXCon.Value := this.EndPosX
-        this.EndPosYCon.Value := this.EndPosY
-        this.SearchCountCon.Value := this.SearchCount
-        this.SearchIntervalCon.Value := this.SearchInterval
-        this.AutoMoveCon.Value := this.AutoMove
-
+        this.SerialStr := searchCmdArr.Length >= 2 ? searchCmdArr[2] : this.GetSerialStr()
         this.compareData := this.GetCompareData(this.SerialStr)
+        this.VariableFilterCon.Value := this.compareData.TextFilter
+        this.StartPosXCon.Value := this.compareData.StartPosX
+        this.StartPosYCon.Value := this.compareData.StartPosY
+        this.EndPosXCon.Value := this.compareData.EndPosX
+        this.EndPosYCon.Value := this.compareData.EndPosY
+        this.SearchCountCon.Value := this.compareData.SearchCount
+        this.SearchIntervalCon.Value := this.compareData.SearchInterval
+        this.AutoMoveCon.Value := this.compareData.AutoMove
         this.TrueCommandStrCon.Value := this.compareData.TrueCommandStr
         this.FalseCommandStrCon.Value := this.compareData.FalseCommandStr
         this.ExtractTypeCon.Value := this.compareData.ExtractType
@@ -310,17 +299,7 @@ class CompareGui {
 
     UpdateCommandStr() {
         this.CommandStr := "比较"
-        this.CommandStr .= "_" this.VariableFilterCon.Value
-        this.CommandStr .= "_" this.StartPosXCon.Value
-        this.CommandStr .= "_" this.StartPosYCon.Value
-        this.CommandStr .= "_" this.EndPosXCon.Value
-        this.CommandStr .= "_" this.EndPosYCon.Value
-        this.CommandStr .= "_" this.AutoMove
         this.CommandStr .= "_" this.SerialStr
-        if (Number(this.SearchCountCon.Value) > 1) {
-            this.CommandStr .= "_" this.SearchCountCon.Value
-            this.CommandStr .= "_" this.SearchIntervalCon.Value
-        }
     }
 
     CheckIfValid() {
@@ -522,6 +501,14 @@ class CompareGui {
     SaveCompareData() {
         data := this.compareData
         data.SerialStr := this.SerialStr
+        data.StartPosX := this.StartPosXCon.Value
+        data.StartPosY := this.StartPosYCon.Value
+        data.EndPosX := this.EndPosXCon.Value
+        data.EndPosY := this.EndPosYCon.Value
+        data.SearchCount := this.SearchCountCon.Value
+        data.SearchInterval := this.SearchIntervalCon.Value
+        data.AutoMove := this.AutoMoveCon.Value
+        
         data.TextFilter := this.VariableFilterCon.Value
         data.TrueCommandStr := this.TrueCommandStrCon.Value
         data.FalseCommandStr := this.FalseCommandStrCon.Value

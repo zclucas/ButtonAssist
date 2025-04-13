@@ -192,6 +192,14 @@ class MoveData {
 
 class CompareData {
     __New() {
+        this.StartPosX := 0
+        this.StartPosY := 0
+        this.EndPosX := A_ScreenWidth
+        this.EndPosY := A_ScreenHeight
+        this.SearchCount := 1
+        this.SearchInterval := 1000
+        this.AutoMove := 1
+
         this.SerialStr := ""
         this.TextFilter := ""
         this.TrueCommandStr := ""
