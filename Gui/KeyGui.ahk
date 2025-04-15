@@ -808,20 +808,20 @@ class KeyGui {
 
         PosY += 60
         PosX := 20
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 85), "按键时间:")
-        PosX += 60
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 90), "按键时间:")
+        PosX += 70
         this.HoldTimeCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), this.HoldTime)
         this.HoldTimeCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosX += 100
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 60), "循环次数:")
-        PosX += 60
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 90), "循环次数:")
+        PosX += 70
         this.KeyCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), this.KeyCount)
         this.KeyCountCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosX += 100
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 60), "循环间隔:")
-        PosX += 60
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 90), "循环间隔:")
+        PosX += 70
         this.PerIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), this.PerInterval)
         this.PerIntervalCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 

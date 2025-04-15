@@ -6,54 +6,27 @@ class SearchGui {
         this.Gui := ""
         this.SureBtnAction := ""
         this.PosAction := () => this.RefreshMouseInfo()
-
+        this.SearchData := ""
         this.MousePosCon := ""
         this.MouseColorCon := ""
         this.MouseColorTipCon := ""
-
-        this.StartPosX := 0
-        this.StartPosY := 0
-        this.EndPosX := 0
-        this.EndPosY := 0
-
         this.StartPosXCon := ""
         this.StartPosYCon := ""
         this.EndPosXCon := ""
         this.EndPosYCon := ""
-
-        this.CommandStr := ""
         this.CommandStrCon := ""
-
-        this.ImagePath := ""
         this.ImageCon := ""
         this.ImageBtn := ""
         this.ScreenshotBtn := ""
-
-        this.HexColor := ""
         this.HexColorCon := ""
         this.HexColorTipCon := ""
-
-        this.Text := ""
         this.TextCon := ""
-
-        this.SearchCount := 1
         this.SearchCountCon := ""
-
-        this.SearchInterval := 0
         this.SearchIntervalCon := ""
-
-        this.FoundCommandStr := ""
         this.FoundCommandStrCon := ""
-
-        this.UnFoundCommandStr := ""
         this.UnFoundCommandStrCon := ""
-
-        this.SearchType := 1
         this.SearchTypeCon := ""
-
-        this.AutoMove := 1
         this.AutoMoveCon := ""
-
         this.MacroGui := ""
     }
 
@@ -66,7 +39,6 @@ class SearchGui {
         }
 
         this.Init(cmd)
-        this.Refresh()
         this.ToggleFunc(true)
     }
 
@@ -88,12 +60,12 @@ class SearchGui {
 
         PosY += 20
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "F1:选取搜索范围  F2:选取当前颜色")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "F1:左键选取搜索范围  F2:选取当前颜色")
 
         PosX := 10
         PosY += 20
         this.MousePosCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "当前鼠标坐标:0,0")
-        PosX += 180
+        PosX += 300
         this.MouseColorCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 140, 20), "当前鼠标颜色:FFFFFF")
         PosX += 140
         this.MouseColorTipCon := MyGui.Add("Text", Format("x{} y{} w{} Background{}", PosX, PosY, 20, "FF0000"), "")
@@ -102,7 +74,7 @@ class SearchGui {
         PosY += 30
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 100), "搜索范围:")
 
-        PosX += 210
+        PosX := 300
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索类型:")
         PosX += 80
         this.SearchTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 80, 100), ["图片", "颜色",
@@ -116,52 +88,45 @@ class SearchGui {
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "起始坐标X:")
         PosX += 75
         this.StartPosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        this.StartPosXCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "起始坐标Y:")
         PosX += 75
         this.StartPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        this.StartPosYCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "终止坐标X:")
         PosX += 75
         this.EndPosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        this.EndPosXCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "终止坐标Y:")
         PosX += 75
         this.EndPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        this.EndPosYCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "搜索次数:")
         PosX += 75
         this.SearchCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        this.SearchCountCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "每次间隔:")
         PosX += 75
         this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        this.SearchIntervalCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosY += 30
         PosX := 10
         con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 180), "找到后鼠标移动至目标点")
-        con.OnEvent("Click", (*) => this.OnChangeAutoMove())
         this.AutoMoveCon := con
         EndSplitPosY := PosY + 35
 
         PosY := SplitPosY
-        PosX := 220
+        PosX := 300
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "选择图片")
         btnCon.OnEvent("Click", (*) => this.OnClickSetPicBtn())
         btnCon.Focus()
@@ -173,23 +138,21 @@ class SearchGui {
         this.ScreenshotBtn := btnCon
 
         PosY += 30
-        PosX := 220
+        PosX := 300
         this.ImageCon := MyGui.Add("Picture", Format("x{} y{} w{} h{}", PosX, PosY, 100, 100), "")
 
         PosY += 110
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 40), "颜色:")
         PosX += 40
         this.HexColorCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 80), "FFFFFF")
-        this.HexColorCon.OnEvent("Change", (*) => this.OnChangeEditValue())
         PosX += 90
         this.HexColorTipCon := MyGui.Add("Text", Format("x{} y{} w{} Background{}", PosX, PosY, 20, "FF0000"), "")
 
         PosY += 35
-        PosX := 220
+        PosX := 300
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 40), "文本:")
         PosX += 40
         this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 150, 20), "检索文本")
-        this.TextCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosY := EndSplitPosY
         PosX := 10
@@ -201,11 +164,10 @@ class SearchGui {
 
         PosY += 20
         PosX := 10
-        this.FoundCommandStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 430, 50), "")
-        this.FoundCommandStrCon.OnEvent("Change", (*) => this.OnChangeEditValue())
+        this.FoundCommandStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 280, 80), "")
 
-        PosY += 60
-        PosX := 10
+        PosY := EndSplitPosY
+        PosX := 310
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 170, 20), "未找到后的指令:（可选）")
 
         PosX += 180
@@ -213,101 +175,61 @@ class SearchGui {
         btnCon.OnEvent("Click", (*) => this.OnEditUnFoundMacroBtnClick())
 
         PosY += 20
-        PosX := 10
-        this.UnFoundCommandStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 430, 50), "")
-        this.UnFoundCommandStrCon.OnEvent("Change", (*) => this.OnChangeEditValue())
+        PosX := 310
+        this.UnFoundCommandStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 280, 80), "")
 
         PosX := 10
-        PosY += 55
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 350), "当前指令:")
-        PosY += 25
-        this.CommandStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 430, 60),
-        "ImageSearch_XXX.png_0,0,100,100")
+        PosY += 90
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 70), "当前指令:")
 
-        PosY += 70
-        PosX += 175
+        PosX += 70
+        this.CommandStrCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 300), "搜索_Search006655")
+
+        PosY += 20
+        PosX := 250
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 450, 610))
+        MyGui.Show(Format("w{} h{}", 600, 510))
     }
 
     Init(cmd) {
-        cmdArr := cmd != "" ? SplitCommand(cmd) : []
-        searchCmdArr := cmdArr.Length >= 1 ? StrSplit(cmdArr[1], "_") : []
-        isSearchColor := searchCmdArr.Length >= 1 ? searchCmdArr[1] == "搜索颜色" : false
-        isSearchImage := searchCmdArr.Length >= 1 ? searchCmdArr[1] == "搜索图片" : false
-        isSearchText := searchCmdArr.Length >= 1 ? searchCmdArr[1] == "搜索文本" : false
-
-        this.StartPosX := searchCmdArr.Length >= 3 ? searchCmdArr[3] : 0
-        this.StartPosY := searchCmdArr.Length >= 4 ? searchCmdArr[4] : 0
-        this.EndPosX := searchCmdArr.Length >= 5 ? searchCmdArr[5] : A_ScreenWidth
-        this.EndPosY := searchCmdArr.Length >= 6 ? searchCmdArr[6] : A_ScreenHeight
-        this.AutoMove := searchCmdArr.Length >= 7 ? searchCmdArr[7] : 1
-        this.SearchCount := searchCmdArr.Length >= 8 ? searchCmdArr[8] : 1
-        this.SearchInterval := searchCmdArr.Length >= 9 ? searchCmdArr[9] : 1000
-        this.FoundCommandStr := cmdArr.Length >= 2 ? cmdArr[2] : ""
-        this.UnFoundCommandStr := cmdArr.Length >= 3 ? cmdArr[3] : ""
-
-        if (isSearchImage) {
-            this.SearchType := 1
-            this.ImagePath := searchCmdArr[2]
-            this.ImageCon.Value := ""
-        }
-        if (isSearchColor) {
-            this.SearchType := 2
-            this.HexColor := searchCmdArr[2]
-        }
-        if (isSearchText) {
-            this.SearchType := 3
-            this.Text := searchCmdArr[2]
-        }
-
-        this.ImageCon.Value := this.ImagePath
-        this.StartPosXCon.Value := this.StartPosX
-        this.StartPosYCon.Value := this.StartPosY
-        this.EndPosXCon.Value := this.EndPosX
-        this.EndPosYCon.Value := this.EndPosY
-        this.SearchCountCon.Value := this.SearchCount
-        this.SearchIntervalCon.Value := this.SearchInterval
-        this.HexColorCon.Value := this.HexColor
-        this.TextCon.Value := this.Text
-        this.SearchTypeCon.Value := this.SearchType
-        this.AutoMoveCon.Value := this.AutoMove
-        this.FoundCommandStrCon.Value := this.FoundCommandStr
-        this.UnFoundCommandStrCon.Value := this.UnFoundCommandStr
+        cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
+        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.SearchData := this.GetCompareData(this.SerialStr)
+        this.SearchTypeCon.Value := this.SearchData.SearchType
+        this.ImageCon.Value := this.SearchData.SearchImagePath
+        this.HexColorCon.Value := this.SearchData.SearchColor
+        this.TextCon.Value := this.SearchData.SearchText
+        this.StartPosXCon.Value := this.SearchData.StartPosX
+        this.StartPosYCon.Value := this.SearchData.StartPosY
+        this.EndPosXCon.Value := this.SearchData.EndPosX
+        this.EndPosYCon.Value := this.SearchData.EndPosY
+        this.SearchCountCon.Value := this.SearchData.SearchCount
+        this.SearchIntervalCon.Value := this.SearchData.SearchInterval
+        this.AutoMoveCon.Value := this.SearchData.AutoMove
+        this.FoundCommandStrCon.Value := this.SearchData.TrueCommandStr
+        this.UnFoundCommandStrCon.Value := this.SearchData.FalseCommandStr
+        this.CommandStrCon.Value := "搜索_" this.SearchData.SerialStr
+        this.OnChangeSearchType()
     }
 
-    UpdateCommandStr() {
-        if (this.SearchType == 1) {
-            this.CommandStr := "搜索图片"
-            this.CommandStr .= "_" this.ImagePath
-        }
-        else if (this.SearchType == 2) {
-            this.CommandStr := "搜索颜色"
-            this.CommandStr .= "_" this.HexColorCon.Value
-        }
-        else if (this.SearchType == 3) {
-            this.CommandStr := "搜索文本"
-            this.CommandStr .= "_" this.TextCon.Value
+    GetSerialStr() {
+        CurrentDateTime := FormatTime(, "HHmmss")
+        return "Search" CurrentDateTime
+    }
+
+    GetCompareData(SerialStr) {
+        saveStr := IniRead(SearchFile, IniSection, SerialStr, "")
+        if (!saveStr) {
+            data := SearchData()
+            data.SerialStr := SerialStr
+            return data
         }
 
-        this.CommandStr .= "_" this.StartPosXCon.Value
-        this.CommandStr .= "_" this.StartPosYCon.Value
-        this.CommandStr .= "_" this.EndPosXCon.Value
-        this.CommandStr .= "_" this.EndPosYCon.Value
-        this.CommandStr .= "_" this.AutoMove
-        this.CommandStr .= "_" this.SearchCountCon.Value
-        this.CommandStr .= "_" this.SearchIntervalCon.Value
-
-        if (this.FoundCommandStr != "") {
-            this.CommandStr .= "(" this.FoundCommandStr ")"
-        }
-
-        if (this.UnFoundCommandStr != "") {
-            this.CommandStr .= "(" this.UnFoundCommandStr ")"
-        }
+        data := JSON.parse(saveStr, , false)
+        return data
     }
 
     CheckIfValid() {
@@ -328,17 +250,17 @@ class SearchGui {
             return false
         }
 
-        if (RegExMatch(this.ImagePath, "_")) {
+        if (RegExMatch(this.SearchData.SearchImagePath, "_")) {
             MsgBox("图片路径中不能包含下划线")
             return false
         }
 
-        if (this.SearchType == 1 && this.ImagePath == "") {
+        if (this.SearchTypeCon.Value == 1 && this.SearchData.SearchImagePath == "") {
             MsgBox("请选择图片")
             return false
         }
 
-        if (this.SearchType == 2 && !RegExMatch(this.HexColorCon.Value, "^([0-9A-Fa-f]{6})$")) {
+        if (this.SearchTypeCon.Value == 2 && !RegExMatch(this.HexColorCon.Value, "^([0-9A-Fa-f]{6})$")) {
             MsgBox("请输入正确的颜色值")
             return false
         }
@@ -375,43 +297,21 @@ class SearchGui {
         this.MouseColorTipCon.Redraw()
     }
 
-    Refresh() {
-        this.UpdateCommandStr()
-        this.RefreshSearchEnabled()
-        this.CommandStrCon.Value := this.CommandStr
-    }
-
-    OnChangeEditValue() {
-        this.StartPosX := this.StartPosXCon.Value
-        this.StartPosY := this.StartPosYCon.Value
-        this.EndPosX := this.EndPosXCon.Value
-        this.EndPosY := this.EndPosYCon.Value
-        this.SearchCount := this.SearchCountCon.Value
-        this.SearchInterval := this.SearchIntervalCon.Value
-        this.FoundCommandStr := this.FoundCommandStrCon.Value
-        this.UnFoundCommandStr := this.UnFoundCommandStrCon.Value
-        this.HexColor := this.HexColorCon.Value
-        this.Text := this.TextCon.Value
-        this.Refresh()
-    }
-
     OnClickSureBtn() {
         valid := this.CheckIfValid()
         if (!valid)
             return
-
-        this.UpdateCommandStr()
+        this.SaveSearchData()
         action := this.SureBtnAction
-        action(this.CommandStr)
+        action(this.CommandStrCon.Value)
         this.ToggleFunc(false)
         this.Gui.Hide()
     }
 
     OnClickSetPicBtn() {
         path := FileSelect(, , "选择图片")
-        this.ImagePath := path
         this.ImageCon.Value := path
-        this.Refresh()
+        this.SearchData.SearchImagePath := path
     }
 
     OnScreenShotBtnClick() {
@@ -424,13 +324,11 @@ class SearchGui {
     OnSureFoundMacroBtnClick(CommandStr) {
         this.FoundCommandStr := CommandStr
         this.FoundCommandStrCon.Value := CommandStr
-        this.Refresh()
     }
 
     OnSureUnFoundMacroBtnClick(CommandStr) {
         this.UnFoundCommandStr := CommandStr
         this.UnFoundCommandStrCon.Value := CommandStr
-        this.Refresh()
     }
 
     OnEditFoundMacroBtnClick() {
@@ -440,7 +338,7 @@ class SearchGui {
         }
 
         this.MacroGui.SureBtnAction := (command) => this.OnSureFoundMacroBtnClick(command)
-        this.MacroGui.ShowGui(this.FoundCommandStr, false)
+        this.MacroGui.ShowGui(this.SearchData.TrueCommandStr, false)
     }
 
     OnEditUnFoundMacroBtnClick() {
@@ -449,21 +347,15 @@ class SearchGui {
             this.MacroGui.SureFocusCon := this.MousePosCon
         }
         this.MacroGui.SureBtnAction := (command) => this.OnSureUnFoundMacroBtnClick(command)
-        this.MacroGui.ShowGui(this.UnFoundCommandStr, false)
+        this.MacroGui.ShowGui(this.SearchData.FalseCommandStr, false)
     }
 
     OnChangeSearchType() {
-        this.SearchType := this.SearchTypeCon.Value
-        this.Refresh()
-        this.MousePosCon.Focus()
-    }
+        isImage := this.SearchTypeCon.Value == 1
+        isColor := this.SearchTypeCon.Value == 2
+        isText := this.SearchTypeCon.Value == 3
 
-    RefreshSearchEnabled() {
-        isImage := this.SearchType == 1
-        isColor := this.SearchType == 2
-        isText := this.SearchType == 3
-
-        showImageTip := isImage && this.ImagePath == ""
+        showImageTip := isImage && this.SearchData.SearchImagePath == ""
         showColorTip := isColor && RegExMatch(this.HexColorCon.Value, "^([0-9A-Fa-f]{6})$")
 
         this.ImageBtn.Enabled := isImage
@@ -477,25 +369,20 @@ class SearchGui {
         }
 
         this.TextCon.Enabled := isText
-    }
-
-    OnChangeAutoMove() {
-        this.AutoMove := this.AutoMoveCon.Value
-        this.Refresh()
+        this.MousePosCon.Focus()
     }
 
     TriggerMacro() {
         valid := this.CheckIfValid()
         if (!valid)
             return
-
-        this.UpdateCommandStr()
+        this.SaveSearchData()
         tableItem := MySoftData.SpecialTableItem
         tableItem.CmdActionArr[1] := []
         tableItem.KilledArr[1] := false
         tableItem.ActionCount[1] := 0
         tableItem.ActionArr[1] := Map()
-        OnSearch(tableItem, this.CommandStr, 1)
+        OnSearch(tableItem, this.CommandStrCon.Value, 1)
     }
 
     EnableSelectAerea() {
@@ -543,7 +430,6 @@ class SearchGui {
         this.StartPosYCon.Value := Min(startY, endY)
         this.EndPosXCon.Value := Max(startX, endX)
         this.EndPosYCon.Value := Max(startY, endY)
-        this.Refresh()
     }
 
     SureColor() {
@@ -558,7 +444,6 @@ class SearchGui {
         this.HexColorTipCon.Visible := true
         this.HexColorTipCon.Opt(Format("+Background0x{}", this.HexColorCon.Value))
         this.HexColorTipCon.Redraw()
-        this.Refresh()
     }
 
     CheckClipboard(*) {
@@ -574,11 +459,29 @@ class SearchGui {
 
             ; MyWinClip.SaveBitmap(filePath, "png")
             SaveClipToBitmap(filePath)
-            this.ImagePath := filePath
             this.ImageCon.Value := filePath
-            this.Refresh()
+            this.SearchData.SearchImagePath := filePath
             ; 停止监听
             SetTimer(, 0)
         }
+    }
+
+    SaveSearchData() {
+        data := this.SearchData
+        data.SearchType := this.SearchTypeCon.Value
+        data.SearchColor := this.HexColorCon.Value
+        data.SearchText := this.TextCon.Value
+        data.StartPosX := this.StartPosXCon.Value
+        data.StartPosY := this.StartPosYCon.Value
+        data.EndPosX := this.EndPosXCon.Value
+        data.EndPosY := this.EndPosYCon.Value
+        data.SearchCount := this.SearchCountCon.Value
+        data.SearchInterval := this.SearchIntervalCon.Value
+        data.AutoMove := this.AutoMoveCon.Value
+        data.TrueCommandStr := this.FoundCommandStrCon.Value
+        data.FalseCommandStr := this.UnFoundCommandStrCon.Value
+
+        saveStr := JSON.stringify(data, 0)
+        IniWrite(saveStr, SearchFile, IniSection, data.SerialStr)
     }
 }

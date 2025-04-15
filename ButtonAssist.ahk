@@ -19,11 +19,6 @@
 #Include Main\JsonUtil.ahk
 #Include Main\CompareUtil.ahk
 
-IniFile := "Settings.ini"
-CompareFile := "Compare.ini"
-CoordFile := "CoordFile.ini"
-IniSection := "UserSettings"
-
 global MySoftData := SoftData()
 global ToolCheckInfo := ToolCheck()
 global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
@@ -33,11 +28,17 @@ global MyJoyMacro := JoyMacro()
 global MyMacroGui := MacroGui()
 global MyReplaceKeyGui := ReplaceKeyGui()
 
+global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
+global SearchFile := A_WorkingDir "\Setting\SearchFile.ini"
+global CompareFile := A_WorkingDir "\Setting\CompareFile.ini"
+global CoordFile := A_WorkingDir "\Setting\CoordFile.ini"
+global IniSection := "UserSettings"
+
 LoadSetting()
 InitData()
 InitUI()
 BindKey()
-OnExit(OnExitSoft)
 
+;放后面初始化，因为这两个初始化时间比较长
 global MyOcr := RapidOcr()
 global MyPToken := Gdip_Startup()

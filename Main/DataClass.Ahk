@@ -190,6 +190,26 @@ class MoveData {
     }
 }
 
+class SearchData {
+    __New() {
+        this.SerialStr := ""
+        this.SearchType := 1       ;1 图片  2 颜色  3 文本
+        this.SearchColor := ""
+        this.SearchText := ""
+        this.SearchImagePath := ""
+        this.StartPosX := 0
+        this.StartPosY := 0
+        this.EndPosX := A_ScreenWidth
+        this.EndPosY := A_ScreenHeight
+        this.SearchCount := 1
+        this.SearchInterval := 1000
+        this.AutoMove := 1
+        this.TrueCommandStr := ""
+        this.FalseCommandStr := ""
+    }
+
+}
+
 class CompareData {
     __New() {
         this.StartPosX := 0
@@ -228,7 +248,7 @@ class CoordData {
         this.BaseVariableArr := []
         this.VariableArr := []
         this.ExtractType := 1       ;1屏幕  2 剪切板
-        this.isRelative:= 0         ;相对位移
+        this.isRelative := 0         ;相对位移
         this.Speed := 90           ;移动速度
         this.VariableOperatorArr := ["x", "y"]
     }

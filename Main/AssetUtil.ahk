@@ -153,9 +153,16 @@ SplitKeyCommand(macro) {
 
 ;初始化数据
 InitData() {
+    InitFilePath()
     InitTableItemState()
     InitJoyAxis()
     InitGui()
+}
+
+InitFilePath(){
+    if (!DirExist(A_WorkingDir "\Setting")) {
+        DirCreate(A_WorkingDir "\Setting")
+    }
 }
 
 ;手柄轴未使用时，状态会变为0，而非中间值

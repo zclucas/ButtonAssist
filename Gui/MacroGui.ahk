@@ -275,13 +275,6 @@ class MacroGui {
 
             isSearch := StrCompare(SubStr(value, 1, 2), "搜索", false) == 0
             if (isSearch) {
-                splitIndex := RegExMatch(value, "(\(.*\))", &match)
-                isSubMacro := splitIndex && RegExMatch(match[1], "SubMacro")
-                if (splitIndex && !isSubMacro) {
-                    this.SubMacroLastIndex += 1
-                    value := StrReplace(value, match[1], Format("({})", "SubMacro" this.SubMacroLastIndex))
-                    this.SubMacroMap.Set(this.SubMacroLastIndex, match[1])
-                }
                 macroEditStr .= value
             }
 
@@ -387,11 +380,6 @@ class MacroGui {
             paramArr := StrSplit(value, "_")
             curSymbol := paramArr[1]
             if (curSymbol == symbol) {
-                cmd := value
-                break
-            }
-
-            if (symbol == "搜索" && SubStr(curSymbol, 1, 2) == "搜索") {
                 cmd := value
                 break
             }

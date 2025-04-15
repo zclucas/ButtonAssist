@@ -1,7 +1,8 @@
 ;绑定热键
 OnExitSoft(*) {
-    global MyPToken
+    global MyPToken,MyOcr
     Gdip_Shutdown(MyPToken)
+    MyOcr := ""
 }
 
 BindKey() {
@@ -15,6 +16,8 @@ BindKey() {
     BindScrollHotkey("~WheelDown", OnChangeSrollValue)
     BindScrollHotkey("~+WheelUp", OnChangeSrollValue)
     BindScrollHotkey("~+WheelDown", OnChangeSrollValue)
+
+    OnExit(OnExitSoft)
 }
 
 BindScrollHotkey(key, action) {
@@ -199,76 +202,68 @@ OnTriggerMacroOnce(tableItem, macro, index) {
 }
 
 OnSearch(tableItem, cmd, index) {
-    splitIndex := RegExMatch(cmd, "(\(.*\))", &match)
-    if (splitIndex == 0) {
-        searchCmdArr := StrSplit(cmd, "_")
-    }
-    else {
-        searchMacroStr := SubStr(cmd, 1, splitIndex - 1)
-        searchCmdArr := StrSplit(searchMacroStr, "_")
-    }
-    searchCount := Integer(searchCmdArr[8])
-    searchInterval := Integer(searchCmdArr[9])
+    paramArr := StrSplit(cmd, "_")
+    saveStr := IniRead(SearchFile, IniSection, paramArr[2], "")
+    searchData := JSON.parse(saveStr, , false)
+    searchCount := Integer(searchData.SearchCount)
+    searchInterval := Integer(searchData.SearchInterval)
 
-    tableItem.ActionArr[index].Set(searchCmdArr[2], [])
+    tableItem.ActionArr[index].Set(searchData.SerialStr, [])
 
-    OnSearchOnce(tableItem, cmd, index, searchCount == 1)
+    OnSearchOnce(tableItem, searchData, index, searchCount == 1)
     loop searchCount {
         if (A_Index == 1)
             continue
 
-        if (!tableItem.ActionArr[index].Has(searchCmdArr[2])) ;第一次搜索成功就退出
+        if (!tableItem.ActionArr[index].Has(searchData.SerialStr)) ;第一次搜索成功就退出
             break
 
         action := OnSearchOnce.Bind(tableItem, cmd, index, A_Index == searchCount)
         leftTime := GetFloatTime(searchInterval * (A_Index - 1), MySoftData.PreIntervalFloat)
-        tableItem.ActionArr[index][searchCmdArr[2]].Push(action)
+        tableItem.ActionArr[index][searchData.SerialStr].Push(action)
         SetTimer action, -leftTime
     }
 }
 
-OnSearchOnce(tableItem, cmd, index, isFinally) {
-    macroArr := SplitCommand(cmd)
-    searchCmdArr := StrSplit(macroArr[1], "_")
-
-    X1 := Integer(searchCmdArr[3])
-    Y1 := Integer(searchCmdArr[4])
-    X2 := Integer(searchCmdArr[5])
-    Y2 := Integer(searchCmdArr[6])
+OnSearchOnce(tableItem, searchData, index, isFinally) {
+    X1 := Integer(searchData.StartPosX)
+    Y1 := Integer(searchData.StartPosY)
+    X2 := Integer(searchData.EndPosX)
+    Y2 := Integer(searchData.EndPosY)
 
     CoordMode("Pixel", "Screen")
-    if (searchCmdArr[1] == "搜索图片") {
-        SearchInfo := Format("*{} *w0 *h0 {}", Integer(MySoftData.ImageSearchBlur), searchCmdArr[2])
+    if (searchData.SearchType == 1) {
+        SearchInfo := Format("*{} *w0 *h0 {}", Integer(MySoftData.ImageSearchBlur), searchData.SearchImagePath)
         found := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, SearchInfo)
     }
-    else if (searchCmdArr[1] == "搜索颜色") {
-        color := "0X" searchCmdArr[2]
+    else if (searchData.SearchType == 2) {
+        color := "0X" searchData.SearchColor
         found := PixelSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, color, Integer(MySoftData.ImageSearchBlur
         ))
     }
-    else if (searchCmdArr[1] == "搜索文本") {
-        text := searchCmdArr[2]
+    else if (searchData.SearchType == 3) {
+        text := searchData.SearchText
         found := CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text)
     }
 
     if (found || isFinally) {
         ;清除后续的搜索和搜索记录
-        if (tableItem.ActionArr[index].Has(searchCmdArr[2])) {
-            ActionArr := tableItem.ActionArr[index].Get(searchCmdArr[2])
+        if (tableItem.ActionArr[index].Has(searchData.SerialStr)) {
+            ActionArr := tableItem.ActionArr[index].Get(searchData.SerialStr)
             loop ActionArr.Length {
                 action := ActionArr[A_Index]
                 SetTimer action, 0
             }
-            tableItem.ActionArr[index].Delete(searchCmdArr[2])
+            tableItem.ActionArr[index].Delete(searchData.SerialStr)
         }
     }
 
     if (found) {
         ;自动移动鼠标
-        if (Integer(searchCmdArr[7])) {
+        if (Integer(searchData.AutoMove)) {
             Pos := [OutputVarX, OutputVarY]
-            if (searchCmdArr[1] == "搜索图片") {
-                imageSize := GetImageSize(searchCmdArr[2])
+            if (searchData.SearchType == 1) {
+                imageSize := GetImageSize(searchData.SearchImagePath)
                 Pos := [OutputVarX + imageSize[1] / 2, OutputVarY + imageSize[2] / 2]
             }
 
@@ -276,15 +271,15 @@ OnSearchOnce(tableItem, cmd, index, isFinally) {
             MouseMove(Pos[1], Pos[2])
         }
 
-        if (macroArr[2] == "")
+        if (searchData.TrueCommandStr == "")
             return
-        OnTriggerMacroOnce(tableItem, macroArr[2], index)
+        OnTriggerMacroOnce(tableItem, searchData.TrueCommandStr, index)
     }
 
     if (isFinally && !found) {
-        if (macroArr[3] == "")
+        if (searchData.FalseCommandStr == "")
             return
-        OnTriggerMacroOnce(tableItem, macroArr[3], index)
+        OnTriggerMacroOnce(tableItem, searchData.FalseCommandStr, index)
     }
 }
 

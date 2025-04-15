@@ -88,7 +88,7 @@ class CompareGui {
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 550),
         "使用x、y、z、w代替变量位置   形如：`"坐标(x,y)`"可以提取`"坐标(10.5,8.6)`"中的10.5和8.6")
 
-        PosY += 25
+        PosY += 35
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "变量提取：")
         this.VariableFilterCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 75, PosY - 5, 250), "")
@@ -235,7 +235,7 @@ class CompareGui {
         PosY += 30
         PosX := 10
         SplitPosY := PosY
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "结果为真的指令:（可选）")
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 160, 20), "结果真的指令:（可选）")
 
         PosX += 160
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 5, 80, 20), "编辑指令")
@@ -248,7 +248,7 @@ class CompareGui {
 
         PosY := SplitPosY
         PosX := 310
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "结果为假的指令:（可选）")
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 160, 20), "结果假的指令:（可选）")
 
         PosX += 160
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 5, 80, 20), "编辑指令")
