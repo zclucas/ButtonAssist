@@ -8,11 +8,11 @@ class FileGui {
         this.ProcessTextCon := ""
         this.PathTextCon := ""
         this.MouseProNameCon := ""
+        this.BackPlayCon := ""
 
-        this.Path := ""
-        this.ProcessName := ""
         this.CommandStr := ""
         this.RefreshAction := () => this.RefreshProcessName()
+        this.Data := ""
     }
 
     ShowGui(cmd) {
@@ -49,61 +49,57 @@ class FileGui {
 
         PosX := 10
         PosY += 20
-        this.MouseProNameCon :=MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 380, 20), "鼠标下进程名:Zone.exe")
+        this.MouseProNameCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 380, 20), "鼠标下进程名:Zone.exe")
 
         PosX := 10
-        PosY += 40
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 350, 20), "通过进程运行软件(系统软件，等通过安装的软件)")
+        PosY += 30
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 350, 20), "进程(系统软件，等通过安装的软件)")
 
         PosY += 20
-        this.ProcessTextCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY, 300))
+        this.ProcessTextCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY, 400))
 
         PosX := 10
         PosY += 40
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 200, 20), "文件的绝对路径")
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "绝对路径")
 
-        PosX += 200
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "指定文件")
+        PosX += 80
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 2, 70, 20), "选择文件")
         btnCon.OnEvent("Click", (*) => this.OnClickFileSelectBtn())
 
-        PosY += 25
+        PosY += 20
         PosX := 10
-        this.PathTextCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY, 300))
+        this.PathTextCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY, 400))
 
         PosY += 25
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 300, 20), "支持文件后缀:exe、txt、bat、mp4等等")
+        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "支持文件后缀:exe、txt、bat、mp4、vbs、mp3等等")
 
-        PosY += 40
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 300, 20), "进程、绝对路径两者只要填写其中一项就行")
+        PosY += 25
+        this.BackPlayCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 400), "后台播放mp3文件")
+
+        PosY += 45
+        PosX := 10
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 400, 20), "进程、绝对路径两者只要填写其中一项就行")
 
         PosY += 25
-        PosX += 100
+        PosX += 150
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
-        
+
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 360, 320))
+        MyGui.Show(Format("w{} h{}", 420, 340))
     }
 
-    Init(cmd){
-        this.ProcessName := ""
-        this.Path := ""
+    Init(cmd) {
+        cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
+        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.Data := this.GetFileData(this.SerialStr)
 
-        if (cmd != ""){
-            cmdArr := StrSplit(cmd, "_")
-            isPath := SubStr(cmdArr[2], 2, 1) == ":"
-            if (isPath){
-                this.Path := cmdArr[2]
-            }
-            else{
-                this.ProcessName := cmdArr[2]
-            }
-        }
-
-        this.ProcessTextCon.Value := this.ProcessName
-        this.PathTextCon.Value := this.Path
+        this.ProcessTextCon.Value := this.Data.ProcessName
+        this.PathTextCon.Value := this.Data.FilePath
+        this.BackPlayCon.Value := this.Data.BackPlay
+        this.CommandStr := "文件_" this.Data.SerialStr
     }
 
     ToggleFunc(state) {
@@ -146,34 +142,24 @@ class FileGui {
         valid := this.CheckIfValid()
         if (!valid)
             return
-
+        this.SaveFileData()
         this.ToggleFunc(false)
-        this.UpdateCommandStr()
         action := this.SureBtnAction
         action(this.CommandStr)
         this.Gui.Hide()
     }
 
-    CheckIfValid(){
-        if (this.PathTextCon.Value == "" && this.ProcessTextCon.Value == ""){
+    CheckIfValid() {
+        if (this.PathTextCon.Value == "" && this.ProcessTextCon.Value == "") {
             MsgBox("请输入进程名或者绝对路径！")
-            Return false
+            return false
         }
-        Return true
+        return true
     }
 
-    UpdateCommandStr(){
-        this.CommandStr := "文件_"
-        if (this.PathTextCon.Value != ""){
-            this.CommandStr .= this.PathTextCon.Value
-        }
-        else{
-            this.CommandStr .= this.ProcessTextCon.Value
-        }
-    }
 
     TriggerMacro() {
-        this.UpdateCommandStr()
+        this.SaveFileData()
         tableItem := MySoftData.SpecialTableItem
         tableItem.CmdActionArr[1] := []
         tableItem.KilledArr[1] := false
@@ -181,5 +167,31 @@ class FileGui {
         tableItem.ActionArr[1] := Map()
 
         OnRunFile(tableItem, this.CommandStr, 1)
+    }
+
+    GetSerialStr() {
+        CurrentDateTime := FormatTime(, "HHmmss")
+        return "File" CurrentDateTime
+    }
+
+    GetFileData(SerialStr) {
+        saveStr := IniRead(FileFile, IniSection, SerialStr, "")
+        if (!saveStr) {
+            data := FileData()
+            data.SerialStr := SerialStr
+            return data
+        }
+
+        data := JSON.parse(saveStr, , false)
+        return data
+    }
+
+    SaveFileData() {
+        this.Data.ProcessName := this.ProcessTextCon.Value
+        this.Data.FilePath := this.PathTextCon.Value
+        this.Data.BackPlay := this.BackPlayCon.Value
+
+        saveStr := JSON.stringify(this.Data, 0)
+        IniWrite(saveStr, FileFile, IniSection, this.Data.SerialStr)
     }
 }

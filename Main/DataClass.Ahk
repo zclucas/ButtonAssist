@@ -253,3 +253,11 @@ class CoordData {
         this.VariableOperatorArr := ["x", "y"]
     }
 }
+
+class FileData {
+    __New() {
+        this.FilePath := ""
+        this.ProcessName := ""
+        this.BackPlay := 0
+    }
+}

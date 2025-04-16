@@ -173,7 +173,7 @@ InitJoyAxis() {
     tableItem := MySoftData.SpecialTableItem
     tableItem.HoldKeyArr[1] := Map()
     loop joyAxisNum {
-        SendJoyAxisClick("JoyAxis" A_Index "Max", 30, tableItem, 1)
+        SendJoyAxisClick("JoyAxis" A_Index "Max", 30, tableItem, 1, 1)
     }
 }
 
@@ -295,7 +295,7 @@ GetTableItemDefaultInfo(index) {
 
     if (symbol == "Normal") {
         savedTKArrStr := "k"
-        savedMacroArrStr := "按键_a_30_30_50,间隔_3000"
+        savedMacroArrStr := "按键_a_30_1_30_50,间隔_3000"
         savedLooseStopArrStr := "0"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"

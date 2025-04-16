@@ -1,6 +1,6 @@
 ;绑定热键
 OnExitSoft(*) {
-    global MyPToken,MyOcr
+    global MyPToken, MyOcr
     Gdip_Shutdown(MyPToken)
     MyOcr := ""
 }
@@ -285,8 +285,23 @@ OnSearchOnce(tableItem, searchData, index, isFinally) {
 
 OnRunFile(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    filePath := SubStr(cmd, StrLen(paramArr[1]) + 2)
-    Run(filePath)
+    saveStr := IniRead(FileFile, IniSection, paramArr[2], "")
+    fileData := JSON.parse(saveStr, , false)
+
+    if (fileData.ProcessName != "") {
+        Run(fileData.ProcessName)
+        return
+    }
+
+    isMp3 := RegExMatch(fileData.FilePath, ".mp3$")
+    if (isMp3 && fileData.BackPlay) {
+        vbsPath := A_WorkingDir "\VBS\PlayAudio.vbs"
+        playAudioCmd := Format('wscript.exe "{}" "{}"', vbsPath, fileData.FilePath)
+        Run(playAudioCmd)
+        return
+    }
+
+    Run(fileData.FilePath)
 }
 
 OnCompare(tableItem, cmd, index) {
@@ -514,18 +529,17 @@ OnPressKey(tableItem, cmd, index) {
     action := isJoyAxis ? SendJoyAxisClick : action
 
     holdTime := Integer(paramArr[3])
+    keyType := paramArr.Length >= 4 ? Integer(paramArr[4]) : 1
     floatHoldTime := GetFloatTime(holdTime, MySoftData.HoldFloat)
-    count := paramArr.Length > 3 ? Integer(paramArr[4]) : 1
-
-    action(paramArr[2], floatHoldTime, tableItem, index)
-
+    count := paramArr.Length >= 5 ? Integer(paramArr[5]) : 1
+    action(paramArr[2], floatHoldTime, tableItem, index, keyType)
     loop count {
         if (A_Index == 1)
             continue
 
         floatHoldTime := GetFloatTime(holdTime, MySoftData.HoldFloat)
-        tempAction := action.Bind(paramArr[2], floatHoldTime, tableItem, index)
-        leftTime := GetFloatTime((Integer(paramArr[5])) * (A_Index - 1), MySoftData.PreIntervalFloat)
+        tempAction := action.Bind(paramArr[2], floatHoldTime, tableItem, index, keyType)
+        leftTime := GetFloatTime((Integer(paramArr[6])) * (A_Index - 1), MySoftData.PreIntervalFloat)
         tableItem.CmdActionArr[index].Push(tempAction)
         SetTimer tempAction, -leftTime
     }
@@ -902,9 +916,15 @@ OnBootStartChanged(*) {
 }
 
 ;按键模拟
-SendGameModeKeyClick(key, holdTime, tableItem, index) {
-    SendGameModeKey(key, 1, tableItem, index)
-    SetTimer(() => SendGameModeKey(key, 0, tableItem, index), -holdTime)
+SendGameModeKeyClick(key, holdTime, tableItem, index, keyType) {
+    if (keyType == 1) {
+        SendGameModeKey(key, 1, tableItem, index)
+        SetTimer(() => SendGameModeKey(key, 0, tableItem, index), -holdTime)
+    }
+    else {
+        state := keyType == 2 ? 1 : 0
+        SendGameModeKey(key, state, tableItem, index)
+    }
 }
 
 SendGameModeKey(Key, state, tableItem, index) {
@@ -967,9 +987,15 @@ SendGameMouseKey(key, state, tableItem, index) {
     }
 }
 
-SendNormalKeyClick(Key, holdTime, tableItem, index) {
-    SendNormalKey(Key, 1, tableItem, index)
-    SetTimer(() => SendNormalKey(Key, 0, tableItem, index), -holdTime)
+SendNormalKeyClick(Key, holdTime, tableItem, index, keyType) {
+    if (keyType == 1) {
+        SendNormalKey(Key, 1, tableItem, index)
+        SetTimer(() => SendNormalKey(Key, 0, tableItem, index), -holdTime)
+    }
+    else {
+        state := keyType == 2 ? 1 : 0
+        SendNormalKey(Key, state, tableItem, index)
+    }
 }
 
 SendNormalKey(Key, state, tableItem, index) {
@@ -1001,13 +1027,19 @@ SendNormalKey(Key, state, tableItem, index) {
     }
 }
 
-SendJoyBtnClick(key, holdTime, tableItem, index) {
+SendJoyBtnClick(key, holdTime, tableItem, index, keyType) {
     if (!CheckIfInstallVjoy()) {
         MsgBox("使用手柄功能前,请先安装Joy目录下的vJoy驱动!")
         return
     }
-    SendJoyBtnKey(key, 1, tableItem, index)
-    SetTimer(() => SendJoyBtnKey(key, 0, tableItem, index), -holdTime)
+    if (keyType == 1) {
+        SendJoyBtnKey(key, 1, tableItem, index)
+        SetTimer(() => SendJoyBtnKey(key, 0, tableItem, index), -holdTime)
+    }
+    else {
+        state := keyType == 2 ? 1 : 0
+        SendJoyBtnKey(key, state, tableItem, index)
+    }
 }
 
 SendJoyBtnKey(key, state, tableItem, index) {
@@ -1024,13 +1056,20 @@ SendJoyBtnKey(key, state, tableItem, index) {
     }
 }
 
-SendJoyAxisClick(key, holdTime, tableItem, index) {
+SendJoyAxisClick(key, holdTime, tableItem, index, keyType) {
     if (!CheckIfInstallVjoy()) {
         MsgBox("使用手柄功能前,请先安装Joy目录下的vJoy驱动!")
         return
     }
-    SendJoyAxisKey(key, 1, tableItem, index)
-    SetTimer(() => SendJoyAxisKey(key, 0, tableItem, index), -holdTime)
+
+    if (keyType == 1) {
+        SendJoyAxisKey(key, 1, tableItem, index)
+        SetTimer(() => SendJoyAxisKey(key, 0, tableItem, index), -holdTime)
+    }
+    else {
+        state := keyType == 2 ? 1 : 0
+        SendJoyAxisKey(key, state, tableItem, index)
+    }
 }
 
 SendJoyAxisKey(key, state, tableItem, index) {

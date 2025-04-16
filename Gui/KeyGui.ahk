@@ -5,12 +5,10 @@ class KeyGui {
         this.Gui := ""
         this.SureBtnAction := ""
         this.KeyStr := ""
-        this.HoldTime := 50
-        this.KeyCount := 1
-        this.PerInterval := 100
         this.CommandStr := ""
 
         this.HoldTimeCon := ""
+        this.KeyTypeCon := ""
         this.PerIntervalCon := ""
         this.KeyCountCon := ""
         this.CommandStrCon := ""
@@ -51,7 +49,6 @@ class KeyGui {
         this.GameModeCon := MyGui.Add("CheckBox", Format("x{} y{} w{} h{}", PosX, PosY - 5, 60, 20), "游戏")
         this.GameModeCon.OnEvent("Click", (*) => this.OnChangeEditValue())
         MyGui.Add("Text", Format("x{} y{} w{}", PosX + 80, PosY - 3, 500), "(测试功能：用于测试指令的执行效果，功能选项不会对最终结果产生影响)")
-        
 
         PosY += 30
         PosX := 10
@@ -810,19 +807,26 @@ class KeyGui {
         PosX := 20
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 90), "按键时间:")
         PosX += 70
-        this.HoldTimeCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), this.HoldTime)
+        this.HoldTimeCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), 50)
         this.HoldTimeCon.OnEvent("Change", (*) => this.OnChangeEditValue())
+
+        PosX += 100
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 50), "类型:")
+        PosX += 50
+        this.KeyTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 80, 100), ["点击", "按下", "松开"])
+        this.KeyTypeCon.OnEvent("Change", (*) => this.OnChangeEditValue())
+        this.KeyTypeCon.Value := 1
 
         PosX += 100
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 90), "循环次数:")
         PosX += 70
-        this.KeyCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), this.KeyCount)
+        this.KeyCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), 1)
         this.KeyCountCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosX += 100
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 90), "循环间隔:")
         PosX += 70
-        this.PerIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), this.PerInterval)
+        this.PerIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), 100)
         this.PerIntervalCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosX += 100
@@ -844,13 +848,11 @@ class KeyGui {
     Init(cmd) {
         cmdArr := cmd != "" ? SplitKeyCommand(cmd) : []
         this.KeyStr := cmdArr.Length >= 2 ? cmdArr[2] : ""
-        this.HoldTime := cmdArr.Length >= 3 ? cmdArr[3] : 50
-        this.KeyCount := cmdArr.Length >= 4 ? cmdArr[4] : 1
-        this.PerInterval := cmdArr.Length >= 5 ? cmdArr[5] : 100
+        this.HoldTimeCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : 50
+        this.KeyTypeCon.Value := cmdArr.Length >= 4 ? cmdArr[4] : 1
+        this.KeyCountCon.Value := cmdArr.Length >= 5 ? cmdArr[5] : 1
+        this.PerIntervalCon.Value := cmdArr.Length >= 6 ? cmdArr[6] : 100
 
-        this.HoldTimeCon.Value := this.HoldTime
-        this.KeyCountCon.Value := this.KeyCount
-        this.PerIntervalCon.Value := this.PerInterval
         this.GameModeCon.Value := MySoftData.SpecialTableItem.ModeArr[1]
     }
 
@@ -875,7 +877,7 @@ class KeyGui {
             return false
         }
 
-        if (Integer(this.KeyCount) > 1 && Integer(this.HoldTime) >= Integer(this.PerInterval)) {
+        if (Integer(this.KeyCountCon.Value) > 1 && Integer(this.HoldTimeCon.Value) >= Integer(this.PerIntervalCon.Value)) {
             MsgBox("按键按住时间必须小于每次间隔！")
             return false
         }
@@ -884,19 +886,29 @@ class KeyGui {
     }
 
     UpdateCommandStr() {
+        isShowCount := this.KeyTypeCon.Value == 1 && this.KeyCountCon.Value != 1
+        isShowType := isShowCount || this.KeyTypeCon.Value != 1
+
         CommandStr := "按键"
         CommandStr .= "_" this.KeyStr
-        CommandStr .= "_" this.HoldTime
-        if (this.KeyCount > 1){
-            CommandStr .= "_" this.KeyCount
-            CommandStr .= "_" this.PerInterval
+        CommandStr .= "_" this.HoldTimeCon.Value
+        if (isShowType) {
+            CommandStr .= "_" this.KeyTypeCon.Value
         }
-        
+
+        if (isShowCount) {
+            CommandStr .= "_" this.KeyCountCon.Value
+            CommandStr .= "_" this.PerIntervalCon.Value
+        }
+
         this.CommandStr := CommandStr
     }
 
     Refresh() {
         this.UpdateCommandStr()
+        enbaleCount := this.KeyTypeCon.Value == 1
+        this.KeyCountCon.Enabled := enbaleCount
+        this.PerIntervalCon.Enabled := enbaleCount
         this.CommandStrCon.Value := "当前指令：" this.CommandStr
     }
 
@@ -916,9 +928,6 @@ class KeyGui {
     }
 
     OnChangeEditValue() {
-        this.HoldTime := this.HoldTimeCon.Value
-        this.KeyCount := this.KeyCountCon.Value
-        this.PerInterval := this.PerIntervalCon.Value
         MySoftData.SpecialTableItem.ModeArr[1] := this.GameModeCon.Value
         this.Refresh()
     }

@@ -32,6 +32,7 @@ global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
 global SearchFile := A_WorkingDir "\Setting\SearchFile.ini"
 global CompareFile := A_WorkingDir "\Setting\CompareFile.ini"
 global CoordFile := A_WorkingDir "\Setting\CoordFile.ini"
+global FileFile := A_WorkingDir "\Setting\FileFile.ini"
 global IniSection := "UserSettings"
 
 LoadSetting()
