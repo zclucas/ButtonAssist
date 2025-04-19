@@ -6,6 +6,7 @@
 #Include FileGui.ahk
 #Include CompareGui.ahk
 #Include CoordGui.ahk
+#Include InputGui.ahk
 
 class MacroGui {
     __new() {
@@ -65,6 +66,10 @@ class MacroGui {
         this.CoordGui := CoordGui()
         this.CoordGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("坐标", this.CoordGui)
+
+        this.InputGui := InputGui()
+        this.InputGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("输入", this.InputGui)
     }
 
     GetSubGuiSymbol(subGui) {
@@ -130,16 +135,22 @@ class MacroGui {
         this.CmdBtnConMap.Set("按键", btnCon)
 
         PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "搜索")
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.SearchGui))
+        this.CmdBtnConMap.Set("搜索", btnCon)
+
+        PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "移动")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.MoveMoveGui))
         this.CmdBtnConMap.Set("移动", btnCon)
 
         PosX += 100
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "搜索")
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "输入")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
-        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.SearchGui))
-        this.CmdBtnConMap.Set("搜索", btnCon)
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.InputGui))
+        this.CmdBtnConMap.Set("输入", btnCon)
 
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "文件")
@@ -295,6 +306,11 @@ class MacroGui {
 
             isCompare := StrCompare(SubStr(value, 1, 2), "坐标", false) == 0
             if (isCompare) {
+                macroEditStr .= value
+            }
+
+            isInput := StrCompare(SubStr(value, 1, 2), "输入", false) == 0
+            if (isInput){
                 macroEditStr .= value
             }
 

@@ -1,7 +1,7 @@
 ;窗口&UI刷新
 InitUI() {
     global MySoftData
-    MyGui := Gui(, "Super的按键辅助器")
+    MyGui := Gui(, "RMTv1.0.0")
     ; MyGui.Opt("ToolWindow")
     MyGui.SetFont(, "Consolas")
     MySoftData.MyGui := MyGui

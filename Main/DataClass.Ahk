@@ -256,8 +256,18 @@ class CoordData {
 
 class FileData {
     __New() {
+        this.SerialStr := ""
         this.FilePath := ""
         this.ProcessName := ""
         this.BackPlay := 0
+    }
+}
+
+class InputData {
+    __New() {
+        this.SerialStr := ""
+        this.Text := ""
+        this.IsCover := 1
+        this.InputType := 1
     }
 }

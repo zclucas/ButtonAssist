@@ -176,6 +176,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsFile := StrCompare(paramArr[1], "文件", false) == 0
         IsCompare := StrCompare(paramArr[1], "比较", false) == 0
         IsCoord := StrCompare(paramArr[1], "坐标", false) == 0
+        ISInput := StrCompare(paramArr[1], "输入", false) == 0
         if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
@@ -196,7 +197,9 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         }
         else if (IsCoord) {
             OnCoord(tableItem, cmdArr[A_Index], index)
-
+        }
+        else if (ISInput) {
+            OnInput(tableItem, cmdArr[A_Index], index)
         }
     }
 }
@@ -463,6 +466,26 @@ OnCoordOnce(tableItem, index, coordData, isFinally) {
             }
             tableItem.ActionArr[index].Delete(coordData.SerialStr)
         }
+    }
+}
+
+OnInput(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
+    saveStr := IniRead(InputFile, IniSection, paramArr[2], "")
+    inputData := JSON.parse(saveStr, , false)
+
+    if (inputData.IsCover) {
+        A_Clipboard := inputData.Text
+    }
+
+    if (inputData.InputType == 1) {
+        SendText(inputData.Text)
+    }
+    else if (inputData.InputType == 2) {
+        Send "^v"
+    }
+    else if (inputData.InputType == 3) {
+        MyWinClip.Paste(A_Clipboard)
     }
 }
 
