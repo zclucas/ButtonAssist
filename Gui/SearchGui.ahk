@@ -1,5 +1,5 @@
 #Requires AutoHotkey v2.0
-#Include MacroGui.ahk
+#Include MacroEditGui.ahk
 
 class SearchGui {
     __new() {
@@ -333,7 +333,7 @@ class SearchGui {
 
     OnEditFoundMacroBtnClick() {
         if (this.MacroGui == "") {
-            this.MacroGui := MacroGui()
+            this.MacroGui := MacroEditGui()
             this.MacroGui.SureFocusCon := this.MousePosCon
         }
 
@@ -343,7 +343,7 @@ class SearchGui {
 
     OnEditUnFoundMacroBtnClick() {
         if (this.MacroGui == "") {
-            this.MacroGui := MacroGui()
+            this.MacroGui := MacroEditGui()
             this.MacroGui.SureFocusCon := this.MousePosCon
         }
         this.MacroGui.SureBtnAction := (command) => this.OnSureUnFoundMacroBtnClick(command)

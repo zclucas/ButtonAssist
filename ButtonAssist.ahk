@@ -9,7 +9,7 @@ SetWorkingDir A_ScriptDir
 
 #Include Gui\TriggerKeyGui.ahk
 #Include Gui\TriggerStrGui.ahk
-#Include Gui\MacroGui.ahk
+#Include Gui\MacroEditGui.ahk
 #Include Gui\ReplaceKeyGui.ahk
 #Include Gui\ScrollBar.ahk
 
@@ -28,7 +28,7 @@ global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
 global MyTriggerKeyGui := TriggerKeyGui()
 global MyTriggerStrGui := TriggerStrGui()
 global MyJoyMacro := JoyMacro()
-global MyMacroGui := MacroGui()
+global MyMacroGui := MacroEditGui()
 global MyReplaceKeyGui := ReplaceKeyGui()
 global MyWinClip := WinClip()
 
@@ -38,6 +38,7 @@ global CompareFile := A_WorkingDir "\Setting\CompareFile.ini"
 global CoordFile := A_WorkingDir "\Setting\CoordFile.ini"
 global FileFile := A_WorkingDir "\Setting\FileFile.ini"
 global InputFile := A_WorkingDir "\Setting\InputFile.ini"
+global StopFile := A_WorkingDir "\Setting\InputFile.ini"
 global IniSection := "UserSettings"
 
 LoadSetting()

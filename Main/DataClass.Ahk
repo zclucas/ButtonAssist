@@ -271,3 +271,12 @@ class InputData {
         this.InputType := 1
     }
 }
+
+class StopData {
+    __New(){
+        this.SerialStr := ""
+        this.StopType := 1
+        this.StopIndex := 1
+        this.StopSelf := false
+    }
+}

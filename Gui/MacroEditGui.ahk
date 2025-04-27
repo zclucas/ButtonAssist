@@ -7,8 +7,9 @@
 #Include CompareGui.ahk
 #Include CoordGui.ahk
 #Include InputGui.ahk
+#Include StopGui.ahk
 
-class MacroGui {
+class MacroEditGui {
     __new() {
         this.Gui := ""
         this.ShowSaveBtn := false
@@ -70,6 +71,10 @@ class MacroGui {
         this.InputGui := InputGui()
         this.InputGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("输入", this.InputGui)
+
+        this.StopGui := StopGui()
+        this.StopGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("停止", this.StopGui)
     }
 
     GetSubGuiSymbol(subGui) {
@@ -169,6 +174,12 @@ class MacroGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CoordGui))
         this.CmdBtnConMap.Set("坐标", btnCon)
+
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "停止")
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.StopGui))
+        this.CmdBtnConMap.Set("停止", btnCon)
 
         PosX := 20
         PosY += 140
@@ -311,6 +322,11 @@ class MacroGui {
 
             isInput := StrCompare(SubStr(value, 1, 2), "输入", false) == 0
             if (isInput){
+                macroEditStr .= value
+            }
+
+            isStop := StrCompare(SubStr(value, 1, 2), "停止", false) == 0
+            if (isStop){
                 macroEditStr .= value
             }
 

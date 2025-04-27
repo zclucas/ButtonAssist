@@ -1,5 +1,5 @@
 #Requires AutoHotkey v2.0
-#Include MacroGui.ahk
+#Include MacroEditGui.ahk
 #Include OperationGui.ahk
 
 class CompareGui {
@@ -396,7 +396,7 @@ class CompareGui {
 
     OnEditFoundMacroBtnClick() {
         if (this.MacroGui == "") {
-            this.MacroGui := MacroGui()
+            this.MacroGui := MacroEditGui()
             this.MacroGui.SureFocusCon := this.FocusCon
         }
 
@@ -406,7 +406,7 @@ class CompareGui {
 
     OnEditUnFoundMacroBtnClick() {
         if (this.MacroGui == "") {
-            this.MacroGui := MacroGui()
+            this.MacroGui := MacroEditGui()
             this.MacroGui.SureFocusCon := this.FocusCon
         }
         this.MacroGui.SureBtnAction := (command) => this.OnSureUnFoundMacroBtnClick(command)

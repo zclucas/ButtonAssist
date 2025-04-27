@@ -1,5 +1,5 @@
 #Requires AutoHotkey v2.0
-#Include MacroGui.ahk
+#Include MacroEditGui.ahk
 #Include OperationGui.ahk
 
 class CoordGui {
