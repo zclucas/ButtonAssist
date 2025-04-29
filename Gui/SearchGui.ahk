@@ -381,7 +381,7 @@ class SearchGui {
         tableItem.CmdActionArr[1] := []
         tableItem.KilledArr[1] := false
         tableItem.ActionCount[1] := 0
-        tableItem.ActionArr[1] := Map()
+        tableItem.SuccessClearActionArr[1] := Map()
         OnSearch(tableItem, this.CommandStrCon.Value, 1)
     }
 

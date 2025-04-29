@@ -21,8 +21,8 @@ class TableItem {
         this.RemarkTextConArr := []
         this.RemarkConArr := []
 
-        this.CmdActionArr := []
-        this.ActionArr := []
+        this.CmdActionArr := []     
+        this.SuccessClearActionArr := []        ;成功后清除后续操作
         this.HoldKeyArr := []
         this.KilledArr := []
         this.ActionCount := []      ; 记录执行次数，用于循环次数判断
@@ -277,6 +277,5 @@ class StopData {
         this.SerialStr := ""
         this.StopType := 1
         this.StopIndex := 1
-        this.StopSelf := false
     }
 }

@@ -74,7 +74,7 @@ class MacroEditGui {
 
         this.StopGui := StopGui()
         this.StopGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.SubGuiMap.Set("停止", this.StopGui)
+        this.SubGuiMap.Set("终止", this.StopGui)
     }
 
     GetSubGuiSymbol(subGui) {
@@ -176,10 +176,10 @@ class MacroEditGui {
         this.CmdBtnConMap.Set("坐标", btnCon)
 
         PosX += 100
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "停止")
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "终止")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.StopGui))
-        this.CmdBtnConMap.Set("停止", btnCon)
+        this.CmdBtnConMap.Set("终止", btnCon)
 
         PosX := 20
         PosY += 140
@@ -325,7 +325,7 @@ class MacroEditGui {
                 macroEditStr .= value
             }
 
-            isStop := StrCompare(SubStr(value, 1, 2), "停止", false) == 0
+            isStop := StrCompare(SubStr(value, 1, 2), "终止", false) == 0
             if (isStop){
                 macroEditStr .= value
             }

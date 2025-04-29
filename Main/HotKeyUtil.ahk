@@ -129,7 +129,7 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
     tableItem.CmdActionArr[index] := []
     tableItem.KilledArr[index] := false
     tableItem.ActionCount[index] := 0
-    tableItem.ActionArr[index] := Map()
+    tableItem.SuccessClearActionArr[index] := Map()
     isContinue := MySoftData.ContinueKeyMap.Has(tableItem.TKArr[index]) && tableItem.LoopCountArr[index] == 1
     isLoop := tableItem.LoopCountArr[index] == -1
 
@@ -177,6 +177,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsCompare := StrCompare(paramArr[1], "比较", false) == 0
         IsCoord := StrCompare(paramArr[1], "坐标", false) == 0
         ISInput := StrCompare(paramArr[1], "输入", false) == 0
+        IsStop := StrCompare(paramArr[1], "终止", false) == 0
         if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
@@ -201,6 +202,9 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         else if (ISInput) {
             OnInput(tableItem, cmdArr[A_Index], index)
         }
+        else if (IsStop) {
+            OnStop(tableItem, cmdArr[A_Index], index)
+        }
     }
 }
 
@@ -211,19 +215,19 @@ OnSearch(tableItem, cmd, index) {
     searchCount := Integer(searchData.SearchCount)
     searchInterval := Integer(searchData.SearchInterval)
 
-    tableItem.ActionArr[index].Set(searchData.SerialStr, [])
+    tableItem.SuccessClearActionArr[index].Set(searchData.SerialStr, [])
 
     OnSearchOnce(tableItem, searchData, index, searchCount == 1)
     loop searchCount {
         if (A_Index == 1)
             continue
 
-        if (!tableItem.ActionArr[index].Has(searchData.SerialStr)) ;第一次搜索成功就退出
+        if (!tableItem.SuccessClearActionArr[index].Has(searchData.SerialStr)) ;第一次搜索成功就退出
             break
 
         action := OnSearchOnce.Bind(tableItem, cmd, index, A_Index == searchCount)
         leftTime := GetFloatTime(searchInterval * (A_Index - 1), MySoftData.PreIntervalFloat)
-        tableItem.ActionArr[index][searchData.SerialStr].Push(action)
+        tableItem.SuccessClearActionArr[index][searchData.SerialStr].Push(action)
         SetTimer action, -leftTime
     }
 }
@@ -251,13 +255,13 @@ OnSearchOnce(tableItem, searchData, index, isFinally) {
 
     if (found || isFinally) {
         ;清除后续的搜索和搜索记录
-        if (tableItem.ActionArr[index].Has(searchData.SerialStr)) {
-            ActionArr := tableItem.ActionArr[index].Get(searchData.SerialStr)
-            loop ActionArr.Length {
-                action := ActionArr[A_Index]
+        if (tableItem.SuccessClearActionArr[index].Has(searchData.SerialStr)) {
+            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(searchData.SerialStr)
+            loop SuccessClearActionArr.Length {
+                action := SuccessClearActionArr[A_Index]
                 SetTimer action, 0
             }
-            tableItem.ActionArr[index].Delete(searchData.SerialStr)
+            tableItem.SuccessClearActionArr[index].Delete(searchData.SerialStr)
         }
     }
 
@@ -314,7 +318,7 @@ OnCompare(tableItem, cmd, index) {
 
     count := compareData.SearchCount
     interval := compareData.SearchInterval
-    tableItem.ActionArr[index].Set(compareData.TextFilter, [])
+    tableItem.SuccessClearActionArr[index].Set(compareData.TextFilter, [])
     isVaild := CompareCheckIfValid(compareData)
     if (!isVaild)
         return
@@ -324,12 +328,12 @@ OnCompare(tableItem, cmd, index) {
         if (A_Index == 1)
             continue
 
-        if (!tableItem.ActionArr[index].Has(compareData.TextFilter)) ;第一次比较成功就退出
+        if (!tableItem.SuccessClearActionArr[index].Has(compareData.TextFilter)) ;第一次比较成功就退出
             break
 
         tempAction := OnCompareOnce.Bind(tableItem, index, compareData, A_Index == count)
         leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
-        tableItem.ActionArr[index][compareData.TextFilter].Push(tempAction)
+        tableItem.SuccessClearActionArr[index][compareData.TextFilter].Push(tempAction)
         SetTimer tempAction, -leftTime
     }
 }
@@ -367,13 +371,13 @@ OnCompareOnce(tableItem, index, compareData, isFinally) {
 
     if (isOk || isFinally) {
         ;清除后续的搜索和搜索记录
-        if (tableItem.ActionArr[index].Has(compareData.TextFilter)) {
-            ActionArr := tableItem.ActionArr[index].Get(compareData.TextFilter)
-            loop ActionArr.Length {
-                action := ActionArr[A_Index]
+        if (tableItem.SuccessClearActionArr[index].Has(compareData.TextFilter)) {
+            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(compareData.TextFilter)
+            loop SuccessClearActionArr.Length {
+                action := SuccessClearActionArr[A_Index]
                 SetTimer action, 0
             }
-            tableItem.ActionArr[index].Delete(compareData.TextFilter)
+            tableItem.SuccessClearActionArr[index].Delete(compareData.TextFilter)
         }
     }
 
@@ -397,19 +401,19 @@ OnCoord(tableItem, cmd, index) {
     coordData := JSON.parse(saveStr, , false)
     count := coordData.SearchCount
     interval := coordData.SearchInterval
-    tableItem.ActionArr[index].Set(paramArr[2], [])
+    tableItem.SuccessClearActionArr[index].Set(paramArr[2], [])
 
     OnCoordOnce(tableItem, index, coordData, count == 1)
     loop count {
         if (A_Index == 1)
             continue
 
-        if (!tableItem.ActionArr[index].Has(paramArr[2])) ;第一次比较成功就退出
+        if (!tableItem.SuccessClearActionArr[index].Has(paramArr[2])) ;第一次比较成功就退出
             break
 
         tempAction := OnCoordOnce.Bind(tableItem, index, coordData, A_Index == count)
         leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
-        tableItem.ActionArr[index][paramArr[2]].Push(tempAction)
+        tableItem.SuccessClearActionArr[index][paramArr[2]].Push(tempAction)
         SetTimer tempAction, -leftTime
     }
 }
@@ -458,13 +462,13 @@ OnCoordOnce(tableItem, index, coordData, isFinally) {
 
     if (isOk || isFinally) {
         ;清除后续的搜索和搜索记录
-        if (tableItem.ActionArr[index].Has(coordData.SerialStr)) {
-            ActionArr := tableItem.ActionArr[index].Get(coordData.SerialStr)
-            loop ActionArr.Length {
-                action := ActionArr[A_Index]
+        if (tableItem.SuccessClearActionArr[index].Has(coordData.SerialStr)) {
+            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(coordData.SerialStr)
+            loop SuccessClearActionArr.Length {
+                action := SuccessClearActionArr[A_Index]
                 SetTimer action, 0
             }
-            tableItem.ActionArr[index].Delete(coordData.SerialStr)
+            tableItem.SuccessClearActionArr[index].Delete(coordData.SerialStr)
         }
     }
 }
@@ -486,6 +490,22 @@ OnInput(tableItem, cmd, index) {
     }
     else if (inputData.InputType == 3) {
         MyWinClip.Paste(A_Clipboard)
+    }
+}
+
+OnStop(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
+    saveStr := IniRead(StopFile, IniSection, paramArr[2], "")
+    stopData := JSON.parse(saveStr, , false)
+
+    if (stopData.StopType == 1) {
+        KillTableItemMacro(tableItem, index)
+    }
+    else if (stopData.StopType == 2) {
+        KillTableItemMacro(tableItem, index)
+    }
+    else if (stopData.StopType == 3) {
+        KillTableItemMacro(tableItem, stopData.StopIndex)
     }
 }
 

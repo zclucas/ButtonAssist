@@ -8,7 +8,6 @@ class StopGui {
 
         this.StopTypeCon := ""
         this.StopIndexCon := ""
-        this.StopSelfCon := ""
         this.Data := ""
     }
 
@@ -21,11 +20,12 @@ class StopGui {
         }
 
         this.Init(cmd)
+        this.OnRefresh()
         this.ToggleFunc(true)
     }
 
     AddGui() {
-        MyGui := Gui(, "停止指令编辑")
+        MyGui := Gui(, "终止指令编辑")
         this.Gui := MyGui
         MyGui.SetFont(, "Consolas")
 
@@ -47,32 +47,26 @@ class StopGui {
 
         PosX := 10
         PosY += 40
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "宏类型:")
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "宏类型:")
 
-        PosX += 80
-        this.StopTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["按键宏", "字串宏"])
+        PosX += 70
+        this.StopTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["当前宏", "按键宏", "字串宏"])
         this.StopTypeCon.Value := 1
+        this.StopTypeCon.OnEvent("Change", (*) => this.OnRefresh())
 
-        PosX += 140
+        PosX += 160
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "宏序号：")
 
-        PosX += 80
-        MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "1")
+        PosX += 70
+        this.StopIndexCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY - 5, 80, 20), "1")
 
-        PosX := 10
-        PosY += 40
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 350, 20), "输入的文本")
-
-        PosY += 20
-        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 480, 50))
-
-        PosY += 80
-        PosX += 200
+        PosY += 100
+        PosX := 200
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 500, 280))
+        MyGui.Show(Format("w{} h{}", 500, 240))
     }
 
     Init(cmd) {
@@ -81,9 +75,8 @@ class StopGui {
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetStopData(this.SerialStr)
 
-        this.TextCon.Value := this.Data.Text
-        this.StopTypeCon.Value := this.Data.InputType
-        this.StopSelfCon.Value := this.Data.IsCover
+        this.StopTypeCon.Value := this.Data.StopType
+        this.StopIndexCon.Value := this.Data.StopIndex
     }
 
     ToggleFunc(state) {
@@ -96,11 +89,16 @@ class StopGui {
         }
     }
 
+    OnRefresh() {
+        enableIndex := this.StopTypeCon.Value != 1  ;类型是1的时候，不能选择序号
+        this.StopIndexCon.Enabled := enableIndex
+    }
+
     OnClickSureBtn() {
         valid := this.CheckIfValid()
         if (!valid)
             return
-        this.SaveInputData()
+        this.SaveStopData()
         this.ToggleFunc(false)
         CommandStr := this.GetCommandStr()
         action := this.SureBtnAction
@@ -113,20 +111,20 @@ class StopGui {
     }
 
     TriggerMacro() {
-        this.SaveInputData()
+        this.SaveStopData()
         CommandStr := this.GetCommandStr()
         tableItem := MySoftData.SpecialTableItem
         tableItem.CmdActionArr[1] := []
         tableItem.KilledArr[1] := false
         tableItem.ActionCount[1] := 0
-        tableItem.ActionArr[1] := Map()
+        tableItem.SuccessClearActionArr[1] := Map()
 
-        OnInput(tableItem, CommandStr, 1)
+        ; OnStop(tableItem, CommandStr, 1)
     }
 
     GetCommandStr() {
         hasRemark := this.RemarkCon.Value != ""
-        CommandStr := "输入_" this.Data.SerialStr
+        CommandStr := "终止_" this.Data.SerialStr
         if (hasRemark) {
             CommandStr .= "_" this.RemarkCon.Value
         }
@@ -141,7 +139,7 @@ class StopGui {
     GetStopData(SerialStr) {
         saveStr := IniRead(StopFile, IniSection, SerialStr, "")
         if (!saveStr) {
-            data := InputData()
+            data := StopData()
             data.SerialStr := SerialStr
             return data
         }
@@ -150,12 +148,11 @@ class StopGui {
         return data
     }
 
-    SaveInputData() {
-        this.Data.Text := this.TextCon.Value
-        this.Data.InputType := this.StopTypeCon.Value
-        this.Data.IsCover := this.StopSelfCon.value
+    SaveStopData() {
+        this.Data.StopType := this.StopTypeCon.Value
+        this.Data.StopIndex := this.StopIndexCon.value
 
         saveStr := JSON.stringify(this.Data, 0)
-        IniWrite(saveStr, InputFile, IniSection, this.Data.SerialStr)
+        IniWrite(saveStr, StopFile, IniSection, this.Data.SerialStr)
     }
 }

@@ -452,13 +452,13 @@ InitSingleTableState(tableItem) {
     tableItem.CmdActionArr := []
     tableItem.KilledArr := []
     tableItem.ActionCount := []
-    tableItem.ActionArr := []
+    tableItem.SuccessClearActionArr := []
     tableItem.HoldKeyArr := []
     for index, value in tableItem.ModeArr {
         tableItem.KilledArr.Push(false)
         tableItem.CmdActionArr.Push([])
         tableItem.ActionCount.Push(0)
-        tableItem.ActionArr.Push(Map())
+        tableItem.SuccessClearActionArr.Push(Map())
         tableItem.HoldKeyArr.Push(Map())
     }
 }
@@ -495,13 +495,13 @@ KillTableItemMacro(tableItem, index) {
     }
     tableItem.CmdActionArr[index] := []
 
-    for key, value in tableItem.ActionArr[index] {
+    for key, value in tableItem.SuccessClearActionArr[index] {
         loop value.Length {
             action := value[A_Index]
             SetTimer action, 0
         }
     }
-    tableItem.ActionArr[index] := Map()
+    tableItem.SuccessClearActionArr[index] := Map()
 }
 
 GetTabHeight() {
