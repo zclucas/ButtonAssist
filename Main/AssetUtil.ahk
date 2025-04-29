@@ -159,7 +159,7 @@ InitData() {
     InitGui()
 }
 
-InitFilePath(){
+InitFilePath() {
     if (!DirExist(A_WorkingDir "\Setting")) {
         DirCreate(A_WorkingDir "\Setting")
     }
@@ -225,15 +225,16 @@ ReadTableItemInfo(index) {
     savedProcessNameStr := IniRead(IniFile, IniSection, symbol "ProcessNameArr", "")
     savedRemarkArrStr := IniRead(IniFile, IniSection, symbol "RemarkArr", "")
     savedLoopCountStr := IniRead(IniFile, IniSection, symbol "LoopCountArr", "")
-    savedLooseStopArrStr := IniRead(IniFile, IniSection, symbol "LooseStopArr", "")
+    savedHoldTimeArrStr := IniRead(IniFile, IniSection, symbol "HoldTimeArr", "")
+    savedTriggerTypeArrStr := IniRead(IniFile, IniSection, symbol "TriggerTypeArr", "")
 
     if (!MySoftData.HasSaved) {
         if (savedTKArrStr == "")
             savedTKArrStr := defaultInfo[1]
         if (savedMacroArrStr == "")
             savedMacroArrStr := defaultInfo[2]
-        if (savedLooseStopArrStr == "")
-            savedLooseStopArrStr := defaultInfo[3]
+        if (savedHoldTimeArrStr == "")
+            savedHoldTimeArrStr := defaultInfo[3]
         if (savedModeArrStr == "")
             savedModeArrStr := defaultInfo[4]
         if (savedForbidArrStr == "")
@@ -244,6 +245,8 @@ ReadTableItemInfo(index) {
             savedRemarkArrStr := defaultInfo[7]
         if (savedLoopCountStr == "")
             savedLoopCountStr := defaultInfo[8]
+        if (savedTriggerTypeArrStr == "")
+            savedTriggerTypeArrStr := defaultInfo[9]
     }
 
     tableItem := MySoftData.TableInfo[index]
@@ -254,7 +257,8 @@ ReadTableItemInfo(index) {
     SetArr(savedProcessNameStr, "π", tableItem.ProcessNameArr)
     SetArr(savedRemarkArrStr, "π", tableItem.RemarkArr)
     SetIntArr(savedLoopCountStr, "π", tableItem.LoopCountArr)
-    SetArr(savedLooseStopArrStr, "π", tableItem.LooseStopArr)
+    SetArr(savedHoldTimeArrStr, "π", tableItem.HoldTimeArr)
+    SetArr(savedTriggerTypeArrStr, "π", tableItem.TriggerTypeArr)
 }
 
 SetArr(str, symbol, Arr) {
@@ -290,41 +294,44 @@ GetTableItemDefaultInfo(index) {
     savedProcessNameStr := ""
     savedRemarkArrStr := ""
     savedLoopCountStr := ""
-    savedLooseStopArrStr := ""
+    savedHoldTimeArrStr := ""
+    savedTriggerTypeStr := ""
     symbol := GetTableSymbol(index)
 
     if (symbol == "Normal") {
         savedTKArrStr := "k"
         savedMacroArrStr := "按键_a_30_1_30_50,间隔_3000"
-        savedLooseStopArrStr := "0"
+        savedHoldTimeArrStr := "0"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
         savedRemarkArrStr := "取消禁止配置才能生效"
         savedLoopCountStr := "1"
-
+        savedTriggerTypeStr := "1"
     }
     else if (symbol == "String") {
         savedTKArrStr := ":?*:AA"
         savedMacroArrStr := "按键_LButton_50,间隔_50,移动_100_100_90"
-        savedLooseStopArrStr := "0"
+        savedHoldTimeArrStr := "0"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
         savedRemarkArrStr := "按两次a触发"
         savedLoopCountStr := "1"
+        savedTriggerTypeStr := "1"
     }
     else if (symbol == "Replace") {
         savedTKArrStr := "l"
         savedMacroArrStr := "Left,a"
-        savedLooseStopArrStr := "0"
+        savedHoldTimeArrStr := "0"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
+        savedTriggerTypeStr := "1"
     }
-    return [savedTKArrStr, savedMacroArrStr, savedLooseStopArrStr, savedModeArrStr, savedForbidArrStr,
+    return [savedTKArrStr, savedMacroArrStr, savedHoldTimeArrStr, savedModeArrStr, savedForbidArrStr,
         savedProcessNameStr, savedRemarkArrStr,
-        savedLoopCountStr]
+        savedLoopCountStr, savedTriggerTypeStr]
 }
 
 ;资源保存
@@ -362,11 +369,12 @@ SaveTableItemInfo(index) {
     IniWrite(SavedInfo[1], IniFile, IniSection, symbol "TKArr")
     IniWrite(SavedInfo[2], IniFile, IniSection, symbol "MacroArr")
     IniWrite(SavedInfo[3], IniFile, IniSection, symbol "ModeArr")
-    IniWrite(SavedInfo[4], IniFile, IniSection, symbol "LooseStopArr")
+    IniWrite(SavedInfo[4], IniFile, IniSection, symbol "HoldTimeArr")
     IniWrite(SavedInfo[5], IniFile, IniSection, symbol "ForbidArr")
     IniWrite(SavedInfo[6], IniFile, IniSection, symbol "ProcessNameArr")
     IniWrite(SavedInfo[7], IniFile, IniSection, symbol "RemarkArr")
     IniWrite(SavedInfo[8], IniFile, IniSection, symbol "LoopCountArr")
+    IniWrite(SavedInfo[9], IniFile, IniSection, symbol "TriggerTypeArr")
 }
 
 GetSavedTableItemInfo(index) {
@@ -374,11 +382,13 @@ GetSavedTableItemInfo(index) {
     TKArrStr := ""
     MacroArrStr := ""
     ModeArrStr := ""
-    LooseStopArrStr := ""
+    HoldTimeArrStr := ""
     ForbidArrStr := ""
     ProcessNameArrStr := ""
     RemarkArrStr := ""
     LoopCountArrStr := ""
+    TriggerTypeArrStr := ""
+
     tableItem := MySoftData.TableInfo[index]
     symbol := GetTableSymbol(index)
 
@@ -387,25 +397,27 @@ GetSavedTableItemInfo(index) {
         MacroArrStr .= tableItem.InfoConArr[A_Index].Value
         ModeArrStr .= tableItem.ModeConArr[A_Index].Value
         ForbidArrStr .= tableItem.ForbidConArr[A_Index].Value
-        LooseStopArrStr .= tableItem.LooseStopConArr[A_Index].Value
+        HoldTimeArrStr .= tableItem.HoldTimeConArr[A_Index].Value
         ProcessNameArrStr .= tableItem.ProcessNameConArr[A_Index].Value
         RemarkArrStr .= tableItem.RemarkConArr.Length >= A_Index ? tableItem.RemarkConArr[A_Index].Value : ""
+        TriggerTypeArrStr .= tableItem.TriggerTypeConArr.Length >= A_Index ? tableItem.TriggerTypeConArr[A_Index].Value : ""
         LoopCountArrStr .= GetItemSaveCountValue(tableItem.Index, A_Index)
 
         if (tableItem.ModeArr.Length > A_Index) {
             TKArrStr .= "π"
             MacroArrStr .= "π"
             ModeArrStr .= "π"
-            LooseStopArrStr .= "π"
+            HoldTimeArrStr .= "π"
             ForbidArrStr .= "π"
             ProcessNameArrStr .= "π"
             RemarkArrStr .= "π"
             LoopCountArrStr .= "π"
+            TriggerTypeArrStr .= "π"
         }
     }
     MacroArrStr := StrReplace(MacroArrStr, "`n", ",")
-    return [TKArrStr, MacroArrStr, ModeArrStr, LooseStopArrStr, ForbidArrStr, ProcessNameArrStr, RemarkArrStr,
-        LoopCountArrStr]
+    return [TKArrStr, MacroArrStr, ModeArrStr, HoldTimeArrStr, ForbidArrStr, ProcessNameArrStr, RemarkArrStr,
+        LoopCountArrStr, TriggerTypeArrStr]
 }
 
 SaveWinPos() {
@@ -454,12 +466,16 @@ InitSingleTableState(tableItem) {
     tableItem.ActionCount := []
     tableItem.SuccessClearActionArr := []
     tableItem.HoldKeyArr := []
+    tableItem.ToggleStateArr := []
+    tableItem.ToggleActionArr := []
     for index, value in tableItem.ModeArr {
         tableItem.KilledArr.Push(false)
         tableItem.CmdActionArr.Push([])
         tableItem.ActionCount.Push(0)
         tableItem.SuccessClearActionArr.Push(Map())
         tableItem.HoldKeyArr.Push(Map())
+        tableItem.ToggleStateArr.Push(false)
+        tableItem.ToggleActionArr.Push("")
     }
 }
 
@@ -470,6 +486,8 @@ KillSingleTableMacro(tableItem) {
 }
 
 KillTableItemMacro(tableItem, index) {
+    if (tableItem.KilledArr.Length < index)
+        return
     tableItem.KilledArr[index] := true
     for key, value in tableItem.HoldKeyArr[index] {
         if (value == "Game") {
@@ -542,7 +560,6 @@ GetItemSaveCountValue(tableIndex, Index) {
     return 1
 }
 
-
 GetRecordMacroEditStr(macro) {
     CommandArr := SplitMacro(macro)
     macroEditStr := ""
@@ -603,7 +620,6 @@ GetRecordMacroEditStr(macro) {
     }
     return macroEditStr
 }
-
 
 CheckIsNormalTable(index) {
     symbol := GetTableSymbol(index)
@@ -697,7 +713,7 @@ GetScreenTextObjArr(X1, Y1, X2, Y2) {
     return result
 }
 
-CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text){
+CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text) {
     result := GetScreenTextObjArr(X1, Y1, X2, Y2)
     if (result == "" || !result)
         return false
@@ -713,7 +729,7 @@ CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text){
     return isContain
 }
 
-GetMatchCoord(screenTextObj, x1, y1){
+GetMatchCoord(screenTextObj, x1, y1) {
     value := screenTextObj
     pointX := value.boxPoint[1].x + value.boxPoint[2].x + value.boxPoint[3].x + value.boxPoint[4].x
     pointY := value.boxPoint[1].y + value.boxPoint[2].y + value.boxPoint[3].y + value.boxPoint[4].y
@@ -731,20 +747,20 @@ IsClipboardText() {
     return false
 }
 
-ClearUselessSetting(deleteMacro){
+ClearUselessSetting(deleteMacro) {
     if (deleteMacro == "")
         return
     RegExMatch(deleteMacro, "(Compare\d+)", &match)
-    match := match != "" ? match : [] 
-    for id, value in match{
+    match := match != "" ? match : []
+    for id, value in match {
         if (value == "")
             continue
         IniDelete(CompareFile, IniSection, value)
     }
 
     RegExMatch(deleteMacro, "(Coord\d+)", &match)
-    match := match != "" ? match : [] 
-    for id, value in match{
+    match := match != "" ? match : []
+    for id, value in match {
         if (value == "")
             continue
         IniDelete(CoordFile, IniSection, value)

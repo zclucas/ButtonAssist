@@ -2,30 +2,35 @@ class TableItem {
     __New() {
         this.TKArr := []
         this.MacroArr := []
-        this.LooseStopArr := []
+        this.HoldTimeArr := []
         this.ModeArr := []
         this.ForbidArr := []
         this.ProcessNameArr := []
         this.LoopCountArr := []
         this.RemarkArr := []
+        this.TriggerTypeArr := []
         this.TKConArr := []
         this.InfoConArr := []
         this.KeyBtnConArr := []
         this.MacroBtnConArr := []
         this.DeleteBtnConArr := []
-        this.LooseStopConArr := []
+        this.HoldTimeConArr := []
         this.ModeConArr := []
         this.ForbidConArr := []
         this.ProcessNameConArr := []
         this.LoopCountConArr := []
         this.RemarkTextConArr := []
         this.RemarkConArr := []
+        this.IndexConArr := []
+        this.TriggerTypeConArr := []
 
         this.CmdActionArr := []     
         this.SuccessClearActionArr := []        ;成功后清除后续操作
         this.HoldKeyArr := []
         this.KilledArr := []
         this.ActionCount := []      ; 记录执行次数，用于循环次数判断
+        this.ToggleStateArr := []   ; 触发键开关状态
+        this.ToggleActionArr := []   ; 触发键开关Action
         this.UnderPosY := 0
         this.Index := 0
     }

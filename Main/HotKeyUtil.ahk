@@ -104,9 +104,9 @@ GetMacroAction(tableIndex, index) {
     actionDown := ""
     actionUp := ""
 
-    if (tableSymbol == "Normal" || tableSymbol == "String") {
-        actionDown := GetClosureAction(tableItem, macro, index, OnTriggerMacroKeyAndInit)
-        actionUp := GetClosureAction(tableItem, macro, index, OnStopMacro)
+    if (tableSymbol == "Normal") {
+        actionDown := GetClosureAction(tableItem, macro, index, OnTriggerKeyDown)
+        actionUp := GetClosureAction(tableItem, macro, index, OnTriggerKeyUp)
     }
     else if (tableSymbol == "String") {
         actionDown := GetClosureAction(tableItem, macro, index, OnTriggerMacroKeyAndInit)
@@ -157,7 +157,7 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
         OnTriggerMacroOnce(tableItem, macro, index)
         tableItem.ActionCount[index]++
     }
-
+    OnFinishMacro(tableItem, macro, index)
 }
 
 OnTriggerMacroOnce(tableItem, macro, index) {
@@ -502,10 +502,12 @@ OnStop(tableItem, cmd, index) {
         KillTableItemMacro(tableItem, index)
     }
     else if (stopData.StopType == 2) {
-        KillTableItemMacro(tableItem, index)
+        stopTableItem := MySoftData.TableInfo[1]
+        KillTableItemMacro(stopTableItem, stopData.StopIndex)
     }
     else if (stopData.StopType == 3) {
-        KillTableItemMacro(tableItem, stopData.StopIndex)
+        stopTableItem := MySoftData.TableInfo[2]
+        KillTableItemMacro(stopTableItem, stopData.StopIndex)
     }
 }
 
@@ -588,14 +590,54 @@ OnPressKey(tableItem, cmd, index) {
     }
 }
 
-;松开停止
-OnStopMacro(tableItem, macro, index) {
-    if (tableItem.LooseStopArr.Length < index)
-        return
-    if (tableItem.LooseStopArr[index] == false)
-        return
-    KillTableItemMacro(tableItem, index)
+OnTriggerKeyDown(tableItem, macro, index) {
+    if (tableItem.TriggerTypeArr[index] == 1) { ;按下触发
+        OnTriggerMacroKeyAndInit(tableItem, macro, index)
+    }
+    else if (tableItem.TriggerTypeArr[index] == 3) { ;松开停止
+        OnTriggerMacroKeyAndInit(tableItem, macro, index)
+    }
+    else if (tableItem.TriggerTypeArr[index] == 4) {  ;开关
+        if (tableItem.ToggleStateArr.Length < index)
+            return
+        isTrigger := tableItem.ToggleStateArr[index]
+        if (!isTrigger) {
+            action := OnTriggerMacroKeyAndInit.Bind(tableItem, macro, index)
+            SetTimer(action, -1)
+            tableItem.ToggleActionArr[index] := action
+            tableItem.ToggleStateArr[index] := true
+        }
+        else {
+            action := tableItem.ToggleActionArr[index]
+            if (action == "")
+                return
+    
+            SetTimer(action, 0)
+            KillTableItemMacro(tableItem, index)
+            tableItem.ToggleStateArr[index] := false
+        }
+    }
+}
 
+;松开停止
+OnTriggerKeyUp(tableItem, macro, index) {
+    if (tableItem.TriggerTypeArr[index] == 2) { ;松开触发
+        OnTriggerMacroKeyAndInit(tableItem, macro, index)
+    }
+    else if (tableItem.TriggerTypeArr[index] == 3) {  ;松开停止
+        if (tableItem.HoldTimeArr.Length < index)
+            return
+
+        KillTableItemMacro(tableItem, index)
+    }
+}
+
+OnFinishMacro(tableItem, macro, index) {
+    if (tableItem.TriggerTypeArr[index] == 4) {  ;开关
+        if (tableItem.ToggleStateArr.Length < index)
+            return
+        tableItem.ToggleStateArr[index] := false
+    }
 }
 
 ;按键替换
@@ -658,7 +700,7 @@ OnTableDelete(tableItem, index) {
     MySoftData.BtnAdd.Enabled := false
     tableItem.ModeArr.RemoveAt(index)
     tableItem.ForbidArr.RemoveAt(index)
-    tableItem.LooseStopArr.RemoveAt(index)
+    tableItem.HoldTimeArr.RemoveAt(index)
     if (tableItem.TKArr.Length >= index)
         tableItem.TKArr.RemoveAt(index)
     if (tableItem.MacroArr.Length >= index)
@@ -669,10 +711,11 @@ OnTableDelete(tableItem, index) {
         tableItem.LoopCountArr.RemoveAt(index)
     if (tableItem.RemarkArr.Length >= index)
         tableItem.RemarkArr.RemoveAt(index)
-
+    tableItem.IndexConArr.RemoveAt(index)
+    tableItem.TriggerTypeConArr.RemoveAt(index)
     tableItem.ModeConArr.RemoveAt(index)
     tableItem.ForbidConArr.RemoveAt(index)
-    tableItem.LooseStopConArr.RemoveAt(index)
+    tableItem.HoldTimeConArr.RemoveAt(index)
     tableItem.TKConArr.RemoveAt(index)
     tableItem.InfoConArr.RemoveAt(index)
     tableItem.ProcessNameConArr.RemoveAt(index)
@@ -680,6 +723,12 @@ OnTableDelete(tableItem, index) {
     tableItem.RemarkConArr.RemoveAt(index)
 
     OnSaveSetting()
+}
+
+OnChangeTriggerType(tableItem, index) {
+    typeValue := tableItem.TriggerTypeConArr[index].Value
+    enableHoldTime := typeValue == 5
+    tableItem.HoldTimeConArr[index].Enabled := enableHoldTime
 }
 
 OnTableEditMacro(tableItem, index) {
