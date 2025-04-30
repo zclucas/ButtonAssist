@@ -1,5 +1,5 @@
 #Requires AutoHotkey v2.0
-#SingleInstance Force 
+#SingleInstance Force
 SetWorkingDir A_ScriptDir
 #Include Joy\SuperCvJoyInterface.ahk
 #Include Joy\JoyMacro.ahk
@@ -32,15 +32,7 @@ global MyMacroGui := MacroEditGui()
 global MyReplaceKeyGui := ReplaceKeyGui()
 global MyWinClip := WinClip()
 
-global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
-global SearchFile := A_WorkingDir "\Setting\SearchFile.ini"
-global CompareFile := A_WorkingDir "\Setting\CompareFile.ini"
-global CoordFile := A_WorkingDir "\Setting\CoordFile.ini"
-global FileFile := A_WorkingDir "\Setting\FileFile.ini"
-global InputFile := A_WorkingDir "\Setting\InputFile.ini"
-global StopFile := A_WorkingDir "\Setting\InputFile.ini"
-global IniSection := "UserSettings"
-
+InitFilePath()
 LoadSetting()
 InitData()
 InitUI()

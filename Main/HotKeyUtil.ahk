@@ -176,8 +176,9 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsFile := StrCompare(paramArr[1], "文件", false) == 0
         IsCompare := StrCompare(paramArr[1], "比较", false) == 0
         IsCoord := StrCompare(paramArr[1], "坐标", false) == 0
-        ISInput := StrCompare(paramArr[1], "输入", false) == 0
+        ISOutput := StrCompare(paramArr[1], "输出", false) == 0
         IsStop := StrCompare(paramArr[1], "终止", false) == 0
+        isVariable := StrCompare(paramArr[1], "变量", false) == 0
         if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
@@ -199,11 +200,14 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         else if (IsCoord) {
             OnCoord(tableItem, cmdArr[A_Index], index)
         }
-        else if (ISInput) {
-            OnInput(tableItem, cmdArr[A_Index], index)
+        else if (ISOutput) {
+            OnOutput(tableItem, cmdArr[A_Index], index)
         }
         else if (IsStop) {
             OnStop(tableItem, cmdArr[A_Index], index)
+        }
+        else if (isVariable) {
+            OnVariable(tableItem, cmdArr[A_Index], index)
         }
     }
 }
@@ -473,22 +477,22 @@ OnCoordOnce(tableItem, index, coordData, isFinally) {
     }
 }
 
-OnInput(tableItem, cmd, index) {
+OnOutput(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    saveStr := IniRead(InputFile, IniSection, paramArr[2], "")
-    inputData := JSON.parse(saveStr, , false)
+    saveStr := IniRead(OutputFile, IniSection, paramArr[2], "")
+    OutputData := JSON.parse(saveStr, , false)
 
-    if (inputData.IsCover) {
-        A_Clipboard := inputData.Text
+    if (OutputData.IsCover) {
+        A_Clipboard := OutputData.Text
     }
 
-    if (inputData.InputType == 1) {
-        SendText(inputData.Text)
+    if (OutputData.OutputType == 1) {
+        SendText(OutputData.Text)
     }
-    else if (inputData.InputType == 2) {
+    else if (OutputData.OutputType == 2) {
         Send "^v"
     }
-    else if (inputData.InputType == 3) {
+    else if (OutputData.OutputType == 3) {
         MyWinClip.Paste(A_Clipboard)
     }
 }
@@ -510,6 +514,30 @@ OnStop(tableItem, cmd, index) {
         KillTableItemMacro(stopTableItem, stopData.StopIndex)
     }
 }
+
+OnVariable(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
+    saveStr := IniRead(VariableFile, IniSection, paramArr[2], "")
+    variableData := JSON.parse(saveStr, , false)
+
+    VariableMap := tableItem.VariableMapArr[index]
+    loop 4 {
+        if (!variableData.ToggleArr[A_Index])
+            continue
+
+        name := variableData.NameArr[A_Index]
+        value := variableData.ValueArr[A_Index]
+        if (variableData.CreateType == 2) {
+            copyName := variableData.CopyNameArr[A_Index]
+            if (VariableMap.Has(copyName)) {
+                value := VariableMap[copyName]
+            }
+        }
+        VariableMap[name] := value
+    }
+}
+
+
 
 OnMouseMove(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
@@ -619,11 +647,11 @@ OnTriggerKeyDown(tableItem, macro, index) {
     }
     else if (tableItem.TriggerTypeArr[index] == 5) {
         Sleep(tableItem.HoldTimeArr[index])
-        
+
         keyCombo := LTrim(tableItem.TKArr[index], "~")
         if (AreKeysPressed(keyCombo))
             OnTriggerMacroKeyAndInit(tableItem, macro, index)
-    }   
+    }
 }
 
 ;松开停止

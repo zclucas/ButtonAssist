@@ -118,8 +118,9 @@ class StopGui {
         tableItem.KilledArr[1] := false
         tableItem.ActionCount[1] := 0
         tableItem.SuccessClearActionArr[1] := Map()
+        tableItem.VariableMapArr[1] := Map()
 
-        ; OnStop(tableItem, CommandStr, 1)
+        OnStop(tableItem, CommandStr, 1)
     }
 
     GetCommandStr() {

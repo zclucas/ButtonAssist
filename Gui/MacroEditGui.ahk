@@ -6,8 +6,9 @@
 #Include FileGui.ahk
 #Include CompareGui.ahk
 #Include CoordGui.ahk
-#Include InputGui.ahk
+#Include OutputGui.ahk
 #Include StopGui.ahk
+#Include VariableGui.ahk
 
 class MacroEditGui {
     __new() {
@@ -68,13 +69,17 @@ class MacroEditGui {
         this.CoordGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("坐标", this.CoordGui)
 
-        this.InputGui := InputGui()
-        this.InputGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.SubGuiMap.Set("输入", this.InputGui)
+        this.OutputGui := OutputGui()
+        this.OutputGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("输出", this.OutputGui)
 
         this.StopGui := StopGui()
         this.StopGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("终止", this.StopGui)
+    
+        this.VariableGui := VariableGui()
+        this.VariableGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("变量", this.VariableGui)
     }
 
     GetSubGuiSymbol(subGui) {
@@ -152,10 +157,10 @@ class MacroEditGui {
         this.CmdBtnConMap.Set("移动", btnCon)
 
         PosX += 100
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "输入")
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "输出")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
-        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.InputGui))
-        this.CmdBtnConMap.Set("输入", btnCon)
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.OutputGui))
+        this.CmdBtnConMap.Set("输出", btnCon)
 
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "文件")
@@ -180,6 +185,12 @@ class MacroEditGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.StopGui))
         this.CmdBtnConMap.Set("终止", btnCon)
+    
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "变量")
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.VariableGui))
+        this.CmdBtnConMap.Set("变量", btnCon)
 
         PosX := 20
         PosY += 140
@@ -320,13 +331,18 @@ class MacroEditGui {
                 macroEditStr .= value
             }
 
-            isInput := StrCompare(SubStr(value, 1, 2), "输入", false) == 0
-            if (isInput){
+            isOutput := StrCompare(SubStr(value, 1, 2), "输出", false) == 0
+            if (isOutput){
                 macroEditStr .= value
             }
 
             isStop := StrCompare(SubStr(value, 1, 2), "终止", false) == 0
             if (isStop){
+                macroEditStr .= value
+            }
+
+            isVariable := StrCompare(SubStr(value, 1, 2), "变量", false) == 0
+            if (isVariable){
                 macroEditStr .= value
             }
 

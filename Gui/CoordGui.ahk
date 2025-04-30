@@ -71,7 +71,7 @@ class CoordGui {
 
         PosY += 20
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "F1:选取搜索范围")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "F1:左键选取搜索范围")
 
         PosY += 20
         PosX := 10
@@ -295,6 +295,7 @@ class CoordGui {
         tableItem.KilledArr[1] := false
         tableItem.ActionCount[1] := 0
         tableItem.SuccessClearActionArr[1] := Map()
+        tableItem.VariableMapArr[1] := Map()
         OnCoord(tableItem, this.CommandStr, 1)
     }
 

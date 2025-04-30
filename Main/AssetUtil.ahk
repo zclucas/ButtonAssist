@@ -163,6 +163,16 @@ InitFilePath() {
     if (!DirExist(A_WorkingDir "\Setting")) {
         DirCreate(A_WorkingDir "\Setting")
     }
+
+    global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
+    global SearchFile := A_WorkingDir "\Setting\SearchFile.ini"
+    global CompareFile := A_WorkingDir "\Setting\CompareFile.ini"
+    global CoordFile := A_WorkingDir "\Setting\CoordFile.ini"
+    global FileFile := A_WorkingDir "\Setting\FileFile.ini"
+    global OutputFile := A_WorkingDir "\Setting\OutputFile.ini"
+    global StopFile := A_WorkingDir "\Setting\StopFile.ini"
+    global VariableFile := A_WorkingDir "\Setting\VariableFile.ini"
+    global IniSection := "UserSettings"
 }
 
 ;手柄轴未使用时，状态会变为0，而非中间值
@@ -469,6 +479,7 @@ InitSingleTableState(tableItem) {
     tableItem.HoldKeyArr := []
     tableItem.ToggleStateArr := []
     tableItem.ToggleActionArr := []
+    tableItem.VariableMapArr := []
     for index, value in tableItem.ModeArr {
         tableItem.KilledArr.Push(false)
         tableItem.CmdActionArr.Push([])
@@ -477,6 +488,7 @@ InitSingleTableState(tableItem) {
         tableItem.HoldKeyArr.Push(Map())
         tableItem.ToggleStateArr.Push(false)
         tableItem.ToggleActionArr.Push("")
+        tableItem.VariableMapArr.Push(Map())
     }
 }
 

@@ -165,6 +165,7 @@ class FileGui {
         tableItem.KilledArr[1] := false
         tableItem.ActionCount[1] := 0
         tableItem.SuccessClearActionArr[1] := Map()
+        tableItem.VariableMapArr[1] := Map()
 
         OnRunFile(tableItem, this.CommandStr, 1)
     }

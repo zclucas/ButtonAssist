@@ -24,13 +24,14 @@ class TableItem {
         this.IndexConArr := []
         this.TriggerTypeConArr := []
 
-        this.CmdActionArr := []     
+        this.CmdActionArr := []
         this.SuccessClearActionArr := []        ;成功后清除后续操作
         this.HoldKeyArr := []
         this.KilledArr := []
         this.ActionCount := []      ; 记录执行次数，用于循环次数判断
         this.ToggleStateArr := []   ; 触发键开关状态
         this.ToggleActionArr := []   ; 触发键开关Action
+        this.VariableMapArr := []    ;  每条宏对应的变量映射
         this.UnderPosY := 0
         this.Index := 0
     }
@@ -268,19 +269,38 @@ class FileData {
     }
 }
 
-class InputData {
+class OutputData {
     __New() {
         this.SerialStr := ""
         this.Text := ""
         this.IsCover := 1
-        this.InputType := 1
+        this.OutputType := 1
     }
 }
 
 class StopData {
-    __New(){
+    __New() {
         this.SerialStr := ""
         this.StopType := 1
         this.StopIndex := 1
+    }
+}
+
+class VariableData {
+    __New() {
+        this.SerialStr := ""
+        this.CreateType := 1
+        this.ToggleArr := [1, 0, 0, 0]
+        this.NameArr := ["Num1", "Num2", "Num3", "Num4"]
+        this.ValueArr := [0, 0, 0, 0]
+        this.CopyNameArr := ["NameA", "NameB", "NameC", "NameD"]
+        this.ExtractStr := ""
+        this.ExtractType := 1
+        this.StartPosX := 0
+        this.StartPosY := 0
+        this.EndPosX := A_ScreenWidth
+        this.EndPosY := A_ScreenHeight
+        this.SearchCount := 1
+        this.SearchInterval := 1000
     }
 }
