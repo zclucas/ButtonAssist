@@ -611,12 +611,19 @@ OnTriggerKeyDown(tableItem, macro, index) {
             action := tableItem.ToggleActionArr[index]
             if (action == "")
                 return
-    
+
             SetTimer(action, 0)
             KillTableItemMacro(tableItem, index)
             tableItem.ToggleStateArr[index] := false
         }
     }
+    else if (tableItem.TriggerTypeArr[index] == 5) {
+        Sleep(tableItem.HoldTimeArr[index])
+        
+        keyCombo := LTrim(tableItem.TKArr[index], "~")
+        if (AreKeysPressed(keyCombo))
+            OnTriggerMacroKeyAndInit(tableItem, macro, index)
+    }   
 }
 
 ;松开停止
@@ -727,7 +734,7 @@ OnTableDelete(tableItem, index) {
 
 OnChangeTriggerType(tableItem, index) {
     typeValue := tableItem.TriggerTypeConArr[index].Value
-    enableHoldTime := typeValue == 5
+    enableHoldTime := typeValue == 5    ;长按才能编辑长按时间
     tableItem.HoldTimeConArr[index].Enabled := enableHoldTime
 }
 

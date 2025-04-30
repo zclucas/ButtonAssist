@@ -400,7 +400,8 @@ GetSavedTableItemInfo(index) {
         HoldTimeArrStr .= tableItem.HoldTimeConArr[A_Index].Value
         ProcessNameArrStr .= tableItem.ProcessNameConArr[A_Index].Value
         RemarkArrStr .= tableItem.RemarkConArr.Length >= A_Index ? tableItem.RemarkConArr[A_Index].Value : ""
-        TriggerTypeArrStr .= tableItem.TriggerTypeConArr.Length >= A_Index ? tableItem.TriggerTypeConArr[A_Index].Value : ""
+        TriggerTypeArrStr .= tableItem.TriggerTypeConArr.Length >= A_Index ? tableItem.TriggerTypeConArr[A_Index].Value :
+            ""
         LoopCountArrStr .= GetItemSaveCountValue(tableItem.Index, A_Index)
 
         if (tableItem.ModeArr.Length > A_Index) {
@@ -765,4 +766,73 @@ ClearUselessSetting(deleteMacro) {
             continue
         IniDelete(CoordFile, IniSection, value)
     }
+}
+
+AreKeysPressed(keyCombo) {
+    ; 初始化存储修饰键的数组
+    modifiers := []
+    modPrefixes := ["^", "<^", ">^", "!", "<!", ">!", "+", "<+", ">+", "#", "<#", ">#"]
+    ; 检查是否以修饰键开头
+    for prefix in modPrefixes {
+        if (SubStr(keyCombo, 1, StrLen(prefix)) == prefix) {
+            modifiers.Push(prefix)
+            keyCombo := SubStr(keyCombo, StrLen(prefix) + 1)
+            break
+        }
+    }
+    ; 剩余部分是主键
+    mainKey := keyCombo
+
+    ; 检查所有修饰键是否按下
+    for mod in modifiers {
+        switch mod {
+            case "^": if (!GetKeyState("Ctrl"))
+                return false
+            case "<^": if !GetKeyState("LCtrl")
+                return false
+            case ">^": if !GetKeyState("RCtrl")
+                return false
+
+            case "!": if !(GetKeyState("Alt"))
+                return false
+            case "<!": if !GetKeyState("LAlt")
+                return false
+            case ">!": if !GetKeyState("RAlt")
+                return false
+            case "+": if !(GetKeyState("Shift"))
+                return false
+            case "<+": if !GetKeyState("LShift")
+                return false
+            case ">+": if !GetKeyState("RShift")
+                return false
+            case "#": if !(GetKeyState("Win"))
+                return false
+            case "<#": if !GetKeyState("LWin")
+                return false
+            case ">#": if !GetKeyState("RWin")
+                return false
+
+            default: return false  ; 未知修饰键
+        }
+    }
+
+    isJoyKey := RegExMatch(mainKey, "Joy")
+    if (mainKey == "") {
+        return true
+    }
+    if (isJoyKey) {
+        isJoyAxis := RegExMatch(mainKey, "Min") || RegExMatch(mainKey, "Max")
+        joyName := isJoyAxis ? SubStr(mainKey, 1, 4) : mainKey
+
+        loop 4 {
+            state := GetKeyState(A_Index joyName)
+            if (state)
+                return true
+        }
+    }
+    else if (GetKeyState(mainKey, "P")) {  ; 检查主键（如果有）
+        return true
+    }
+
+    return false
 }
