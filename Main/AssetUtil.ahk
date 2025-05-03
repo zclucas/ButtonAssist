@@ -68,25 +68,14 @@ GetImageSize(imageFile) {
 SplitMacro(info) {
     resultArr := []
     lastSymbolIndex := 0
-    leftBracket := 0
 
     loop parse info {
 
-        if (A_LoopField == "(") {
-            leftBracket += 1
-        }
-
-        if (A_LoopField == ")") {
-            leftBracket -= 1
-        }
-
         if (A_LoopField == ",") {
-            if (leftBracket == 0) {
-                curCmd := SubStr(info, lastSymbolIndex + 1, A_Index - lastSymbolIndex - 1)
-                if (curCmd != "")
-                    resultArr.Push(curCmd)
-                lastSymbolIndex := A_Index
-            }
+            curCmd := SubStr(info, lastSymbolIndex + 1, A_Index - lastSymbolIndex - 1)
+            if (curCmd != "")
+                resultArr.Push(curCmd)
+            lastSymbolIndex := A_Index
         }
 
         if (A_Index == StrLen(info)) {
@@ -151,9 +140,55 @@ SplitKeyCommand(macro) {
     return result
 }
 
+EditListen() {
+    ; 设置消息监听
+    OnMessage(0x0204, WM_RBUTTONDOWN)  ; WM_RBUTTONDOWN
+    OnMessage(0x0205, WM_RBUTTONUP)    ; WM_RBUTTONUP
+}
+
+WM_RBUTTONDOWN(wParam, lParam, msg, hwnd) {
+    global MySoftData
+    static EM_CHARFROMPOS := 0x00D7
+    ; 检查是否点击在Edit控件上
+    if (hwnd = MySoftData.MacroEditCon.Hwnd) {
+        ; 获取点击位置坐标
+        x := lParam & 0xFFFF
+        y := lParam >> 16
+
+        ; 将坐标转换为字符位置
+        charPos := SendMessage(EM_CHARFROMPOS, 0, (y << 16) | (x & 0xFFFF), MySoftData.MacroEditCon)
+
+        ; 低位字是字符索引
+        charIndex := charPos & 0xFFFF
+
+        ; 设置光标位置
+        PostMessage(0x00B1, charIndex, charIndex, MySoftData.MacroEditCon)  ; EM_SETSEL
+        MySoftData.MacroEditGui.CheckIfChangeLineNum()
+        return 0  ; 阻止默认右键菜单
+    }
+}
+
+WM_RBUTTONUP(wParam, lParam, msg, hwnd) {
+    static EM_CHARFROMPOS := 0x00D7
+
+    ; 检查是否是在我们的Edit控件上
+    if (hwnd = MySoftData.MacroEditCon.Hwnd) {
+
+    }
+
+    ; 检查是否在Edit控件上释放右键
+    if (hwnd = MySoftData.MacroEditCon.Hwnd) {
+        ; 获取鼠标位置
+        x := lParam & 0xFFFF
+        y := lParam >> 16
+        menum := MySoftData.MacroEditGui.CreateMenu()
+        menum.Show(x, y)  ; 在鼠标位置显示菜单
+        return 0  ; 阻止默认行为
+    }
+}
+
 ;初始化数据
 InitData() {
-    InitFilePath()
     InitTableItemState()
     InitJoyAxis()
     InitGui()

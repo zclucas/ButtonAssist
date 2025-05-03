@@ -4,12 +4,14 @@ class VariableGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
+        this.MacroEditGui := ""
         this.RemarkCon := ""
 
         this.CreateTypeCon := ""
         this.ToggleConArr := []
         this.NameConArr := []
         this.ValueConArr := []
+        this.SelectCopyConArr := []
         this.CopyConArr := []
         this.ExtractStrCon := ""
         this.ExtractTypeCon := ""
@@ -61,13 +63,14 @@ class VariableGui {
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "创建方式:")
 
         PosX += 70
-        this.CreateTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["赋值", "复制", "提取"])
+        this.CreateTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["赋值", "选择复制", "复制",
+            "提取"])
         this.CreateTypeCon.OnEvent("Change", (*) => this.OnRefresh())
 
         {
             PosX := 10
             PosY += 25
-            MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 580, 100), "变量：")
+            MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 780, 100), "变量：")
 
             PosX := 11
             PosY += 20
@@ -80,9 +83,12 @@ class VariableGui {
             MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 70, 20), "初始值")
 
             PosX += 75
-            MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 80, 20), "复制对象")
+            MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 80, 20), "选择复制")
 
-            PosX := 300
+            PosX += 90
+            MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 80, 20), "复制")
+
+            PosX := 400
             MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 50, 20), "开关")
 
             PosX += 50
@@ -93,6 +99,9 @@ class VariableGui {
 
             PosX += 75
             MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 80, 20), "复制对象")
+
+            PosX += 90
+            MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 80, 20), "复制")
 
             PosX := 10
             PosY += 20
@@ -110,9 +119,13 @@ class VariableGui {
 
             PosX += 75
             con := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX, PosY - 2, 80), [])
+            this.SelectCopyConArr.Push(con)
+
+            PosX += 90
+            con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 2, 80), "")
             this.CopyConArr.Push(con)
 
-            PosX := 300
+            PosX := 400
             con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX + 20, PosY, 30, 20), "")
             con.Value := 0
             this.ToggleConArr.Push(con)
@@ -127,6 +140,10 @@ class VariableGui {
 
             PosX += 75
             con := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX, PosY - 2, 80), [])
+            this.SelectCopyConArr.Push(con)
+
+            PosX += 90
+            con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 2, 80), "")
             this.CopyConArr.Push(con)
 
             PosX := 10
@@ -145,9 +162,13 @@ class VariableGui {
 
             PosX += 75
             con := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX, PosY - 2, 80), [])
+            this.SelectCopyConArr.Push(con)
+
+            PosX += 90
+            con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 2, 80), "")
             this.CopyConArr.Push(con)
 
-            PosX := 300
+            PosX := 400
             con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX + 20, PosY, 30, 20), "")
             con.Value := 0
             this.ToggleConArr.Push(con)
@@ -162,6 +183,10 @@ class VariableGui {
 
             PosX += 75
             con := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX, PosY - 2, 80), [])
+            this.SelectCopyConArr.Push(con)
+
+            PosX += 90
+            con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 2, 80), "")
             this.CopyConArr.Push(con)
         }
         {
@@ -222,12 +247,12 @@ class VariableGui {
         }
 
         PosY += 50
-        PosX := 250
+        PosX := 350
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{} Center", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 600, 450))
+        MyGui.Show(Format("w{} h{}", 800, 450))
     }
 
     Init(cmd) {
@@ -235,7 +260,7 @@ class VariableGui {
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetVariableData(this.SerialStr)
-        VariableObjArr := ["price", "hight", "happy"]
+        VariableObjArr := this.GetSelectVariableObjArr()
 
         this.CreateTypeCon.Value := this.Data.CreateType
         this.ExtractStrCon := this.Data.ExtractStr
@@ -244,15 +269,39 @@ class VariableGui {
         this.StartPosYCon.Value := this.Data.StartPosY
         this.EndPosXCon.Value := this.Data.EndPosX
         this.EndPosYCon.Value := this.Data.EndPosY
+        this.SearchCountCon.Value := this.Data.SearchCount
+        this.SearchIntervalCon.Value := this.Data.SearchInterval
         loop 4 {
-            copyName := this.GetCopyNameText(VariableObjArr, this.Data.CopyNameArr[A_Index])
+            copyName := this.GetCopyNameText(VariableObjArr, this.Data.SelectCopyNameArr[A_Index])
             this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
             this.NameConArr[A_Index].Value := this.Data.NameArr[A_Index]
             this.ValueConArr[A_Index].Value := this.Data.ValueArr[A_Index]
-            this.CopyConArr[A_Index].Delete()
-            this.CopyConArr[A_Index].Add(VariableObjArr)
-            this.CopyConArr[A_Index].Text := copyName
+            this.SelectCopyConArr[A_Index].Delete()
+            this.SelectCopyConArr[A_Index].Add(VariableObjArr)
+            this.SelectCopyConArr[A_Index].Text := copyName
         }
+    }
+
+    GetSelectVariableObjArr() {
+        VariableObjArr := []
+        macro := this.MacroEditGui.GetFinallyMacroStr()
+        cmdArr := SplitMacro(macro)
+        loop cmdArr.Length {
+            paramArr := StrSplit(cmdArr[A_Index], "_")
+            isVariable := StrCompare(paramArr[1], "变量", false) == 0
+            if (!isVariable)
+                continue
+
+            if (isVariable) {
+                saveStr := IniRead(VariableFile, IniSection, paramArr[2], "")
+                variableData := JSON.parse(saveStr, , false)
+                loop 4 {
+                    if (variableData.ToggleArr[A_Index])
+                        VariableObjArr.Push(variableData.NameArr[A_Index])
+                }
+            }
+        }
+        return VariableObjArr
     }
 
     GetCopyNameText(VariableObjArr, copyName) {
@@ -278,9 +327,11 @@ class VariableGui {
 
     OnRefresh() {
         enableVariable := this.CreateTypeCon.Value == 1
-        enableCopy := this.CreateTypeCon.Value == 2
+        enableSelectCopy := this.CreateTypeCon.Value == 2
+        enableCopy := this.CreateTypeCon.Value == 3
         loop 4 {
             this.ValueConArr[A_Index].Enabled := enableVariable
+            this.SelectCopyConArr[A_Index].Enabled := enableSelectCopy
             this.CopyConArr[A_Index].Enabled := enableCopy
         }
     }

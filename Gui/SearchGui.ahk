@@ -5,6 +5,7 @@ class SearchGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
+        this.RemarkCon := ""
         this.PosAction := () => this.RefreshMouseInfo()
         this.SearchData := ""
         this.MousePosCon := ""
@@ -14,7 +15,6 @@ class SearchGui {
         this.StartPosYCon := ""
         this.EndPosXCon := ""
         this.EndPosYCon := ""
-        this.CommandStrCon := ""
         this.ImageCon := ""
         this.ImageBtn := ""
         this.ScreenshotBtn := ""
@@ -57,6 +57,11 @@ class SearchGui {
         PosX += 90
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
         btnCon.OnEvent("Click", (*) => this.TriggerMacro())
+
+        PosX += 90
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "备注:")
+        PosX += 50
+        this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
 
         PosY += 20
         PosX := 10
@@ -178,14 +183,7 @@ class SearchGui {
         PosX := 310
         this.UnFoundCommandStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 280, 80), "")
 
-        PosX := 10
-        PosY += 90
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 70), "当前指令:")
-
-        PosX += 70
-        this.CommandStrCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 300), "搜索_Search006655")
-
-        PosY += 20
+        PosY += 100
         PosX := 250
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
@@ -211,8 +209,16 @@ class SearchGui {
         this.AutoMoveCon.Value := this.SearchData.AutoMove
         this.FoundCommandStrCon.Value := this.SearchData.TrueCommandStr
         this.UnFoundCommandStrCon.Value := this.SearchData.FalseCommandStr
-        this.CommandStrCon.Value := "搜索_" this.SearchData.SerialStr
         this.OnChangeSearchType()
+    }
+
+    GetCommandStr() {
+        hasRemark := this.RemarkCon.Value != ""
+        CommandStr := "搜索_" this.SearchData.SerialStr
+        if (hasRemark) {
+            CommandStr .= "_" this.RemarkCon.Value
+        }
+        return CommandStr
     }
 
     GetSerialStr() {
@@ -303,7 +309,7 @@ class SearchGui {
             return
         this.SaveSearchData()
         action := this.SureBtnAction
-        action(this.CommandStrCon.Value)
+        action(this.GetCommandStr())
         this.ToggleFunc(false)
         this.Gui.Hide()
     }
@@ -383,7 +389,7 @@ class SearchGui {
         tableItem.ActionCount[1] := 0
         tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
-        OnSearch(tableItem, this.CommandStrCon.Value, 1)
+        OnSearch(tableItem, this.GetCommandStr(), 1)
     }
 
     EnableSelectAerea() {

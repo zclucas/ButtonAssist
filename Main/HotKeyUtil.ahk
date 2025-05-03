@@ -157,7 +157,7 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
         OnTriggerMacroOnce(tableItem, macro, index)
         tableItem.ActionCount[index]++
     }
-    OnFinishMacro(tableItem, macro, index)
+    ; OnFinishMacro(tableItem, macro, index)
 }
 
 OnTriggerMacroOnce(tableItem, macro, index) {
@@ -519,15 +519,40 @@ OnVariable(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     saveStr := IniRead(VariableFile, IniSection, paramArr[2], "")
     variableData := JSON.parse(saveStr, , false)
-
+    count := variableData.SearchCount
+    interval := variableData.SearchInterval
+    tableItem.SuccessClearActionArr[index].Set(variableData.ExtractStr, [])
     VariableMap := tableItem.VariableMapArr[index]
+
+    if (variableData.CreateType == 4) {     ;提取
+        OnExtractingVariablesOnce(tableItem, index, variableData, count == 1)
+        loop count {
+            if (A_Index == 1)
+                continue
+
+            if (!tableItem.SuccessClearActionArr[index].Has(variableData.ExtractStr)) ;第一次比较成功就退出
+                break
+
+            tempAction := OnExtractingVariablesOnce.Bind(tableItem, index, variableData, A_Index == count)
+            leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
+            tableItem.SuccessClearActionArr[index][variableData.ExtractStr].Push(tempAction)
+            SetTimer tempAction, -leftTime
+        }
+        return
+    }
     loop 4 {
         if (!variableData.ToggleArr[A_Index])
             continue
 
-        name := variableData.NameArr[A_Index]
+        name := variableData.NameArr[A_Index]   ;赋值
         value := variableData.ValueArr[A_Index]
-        if (variableData.CreateType == 2) {
+        if (variableData.CreateType == 2) {     ;选择复制
+            copyName := variableData.SelectCopyNameArr[A_Index]
+            if (VariableMap.Has(copyName)) {
+                value := VariableMap[copyName]
+            }
+        }
+        else if (variableData.CreateType == 3) {
             copyName := variableData.CopyNameArr[A_Index]
             if (VariableMap.Has(copyName)) {
                 value := VariableMap[copyName]
@@ -537,7 +562,55 @@ OnVariable(tableItem, cmd, index) {
     }
 }
 
+OnExtractingVariablesOnce(tableItem, index, variableData, isFinally) {
+    X1 := variableData.StartPosX
+    Y1 := variableData.StartPosY
+    X2 := variableData.EndPosX
+    Y2 := variableData.EndPosY
+    if (variableData.ExtractType == 1) {
+        TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2)
+        TextObjs := TextObjs == "" ? [] : TextObjs
+    }
+    else {
+        if (!IsClipboardText())
+            return
+        TextObjs := []
+        obj := Object()
+        obj.Text := A_Clipboard
+        TextObjs.Push(obj)
+    }
 
+    isOk := false
+    VariableMap := tableItem.VariableMapArr[index]
+    for index, value in TextObjs {
+        baseVariableArr := ExtractNumbers(value.Text, variableData.ExtractStr)
+        if (baseVariableArr == "")
+            continue
+
+        loop baseVariableArr.Length {
+            if (variableData.ToggleArr[A_Index]) {
+                name := variableData.NameArr[A_Index]
+                value := baseVariableArr[A_Index]
+                VariableMap[name] := value
+            }
+        }
+
+        isOk := true
+        break
+    }
+
+    if (isOk || isFinally) {
+        ;清除后续的搜索和搜索记录
+        if (tableItem.SuccessClearActionArr[index].Has(variableData.ExtractStr)) {
+            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(variableData.ExtractStr)
+            loop SuccessClearActionArr.Length {
+                action := SuccessClearActionArr[A_Index]
+                SetTimer action, 0
+            }
+            tableItem.SuccessClearActionArr[index].Delete(variableData.ExtractStr)
+        }
+    }
+}
 
 OnMouseMove(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
@@ -977,6 +1050,7 @@ OnFinishRecordMacro() {
     }
     macro := Trim(macro, ",")
     macro := GetRecordMacroEditStr(macro)
+    macro := Trim(macro, ",")
     ToolCheckInfo.ToolTextCtrl.Value := macro
     A_Clipboard := macro
 }

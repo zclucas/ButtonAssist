@@ -126,6 +126,8 @@ class SoftData {
         this.IsSavedWinPos := false
         this.TableIndex := 1
         this.HasSaved := false
+        this.MacroEditGui := ""
+        this.MacroEditCon := ""
 
         this.MyGui := {}
         this.TabPosX := 0
@@ -293,7 +295,8 @@ class VariableData {
         this.ToggleArr := [1, 0, 0, 0]
         this.NameArr := ["Num1", "Num2", "Num3", "Num4"]
         this.ValueArr := [0, 0, 0, 0]
-        this.CopyNameArr := ["NameA", "NameB", "NameC", "NameD"]
+        this.SelectCopyNameArr := ["NameA", "NameB", "NameC", "NameD"]
+        this.CopyNameArr := ["", "", "", ""]
         this.ExtractStr := ""
         this.ExtractType := 1
         this.StartPosX := 0
