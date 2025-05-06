@@ -54,7 +54,7 @@ CompareExtractOperAndNum(expression) {
 
 CompareCheckIfValid(compareData){
     disCount := 0
-    for index, value in compareData.ComparEnableArr{
+    for index, value in compareData.ComparToggleArr{
         if (value == 0)
             disCount++
     }
@@ -95,7 +95,7 @@ UpdateBaseValue(baseValue, expression){
 CompareGetResult(compareData, baseVariableArr){
     compareData.BaseVariableArr := baseVariableArr
     CompareUpdateVariable(compareData)
-    for index, value in compareData.ComparEnableArr{
+    for index, value in compareData.ComparToggleArr{
         if (value == 0)
             continue
 

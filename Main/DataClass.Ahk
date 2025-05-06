@@ -140,7 +140,7 @@ class SoftData {
         this.EditHotStrCtrl := ""
 
         this.TabNameArr := ["按键宏", "字串宏", "子宏", "按键替换", "工具", "设置"]
-        this.TabSymbolArr := ["Normal", "String", "SubMacro","Replace", "Tool", "Setting"]
+        this.TabSymbolArr := ["Normal", "String", "SubMacro", "Replace", "Tool", "Setting"]
         this.TabCtrl := {}
         this.TableInfo := []
 
@@ -221,25 +221,17 @@ class SearchData {
 
 class CompareData {
     __New() {
-        this.StartPosX := 0
-        this.StartPosY := 0
-        this.EndPosX := A_ScreenWidth
-        this.EndPosY := A_ScreenHeight
-        this.SearchCount := 1
-        this.SearchInterval := 1000
-        this.AutoMove := 1
-
-        this.SerialStr := ""
-        this.TextFilter := ""
-        this.TrueCommandStr := ""
-        this.FalseCommandStr := ""
-        this.BaseVariableArr := []
-        this.VariableArr := []
-        this.ExtractType := 1       ;1屏幕  2 剪切板
-        this.VariableOperatorArr := ["x", "y", "w", "h"]
-        this.ComparEnableArr := [1, 0, 0, 0]
+        this.ToggleArr := [1, 0, 0, 0]
+        this.NameArr := ["空", "空", "空", "空"]
         this.ComparTypeArr := [1, 1, 1, 1]  ;1大于 2大于等于 3等于 4小于等 5小于
-        this.ComparValueArr := [0, 0, 0, 0]
+        this.ValueArr := [0, 0, 0, 0]
+        this.VariableArr := ["空", "空", "空", "空"]
+        this.TrueMacro := ""
+        this.FalseMacro := ""
+        this.SaveToggle := 1
+        this.SaveName := "比较结果"
+        this.TrueValue := 1
+        this.FalseValue := 0
     }
 }
 
