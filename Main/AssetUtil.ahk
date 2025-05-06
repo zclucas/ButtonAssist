@@ -207,6 +207,7 @@ InitFilePath() {
     global OutputFile := A_WorkingDir "\Setting\OutputFile.ini"
     global StopFile := A_WorkingDir "\Setting\StopFile.ini"
     global VariableFile := A_WorkingDir "\Setting\VariableFile.ini"
+    global SubMacroFile := A_WorkingDir "\Setting\SubMacroFile.ini"
     global IniSection := "UserSettings"
 }
 
@@ -365,6 +366,17 @@ GetTableItemDefaultInfo(index) {
         savedLoopCountStr := "1"
         savedTriggerTypeStr := "1"
     }
+    else if (symbol == "SubMacro") {
+        savedTKArrStr := ""
+        savedMacroArrStr := "按键_a_30_1_30_50,间隔_3000"
+        savedHoldTimeArrStr := "0"
+        savedModeArrStr := "0"
+        savedForbidArrStr := "1"
+        savedProcessNameStr := ""
+        savedRemarkArrStr := "插入时循环无效"
+        savedLoopCountStr := "1"
+        savedTriggerTypeStr := "1"
+    }
     else if (symbol == "Replace") {
         savedTKArrStr := "l"
         savedMacroArrStr := "Left,a"
@@ -439,7 +451,9 @@ GetSavedTableItemInfo(index) {
 
     loop tableItem.ModeArr.Length {
         TKArrStr .= tableItem.TKConArr[A_Index].Value
-        MacroArrStr .= tableItem.InfoConArr[A_Index].Value
+        MacroStr := Trim(tableItem.InfoConArr[A_Index].Value, "`n")
+        MacroStr :=  Trim(tableItem.InfoConArr[A_Index].Value, ",")
+        MacroArrStr .= MacroStr 
         ModeArrStr .= tableItem.ModeConArr[A_Index].Value
         ForbidArrStr .= tableItem.ForbidConArr[A_Index].Value
         HoldTimeArrStr .= tableItem.HoldTimeConArr[A_Index].Value
@@ -682,12 +696,21 @@ CheckIsMacroTable(index) {
         return true
     if (symbol == "String")
         return true
+    if (symbol == "SubMacro")
+        return true
     return false
 }
 
 CheckIsStringMacroTable(index) {
     symbol := GetTableSymbol(index)
     if (symbol == "String")
+        return true
+    return false
+}
+
+CheckIsSubMacroTable(index) {
+    symbol := GetTableSymbol(index)
+    if (symbol == "SubMacro")
         return true
     return false
 }

@@ -92,7 +92,7 @@ class CompareGui {
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "变量提取：")
         this.VariableFilterCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 75, PosY - 5, 250), "")
-        this.ExtractTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 345, PosY - 5, 80), ["屏幕", "剪切板"])
+        this.ExtractTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 345, PosY - 5, 80), ["屏幕", "剪切板"])
         this.ExtractTypeCon.Value := 1
 
         PosX := 10
@@ -186,7 +186,7 @@ class CompareGui {
         this.ComparEnableConArr.Push(con)
         con.Value := 1
         MyGui.Add("Text", Format("x{} y{} w{}", PosX + 30, PosY, 20), "x:")
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 50, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于", "小于"])
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 50, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于", "小于"])
         con.Value := 1
         this.ComparTypeConArr.Push(con)
         con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 50), 0)
@@ -197,7 +197,7 @@ class CompareGui {
         con.Value := 0
         this.ComparEnableConArr.Push(con)
         MyGui.Add("Text", Format("x{} y{} w{}", PosX + 30, PosY, 20), "y:")
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 50, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于", "小于"])
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 50, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于", "小于"])
         con.Value := 1
         this.ComparTypeConArr.Push(con)
         con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 50), 0)
@@ -209,7 +209,7 @@ class CompareGui {
         con.Value := 0
         this.ComparEnableConArr.Push(con)
         MyGui.Add("Text", Format("x{} y{} w{}", PosX + 30, PosY, 20), "z:")
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 50, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于", "小于"])
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 50, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于", "小于"])
         con.Value := 1
         this.ComparTypeConArr.Push(con)
         con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 50), 0)
@@ -220,7 +220,7 @@ class CompareGui {
         con.Value := 0
         this.ComparEnableConArr.Push(con)
         MyGui.Add("Text", Format("x{} y{} w{}", PosX + 30, PosY, 20), "w:")
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 50, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于", "小于"])
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 50, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于", "小于"])
         con.Value := 1
         this.ComparTypeConArr.Push(con)
         con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 50), 0)

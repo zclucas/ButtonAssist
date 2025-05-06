@@ -9,6 +9,7 @@
 #Include OutputGui.ahk
 #Include StopGui.ahk
 #Include VariableGui.ahk
+#Include SubMacroGui.ahk
 
 class MacroEditGui {
     __new() {
@@ -17,6 +18,7 @@ class MacroEditGui {
         this.SureFocusCon := ""
         this.checkAction := () => this.CheckIfChangeLineNum()
         this.isContextEdit := false
+        this.RecordToggleCon := ""
 
         this.SureBtnAction := ""
         this.SaveBtnAction := ""
@@ -80,6 +82,10 @@ class MacroEditGui {
         this.VariableGui.MacroEditGui := this
         this.VariableGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("变量", this.VariableGui)
+    
+        this.SubMacroGui := SubMacroGui()
+        this.SubMacroGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("子宏", this.SubMacroGui)
     }
 
     GetSubGuiSymbol(subGui) {
@@ -101,6 +107,7 @@ class MacroEditGui {
 
         MySoftData.MacroEditGui := this
         MySoftData.MacroEditCon := this.MacroEditStrCon
+        MySoftData.RecordToggleCon := this.RecordMacroCon
         this.Init(CommandStr, ShowSaveBtn)
         this.RefreshCommandBtn()
         this.ToggleFunc(true)
@@ -113,26 +120,33 @@ class MacroEditGui {
 
         PosX := 10
         PosY := 10
-        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 1000, 170), "当前宏指令")
+        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 800, 170), "当前宏指令")
         PosY += 15
-        this.MacroEditStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX + 5, PosY, 990, 150), "")
+        this.MacroEditStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX + 5, PosY, 790, 150), "")
 
         PosX := 20
         PosY += 160
         this.DefaultFocusCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 70), "编辑模式：")
         PosX += 70
-        this.EditModeCon := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 150, 100), ["末尾追加指令",
+        this.EditModeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} h{}", PosX, PosY - 3, 150, 100), ["末尾追加指令",
             "调整光标行指令", "光标行插入指令"])
         this.EditModeCon.OnEvent("Change", (*) => this.OnChangeEditMode())
 
         PosX += 180
-        this.RecordMacroCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 100, 20), "指令录制")
+        this.RecordMacroCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 85, 20), "指令录制")
         this.RecordMacroCon.Value := false
         this.RecordMacroCon.OnEvent("Click", (*) => this.OnChangeRecordMode())
+        
+        PosX += 85
+        isHotKey := CheckIsHotKey(ToolCheckInfo.ToolRecordMacroHotKey)
+        CtrlType := isHotKey ? "Hotkey" : "Text"
+        con := MyGui.Add(CtrlType, Format("x{} y{} w{} h{}", posX, posY - 3, 100, 20), ToolCheckInfo.ToolRecordMacroHotKey
+        )
+        con.Enabled := false
 
         PosY += 20
         PosX := 10
-        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", 10, PosY, 1000, 150), "指令选项")
+        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", 10, PosY, 800, 150), "指令选项")
 
         PosY += 20
         PosX := 20
@@ -183,7 +197,8 @@ class MacroEditGui {
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CoordGui))
         this.CmdBtnConMap.Set("坐标", btnCon)
 
-        PosX += 100
+        PosY += 35
+        PosX := 20
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "终止")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.StopGui))
@@ -194,9 +209,15 @@ class MacroEditGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.VariableGui))
         this.CmdBtnConMap.Set("变量", btnCon)
+        
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "子宏")
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.SubMacroGui))
+        this.CmdBtnConMap.Set("子宏", btnCon)
 
         PosX := 20
-        PosY += 140
+        PosY += 110
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "Backspace")
         btnCon.OnEvent("Click", (*) => this.Backspace())
 
@@ -213,7 +234,7 @@ class MacroEditGui {
         this.SaveBtnCtrl.OnEvent("Click", (*) => this.OnSaveBtnClick())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 1020, 420))
+        MyGui.Show(Format("w{} h{}", 820, 420))
     }
 
     Init(CommandStr, ShowSaveBtn) {
@@ -408,7 +429,7 @@ class MacroEditGui {
         this.EditLineNum := lineNum
         cmd := this.GetLineCmd(lineNum, symbol)
 
-        if (this.isContextEdit){
+        if (this.isContextEdit) {
             subGui.ShowGui(cmd)
         }
         else if (this.EditModeType == 1) {
@@ -441,6 +462,8 @@ class MacroEditGui {
         macro := this.GetMacroStr(LineArr)
         this.MacroEditStrCon.Value := this.GetMacroEditStr(macro)
         MySoftData.MacroEditGui := this
+        MySoftData.MacroEditCon := this.MacroEditStrCon
+        MySoftData.RecordToggleCon := this.RecordMacroCon
         this.DefaultFocusCon.Focus()
     }
 

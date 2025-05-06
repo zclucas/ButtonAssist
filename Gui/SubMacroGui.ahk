@@ -1,13 +1,14 @@
 #Requires AutoHotkey v2.0
 
-class OutputGui {
+class SubMacroGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
         this.RemarkCon := ""
-        this.OutputTypeCon := ""
-        this.TextCon := ""
-        this.IsCoverCon := ""
+
+        this.TypeCon := ""
+        this.IndexCon := ""
+        this.CallTypeCon := ""
         this.Data := ""
     }
 
@@ -20,11 +21,12 @@ class OutputGui {
         }
 
         this.Init(cmd)
+        this.OnRefresh()
         this.ToggleFunc(true)
     }
 
     AddGui() {
-        MyGui := Gui(, "输出指令编辑")
+        MyGui := Gui(, "子宏调用指令编辑")
         this.Gui := MyGui
         MyGui.SetFont(, "Consolas")
 
@@ -46,40 +48,57 @@ class OutputGui {
 
         PosX := 10
         PosY += 40
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "输出方式:")
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "宏类型:")
 
-        PosX += 80
-        this.OutputTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["SendText", "Send粘贴", "Win粘贴"])
-        this.OutputTypeCon.Value := 1
+        PosX += 70
+        this.TypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["当前宏", "按键宏", "字串宏", "子宏"])
+        this.TypeCon.Value := 1
+        this.TypeCon.OnEvent("Change", (*) => this.OnRefresh())
 
-        PosX += 140
-        this.IsCoverCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 200), "输出内容复制到剪切板")
+        PosX += 160
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "宏序号：")
 
+        PosX += 70
+        this.IndexCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY - 5, 80, 20), "1")
+    
         PosX := 10
         PosY += 40
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 350, 20), "输出的文本")
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "调用方式:")
 
+        PosX += 70
+        this.CallTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["插入", "触发"])
+        this.CallTypeCon.Value := 1
+    
+        PosX := 10
+        PosY += 25
+        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "插入:插入到执行的宏里面，该子宏的变量操作都是依赖于当前宏环境")
+    
+        PosX := 10
         PosY += 20
-        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 480, 50))
+        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "(插入时，子宏设置的循环次数无效，只调用一次子宏)")
+    
+        PosX := 10
+        PosY += 25
+        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "触发:和正常的按键触发等效")
 
-        PosY += 80
-        PosX += 200
+        PosY += 30
+        PosX := 200
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 500, 280))
+        MyGui.Show(Format("w{} h{}", 500, 250))
     }
 
     Init(cmd) {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
-        this.Data := this.GetOutputData(this.SerialStr)
+        this.Data := this.GetSubMacroData(this.SerialStr)
 
-        this.TextCon.Value := this.Data.Text
-        this.OutputTypeCon.Value := this.Data.OutputType
-        this.IsCoverCon.Value := this.Data.IsCover
+        this.TypeCon.Value := this.Data.Type
+        this.IndexCon.Value := this.Data.Index
+        this.CallTypeCon.Value := this.Data.CallType
     }
 
     ToggleFunc(state) {
@@ -92,11 +111,16 @@ class OutputGui {
         }
     }
 
+    OnRefresh() {
+        enableIndex := this.TypeCon.Value != 1  ;类型是1的时候，不能选择序号
+        this.IndexCon.Enabled := enableIndex
+    }
+
     OnClickSureBtn() {
         valid := this.CheckIfValid()
         if (!valid)
             return
-        this.SaveOutputData()
+        this.SaveSubMacroData()
         this.ToggleFunc(false)
         CommandStr := this.GetCommandStr()
         action := this.SureBtnAction
@@ -109,7 +133,7 @@ class OutputGui {
     }
 
     TriggerMacro() {
-        this.SaveOutputData()
+        this.SaveSubMacroData()
         CommandStr := this.GetCommandStr()
         tableItem := MySoftData.SpecialTableItem
         tableItem.CmdActionArr[1] := []
@@ -118,12 +142,12 @@ class OutputGui {
         tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
 
-        OnOutput(tableItem, CommandStr, 1)
+        OnSubMacro(tableItem, CommandStr, 1)
     }
 
     GetCommandStr() {
         hasRemark := this.RemarkCon.Value != ""
-        CommandStr := "输出_" this.Data.SerialStr
+        CommandStr := "子宏_" this.Data.SerialStr
         if (hasRemark) {
             CommandStr .= "_" this.RemarkCon.Value
         }
@@ -132,13 +156,13 @@ class OutputGui {
 
     GetSerialStr() {
         CurrentDateTime := FormatTime(, "HHmmss")
-        return "Output" CurrentDateTime
+        return "SubMacro" CurrentDateTime
     }
 
-    GetOutputData(SerialStr) {
-        saveStr := IniRead(OutputFile, IniSection, SerialStr, "")
+    GetSubMacroData(SerialStr) {
+        saveStr := IniRead(SubMacroFile, IniSection, SerialStr, "")
         if (!saveStr) {
-            data := OutputData()
+            data := SubMacroData()
             data.SerialStr := SerialStr
             return data
         }
@@ -147,12 +171,12 @@ class OutputGui {
         return data
     }
 
-    SaveOutputData() {
-        this.Data.Text := this.TextCon.Value
-        this.Data.OutputType := this.OutputTypeCon.Value
-        this.Data.IsCover := this.IsCoverCon.value
+    SaveSubMacroData() {
+        this.Data.Type := this.TypeCon.Value
+        this.Data.Index := this.IndexCon.value
+        this.Data.CallType := this.CallTypeCon.Value
 
         saveStr := JSON.stringify(this.Data, 0)
-        IniWrite(saveStr, OutputFile, IniSection, this.Data.SerialStr)
+        IniWrite(saveStr, SubMacroFile, IniSection, this.Data.SerialStr)
     }
 }

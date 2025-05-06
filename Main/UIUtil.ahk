@@ -2,7 +2,6 @@
 InitUI() {
     global MySoftData
     MyGui := Gui(, "RMTv1.0.0")
-    ; MyGui.Opt("ToolWindow")
     MyGui.SetFont(, "Consolas")
     MySoftData.MyGui := MyGui
 
@@ -136,7 +135,7 @@ AddOperBtnUI() {
 }
 
 GetUIAddFunc(index) {
-    UIAddFuncArr := [AddMacroHotkeyUI, AddMacroHotkeyUI, AddReplaceKeyUI,
+    UIAddFuncArr := [AddMacroHotkeyUI, AddMacroHotkeyUI, AddMacroHotkeyUI, AddReplaceKeyUI,
         AddToolUI, AddSettingUI]
     return UIAddFuncArr[index]
 }
@@ -145,14 +144,18 @@ GetUIAddFunc(index) {
 AddMacroHotkeyUI(index) {
     global MySoftData
     tableItem := MySoftData.TableInfo[index]
+    isSubMacro := CheckIsSubMacroTable(index)
+    offsetPosx := isSubMacro ? -100 : 0
     tableItem.underPosY := MySoftData.TabPosY
     ; 配置规则说明
     UpdateUnderPosY(index, 30)
 
     MyGui := MySoftData.MyGui
-    MyGui.Add("Text", Format("x{} y{} w100", MySoftData.TabPosX + 20, tableItem.underPosY), "宏触发按键")
-    MyGui.Add("Text", Format("x{} y{} w550", MySoftData.TabPosX + 140, tableItem.underPosY), "宏指令")
-    MyGui.Add("Text", Format("x{} y{} w30", MySoftData.TabPosX + 540, tableItem.underPosY), "编辑") 
+    con := MyGui.Add("Text", Format("x{} y{} w100", MySoftData.TabPosX + 20, tableItem.underPosY), "宏触发按键")
+    con.Visible := !isSubMacro
+
+    MyGui.Add("Text", Format("x{} y{} w550", MySoftData.TabPosX + 140 + offsetPosx, tableItem.underPosY), "宏指令")
+    MyGui.Add("Text", Format("x{} y{} w30", MySoftData.TabPosX + 540, tableItem.underPosY), "编辑")
     MyGui.Add("Text", Format("x{} y{} w30", MySoftData.TabPosX + 600, tableItem.underPosY), "游戏")
     MyGui.Add("Text", Format("x{} y{} w30", MySoftData.TabPosX + 640, tableItem.underPosY), "禁止")
     MyGui.Add("Text", Format("x{} y{} w100", MySoftData.TabPosX + 675, tableItem.underPosY), "指定进程名")
@@ -173,7 +176,7 @@ AddReplaceKeyUI(index) {
     MyGui.Add("Text", Format("x{} y{} w100", MySoftData.TabPosX + 20, tableItem.underPosY), "原按键")
     MyGui.Add("Text", Format("x{} y{} w550", MySoftData.TabPosX + 140, tableItem.underPosY),
     "替换后的按键     案例:w,d(将原本按键替换成w,d)")
-    MyGui.Add("Text", Format("x{} y{} w30", MySoftData.TabPosX + 540, tableItem.underPosY), "编辑") 
+    MyGui.Add("Text", Format("x{} y{} w30", MySoftData.TabPosX + 540, tableItem.underPosY), "编辑")
     MyGui.Add("Text", Format("x{} y{} w30", MySoftData.TabPosX + 600, tableItem.underPosY), "游戏")
     MyGui.Add("Text", Format("x{} y{} w30", MySoftData.TabPosX + 640, tableItem.underPosY), "禁止")
     MyGui.Add("Text", Format("x{} y{} w100", MySoftData.TabPosX + 675, tableItem.underPosY), "指定进程名")
@@ -188,9 +191,11 @@ LoadSavedSettingUI(index) {
     tableItem := MySoftData.TableInfo[index]
     isMacro := CheckIsMacroTable(index)
     isNormal := CheckIsNormalTable(index)
+    isSubMacro := CheckIsSubMacroTable(index)
     curIndex := 0
     MyGui := MySoftData.MyGui
     TabPosX := MySoftData.TabPosX
+    subMacroWidth := isSubMacro ? 75 : 0
     isTriggerStr := CheckIsStringMacroTable(index)
     EditTriggerAction := isTriggerStr ? OnTableEditTriggerStr : OnTableEditTriggerKey
     EditMacroAction := isMacro ? OnTableEditMacro : OnTableEditReplaceKey
@@ -199,22 +204,25 @@ LoadSavedSettingUI(index) {
         InfoHeight := 45
 
         newIndexCon := MyGui.Add("Text", Format("x{} y{} w{}", TabPosX + 10, tableItem.underPosY + 5, 30), A_Index ".")
-        newTriggerTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", TabPosX + 40, tableItem.underPosY, 70), ["按下",
+        newTriggerTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 40, tableItem.underPosY, 70), ["按下",
             "松开",
             "松止", "开关", "长按"])
         newTriggerTypeCon.Value := tableItem.TriggerTypeArr.Length >= A_Index ? tableItem.TriggerTypeArr[A_Index] : 1
         newTriggerTypeCon.Enabled := isNormal
         newTriggerTypeCon.OnEvent("Change", GetTableClosureAction(OnChangeTriggerType, tableItem, A_Index))
+        newTriggerTypeCon.Visible := isSubMacro ? false : true
 
         newTkControl := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", TabPosX + 10, tableItem.underPosY + 25, 100,
             20), "")
-        newInfoControl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", TabPosX + 120, tableItem.underPosY, 400,
+        newTkControl.Visible := isSubMacro ? false : true
+        newInfoControl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", TabPosX + 120 - subMacroWidth, tableItem.underPosY, 400 + subMacroWidth,
             InfoHeight), "")
         newTkControl.Value := tableItem.TKArr.Length >= A_Index ? tableItem.TKArr[A_Index] : ""
         newInfoControl.Value := tableItem.MacroArr.Length >= A_Index ? tableItem.MacroArr[A_Index] : ""
 
         newKeyBtnControl := MyGui.Add("Button", Format("x{} y{} w60 h20", TabPosX + 530, tableItem.underPosY), "触发键")
         newKeyBtnControl.OnEvent("Click", GetTableClosureAction(EditTriggerAction, tableItem, A_Index))
+        newKeyBtnControl.Enabled := !isSubMacro
 
         newModeControl := MyGui.Add("Checkbox", Format("x{} y{} w30", TabPosX + 610, tableItem.underPosY + 5), "")
         newModeControl.value := tableItem.ModeArr[A_Index]
@@ -236,11 +244,12 @@ LoadSavedSettingUI(index) {
         newRemarkControl := MyGui.Add("Edit", Format("x{} y{} w200", TabPosX + 720, tableItem.underPosY + 25), ""
         )
         newRemarkControl.value := tableItem.RemarkArr.Length >= A_Index ? tableItem.RemarkArr[A_Index] : ""
-        
-        newHoldTimeControl := MyGui.Add("Edit", Format("x{} y{} w50 center", TabPosX + 815, tableItem.underPosY), "500")
+
+        newHoldTimeControl := MyGui.Add("Edit", Format("x{} y{} w50 center", TabPosX + 815, tableItem.underPosY), "500"
+        )
         newHoldTimeControl.value := tableItem.HoldTimeArr[A_Index]
         newHoldTimeControl.Enabled := isNormal && newTriggerTypeCon.Value == 5 ;长按才能配置
-    
+
         newLoopCountControl := MyGui.Add("Edit", Format("x{} y{} w50 center", TabPosX + 870, tableItem.underPosY), "")
         conValue := tableItem.LoopCountArr.Length >= A_Index ? tableItem.LoopCountArr[A_Index] : "1"
         conValue := conValue == "-1" ? "∞" : conValue
@@ -279,6 +288,8 @@ OnAddSetting(*) {
     TabPosX := MySoftData.TabPosX
     isMacro := CheckIsMacroTable(TableIndex)
     isNormal := CheckIsNormalTable(TableIndex)
+    isSubMacro := CheckIsSubMacroTable(TableIndex)
+    subMacroWidth := isSubMacro ? 75 : 0
     isTriggerStr := CheckIsStringMacroTable(TableIndex)
     EditTriggerAction := isTriggerStr ? OnTableEditTriggerStr : OnTableEditTriggerKey
     EditMacroAction := isMacro ? OnTableEditMacro : OnTableEditReplaceKey
@@ -299,20 +310,23 @@ OnAddSetting(*) {
     MySoftData.TabCtrl.UseTab(TableIndex)
 
     newIndexCon := MyGui.Add("Text", Format("x{} y{} w{}", TabPosX + 10, tableItem.underPosY + 5, 30), index ".")
-    newTriggerTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", TabPosX + 40, tableItem.underPosY, 70), ["按下",
+    newTriggerTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 40, tableItem.underPosY, 70), ["按下",
         "松开",
         "松止", "开关", "长按"])
     newTriggerTypeCon.Value := 1
     newTriggerTypeCon.Enabled := isNormal
+    newTriggerTypeCon.Visible := isSubMacro ? false : true
     newTriggerTypeCon.OnEvent("Change", GetTableClosureAction(OnChangeTriggerType, tableItem, index))
 
     newTkControl := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", TabPosX + 10, tableItem.underPosY + 25, 100, 20),
     "")
-    newInfoControl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", TabPosX + 120, tableItem.underPosY, 400, InfoHeight),
+    newTkControl.Visible := isSubMacro ? false : true
+    newInfoControl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", TabPosX + 120 - subMacroWidth, tableItem.underPosY, 400 + subMacroWidth, InfoHeight),
     "")
 
     newKeyBtnControl := MyGui.Add("Button", Format("x{} y{} w60 h20", TabPosX + 530, tableItem.underPosY), "触发键")
     newKeyBtnControl.OnEvent("Click", GetTableClosureAction(EditTriggerAction, tableItem, index))
+    newKeyBtnControl.Enabled := !isSubMacro
 
     newModeControl := MyGui.Add("Checkbox", Format("x{} y{} w30", TabPosX + 610, tableItem.underPosY + 5), "")
     newModeControl.value := 0

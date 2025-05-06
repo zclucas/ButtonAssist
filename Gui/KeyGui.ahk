@@ -813,7 +813,7 @@ class KeyGui {
         PosX += 100
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 50), "类型:")
         PosX += 50
-        this.KeyTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 80, 100), ["点击", "按下", "松开"])
+        this.KeyTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} h{}", PosX, PosY - 3, 80, 100), ["点击", "按下", "松开"])
         this.KeyTypeCon.OnEvent("Change", (*) => this.OnChangeEditValue())
         this.KeyTypeCon.Value := 1
 

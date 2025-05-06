@@ -3,7 +3,7 @@
 class FileGui {
     __new() {
         this.Gui := ""
-
+        this.RemarkCon := ""
         this.SureBtnAction := ""
         this.ProcessTextCon := ""
         this.PathTextCon := ""
@@ -42,6 +42,11 @@ class FileGui {
         PosX += 90
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
         btnCon.OnEvent("Click", (*) => this.TriggerMacro())
+
+        PosX += 90
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "备注:")
+        PosX += 50
+        this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
 
         PosY += 20
         PosX := 10
@@ -83,23 +88,29 @@ class FileGui {
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 400, 20), "进程、绝对路径两者只要填写其中一项就行")
 
         PosY += 25
-        PosX += 150
+        PosX := 200
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 420, 340))
+        MyGui.Show(Format("w{} h{}", 500, 340))
     }
 
     Init(cmd) {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetFileData(this.SerialStr)
 
         this.ProcessTextCon.Value := this.Data.ProcessName
         this.PathTextCon.Value := this.Data.FilePath
         this.BackPlayCon.Value := this.Data.BackPlay
+    
+        hasRemark := this.RemarkCon.Value != ""
         this.CommandStr := "文件_" this.Data.SerialStr
+        if (hasRemark) {
+            this.CommandStr .= "_" this.RemarkCon.Value
+        }
     }
 
     ToggleFunc(state) {
@@ -156,7 +167,6 @@ class FileGui {
         }
         return true
     }
-
 
     TriggerMacro() {
         this.SaveFileData()

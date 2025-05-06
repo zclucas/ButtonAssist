@@ -128,6 +128,7 @@ class SoftData {
         this.HasSaved := false
         this.MacroEditGui := ""
         this.MacroEditCon := ""
+        this.RecordToggleCon := ""
 
         this.MyGui := {}
         this.TabPosX := 0
@@ -138,8 +139,8 @@ class SoftData {
         this.EditHotKeyCtrl := ""
         this.EditHotStrCtrl := ""
 
-        this.TabNameArr := ["按键宏", "字串宏", "按键替换", "工具", "设置"]
-        this.TabSymbolArr := ["Normal", "String", "Replace", "Tool", "Setting"]
+        this.TabNameArr := ["按键宏", "字串宏", "子宏", "按键替换", "工具", "设置"]
+        this.TabSymbolArr := ["Normal", "String", "SubMacro","Replace", "Tool", "Setting"]
         this.TabCtrl := {}
         this.TableInfo := []
 
@@ -288,6 +289,15 @@ class StopData {
     }
 }
 
+class SubMacroData {
+    __New() {
+        this.SerialStr := ""
+        this.Type := 1
+        this.CallType := 1
+        this.Index := 1
+    }
+}
+
 class VariableData {
     __New() {
         this.SerialStr := ""
@@ -296,7 +306,6 @@ class VariableData {
         this.NameArr := ["Num1", "Num2", "Num3", "Num4"]
         this.ValueArr := [0, 0, 0, 0]
         this.SelectCopyNameArr := ["NameA", "NameB", "NameC", "NameD"]
-        this.CopyNameArr := ["", "", "", ""]
         this.ExtractStr := ""
         this.ExtractType := 1
         this.StartPosX := 0

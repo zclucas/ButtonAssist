@@ -21,7 +21,6 @@ SetWorkingDir A_ScriptDir
 #Include Main\UIUtil.ahk
 #Include Main\JsonUtil.ahk
 #Include Main\CompareUtil.ahk
-
 global MySoftData := SoftData()
 global ToolCheckInfo := ToolCheck()
 global MyvJoy := SuperCvJoyInterface().GetMyvJoy()

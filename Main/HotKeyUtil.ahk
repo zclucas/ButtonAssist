@@ -179,6 +179,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         ISOutput := StrCompare(paramArr[1], "输出", false) == 0
         IsStop := StrCompare(paramArr[1], "终止", false) == 0
         isVariable := StrCompare(paramArr[1], "变量", false) == 0
+        isSubMacro := StrCompare(paramArr[1], "子宏", false) == 0
         if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
@@ -208,6 +209,9 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         }
         else if (isVariable) {
             OnVariable(tableItem, cmdArr[A_Index], index)
+        }
+        else if (isSubMacro) {
+            OnSubMacro(tableItem, cmdArr[A_Index], index)
         }
     }
 }
@@ -502,16 +506,48 @@ OnStop(tableItem, cmd, index) {
     saveStr := IniRead(StopFile, IniSection, paramArr[2], "")
     stopData := JSON.parse(saveStr, , false)
 
-    if (stopData.StopType == 1) {
+    if (stopData.StopType == 1) {       ;终止自己
         KillTableItemMacro(tableItem, index)
     }
-    else if (stopData.StopType == 2) {
+    else if (stopData.StopType == 2) {      ;终止按键宏
         stopTableItem := MySoftData.TableInfo[1]
         KillTableItemMacro(stopTableItem, stopData.StopIndex)
     }
-    else if (stopData.StopType == 3) {
+    else if (stopData.StopType == 3) {      ;终止字串宏
         stopTableItem := MySoftData.TableInfo[2]
         KillTableItemMacro(stopTableItem, stopData.StopIndex)
+    }
+    else if (stopData.StopType == 4) {      ;终止子宏
+        stopTableItem := MySoftData.TableInfo[3]
+        KillTableItemMacro(stopTableItem, stopData.StopIndex)
+    }
+}
+
+OnSubMacro(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
+    saveStr := IniRead(SubMacroFile, IniSection, paramArr[2], "")
+    subMacroData := JSON.parse(saveStr, , false)
+    macroItem := tableItem
+    macro := tableItem.MacroArr[index]
+    macroIndex := subMacroData.Type != 1 ? subMacroData.Index : index
+    if (subMacroData.Type == 2) {
+        macroItem := MySoftData.TableInfo[1]
+        macro := macroItem.MacroArr[subMacroData.Index]
+    }
+    else if (subMacroData.Type == 3) {
+        macroItem := MySoftData.TableInfo[2]
+        macro := macroItem.MacroArr[subMacroData.Index]
+    }
+    else if (subMacroData.Type == 4) {
+        macroItem := MySoftData.TableInfo[3]
+        macro := macroItem.MacroArr[subMacroData.Index]
+    }
+
+    if (subMacroData.CallType == 1) {   ;插入
+        OnTriggerMacroOnce(tableItem, macro, index)
+    }
+    else if (subMacroData.CallType == 2) {  ;触发
+        OnTriggerMacroKeyAndInit(macroItem, macro, macroIndex)
     }
 }
 
@@ -548,12 +584,6 @@ OnVariable(tableItem, cmd, index) {
         value := variableData.ValueArr[A_Index]
         if (variableData.CreateType == 2) {     ;选择复制
             copyName := variableData.SelectCopyNameArr[A_Index]
-            if (VariableMap.Has(copyName)) {
-                value := VariableMap[copyName]
-            }
-        }
-        else if (variableData.CreateType == 3) {
-            copyName := variableData.CopyNameArr[A_Index]
             if (VariableMap.Has(copyName)) {
                 value := VariableMap[copyName]
             }
@@ -793,8 +823,6 @@ GetTableClosureAction(action, TableItem, index) {
 }
 
 OnTableDelete(tableItem, index) {
-    TableIndex := MySoftData.TabCtrl.Value
-    isMacro := CheckIsMacroTable(TableIndex)
     if (tableItem.ModeArr.Length == 0) {
         return
     }
@@ -924,9 +952,12 @@ OnToolCheckHotkey(*) {
 }
 
 OnToolRecordMacro(*) {
-    global ToolCheckInfo
+    global ToolCheckInfo, MySoftData
     ToolCheckInfo.IsToolRecord := !ToolCheckInfo.IsToolRecord
     ToolCheckInfo.ToolCheckRecordMacroCtrl.Value := ToolCheckInfo.IsToolRecord
+    if (MySoftData.MacroEditGui != "") {
+        MySoftData.RecordToggleCon.Value := ToolCheckInfo.IsToolRecord
+    }
     state := ToolCheckInfo.IsToolRecord
     StateSymbol := state ? "On" : "Off"
     loop 255 {
@@ -1051,7 +1082,11 @@ OnFinishRecordMacro() {
     macro := Trim(macro, ",")
     macro := GetRecordMacroEditStr(macro)
     macro := Trim(macro, ",")
+    macro := Trim(macro, "`n")
     ToolCheckInfo.ToolTextCtrl.Value := macro
+    if (MySoftData.MacroEditGui != "") {
+        MySoftData.MacroEditCon.Value .= macro
+    }
     A_Clipboard := macro
 }
 

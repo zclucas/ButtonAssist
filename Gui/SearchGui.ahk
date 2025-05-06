@@ -82,7 +82,7 @@ class SearchGui {
         PosX := 300
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索类型:")
         PosX += 80
-        this.SearchTypeCon := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 80, 100), ["图片", "颜色",
+        this.SearchTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} h{}", PosX, PosY - 3, 80, 100), ["图片", "颜色",
             "文本"])
         this.SearchTypeCon.OnEvent("Change", (*) => this.OnChangeSearchType())
         this.SearchTypeCon.Value := 1
@@ -195,6 +195,7 @@ class SearchGui {
     Init(cmd) {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.SearchData := this.GetCompareData(this.SerialStr)
         this.SearchTypeCon.Value := this.SearchData.SearchType
         this.ImageCon.Value := this.SearchData.SearchImagePath
