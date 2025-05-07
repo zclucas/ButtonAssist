@@ -238,7 +238,8 @@ class VariableGui {
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetVariableData(this.SerialStr)
-        VariableObjArr := this.GetSelectVariableObjArr()
+        macro := this.MacroEditGui.GetFinallyMacroStr()
+        VariableObjArr := GetSelectVariableObjArr(macro)
 
         this.CreateTypeCon.Value := this.Data.CreateType
         this.ExtractStrCon := this.Data.ExtractStr
@@ -258,28 +259,6 @@ class VariableGui {
             this.SelectCopyConArr[A_Index].Add(VariableObjArr)
             this.SelectCopyConArr[A_Index].Text := copyName
         }
-    }
-
-    GetSelectVariableObjArr() {
-        VariableObjArr := []
-        macro := this.MacroEditGui.GetFinallyMacroStr()
-        cmdArr := SplitMacro(macro)
-        loop cmdArr.Length {
-            paramArr := StrSplit(cmdArr[A_Index], "_")
-            isVariable := StrCompare(paramArr[1], "变量", false) == 0
-            if (!isVariable)
-                continue
-
-            if (isVariable) {
-                saveStr := IniRead(VariableFile, IniSection, paramArr[2], "")
-                variableData := JSON.parse(saveStr, , false)
-                loop 4 {
-                    if (variableData.ToggleArr[A_Index])
-                        VariableObjArr.Push(variableData.NameArr[A_Index])
-                }
-            }
-        }
-        return VariableObjArr
     }
 
     GetCopyNameText(VariableObjArr, copyName) {
@@ -381,7 +360,7 @@ class VariableGui {
             this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
             this.Data.NameArr[A_Index] := this.NameConArr[A_Index].Value
             this.Data.ValueArr[A_Index] := this.ValueConArr[A_Index].Value
-            this.Data.SelectCopyNameArr[A_Index] := this.SelectCopyConArr[A_Index].Value
+            this.Data.SelectCopyNameArr[A_Index] := this.SelectCopyConArr[A_Index].Text
         }
 
         saveStr := JSON.stringify(this.Data, 0)

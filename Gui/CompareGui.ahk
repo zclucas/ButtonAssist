@@ -6,7 +6,9 @@ class CompareGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
+        this.MacroEditGui := ""
         this.RemarkCon := ""
+        this.CommandStr := ""
 
         this.Data := ""
         this.ToggleConArr := []
@@ -31,8 +33,7 @@ class CompareGui {
         }
 
         this.Init(cmd)
-        this.Refresh()
-        this.ToggleFunc(true)
+        ; this.ToggleFunc(true)
     }
 
     AddGui() {
@@ -42,73 +43,107 @@ class CompareGui {
 
         PosX := 10
         PosY := 10
-        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "快捷方式:")
-        PosX += 80
-        con := MyGui.Add("Hotkey", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 70, 20), "!l")
-        con.Enabled := false
+        ; this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "快捷方式:")
+        ; PosX += 80
+        ; con := MyGui.Add("Hotkey", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 70, 20), "!l")
+        ; con.Enabled := false
 
-        PosX += 90
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
-        btnCon.OnEvent("Click", (*) => this.TriggerMacro())
+        ; PosX += 90
+        ; btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
+        ; btnCon.OnEvent("Click", (*) => this.TriggerMacro())
 
-        PosY += 30
-        PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "选框勾选后,对应比较生效、勾选之间是且关系")
-
-        PosY += 30
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
-        this.ToggleConArr.Push(con)
-        con.Value := 1
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX + 30, PosY, 20), "x:")
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 50, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
-            "小于"])
-        con.Value := 1
-        this.ComparTypeConArr.Push(con)
-        con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 50), 0)
-        this.ValueConArr.Push(con)
-
-        PosX := 240
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
-        con.Value := 0
-        this.ToggleConArr.Push(con)
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX + 30, PosY, 20), "y:")
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 50, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
-            "小于"])
-        con.Value := 1
-        this.ComparTypeConArr.Push(con)
-        con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 50), 0)
-        this.ValueConArr.Push(con)
+        ; PosX += 90
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "备注:")
+        PosX += 50
+        this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
 
         PosY += 30
         PosX := 10
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
-        con.Value := 0
-        this.ToggleConArr.Push(con)
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX + 30, PosY, 20), "z:")
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 50, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
-            "小于"])
-        con.Value := 1
-        this.ComparTypeConArr.Push(con)
-        con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 50), 0)
-        this.ValueConArr.Push(con)
-
-        PosX := 240
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
-        con.Value := 0
-        this.ToggleConArr.Push(con)
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX + 30, PosY, 20), "w:")
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 50, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
-            "小于"])
-        con.Value := 1
-        this.ComparTypeConArr.Push(con)
-        con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 50), 0)
-        this.ValueConArr.Push(con)
-
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "选框勾选且第一个选择/输入不为空对应比较生效、勾选之间是且关系")
+    
+        PosY += 20
+        PosX := 10
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "若第二个选择/输入为空,则比较值，否则与第二个选择/输入的变量比较")
+    
         PosY += 30
         PosX := 10
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 180), "找到后鼠标移动至文本处")
-        con.OnEvent("Click", (*) => this.OnChangeAutoMove())
-        this.AutoMoveCon := con
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关  选择/输入                     值       选择/输入")
+
+        PosY += 20
+        PosX := 15
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        this.ToggleConArr.Push(con)
+        con.Value := 1
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        this.NameConArr.Push(con)
+
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 135, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
+            "小于"])
+        con.Value := 1
+        this.CompareTypeConArr.Push(con)
+        con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 220, PosY - 3, 70), 0)
+        this.ValueConArr.Push(con)
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 295, PosY - 3, 100), [])
+        this.VariableConArr.Push(con)
+
+        PosY += 35
+        PosX := 15
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY - 3, 30))
+        this.ToggleConArr.Push(con)
+        con.Value := 1
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY, 100), [])
+        this.NameConArr.Push(con)
+
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 135, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
+            "小于"])
+        con.Value := 1
+        this.CompareTypeConArr.Push(con)
+        con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 220, PosY - 3, 70), 0)
+        this.ValueConArr.Push(con)
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 295, PosY - 3, 100), [])
+        this.VariableConArr.Push(con)
+
+        PosY += 35
+        PosX := 15
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        this.ToggleConArr.Push(con)
+        con.Value := 1
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        this.NameConArr.Push(con)
+
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 135, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
+            "小于"])
+        con.Value := 1
+        this.CompareTypeConArr.Push(con)
+        con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 220, PosY - 3, 70), 0)
+        this.ValueConArr.Push(con)
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 295, PosY - 3, 100), [])
+        this.VariableConArr.Push(con)
+
+        PosY += 35
+        PosX := 15
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        this.ToggleConArr.Push(con)
+        con.Value := 1
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        this.NameConArr.Push(con)
+
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 135, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
+            "小于"])
+        con.Value := 1
+        this.CompareTypeConArr.Push(con)
+        con := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 220, PosY - 3, 70), 0)
+        this.ValueConArr.Push(con)
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 295, PosY - 3, 100), [])
+        this.VariableConArr.Push(con)
 
         PosY += 30
         PosX := 10
@@ -121,8 +156,7 @@ class CompareGui {
 
         PosY += 20
         PosX := 10
-        this.TrueCommandStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 280, 50), "")
-        this.TrueCommandStrCon.OnEvent("Change", (*) => this.OnChangeEditValue())
+        this.TrueMacroCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 280, 50), "")
 
         PosY := SplitPosY
         PosX := 310
@@ -134,70 +168,68 @@ class CompareGui {
 
         PosY += 20
         PosX := 310
-        this.FalseCommandStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 280, 50), "")
-        this.FalseCommandStrCon.OnEvent("Change", (*) => this.OnChangeEditValue())
-
+        this.FalseMacroCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 280, 50), "")
+    
+        PosY += 60
         PosX := 10
-        PosY += 55
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 350), "当前指令:（若未提取到变量，则不执行任何指令）")
-        PosY += 25
-        this.CommandStrCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 550))
+        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 320, 70), "结果保存到变量中")
+    
+        PosY += 20
+        PosX := 15
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 290), "开关    选择/输入      真值        假值")
+        
+        PosY += 20
+        PosX := 20
+        this.SaveToggleCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        this.SaveNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        this.TrueValueCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 70), 0)
+        this.FalseValueCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 220, PosY - 4, 70), 0)
 
-        PosY += 30
-        PosX += 250
+        PosY += 40
+        PosX := 250
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
-        MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 600, 600))
+        ; MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
+        MyGui.Show(Format("w{} h{}", 600, 450))
     }
 
     Init(cmd) {
-        searchCmdArr := cmd != "" ? StrSplit(cmd, "_") : []
-        this.SerialStr := searchCmdArr.Length >= 2 ? searchCmdArr[2] : this.GetSerialStr()
-        this.compareData := this.GetCompareData(this.SerialStr)
-        this.VariableFilterCon.Value := this.compareData.TextFilter
-        this.StartPosXCon.Value := this.compareData.StartPosX
-        this.StartPosYCon.Value := this.compareData.StartPosY
-        this.EndPosXCon.Value := this.compareData.EndPosX
-        this.EndPosYCon.Value := this.compareData.EndPosY
-        this.SearchCountCon.Value := this.compareData.SearchCount
-        this.SearchIntervalCon.Value := this.compareData.SearchInterval
-        this.AutoMoveCon.Value := this.compareData.AutoMove
-        this.TrueCommandStrCon.Value := this.compareData.TrueCommandStr
-        this.FalseCommandStrCon.Value := this.compareData.FalseCommandStr
-        this.ExtractTypeCon.Value := this.compareData.ExtractType
-        loop 4 {
-            this.CompareTypeConArr[A_Index].Value := this.compareData.VariableOperatorArr[A_Index]
-            this.ToggleConArr[A_Index].Value := this.compareData.ComparToggleArr[A_Index]
-            this.ValueConArr[A_Index].Value := this.compareData.ComparValueArr[A_Index]
-            this.ComparTypeConArr[A_Index].Value := this.compareData.ComparTypeArr[A_Index]
-        }
-    }
+        cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
+        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
+        this.Data := this.GetCompareData(this.SerialStr)
+        macro := this.MacroEditGui.GetFinallyMacroStr()
+        VariableObjArr := GetSelectVariableObjArr(macro)
 
-    UpdateCommandStr() {
-        this.CommandStr := "比较"
-        this.CommandStr .= "_" this.SerialStr
+        this.TrueMacroCon.Value := this.Data.TrueMacro
+        this.FalseMacroCon.Value := this.Data.FalseMacro
+        this.SaveToggleCon.Value := this.Data.SaveToggle
+        this.SaveNameCon.Delete()
+        this.SaveNameCon.Add(VariableObjArr)
+        this.SaveNameCon.Text := this.Data.SaveName
+        this.TrueValueCon.Value := this.Data.TrueValue
+        this.FalseValueCon.Value := this.Data.FalseValue
+        loop 4 {
+            this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
+            this.NameConArr[A_Index].Delete()
+            this.NameConArr[A_Index].Add(VariableObjArr)
+            this.NameConArr[A_Index].Text := this.Data.NameArr[A_Index]
+            this.CompareTypeConArr[A_Index].Value := this.Data.CompareTypeArr[A_Index]
+            this.ValueConArr[A_Index].Value := this.Data.ValueArr[A_Index]
+            this.VariableConArr[A_Index].Delete()
+            this.VariableConArr[A_Index].Add(VariableObjArr)
+            this.VariableConArr[A_Index].Text := this.Data.VariableArr[A_Index]
+        }
+
+        hasRemark := this.RemarkCon.Value != ""
+        this.CommandStr := "比较_" this.Data.SerialStr
+        if (hasRemark) {
+            this.CommandStr .= "_" this.RemarkCon.Value
+        }
     }
 
     CheckIfValid() {
-        if (!IsNumber(this.StartPosXCon.Value) || !IsNumber(this.StartPosYCon.Value) || !IsNumber(this.EndPosXCon.Value
-        ) || !IsNumber(this.EndPosYCon.Value)) {
-            MsgBox("坐标中请输入数字")
-            return false
-        }
-
-        if (Number(this.StartPosXCon.Value) > Number(this.EndPosXCon.Value) || Number(this.StartPosYCon.Value) > Number(
-            this.EndPosYCon.Value)) {
-            MsgBox("起始坐标不能大于终止坐标")
-            return false
-        }
-
-        if (!IsNumber(this.SearchCountCon.Value) || Number(this.SearchCountCon.Value) <= 0) {
-            MsgBox("搜索次数请输入大于0的数字")
-            return false
-        }
-
         return true
     }
 
@@ -205,29 +237,10 @@ class CompareGui {
         MacroAction := (*) => this.TriggerMacro()
         if (state) {
             Hotkey("!l", MacroAction, "On")
-            Hotkey("F1", (*) => this.EnableSelectAerea(), "On")
         }
         else {
             Hotkey("!l", MacroAction, "Off")
-            Hotkey("F1", (*) => this.EnableSelectAerea(), "Off")
         }
-    }
-
-    Refresh() {
-        this.UpdateCommandStr()
-        this.CommandStrCon.Value := this.CommandStr
-    }
-
-    OnChangeEditValue() {
-        this.StartPosX := this.StartPosXCon.Value
-        this.StartPosY := this.StartPosYCon.Value
-        this.EndPosX := this.EndPosXCon.Value
-        this.EndPosY := this.EndPosYCon.Value
-        this.SearchCount := this.SearchCountCon.Value
-        this.SearchInterval := this.SearchIntervalCon.Value
-        this.TrueCommandStr := this.TrueCommandStrCon.Value
-        this.FalseCommandStr := this.FalseCommandStrCon.Value
-        this.Refresh()
     }
 
     OnClickSureBtn() {
@@ -235,30 +248,19 @@ class CompareGui {
         if (!valid)
             return
 
-        this.UpdateCommandStr()
         this.SaveCompareData()
         action := this.SureBtnAction
         action(this.CommandStr)
-        this.ToggleFunc(false)
+        ; this.ToggleFunc(false)
         this.Gui.Hide()
     }
 
-    OnSureFoundMacroBtnClick(CommandStr) {
-        this.TrueCommandStr := CommandStr
-        this.TrueCommandStrCon.Value := CommandStr
-        this.Refresh()
+    OnTrueMacroBtnClick(CommandStr) {
+        this.TrueMacroCon.Value := CommandStr
     }
 
-    OnSureUnFoundMacroBtnClick(CommandStr) {
-        this.FalseCommandStr := CommandStr
-        this.FalseCommandStrCon.Value := CommandStr
-        this.Refresh()
-    }
-
-    OnSureVariableOperationBtnClick(index, command) {
-        con := this.CompareTypeConArr[index]
-        con.Value := command
-        this.Refresh()
+    OnFalseMacroBtnClick(CommandStr) {
+        this.FalseMacroCon.Value := CommandStr
     }
 
     ; OnEditVariableBtnClick(index, variableStr) {
@@ -278,7 +280,7 @@ class CompareGui {
             this.MacroGui.SureFocusCon := this.FocusCon
         }
 
-        this.MacroGui.SureBtnAction := (command) => this.OnSureFoundMacroBtnClick(command)
+        this.MacroGui.SureBtnAction := (command) => this.OnTrueMacroBtnClick(command)
         this.MacroGui.ShowGui(this.TrueCommandStr, false)
     }
 
@@ -287,13 +289,8 @@ class CompareGui {
             this.MacroGui := MacroEditGui()
             this.MacroGui.SureFocusCon := this.FocusCon
         }
-        this.MacroGui.SureBtnAction := (command) => this.OnSureUnFoundMacroBtnClick(command)
+        this.MacroGui.SureBtnAction := (command) => this.OnFalseMacroBtnClick(command)
         this.MacroGui.ShowGui(this.FalseCommandStr, false)
-    }
-
-    OnChangeAutoMove() {
-        this.AutoMove := this.AutoMoveCon.Value
-        this.Refresh()
     }
 
     TriggerMacro() {
@@ -301,7 +298,6 @@ class CompareGui {
         if (!valid)
             return
 
-        this.UpdateCommandStr()
         this.SaveCompareData()
         tableItem := MySoftData.SpecialTableItem
         tableItem.CmdActionArr[1] := []
@@ -310,54 +306,6 @@ class CompareGui {
         tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
         OnCompare(tableItem, this.CommandStr, 1)
-    }
-
-    EnableSelectAerea() {
-        Hotkey("LButton", (*) => this.SelectArea(), "On")
-        Hotkey("LButton Up", (*) => this.DisSelectArea(), "On")
-    }
-
-    DisSelectArea(*) {
-        Hotkey("LButton", (*) => this.SelectArea(), "Off")
-        Hotkey("LButton Up", (*) => this.DisSelectArea(), "Off")
-    }
-
-    SelectArea(*) {
-        ; 获取起始点坐标
-        startX := startY := endX := endY := 0
-        CoordMode("Mouse", "Screen")
-        MouseGetPos(&startX, &startY)
-
-        ; 创建 GUI 用于绘制矩形框
-        MyGui := Gui("+ToolWindow -Caption +AlwaysOnTop -DPIScale")
-        MyGui.BackColor := "Red"
-        WinSetTransColor(" 150", MyGui)
-        MyGui.Opt("+LastFound")
-        GuiHwnd := WinExist()
-
-        ; 显示初始 GUI
-        MyGui.Show("NA x" startX " y" startY " w1 h1")
-
-        ; 跟踪鼠标移动
-        while GetKeyState("LButton", "P") {
-            CoordMode("Mouse", "Screen")
-            MouseGetPos(&endX, &endY)
-            width := Abs(endX - startX)
-            height := Abs(endY - startY)
-            x := Min(startX, endX)
-            y := Min(startY, endY)
-
-            MyGui.Show("NA x" x " y" y " w" width " h" height)
-        }
-        ; 销毁 GUI
-        MyGui.Destroy()
-        ; 返回坐标
-
-        this.StartPosXCon.Value := Min(startX, endX)
-        this.StartPosYCon.Value := Min(startY, endY)
-        this.EndPosXCon.Value := Max(startX, endX)
-        this.EndPosYCon.Value := Max(startY, endY)
-        this.Refresh()
     }
 
     GetSerialStr() {
@@ -378,36 +326,17 @@ class CompareGui {
     }
 
     SaveCompareData() {
-        data := this.compareData
-        data.SerialStr := this.SerialStr
-        data.StartPosX := this.StartPosXCon.Value
-        data.StartPosY := this.StartPosYCon.Value
-        data.EndPosX := this.EndPosXCon.Value
-        data.EndPosY := this.EndPosYCon.Value
-        data.SearchCount := this.SearchCountCon.Value
-        data.SearchInterval := this.SearchIntervalCon.Value
-        data.AutoMove := this.AutoMoveCon.Value
-
-        data.TextFilter := this.VariableFilterCon.Value
-        data.TrueCommandStr := this.TrueCommandStrCon.Value
-        data.FalseCommandStr := this.FalseCommandStrCon.Value
-        data.ExtractType := this.ExtractTypeCon.Value
-
-        data.VariableOperatorArr := []
-        data.ComparToggleArr := []
-        data.ComparValueArr := []
-        data.ComparTypeArr := []
+        this.Data.TrueMacro := this.TrueMacroCon.Value
+        this.Data.FalseMacro := this.FalseMacroCon.Value
         loop 4 {
-            data.VariableOperatorArr.Push(this.CompareTypeConArr[A_Index].Value)
-            data.ComparToggleArr.Push(this.ToggleConArr[A_Index].Value)
-            data.ComparTypeArr.Push(this.ComparTypeConArr[A_Index].Value)
-            compareValue := this.ValueConArr[A_Index].Value
-            compareValue := IsFloat(compareValue) ? Format("{:.4g}", compareValue) : compareValue
-            compareValue := IsInteger(compareValue) ? Integer(compareValue) : compareValue
-            data.ComparValueArr.Push(compareValue)
+            this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
+            this.Data.NameArr[A_Index] := this.NameConArr[A_Index].Text
+            this.Data.CompareTypeArr[A_Index] := this.CompareTypeConArr[A_Index].Value
+            this.Data.ValueArr[A_Index] := this.ValueConArr[A_Index].Value
+            this.Data.VariableArr := this.VariableConArr[A_Index].Text
         }
 
-        saveStr := JSON.stringify(data, 0)
-        IniWrite(saveStr, CompareFile, IniSection, data.SerialStr)
+        saveStr := JSON.stringify(this.Data, 0)
+        IniWrite(saveStr, CompareFile, IniSection, this.Data.SerialStr)
     }
 }

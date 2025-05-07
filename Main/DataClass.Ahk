@@ -223,13 +223,13 @@ class CompareData {
     __New() {
         this.ToggleArr := [1, 0, 0, 0]
         this.NameArr := ["空", "空", "空", "空"]
-        this.ComparTypeArr := [1, 1, 1, 1]  ;1大于 2大于等于 3等于 4小于等 5小于
+        this.CompareTypeArr := [1, 1, 1, 1]  ;1大于 2大于等于 3等于 4小于等 5小于
         this.ValueArr := [0, 0, 0, 0]
         this.VariableArr := ["空", "空", "空", "空"]
         this.TrueMacro := ""
         this.FalseMacro := ""
         this.SaveToggle := 1
-        this.SaveName := "比较结果"
+        this.SaveName := "结果"
         this.TrueValue := 1
         this.FalseValue := 0
     }
@@ -237,21 +237,16 @@ class CompareData {
 
 class CoordData {
     __New() {
-        this.StartPosX := 0
-        this.StartPosY := 0
-        this.EndPosX := A_ScreenWidth
-        this.EndPosY := A_ScreenHeight
-        this.SearchCount := 1
-        this.SearchInterval := 1000
-
         this.SerialStr := ""
-        this.TextFilter := ""
-        this.BaseVariableArr := []
-        this.VariableArr := []
-        this.ExtractType := 1       ;1屏幕  2 剪切板
+        this.PosX := 100
+        this.PosY := 100
+        this.NameX := "空"
+        this.NameY := "空"
         this.isRelative := 0         ;相对位移
+        this.isGameView := 0        ;游戏视角
         this.Speed := 90           ;移动速度
-        this.VariableOperatorArr := ["x", "y"]
+        this.Count := 1
+        this.Interval := 1000
     }
 }
 

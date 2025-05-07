@@ -322,85 +322,58 @@ OnRunFile(tableItem, cmd, index) {
 OnCompare(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     saveStr := IniRead(CompareFile, IniSection, paramArr[2], "")
-    compareData := JSON.parse(saveStr, , false)
-
-    count := compareData.SearchCount
-    interval := compareData.SearchInterval
-    tableItem.SuccessClearActionArr[index].Set(compareData.TextFilter, [])
-    isVaild := CompareCheckIfValid(compareData)
-    if (!isVaild)
-        return
-
-    OnCompareOnce(tableItem, index, compareData, count == 1)
-    loop count {
-        if (A_Index == 1)
+    data := JSON.parse(saveStr, , false)
+    VariableMap := tableItem.VariableMapArr[index]
+    result := true
+    loop 4 {
+        if (!data.ToggleArr[A_Index] || data.NameArr[A_Index] == "空")
             continue
 
-        if (!tableItem.SuccessClearActionArr[index].Has(compareData.TextFilter)) ;第一次比较成功就退出
-            break
-
-        tempAction := OnCompareOnce.Bind(tableItem, index, compareData, A_Index == count)
-        leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
-        tableItem.SuccessClearActionArr[index][compareData.TextFilter].Push(tempAction)
-        SetTimer tempAction, -leftTime
-    }
-}
-
-OnCompareOnce(tableItem, index, compareData, isFinally) {
-    X1 := compareData.StartPosX
-    Y1 := compareData.StartPosY
-    X2 := compareData.EndPosX
-    Y2 := compareData.EndPosY
-    isAutoMove := Integer(compareData.AutoMove)
-    if (compareData.ExtractType == 1) {
-        TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2)
-        TextObjs := TextObjs == "" ? [] : TextObjs
-    }
-    else {
-        if (!IsClipboardText())
+        Name := data.NameArr[A_Index]
+        OhterName := data.VariableArr[A_Index]
+        if (!VariableMap.Has(name)) {
+            MsgBox("当前环境不存在变量 " name)
             return
-        TextObjs := []
-        obj := Object()
-        obj.Text := A_Clipboard
-        TextObjs.Push(obj)
-    }
-
-    isOk := false
-    macthTextObj := ""
-
-    for index, value in TextObjs {
-        baseVariableArr := ExtractNumbers(value.Text, compareData.TextFilter)
-        if (baseVariableArr == "")
-            continue
-        macthTextObj := value
-        isOk := CompareGetResult(compareData, baseVariableArr)
-        break
-    }
-
-    if (isOk || isFinally) {
-        ;清除后续的搜索和搜索记录
-        if (tableItem.SuccessClearActionArr[index].Has(compareData.TextFilter)) {
-            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(compareData.TextFilter)
-            loop SuccessClearActionArr.Length {
-                action := SuccessClearActionArr[A_Index]
-                SetTimer action, 0
-            }
-            tableItem.SuccessClearActionArr[index].Delete(compareData.TextFilter)
         }
+
+        if (OhterName != "空" && !VariableMap.Has(OhterName)) {
+            MsgBox("当前环境不存在变量 " OhterName)
+            return
+        }
+
+        Value := VariableMap[name]
+        OtherValue := OhterName != "空" ? VariableMap[OhterName] : data.ValueArr[A_Index]
+
+        if (data.CompareTypeArr[index] == 1) {
+            result := result && Value > OtherValue
+        }
+        else if (data.CompareTypeArr[index] == 2) {
+            result := result && Value >= OtherValue
+        }
+        else if (data.CompareTypeArr[index] == 3) {
+            result := result && Value == OtherValue
+        }
+        else if (data.CompareTypeArr[index] == 4) {
+            result := result && Value <= OtherValue
+        }
+        else if (data.CompareTypeArr[index] == 5) {
+            result := result && Value < OtherValue
+        }
+
+        if (!result)
+            break
     }
 
-    if (isOk && isAutoMove && compareData.ExtractType == 1) {
-        posArr := GetMatchCoord(macthTextObj, X1, Y1)
-        SendMode("Event")
-        CoordMode("Mouse", "Screen")
-        MouseMove(posArr[1], posArr[2])
+    if (data.SaveToggle) {
+        SaveValue := result ? data.TrueValue : data.FalseValue
+        VariableMap[data.SaveName] := SaveValue
     }
 
-    if (isOk && compareData.TrueCommandStr != "")
-        OnTriggerMacroOnce(tableItem, compareData.TrueCommandStr, index)
+    if (result && data.TrueMacro != "")
+        OnTriggerMacroOnce(tableItem, data.TrueMacro, index)
 
-    if (isFinally && !isOk && compareData.FalseCommandStr != "")
-        OnTriggerMacroOnce(tableItem, compareData.FalseCommandStr, index)
+    if (!result && data.FalseMacro != "")
+        OnTriggerMacroOnce(tableItem, data.FalseMacro, index)
 }
 
 OnCoord(tableItem, cmd, index) {

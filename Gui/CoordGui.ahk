@@ -7,38 +7,19 @@ class CoordGui {
         this.Gui := ""
         this.SureBtnAction := ""
         this.FocusCon := ""
+        this.RemarkCon := ""
+        this.Data := ""
 
-        this.StartPosX := 0
-        this.StartPosY := 0
-        this.EndPosX := 0
-        this.EndPosY := 0
-
-        this.StartPosXCon := ""
-        this.StartPosYCon := ""
-        this.EndPosXCon := ""
-        this.EndPosYCon := ""
-
-        this.SerialStr := ""
-
-        this.SearchCount := 1
-        this.SearchCountCon := ""
-        this.SearchInterval := 0
-        this.SearchIntervalCon := ""
-
-        this.CommandStr := ""
-        this.CommandStrCon := ""
-
+        this.PosXCon := ""
+        this.PosYCon := ""
+        this.NameXCon := ""
+        this.NameYCon := ""
         this.IsRelativeCon := ""
+        this.isGameViewCon := ""
         this.SpeedCon := ""
-
-        this.coordData := ""
-        this.VariableFilterCon := ""
-        this.ExtractTypeCon := ""
-        this.VariableOperatorConArr := []
-
-        this.MacroGui := ""
-        this.OperationGui := ""
-    }
+        this.CountCon := ""
+        this.IntervalCon := ""
+     }
 
     ShowGui(cmd) {
         if (this.Gui != "") {
@@ -118,7 +99,6 @@ class CoordGui {
         this.EndPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
         this.EndPosYCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
-        
         EndSplitPosY := PosY + 30
 
         PosY := SplitPosY
@@ -182,7 +162,7 @@ class CoordGui {
         this.StartPosY := this.coordData.StartPosY
         this.EndPosX := this.coordData.EndPosX
         this.EndPosY := this.coordData.EndPosY
-        this.SearchCount :=  this.coordData.SearchCount
+        this.SearchCount := this.coordData.SearchCount
         this.SearchInterval := this.coordData.SearchInterval
 
         this.VariableFilterCon.Value := this.coordData.TextFilter

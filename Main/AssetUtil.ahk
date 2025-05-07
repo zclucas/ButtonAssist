@@ -906,3 +906,25 @@ AreKeysPressed(keyCombo) {
 
     return false
 }
+
+
+GetSelectVariableObjArr(macro) {
+    VariableObjArr := []
+    cmdArr := SplitMacro(macro)
+    loop cmdArr.Length {
+        paramArr := StrSplit(cmdArr[A_Index], "_")
+        isVariable := StrCompare(paramArr[1], "变量", false) == 0
+        if (!isVariable)
+            continue
+
+        if (isVariable) {
+            saveStr := IniRead(VariableFile, IniSection, paramArr[2], "")
+            variableData := JSON.parse(saveStr, , false)
+            loop 4 {
+                if (variableData.ToggleArr[A_Index])
+                    VariableObjArr.Push(variableData.NameArr[A_Index])
+            }
+        }
+    }
+    return VariableObjArr
+}

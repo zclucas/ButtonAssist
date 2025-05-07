@@ -64,6 +64,7 @@ class MacroEditGui {
 
         this.CompareGui := CompareGui()
         this.CompareGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.CompareGui.MacroEditGui := this
         this.SubGuiMap.Set("比较", this.CompareGui)
 
         this.CoordGui := CoordGui()
