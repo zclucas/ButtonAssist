@@ -1,6 +1,5 @@
 #Requires AutoHotkey v2.0
 #Include MacroEditGui.ahk
-#Include OperationGui.ahk
 
 class CompareGui {
     __new() {
@@ -9,6 +8,7 @@ class CompareGui {
         this.MacroEditGui := ""
         this.RemarkCon := ""
         this.CommandStr := ""
+        this.FocusCon := ""
 
         this.Data := ""
         this.ToggleConArr := []
@@ -53,7 +53,7 @@ class CompareGui {
         ; btnCon.OnEvent("Click", (*) => this.TriggerMacro())
 
         ; PosX += 90
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "备注:")
+        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "备注:")
         PosX += 50
         this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
 
@@ -263,17 +263,6 @@ class CompareGui {
         this.FalseMacroCon.Value := CommandStr
     }
 
-    ; OnEditVariableBtnClick(index, variableStr) {
-    ;     if (this.OperationGui == "") {
-    ;         this.OperationGui := OperationGui()
-    ;         this.OperationGui.SureFocusCon := this.Gui
-    ;     }
-
-    ;     this.OperationGui.SureBtnAction := (index, variableStr, command) => this.OnSureVariableOperationBtnClick(index,
-    ;         command)
-    ;     this.OperationGui.ShowGui(index, variableStr, this.CompareTypeConArr[index].Value)
-    ; }
-
     OnEditFoundMacroBtnClick() {
         if (this.MacroGui == "") {
             this.MacroGui := MacroEditGui()
@@ -281,7 +270,7 @@ class CompareGui {
         }
 
         this.MacroGui.SureBtnAction := (command) => this.OnTrueMacroBtnClick(command)
-        this.MacroGui.ShowGui(this.TrueCommandStr, false)
+        this.MacroGui.ShowGui(this.TrueMacroCon.Value, false)
     }
 
     OnEditUnFoundMacroBtnClick() {
@@ -290,7 +279,7 @@ class CompareGui {
             this.MacroGui.SureFocusCon := this.FocusCon
         }
         this.MacroGui.SureBtnAction := (command) => this.OnFalseMacroBtnClick(command)
-        this.MacroGui.ShowGui(this.FalseCommandStr, false)
+        this.MacroGui.ShowGui(this.FalseMacroCon.Value, false)
     }
 
     TriggerMacro() {

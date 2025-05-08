@@ -242,8 +242,8 @@ class CoordData {
         this.PosY := 100
         this.NameX := "空"
         this.NameY := "空"
-        this.isRelative := 0         ;相对位移
-        this.isGameView := 0        ;游戏视角
+        this.IsRelative := 0         ;相对位移
+        this.IsGameView := 0        ;游戏视角
         this.Speed := 90           ;移动速度
         this.Count := 1
         this.Interval := 1000
@@ -265,6 +265,7 @@ class OutputData {
         this.Text := ""
         this.IsCover := 1
         this.OutputType := 1
+        this.Name := "空"
     }
 }
 
@@ -301,5 +302,18 @@ class VariableData {
         this.EndPosY := A_ScreenHeight
         this.SearchCount := 1
         this.SearchInterval := 1000
+    }
+}
+
+class OperationData {
+    __New() {
+        this.SerialStr := ""
+        this.ToggleArr := [1, 0, 0, 0]
+        this.NameArr := ["空", "空", "空", "空"]
+        this.OperationArr := ["", "", "", ""]
+        this.UpdateTypeArr := [1, 1, 1, 1]
+        this.UpdateNameArr := ["空", "空", "空", "空"]
+        this.SymbolGroups  := [[], [], [], []]  ;操作符号
+        this.ValueGroups := [[], [], [], []]     ;运算对象
     }
 }

@@ -1,14 +1,16 @@
 #Requires AutoHotkey v2.0
 #Include MacroEditGui.ahk
-#Include OperationGui.ahk
 
 class CoordGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
+        this.MacroEditGui := ""
         this.FocusCon := ""
         this.RemarkCon := ""
+        this.CommandStr := ""
         this.Data := ""
+        this.PosAction := () => this.RefreshMousePos()
 
         this.PosXCon := ""
         this.PosYCon := ""
@@ -30,7 +32,6 @@ class CoordGui {
         }
 
         this.Init(cmd)
-        this.Refresh()
         this.ToggleFunc(true)
     }
 
@@ -41,196 +42,129 @@ class CoordGui {
 
         PosX := 10
         PosY := 10
-        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "快捷方式:")
+        ; this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "快捷方式:")
+        ; PosX += 80
+        ; con := MyGui.Add("Hotkey", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 70, 20), "!l")
+        ; con.Enabled := false
+
+        ; PosX += 90
+        ; btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
+        ; btnCon.OnEvent("Click", (*) => this.TriggerMacro())
+    
+        ; PosX += 90
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "备注:")
+        PosX += 50
+        this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
+
+        PosY += 20
+        PosX := 10
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "F1:选取当前坐标")
+
+        PosX := 10
+        PosY += 20
+        this.MousePosCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 380, 20), "当前鼠标位置:0,0")
+    
+        PosY += 20
+        PosX := 10
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "坐标：选择/输入为空,则使用值，否则使用选择/输入的变量数值")
+
+        PosY += 20
+        PosX := 10
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "游戏视角：调整原神，cf等游戏视角、此模式下相对位移，速度100")
+
+        PosY += 30
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "坐标位置X:")
         PosX += 80
-        con := MyGui.Add("Hotkey", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 70, 20), "!l")
-        con.Enabled := false
-
-        PosX += 90
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
-        btnCon.OnEvent("Click", (*) => this.TriggerMacro())
-
-        PosY += 20
+        this.PosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
+        this.NameXCon := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX + 55, PosY - 5, 100), [])
+    
+        PosY += 30
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "F1:左键选取搜索范围")
-
-        PosY += 20
-        PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 550),
-        "使用x、y代替变量位置   形如：`"坐标(x,y)`"可以提取`"坐标(10.5,8.6)`"中的10.5和8.6")
-
-        PosY += 25
-        PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "变量提取：")
-        this.VariableFilterCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 75, PosY - 5, 250), "")
-        this.ExtractTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 345, PosY - 5, 80), ["屏幕", "剪切板"])
-        this.ExtractTypeCon.Value := 1
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "坐标位置Y:")
+        PosX += 80
+        this.PosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
+        this.NameYCon := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX + 55, PosY - 5, 100), [])
 
         PosX := 10
         PosY += 30
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 100), "搜索范围:")
-        SplitPosY := PosY
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "移动次数:")
+        PosX += 80
+        this.CountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), 1)
+
+        PosX += 150
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "每次间隔:")
+        PosX += 80
+        this.IntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), 1000)
 
         PosY += 30
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "起始坐标X:")
-        PosX += 75
-        this.StartPosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        this.StartPosXCon.OnEvent("Change", (*) => this.OnChangeEditValue())
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "移动速度(0~100):")
+        PosX += 120
+        this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "90")
 
-        PosY += 30
-        PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "起始坐标Y:")
-        PosX += 75
-        this.StartPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        this.StartPosYCon.OnEvent("Change", (*) => this.OnChangeEditValue())
+        PosX += 110
+        this.IsRelativeCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "相对位移")
 
-        PosY += 30
-        PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "终止坐标X:")
-        PosX += 75
-        this.EndPosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        this.EndPosXCon.OnEvent("Change", (*) => this.OnChangeEditValue())
+        PosX += 100
+        this.IsGameViewCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "游戏视角")
 
-        PosY += 30
-        PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "终止坐标Y:")
-        PosX += 75
-        this.EndPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        this.EndPosYCon.OnEvent("Change", (*) => this.OnChangeEditValue())
-
-        EndSplitPosY := PosY + 30
-
-        PosY := SplitPosY
-        PosX := 200
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 100), "变量更新:")
-
-        PosY += 30
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 100), "x:")
-        con := MyGui.Add("Edit", Format("x{} y{} w{} ", PosX + 20, PosY - 5, 200), "x")
-        con.Enabled := false
-        this.VariableOperatorConArr.Push(con)
-        con := MyGui.Add("Button", Format("x{} y{} w{} ", PosX + 230, PosY - 5, 50), "编辑")
-        con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(1, "x"))
-
-        PosY += 30
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 100), "y:")
-        con := MyGui.Add("Edit", Format("x{} y{} w{} ", PosX + 20, PosY - 5, 200), "y")
-        con.Enabled := false
-        this.VariableOperatorConArr.Push(con)
-        con := MyGui.Add("Button", Format("x{} y{} w{} ", PosX + 230, PosY - 5, 50), "编辑")
-        con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(2, "y"))
-
-        PosY += 30
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "搜索次数:")
-        this.SearchCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 75, PosY - 5, 50))
-        this.SearchCountCon.OnEvent("Change", (*) => this.OnChangeEditValue())
-
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX + 180, PosY, 120), "移动速度(0~100):")
-        this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 290, PosY - 5, 50), "90")
-        this.SpeedCon.OnEvent("Change", (*) => this.OnChangeEditValue())
-
-        PosY += 30
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "每次间隔:")
-        this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 75, PosY - 5, 50))
-        this.SearchIntervalCon.OnEvent("Change", (*) => this.OnChangeEditValue())
-
-        this.IsRelativeCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX + 180, PosY - 5, 120), "相对位移")
-        this.IsRelativeCon.OnEvent("Click", (*) => this.OnChangeEditValue())
-
-        PosY := EndSplitPosY
-        PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 350), "当前指令:（若未提取到变量，则不执行任何指令）")
-        PosY += 25
-        this.CommandStrCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 550))
-
-        PosY += 40
-        PosX += 250
+        PosY += 35
+        PosX := 175
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 600, 380))
+        MyGui.Show(Format("w{} h{}", 450, 300))
     }
 
     Init(cmd) {
-        searchCmdArr := cmd != "" ? StrSplit(cmd, "_") : []
-        this.SerialStr := searchCmdArr.Length >= 2 ? searchCmdArr[2] : this.GetSerialStr()
-        this.coordData := this.GetCoordData(this.SerialStr)
+        cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
+        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.Data := this.GetCoordData(this.SerialStr)
+        this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
+        macro := this.MacroEditGui.GetFinallyMacroStr()
+        VariableObjArr := GetSelectVariableObjArr(macro)
 
-        this.StartPosX := this.coordData.StartPosX
-        this.StartPosY := this.coordData.StartPosY
-        this.EndPosX := this.coordData.EndPosX
-        this.EndPosY := this.coordData.EndPosY
-        this.SearchCount := this.coordData.SearchCount
-        this.SearchInterval := this.coordData.SearchInterval
+        this.PosXCon.Value := this.Data.PosX
+        this.PosYCon.Value := this.Data.PosY
+        this.NameXCon.Delete()
+        this.NameXCon.Add(VariableObjArr)
+        this.NameXCon.Text := this.Data.NameX
+        this.NameYCon.Delete()
+        this.NameYCon.Add(VariableObjArr)
+        this.NameYCon.Text := this.Data.NameY
+        this.IsRelativeCon.Value := this.Data.IsRelative
+        this.isGameViewCon.Value := this.Data.IsGameView
+        this.SpeedCon.Value := this.Data.Speed
+        this.CountCon.Value := this.Data.Count
+        this.IntervalCon := this.Data.Interval
 
-        this.VariableFilterCon.Value := this.coordData.TextFilter
-        this.StartPosXCon.Value := this.StartPosX
-        this.StartPosYCon.Value := this.StartPosY
-        this.EndPosXCon.Value := this.EndPosX
-        this.EndPosYCon.Value := this.EndPosY
-        this.SearchCountCon.Value := this.SearchCount
-        this.SearchIntervalCon.Value := this.SearchInterval
-        this.ExtractTypeCon.Value := this.coordData.ExtractType
-        this.SpeedCon.Value := this.coordData.Speed
-        this.IsRelativeCon.Value := this.coordData.isRelative
-        loop 2 {
-            this.VariableOperatorConArr[A_Index].Value := this.coordData.VariableOperatorArr[A_Index]
+        hasRemark := this.RemarkCon.Value != ""
+        this.CommandStr := "坐标_" this.Data.SerialStr
+        if (hasRemark) {
+            this.CommandStr .= "_" this.RemarkCon.Value
         }
-    }
-
-    UpdateCommandStr() {
-        this.CommandStr := "坐标"
-        this.CommandStr .= "_" this.SerialStr
     }
 
     CheckIfValid() {
-        if (!IsNumber(this.StartPosXCon.Value) || !IsNumber(this.StartPosYCon.Value) || !IsNumber(this.EndPosXCon.Value
-        ) || !IsNumber(this.EndPosYCon.Value)) {
-            MsgBox("坐标中请输入数字")
-            return false
-        }
-
-        if (Number(this.StartPosXCon.Value) > Number(this.EndPosXCon.Value) || Number(this.StartPosYCon.Value) > Number(
-            this.EndPosYCon.Value)) {
-            MsgBox("起始坐标不能大于终止坐标")
-            return false
-        }
-
-        if (!IsNumber(this.SearchCountCon.Value) || Number(this.SearchCountCon.Value) <= 0) {
-            MsgBox("搜索次数请输入大于0的数字")
-            return false
-        }
-
         return true
     }
 
+    RefreshMousePos() {
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
+        this.MousePosCon.Value := "当前鼠标位置:" mouseX "," mouseY
+    }
+
     ToggleFunc(state) {
-        MacroAction := (*) => this.TriggerMacro()
         if (state) {
-            Hotkey("!l", MacroAction, "On")
-            Hotkey("F1", (*) => this.EnableSelectAerea(), "On")
+            SetTimer this.PosAction, 100
+            Hotkey("F1", (*) => this.SureCoord(), "On")
         }
         else {
-            Hotkey("!l", MacroAction, "Off")
-            Hotkey("F1", (*) => this.EnableSelectAerea(), "Off")
+            SetTimer this.PosAction, 0
+            Hotkey("F1", (*) => this.SureCoord(), "Off")
         }
-    }
-
-    Refresh() {
-        this.UpdateCommandStr()
-        this.CommandStrCon.Value := this.CommandStr
-    }
-
-    OnChangeEditValue() {
-        this.StartPosX := this.StartPosXCon.Value
-        this.StartPosY := this.StartPosYCon.Value
-        this.EndPosX := this.EndPosXCon.Value
-        this.EndPosY := this.EndPosYCon.Value
-        this.SearchCount := this.SearchCountCon.Value
-        this.SearchInterval := this.SearchIntervalCon.Value
-        this.Refresh()
     }
 
     OnClickSureBtn() {
@@ -238,7 +172,6 @@ class CoordGui {
         if (!valid)
             return
 
-        this.UpdateCommandStr()
         this.SaveCoordData()
         action := this.SureBtnAction
         action(this.CommandStr)
@@ -246,85 +179,11 @@ class CoordGui {
         this.Gui.Hide()
     }
 
-    OnSureVariableOperationBtnClick(index, command) {
-        con := this.VariableOperatorConArr[index]
-        con.Value := command
-        this.Refresh()
-    }
-
-    OnEditVariableBtnClick(index, variableStr) {
-        if (this.OperationGui == "") {
-            this.OperationGui := OperationGui()
-            this.OperationGui.SureFocusCon := this.Gui
-        }
-
-        this.OperationGui.SureBtnAction := (index, variableStr, command) => this.OnSureVariableOperationBtnClick(index,
-            command)
-        this.OperationGui.ShowGui(index, variableStr, this.VariableOperatorConArr[index].Value)
-    }
-
-    TriggerMacro() {
-        valid := this.CheckIfValid()
-        if (!valid)
-            return
-
-        this.UpdateCommandStr()
-        this.SaveCoordData()
-        tableItem := MySoftData.SpecialTableItem
-        tableItem.CmdActionArr[1] := []
-        tableItem.KilledArr[1] := false
-        tableItem.ActionCount[1] := 0
-        tableItem.SuccessClearActionArr[1] := Map()
-        tableItem.VariableMapArr[1] := Map()
-        OnCoord(tableItem, this.CommandStr, 1)
-    }
-
-    EnableSelectAerea() {
-        Hotkey("LButton", (*) => this.SelectArea(), "On")
-        Hotkey("LButton Up", (*) => this.DisSelectArea(), "On")
-    }
-
-    DisSelectArea(*) {
-        Hotkey("LButton", (*) => this.SelectArea(), "Off")
-        Hotkey("LButton Up", (*) => this.DisSelectArea(), "Off")
-    }
-
-    SelectArea(*) {
-        ; 获取起始点坐标
-        startX := startY := endX := endY := 0
+    SureCoord() {
         CoordMode("Mouse", "Screen")
-        MouseGetPos(&startX, &startY)
-
-        ; 创建 GUI 用于绘制矩形框
-        MyGui := Gui("+ToolWindow -Caption +AlwaysOnTop -DPIScale")
-        MyGui.BackColor := "Red"
-        WinSetTransColor(" 150", MyGui)
-        MyGui.Opt("+LastFound")
-        GuiHwnd := WinExist()
-
-        ; 显示初始 GUI
-        MyGui.Show("NA x" startX " y" startY " w1 h1")
-
-        ; 跟踪鼠标移动
-        while GetKeyState("LButton", "P") {
-            CoordMode("Mouse", "Screen")
-            MouseGetPos(&endX, &endY)
-            width := Abs(endX - startX)
-            height := Abs(endY - startY)
-            x := Min(startX, endX)
-            y := Min(startY, endY)
-
-            MyGui.Show("NA x" x " y" y " w" width " h" height)
-        }
-        ; 销毁 GUI
-        MyGui.Destroy()
-        ; 返回坐标
-
-        this.StartPosXCon.Value := Min(startX, endX)
-        this.StartPosYCon.Value := Min(startY, endY)
-        this.EndPosXCon.Value := Max(startX, endX)
-        this.EndPosYCon.Value := Max(startY, endY)
-        this.Refresh()
+        MouseGetPos &mouseX, &mouseY
+        this.PosXCon.Value := mouseX
+        this.PosYCon.Value := mouseY
     }
 
     GetSerialStr() {
@@ -345,25 +204,17 @@ class CoordGui {
     }
 
     SaveCoordData() {
-        data := this.coordData
-        data.StartPosX := this.StartPosXCon.Value
-        data.StartPosY := this.StartPosYCon.Value
-        data.EndPosX := this.EndPosXCon.Value
-        data.EndPosY := this.EndPosYCon.Value
-        data.SearchCount := this.SearchCountCon.Value
-        data.SearchInterval := this.SearchIntervalCon.Value
-        data.SerialStr := this.SerialStr
-        data.TextFilter := this.VariableFilterCon.Value
-        data.ExtractType := this.ExtractTypeCon.Value
-        data.isRelative := this.IsRelativeCon.Value
-        data.Speed := Number(this.SpeedCon.Value)
+        this.Data.PosX := this.PosXCon.Value
+        this.Data.PosY := this.PosYCon.Value
+        this.Data.NameX := this.NameXCon.Text
+        this.Data.NameY := this.NameYCon.Text
+        this.Data.IsRelative := this.IsRelativeCon.Value
+        this.Data.IsGameView := this.isGameViewCon.Value
+        this.Data.Speed := this.SpeedCon.Value
+        this.Data.Count := this.CountCon.Value
+        this.Data.Interval := this.IntervalCon.Value
 
-        data.VariableOperatorArr := []
-        loop 2 {
-            data.VariableOperatorArr.Push(this.VariableOperatorConArr[A_Index].Value)
-        }
-
-        saveStr := JSON.stringify(data, 0)
-        IniWrite(saveStr, CoordFile, IniSection, data.SerialStr)
+        saveStr := JSON.stringify(this.Data, 0)
+        IniWrite(saveStr, CoordFile, IniSection, this.Data.SerialStr)
     }
 }

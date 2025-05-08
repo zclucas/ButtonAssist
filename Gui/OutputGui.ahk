@@ -5,9 +5,11 @@ class OutputGui {
         this.Gui := ""
         this.SureBtnAction := ""
         this.RemarkCon := ""
+        this.MacroEditGui := ""
         this.OutputTypeCon := ""
         this.TextCon := ""
         this.IsCoverCon := ""
+        this.NameCon := ""
         this.Data := ""
     }
 
@@ -43,32 +45,40 @@ class OutputGui {
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "备注:")
         PosX += 50
         this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
+    
+        PosX := 10
+        PosY += 25
+        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "选择/输入为空时输出文本，否则输出选择/输入的变量值")
 
         PosX := 10
         PosY += 40
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "输出方式:")
 
         PosX += 80
-        this.OutputTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["SendText", "Send粘贴", "Win粘贴"])
+        this.OutputTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["SendText",
+            "Send粘贴", "Win粘贴"])
         this.OutputTypeCon.Value := 1
 
         PosX += 140
         this.IsCoverCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 200), "输出内容复制到剪切板")
 
         PosX := 10
-        PosY += 40
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 350, 20), "输出的文本")
+        PosY += 30
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 350, 20), "文本                              选择/输入")
 
         PosY += 20
-        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 480, 50))
+        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 200, 50))
+
+        PosX += 240
+        this.NameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), [])
 
         PosY += 80
-        PosX += 200
+        PosX := 200
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 500, 280))
+        MyGui.Show(Format("w{} h{}", 500, 270))
     }
 
     Init(cmd) {
@@ -76,10 +86,14 @@ class OutputGui {
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetOutputData(this.SerialStr)
-
+        macro := this.MacroEditGui.GetFinallyMacroStr()
+        VariableArr := GetSelectVariableObjArr(macro)
         this.TextCon.Value := this.Data.Text
         this.OutputTypeCon.Value := this.Data.OutputType
         this.IsCoverCon.Value := this.Data.IsCover
+        this.NameCon.Delete()
+        this.NameCon.Add(VariableArr)
+        this.NameCon.Text := this.Data.Name
     }
 
     ToggleFunc(state) {
@@ -151,6 +165,7 @@ class OutputGui {
         this.Data.Text := this.TextCon.Value
         this.Data.OutputType := this.OutputTypeCon.Value
         this.Data.IsCover := this.IsCoverCon.value
+        this.Data.Name := this.NameCon.Text
 
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, OutputFile, IniSection, this.Data.SerialStr)

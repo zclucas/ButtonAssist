@@ -10,6 +10,7 @@
 #Include StopGui.ahk
 #Include VariableGui.ahk
 #Include SubMacroGui.ahk
+#Include OperationGui.ahk
 
 class MacroEditGui {
     __new() {
@@ -68,10 +69,12 @@ class MacroEditGui {
         this.SubGuiMap.Set("比较", this.CompareGui)
 
         this.CoordGui := CoordGui()
+        this.CoordGui.MacroEditGui := this
         this.CoordGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("坐标", this.CoordGui)
 
         this.OutputGui := OutputGui()
+        this.OutputGui.MacroEditGui := this
         this.OutputGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("输出", this.OutputGui)
 
@@ -87,6 +90,11 @@ class MacroEditGui {
         this.SubMacroGui := SubMacroGui()
         this.SubMacroGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("子宏", this.SubMacroGui)
+    
+        this.OperationGui := OperationGui()
+        this.OperationGui.MacroEditGui := this
+        this.OperationGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("运算", this.OperationGui)
     }
 
     GetSubGuiSymbol(subGui) {
@@ -216,6 +224,12 @@ class MacroEditGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.SubMacroGui))
         this.CmdBtnConMap.Set("子宏", btnCon)
+    
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "运算")
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.OperationGui))
+        this.CmdBtnConMap.Set("运算", btnCon)
 
         PosX := 20
         PosY += 110

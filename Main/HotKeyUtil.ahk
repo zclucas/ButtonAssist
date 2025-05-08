@@ -176,10 +176,11 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsFile := StrCompare(paramArr[1], "文件", false) == 0
         IsCompare := StrCompare(paramArr[1], "比较", false) == 0
         IsCoord := StrCompare(paramArr[1], "坐标", false) == 0
-        ISOutput := StrCompare(paramArr[1], "输出", false) == 0
+        IsOutput := StrCompare(paramArr[1], "输出", false) == 0
         IsStop := StrCompare(paramArr[1], "终止", false) == 0
-        isVariable := StrCompare(paramArr[1], "变量", false) == 0
-        isSubMacro := StrCompare(paramArr[1], "子宏", false) == 0
+        IsVariable := StrCompare(paramArr[1], "变量", false) == 0
+        IsSubMacro := StrCompare(paramArr[1], "子宏", false) == 0
+        IsOperation := StrCompare(paramArr[1], "运算", false) == 0
         if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
@@ -201,17 +202,20 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         else if (IsCoord) {
             OnCoord(tableItem, cmdArr[A_Index], index)
         }
-        else if (ISOutput) {
+        else if (IsOutput) {
             OnOutput(tableItem, cmdArr[A_Index], index)
         }
         else if (IsStop) {
             OnStop(tableItem, cmdArr[A_Index], index)
         }
-        else if (isVariable) {
+        else if (IsVariable) {
             OnVariable(tableItem, cmdArr[A_Index], index)
         }
-        else if (isSubMacro) {
+        else if (IsSubMacro) {
             OnSubMacro(tableItem, cmdArr[A_Index], index)
+        }
+        else if (IsOperation) {
+            OnOperation(tableItem, cmdArr[A_Index], index)
         }
     }
 }
@@ -379,97 +383,65 @@ OnCompare(tableItem, cmd, index) {
 OnCoord(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     saveStr := IniRead(CoordFile, IniSection, paramArr[2], "")
-    coordData := JSON.parse(saveStr, , false)
-    count := coordData.SearchCount
-    interval := coordData.SearchInterval
-    tableItem.SuccessClearActionArr[index].Set(paramArr[2], [])
-
-    OnCoordOnce(tableItem, index, coordData, count == 1)
-    loop count {
+    Data := JSON.parse(saveStr, , false)
+    OnCoordOnce(tableItem, index, Data)
+    loop Data.Count {
         if (A_Index == 1)
             continue
 
-        if (!tableItem.SuccessClearActionArr[index].Has(paramArr[2])) ;第一次比较成功就退出
-            break
-
-        tempAction := OnCoordOnce.Bind(tableItem, index, coordData, A_Index == count)
-        leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
-        tableItem.SuccessClearActionArr[index][paramArr[2]].Push(tempAction)
+        tempAction := OnCoordOnce.Bind(tableItem, index, Data, A_Index == Data.Count)
+        leftTime := GetFloatTime((Integer(Data.Interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
         SetTimer tempAction, -leftTime
     }
 }
 
-OnCoordOnce(tableItem, index, coordData, isFinally) {
-    X1 := Integer(coordData.StartPosX)
-    Y1 := Integer(coordData.StartPosY)
-    X2 := Integer(coordData.EndPosX)
-    Y2 := Integer(coordData.EndPosY)
-
-    if (coordData.ExtractType == 1) {
-        TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2)
-        TextObjs := TextObjs == "" ? [] : TextObjs
-    }
-    else {
-        if (!IsClipboardText())
-            return
-        TextObjs := []
-        obj := Object()
-        obj.Text := A_Clipboard
-        TextObjs.Push(obj)
+OnCoordOnce(tableItem, index, Data) {
+    SendMode("Event")
+    CoordMode("Mouse", "Screen")
+    Speed := 100 - Data.Speed
+    VariableMap := tableItem.VariableMapArr[index]
+    if (Data.NameX != "空" && !VariableMap.Has(Data.NameX)) {
+        MsgBox("当前环境不存在变量 " Data.NameX)
+        return
     }
 
-    isOk := false
-    for index, value in TextObjs {
-        baseVariableArr := ExtractNumbers(value.Text, coordData.TextFilter)
-        if (baseVariableArr == "")
-            continue
-        CoordUpdateVariable(coordData, baseVariableArr)
-        isOk := true
-        break
+    if (Data.NameY != "空" && !VariableMap.Has(Data.NameY)) {
+        MsgBox("当前环境不存在变量 " Data.NameY)
+        return
     }
 
-    if (isOk) {
-        posArr := coordData.VariableArr
-        SendMode("Event")
-        CoordMode("Mouse", "Screen")
-        Speed := 100 - coordData.Speed
-        if (coordData.isRelative) {
-            MouseMove(posArr[1], posArr[2], Speed, "R")
-        }
-        else
-            MouseMove(posArr[1], posArr[2], Speed)
-
+    PosX := Data.NameX != "空" ? VariableMap[Data.NameX] : Data.PosX
+    PosY := Data.NameY != "空" ? VariableMap[Data.NameY] : Data.PosY
+    if (Data.IsGameView) {
+        MOUSEEVENTF_MOVE := 0x0001
+        DllCall("mouse_event", "UInt", MOUSEEVENTF_MOVE, "UInt", PosX, "UInt", PosY, "UInt", 0, "UInt", 0)
     }
-
-    if (isOk || isFinally) {
-        ;清除后续的搜索和搜索记录
-        if (tableItem.SuccessClearActionArr[index].Has(coordData.SerialStr)) {
-            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(coordData.SerialStr)
-            loop SuccessClearActionArr.Length {
-                action := SuccessClearActionArr[A_Index]
-                SetTimer action, 0
-            }
-            tableItem.SuccessClearActionArr[index].Delete(coordData.SerialStr)
-        }
+    else if (Data.IsRelative) {
+        MouseMove(PosX, PosY, Speed, "R")
     }
+    else
+        MouseMove(PosX, PosY, Speed)
 }
 
 OnOutput(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     saveStr := IniRead(OutputFile, IniSection, paramArr[2], "")
-    OutputData := JSON.parse(saveStr, , false)
-
-    if (OutputData.IsCover) {
-        A_Clipboard := OutputData.Text
+    Data := JSON.parse(saveStr, , false)
+    VariableMap := tableItem.VariableMapArr[index]
+    OutputText := Data.Text
+    if (Data.Name != "空" && Data.Name != "")
+        OutputText := VariableMap[Data.Name]
+    if (Data.IsCover) {
+        A_Clipboard := OutputText
     }
 
-    if (OutputData.OutputType == 1) {
-        SendText(OutputData.Text)
+    if (Data.OutputType == 1) {
+        SendText(OutputText)
     }
-    else if (OutputData.OutputType == 2) {
+    else if (Data.OutputType == 2) {
         Send "^v"
     }
-    else if (OutputData.OutputType == 3) {
+    else if (Data.OutputType == 3) {
         MyWinClip.Paste(A_Clipboard)
     }
 }
@@ -611,6 +583,27 @@ OnExtractingVariablesOnce(tableItem, index, variableData, isFinally) {
                 SetTimer action, 0
             }
             tableItem.SuccessClearActionArr[index].Delete(variableData.ExtractStr)
+        }
+    }
+}
+
+OnOperation(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
+    saveStr := IniRead(OperationFile, IniSection, paramArr[2], "")
+    Data := JSON.parse(saveStr, , false)
+    VariableMap := tableItem.VariableMapArr[index]
+    loop 4 {
+        if (!Data.ToggleArr[A_Index] || Data.NameArr[A_Index] == "空")
+            continue
+        Name := Data.NameArr[A_Index]
+        SymbolArr := Data.SymbolGroups[A_Index]
+        ValueArr := Data.ValueGroups[A_Index]
+        Value := GetVariableOperationResult(VariableMap, Name, SymbolArr, ValueArr)
+        if (Data.UpdateTypeArr[A_Index] == 1) {
+            VariableMap[Name] := Value
+        }
+        else {
+            VariableMap[Data.UpdateNameArr[A_Index]] := Value
         }
     }
 }

@@ -208,6 +208,7 @@ InitFilePath() {
     global StopFile := A_WorkingDir "\Setting\StopFile.ini"
     global VariableFile := A_WorkingDir "\Setting\VariableFile.ini"
     global SubMacroFile := A_WorkingDir "\Setting\SubMacroFile.ini"
+    global OperationFile := A_WorkingDir "\Setting\OperationFile.ini"
     global IniSection := "UserSettings"
 }
 
@@ -452,8 +453,8 @@ GetSavedTableItemInfo(index) {
     loop tableItem.ModeArr.Length {
         TKArrStr .= tableItem.TKConArr[A_Index].Value
         MacroStr := Trim(tableItem.InfoConArr[A_Index].Value, "`n")
-        MacroStr :=  Trim(tableItem.InfoConArr[A_Index].Value, ",")
-        MacroArrStr .= MacroStr 
+        MacroStr := Trim(tableItem.InfoConArr[A_Index].Value, ",")
+        MacroArrStr .= MacroStr
         ModeArrStr .= tableItem.ModeConArr[A_Index].Value
         ForbidArrStr .= tableItem.ForbidConArr[A_Index].Value
         HoldTimeArrStr .= tableItem.HoldTimeConArr[A_Index].Value
@@ -907,7 +908,6 @@ AreKeysPressed(keyCombo) {
     return false
 }
 
-
 GetSelectVariableObjArr(macro) {
     VariableObjArr := []
     cmdArr := SplitMacro(macro)
@@ -927,4 +927,47 @@ GetSelectVariableObjArr(macro) {
         }
     }
     return VariableObjArr
+}
+
+GetOperationResult(BaseValue, SymbolArr, ValueArr) {
+    sum := baseValue
+    for index, Symbol in SymbolArr {
+        if (Symbol == "+")
+            sum += Number(ValueArr[index])
+        if (Symbol == "-")
+            sum -= Number(ValueArr[index])
+        if (Symbol == "*")
+            sum *= Number(ValueArr[index])
+        if (Symbol == "/")
+            sum /= Number(ValueArr[index])
+        if (Symbol == "^")
+            sum ^= Number(ValueArr[index])
+        if (Symbol == "..")
+            sum .= ValueArr[index]
+    }
+    return sum
+}
+
+GetVariableOperationResult(VariableMap, Name, SymbolArr, ValueArr) {
+    sum := VariableMap[Name]
+    for index, Symbol in SymbolArr {
+        Value := ValueArr[index]
+        if (SubStr(ValueArr[index], 1, 1) == "&") {
+            ValueName := SubStr(ValueArr[index], 2)
+            Value := VariableMap[ValueName]
+        }
+        if (Symbol == "+")
+            sum += Number(Value)
+        if (Symbol == "-")
+            sum -= Number(Value)
+        if (Symbol == "*")
+            sum *= Number(Value)
+        if (Symbol == "/")
+            sum /= Number(Value)
+        if (Symbol == "^")
+            sum ^= Number(Value)
+        if (Symbol == "..")
+            sum .= Value
+    }
+    return sum
 }

@@ -1,123 +1,242 @@
 #Requires AutoHotkey v2.0
+#Include MacroEditGui.ahk
+#Include OperationSubGui.ahk
 
-class OperationGui{
-    __new(){
+class OperationGui {
+    __new() {
         this.Gui := ""
         this.SureBtnAction := ""
-        this.OperatorCon := ""
-        this.FocusCon := ""
-        this.OperatorNumCon := ""
-        this.BaseValueCon := ""
-        this.BaseResultCon := ""
-        this.Index := 0
-        this.variableStr := ""
+        this.RemarkCon := ""
+        this.Data := ""
+        this.MacroEditGui := ""
+        this.CommandStr := ""
+        this.OperationSubGui := ""
+
+        this.ToggleConArr := []
+        this.NameConArr := []
+        this.OperationConArr := []
+        this.UpdateTypeConArr := []
+        this.UpdateNameConArr := []
     }
 
-    ShowGui(index, variableStr, cmd){
+    ShowGui(cmd) {
         if (this.Gui != "") {
             this.Gui.Show()
         }
-        else{
+        else {
             this.AddGui()
         }
 
-        this.Index := index
-        this.variableStr := variableStr
-        this.OperatorCon.Value := cmd != "" ? cmd : ""
-        this.FocusCon.Focus()
+        this.Init(cmd)
     }
 
     AddGui() {
-        MyGui := Gui(, "变量换算编辑")
+        MyGui := Gui(, "运算指令编辑")
         this.Gui := MyGui
         MyGui.SetFont(, "Consolas")
 
         PosX := 10
         PosY := 10
-        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 300, 20), "操作指令")
-        PosY += 20
-        this.OperatorCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 350, 20), "")
-        this.OperatorCon.Enabled := false
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "备注:")
+        PosX += 50
+        this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
 
-        PosY += 30
-        this.OperatorNumCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "0")
-
-        PosY += 30
-        con := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "+")
-        con.OnEvent("Click", (*) => this.OnClickOperatorBtn("+"))
-        con := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX + 60, PosY, 50, 30), "-")
-        con.OnEvent("Click", (*) => this.OnClickOperatorBtn("-"))
-        con := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX + 120, PosY, 50, 30), "*")
-        con.OnEvent("Click", (*) => this.OnClickOperatorBtn("*"))
-        con := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX + 180, PosY, 50, 30), "/")
-        con.OnEvent("Click", (*) => this.OnClickOperatorBtn("/"))
-        con := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX + 240, PosY, 50, 30), "^")
-        con.OnEvent("Click", (*) => this.OnClickOperatorBtn("^"))
-
-
-        PosY += 40
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 120, 20), "假如操作变量是：")
-        this.BaseValueCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX + 110, PosY - 3, 50, 20), "10")
-        this.BaseValueCon.OnEvent("Change", (*)=> this.OnChangeBaseValue())
-
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX + 180, PosY, 120, 20), "换算后的变量是：")
-        this.BaseResultCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX + 290, PosY, 50, 20), "10")
-
-        PosY += 40
         PosX := 10
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX + 50, PosY, 100, 40), "退格")
-        btnCon.OnEvent("Click", (*) => this.OnBackspaceBtnClick())
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX + 200, PosY, 100, 40), "确定")
+        PosY += 25
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY, 70, 20), "勾选开关且选择/输入1不为空时生效")
+
+        PosX := 10
+        PosY += 25
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY, 70, 20),
+        "开关  选择/输入1       运算表达式                                    选择/输入2")
+
+        PosY += 20
+        PosX := 15
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        this.ToggleConArr.Push(con)
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        this.NameConArr.Push(con)
+
+        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 135, PosY - 3, 150), "")
+        con.Enabled := false
+        this.OperationConArr.Push(con)
+
+        con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 290, PosY - 4, 50), "编辑")
+        con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(1))
+
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 350, PosY - 3, 100), ["更新自己", "创建或更新"])
+        con.Value := 1
+        this.UpdateTypeConArr.Push(con)
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 455, PosY - 3, 100), [])
+        this.UpdateNameConArr.Push(con)
+    
+        PosY += 35
+        PosX := 15
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        this.ToggleConArr.Push(con)
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        this.NameConArr.Push(con)
+
+        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 135, PosY - 3, 150), "")
+        con.Enabled := false
+        this.OperationConArr.Push(con)
+
+        con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 290, PosY - 4, 50), "编辑")
+        con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(2))
+
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 350, PosY - 3, 100), ["更新自己", "创建或更新"])
+        con.Value := 1
+        this.UpdateTypeConArr.Push(con)
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 455, PosY - 3, 100), [])
+        this.UpdateNameConArr.Push(con)
+    
+        PosY += 35
+        PosX := 15
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        this.ToggleConArr.Push(con)
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        this.NameConArr.Push(con)
+
+        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 135, PosY - 3, 150), "")
+        con.Enabled := false
+        this.OperationConArr.Push(con)
+
+        con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 290, PosY - 4, 50), "编辑")
+        con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(3))
+
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 350, PosY - 3, 100), ["更新自己", "创建或更新"])
+        con.Value := 1
+        this.UpdateTypeConArr.Push(con)
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 455, PosY - 3, 100), [])
+        this.UpdateNameConArr.Push(con)
+    
+        PosY += 35
+        PosX := 15
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        this.ToggleConArr.Push(con)
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        this.NameConArr.Push(con)
+
+        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 135, PosY - 3, 150), "")
+        con.Enabled := false
+        this.OperationConArr.Push(con)
+
+        con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 290, PosY - 4, 50), "编辑")
+        con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(4))
+
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 350, PosY - 3, 100), ["更新自己", "创建或更新"])
+        con.Value := 1
+        this.UpdateTypeConArr.Push(con)
+
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 455, PosY - 3, 100), [])
+        this.UpdateNameConArr.Push(con)
+
+        PosY += 40
+        PosX := 250
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
-        
 
-        MyGui.Show(Format("w{} h{}", 400, 240))
+        MyGui.Show(Format("w{} h{}", 600, 280))
     }
 
-    OnChangeBaseValue(){
-        this.UpdateExampleValue()
-    }
+    Init(cmd) {
+        cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
+        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
+        this.Data := this.GetOperationData(this.SerialStr)
+        macro := this.MacroEditGui.GetFinallyMacroStr()
+        VariableObjArr := GetSelectVariableObjArr(macro)
 
-    OnClickOperatorBtn(symbol){
-        text := this.OperatorCon.Value
-        leftBracket := StrLen(text) == 1 ? "" : "("
-        rightBracket := StrLen(text) == 1 ? "" : ")"
-
-        text := leftBracket text rightBracket symbol this.OperatorNumCon.Value
-        this.OperatorCon.Value := text
-        this.UpdateExampleValue()
-    }
-
-    OnBackspaceBtnClick() {
-        expression := this.OperatorCon.Value
-        res := CompareExtractOperAndNum(expression)
-        endIndex := res.operators.Length > 0 ? res.operators.Length - 1 : 0
-        text := this.variableStr
-        for index, value in res.operators{
-            if (index > endIndex)
-                break
-
-        leftBracket := StrLen(text) == 1 ? "" : "("
-        rightBracket := StrLen(text) == 1 ? "" : ")"
-        text := leftBracket text rightBracket value res.numbers[index]
+        loop 4 {
+            this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
+            this.NameConArr[A_Index].Delete()
+            this.NameConArr[A_Index].Add(VariableObjArr)
+            this.NameConArr[A_Index].Text := this.Data.NameArr[A_Index]
+            this.OperationConArr[A_Index].Value := this.Data.OperationArr[A_Index]
+            this.UpdateTypeConArr[A_Index].Value := this.Data.UpdateTypeArr[A_Index]
+            this.UpdateNameConArr[A_Index].Delete()
+            this.UpdateNameConArr[A_Index].Add(VariableObjArr)
+            this.UpdateNameConArr[A_Index].Text := this.Data.UpdateNameArr[A_Index]
         }
-        this.OperatorCon.Value := text
-        this.UpdateExampleValue()
+
+        hasRemark := this.RemarkCon.Value != ""
+        this.CommandStr := "运算_" this.Data.SerialStr
+        if (hasRemark) {
+            this.CommandStr .= "_" this.RemarkCon.Value
+        }
     }
-    
-    
 
-    OnClickSureBtn(){
-        if (this.SureBtnAction == "")
+    OnSureOperationBtnClick(index, command, SymbolArr, ValueArr) {
+        con := this.OperationConArr[index]
+        con.Value := command
+        this.Data.SymbolGroups[index] := SymbolArr
+        this.Data.ValueGroups[index] := ValueArr
+    }
+
+    OnEditVariableBtnClick(index) {
+        if (this.OperationSubGui == "") {
+            this.OperationSubGui := OperationSubGui()
+            this.OperationSubGui.MacroEditGui := this.MacroEditGui
+        }
+        Name := this.NameConArr[index].Text
+        if (Name == "" || Name == "空") {
+            MsgBox("选择/输入1不可为空")
             return
+        }
+        SymbolArr := this.Data.SymbolGroups[index]
+        ValueArr := this.Data.ValueGroups[index]
+        this.OperationSubGui.SureBtnAction := (index, command, SymbolArr, ValueArr) => this.OnSureOperationBtnClick(index, command, SymbolArr, ValueArr)
+        this.OperationSubGui.ShowGui(index, Name, this.OperationConArr[index].Value, SymbolArr, ValueArr)
+    }
 
+    OnClickSureBtn() {
+        valid := this.CheckIfValid()
+        if (!valid)
+            return
+        this.SaveOperationData()
         action := this.SureBtnAction
-        action(this.Index, this.variableStr, this.OperatorCon.Value)
+        action(this.CommandStr)
         this.Gui.Hide()
     }
 
-    UpdateExampleValue(){
-        sum := UpdateBaseValue(Number(this.BaseValueCon.Value), this.OperatorCon.Value)
-        this.BaseResultCon.Value := sum
+    CheckIfValid() {
+        return true
+    }
+
+    GetSerialStr() {
+        CurrentDateTime := FormatTime(, "HHmmss")
+        return "Operation" CurrentDateTime
+    }
+
+    GetOperationData(SerialStr) {
+        saveStr := IniRead(OperationFile, IniSection, SerialStr, "")
+        if (!saveStr) {
+            data := OperationData()
+            data.SerialStr := SerialStr
+            return data
+        }
+
+        data := JSON.parse(saveStr, , false)
+        return data
+    }
+
+    SaveOperationData() {
+        loop 4 {
+            this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
+            this.Data.NameArr[A_Index] := this.NameConArr[A_Index].Text
+            this.Data.OperationArr[A_Index] := this.OperationConArr[A_Index].Value
+            this.Data.UpdateTypeArr[A_Index] := this.UpdateTypeConArr[A_Index].Value
+            this.Data.UpdateNameArr[A_Index] := this.UpdateNameConArr[A_Index].Text
+        }
+
+        saveStr := JSON.stringify(this.Data, 0)
+        IniWrite(saveStr, OperationFile, IniSection, this.Data.SerialStr)
     }
 }
