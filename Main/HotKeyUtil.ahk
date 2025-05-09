@@ -224,23 +224,19 @@ OnTriggerMacroOnce(tableItem, macro, index) {
 OnSearch(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     saveStr := IniRead(SearchFile, IniSection, paramArr[2], "")
-    searchData := JSON.parse(saveStr, , false)
-    searchCount := Integer(searchData.SearchCount)
-    searchInterval := Integer(searchData.SearchInterval)
-
-    tableItem.SuccessClearActionArr[index].Set(searchData.SerialStr, [])
-
-    OnSearchOnce(tableItem, searchData, index, searchCount == 1)
+    Data := JSON.parse(saveStr, , false)
+    searchCount := Integer(Data.SearchCount)
+    searchInterval := Integer(Data.SearchInterval)
+    tableItem.SuccessClearActionArr[index].Set(Data.SerialStr, [])
     loop searchCount {
-        if (A_Index == 1)
-            continue
 
-        if (!tableItem.SuccessClearActionArr[index].Has(searchData.SerialStr)) ;第一次搜索成功就退出
+        if (!tableItem.SuccessClearActionArr[index].Has(Data.SerialStr)) ;第一次搜索成功就退出
             break
 
-        action := OnSearchOnce.Bind(tableItem, cmd, index, A_Index == searchCount)
+        action := OnSearchOnce.Bind(tableItem, Data, index, A_Index == searchCount)
         leftTime := GetFloatTime(searchInterval * (A_Index - 1), MySoftData.PreIntervalFloat)
-        tableItem.SuccessClearActionArr[index][searchData.SerialStr].Push(action)
+        leftTime := leftTime == 0 ? 1 : leftTime
+        tableItem.SuccessClearActionArr[index][Data.SerialStr].Push(action)
         SetTimer action, -leftTime
     }
 }
@@ -283,13 +279,13 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
         ;自动移动鼠标
         CoordMode("Mouse", "Screen")
         SendMode("Event")
-        Speed :=  100 - Data.Speed
+        Speed := 100 - Data.Speed
         Pos := [OutputVarX, OutputVarY]
         if (Data.SearchType == 1) {
             imageSize := GetImageSize(Data.SearchImagePath)
             Pos := [OutputVarX + imageSize[1] / 2, OutputVarY + imageSize[2] / 2]
         }
-        
+
         if (Data.ResultToggle) {
             VariableMap[Data.ResultSaveName] := Data.TrueValue
         }
