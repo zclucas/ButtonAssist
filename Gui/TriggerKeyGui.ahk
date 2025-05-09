@@ -888,12 +888,12 @@ class TriggerKeyGui {
             con.OnEvent("Click", (*) => this.OnCheckedKey("WheelDown"))
             this.ConMap.Set("WheelDown", con)
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "上滚轮")
             con.OnEvent("Click", (*) => this.OnCheckedKey("WheelUp"))
             this.ConMap.Set("WheelUp", con)
 
-            PosX += 60
+            PosX += 70
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "滚轮左键")
             con.OnEvent("Click", (*) => this.OnCheckedKey("WheelLeft"))
             this.ConMap.Set("WheelLeft", con)

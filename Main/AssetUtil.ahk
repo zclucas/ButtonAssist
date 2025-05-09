@@ -921,13 +921,16 @@ AreKeysPressed(keyCombo) {
 }
 
 GetSelectVariableObjArr(macro) {
-    VariableObjArr := []
+    VariableMap := Map()
     cmdArr := SplitMacro(macro)
     loop cmdArr.Length {
         paramArr := StrSplit(cmdArr[A_Index], "_")
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
         IsSearch := StrCompare(paramArr[1], "搜索", false) == 0
-        if (!IsVariable && !IsSearch)
+        IsOperation := StrCompare(paramArr[1], "运算", false) == 0
+        IsIf := StrCompare(paramArr[1], "如果", false) == 0
+        IsSubMacro := StrCompare(paramArr[1], "子宏", false) == 0
+        if (!IsVariable && !IsSearch && !IsOperation && !IsIf && !IsSubMacro)
             continue
 
         if (IsVariable) {
@@ -935,23 +938,68 @@ GetSelectVariableObjArr(macro) {
             Data := JSON.parse(saveStr, , false)
             loop 4 {
                 if (Data.ToggleArr[A_Index])
-                    VariableObjArr.Push(Data.NameArr[A_Index])
+                    VariableMap[Data.NameArr[A_Index]] := true
             }
         }
         else if (IsSearch) {
             saveStr := IniRead(SearchFile, IniSection, paramArr[2], "")
             Data := JSON.parse(saveStr, , false)
             if (Data.ResultToggle)
-                VariableObjArr.Push(Data.ResultSaveName)
+                VariableMap[Data.ResultSaveName] := true
 
             if (Data.CoordToogle) {
-                VariableObjArr.Push(Data.CoordXName)
-                VariableObjArr.Push(Data.CoordYName)
+                VariableMap[Data.CoordXName] := true
+                VariableMap[Data.CoordYName] := true
             }
         }
+        else if (IsOperation) {
+            saveStr := IniRead(OperationFile, IniSection, paramArr[2], "")
+            Data := JSON.parse(saveStr, , false)
+            loop 4 {
+                if (Data.ToggleArr[A_Index] && Data.UpdateTypeArr[A_Index] == 2)
+                    VariableMap[Data.UpdateNameArr[A_Index]] := true
+            }
+        }
+        else if (IsIf) {
+            saveStr := IniRead(CompareFile, IniSection, paramArr[2], "")
+            Data := JSON.parse(saveStr, , false)
+            if (Data.SaveToggle) {
+                VariableMap[Data.SaveName] := true
+            }
+        }
+        else if (IsSubMacro) {
+            saveStr := IniRead(SubMacroFile, IniSection, paramArr[2], "")
+            Data := JSON.parse(saveStr, , false)
+            if (Data.CallType == 1) {
+                macro := ""
+                if (Data.Type == 2) {
+                    macroItem := MySoftData.TableInfo[1]
+                    macro := macroItem.MacroArr[Data.Index]
+                }
+                else if (Data.Type == 3) {
+                    macroItem := MySoftData.TableInfo[2]
+                    macro := macroItem.MacroArr[Data.Index]
+                }
+                else if (Data.Type == 4) {
+                    macroItem := MySoftData.TableInfo[3]
+                    macro := macroItem.MacroArr[Data.Index]
+                }
 
+                if (macro != "") {
+                    Arr := GetSelectVariableObjArr(macro)
+                    loop arr.Length {
+                        VariableMap[Arr[A_Index]] := true
+                    }
+                }
+            }
+        }
     }
-    return VariableObjArr
+
+    VariableArr := []
+    for key in VariableMap {
+        VariableArr.Push(key)
+    }
+    return VariableArr
 }
 
 GetOperationResult(BaseValue, SymbolArr, ValueArr) {

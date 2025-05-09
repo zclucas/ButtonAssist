@@ -104,22 +104,22 @@ AddOperBtnUI() {
     MySoftData.BtnAdd.OnEvent("Click", OnAddSetting)
     posY += 40
 
-    posY := 250
-    con := MyGui.Add("Picture", Format("x{} y{} w{} h{} center", 15, posY, 100, 100), "Images\advertise.png")
-    MySoftData.FixedCons.Push(con)
+    ; posY := 250
+    ; con := MyGui.Add("Picture", Format("x{} y{} w{} h{} center", 15, posY, 100, 100), "Images\advertise.png")
+    ; MySoftData.FixedCons.Push(con)
 
-    posY := 350
-    con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY, 100), "游戏项目")
-    MySoftData.FixedCons.Push(con)
-    con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 20, 100), "为爱发电")
-    MySoftData.FixedCons.Push(con)
-    con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 40, 100), "诚邀美术、程序")
-    MySoftData.FixedCons.Push(con)
-    con := MyGui.Add("Link", Format("x{} y{} w{} center", 25, posY + 60, 100),
-    '<a href="https://www.bilibili.com/video/BV1jPwTe3EtB">项目演示链接</a>')
-    MySoftData.FixedCons.Push(con)
-    con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 80, 100), "QQ:2660681757")
-    MySoftData.FixedCons.Push(con)
+    ; posY := 350
+    ; con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY, 100), "游戏项目")
+    ; MySoftData.FixedCons.Push(con)
+    ; con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 20, 100), "为爱发电")
+    ; MySoftData.FixedCons.Push(con)
+    ; con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 40, 100), "诚邀美术、程序")
+    ; MySoftData.FixedCons.Push(con)
+    ; con := MyGui.Add("Link", Format("x{} y{} w{} center", 25, posY + 60, 100),
+    ; '<a href="https://www.bilibili.com/video/BV1jPwTe3EtB">项目演示链接</a>')
+    ; MySoftData.FixedCons.Push(con)
+    ; con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 80, 100), "QQ:2660681757")
+    ; MySoftData.FixedCons.Push(con)
 
     posY := 470
     MySoftData.BtnSave := MyGui.Add("Button", Format("x{} y{} w{} h{} center", 15, posY, 100, 30), "应用并保存")
@@ -460,13 +460,9 @@ AddSettingUI(index) {
     posY += 20
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "游戏：勾选为游戏模式。若游戏内仍然无效请以管理员身份运行软件，如果非游戏模式功能正常，请忽略此项")
     posY += 20
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "松止：勾选后，当松开触发键时，停止对应触发的宏")
-    posY += 20
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "指定进程名：填写后，仅在该进程获得焦点时生效，否则对所有进程生效（可通过工具模块获取进程名）")
     posY += 20
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "循环次数：-1为无限循环(通过终止所有宏按键取消循环),大于0的整数为循环次数")
-    posY += 20
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "备注：对按键宏的备注信息(这是网友在Gitee上提的第一个需求,加上以示尊重)")
     posY += 20
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "快捷键：通过%设置%下的编辑快捷键获取配置")
     posY += 20
