@@ -283,6 +283,7 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
         ;自动移动鼠标
         CoordMode("Mouse", "Screen")
         SendMode("Event")
+        Speed :=  100 - Data.Speed
         Pos := [OutputVarX, OutputVarY]
         if (Data.SearchType == 1) {
             imageSize := GetImageSize(Data.SearchImagePath)
@@ -301,11 +302,11 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
         Pos[1] := GetFloatValue(Pos[1], MySoftData.CoordXFloat)
         Pos[2] := GetFloatValue(Pos[2], MySoftData.CoordYFloat)
         if (Data.AutoClick) {
-            SetDefaultMouseSpeed(Data.Speed)
+            SetDefaultMouseSpeed(Speed)
             Click(Format("{} {} {}"), Pos[1], Pos[2], Data.ClickCount)
         }
         else if (Data.AutoMove) {
-            MouseMove(Pos[1], Pos[2])
+            MouseMove(Pos[1], Pos[2], Speed)
         }
 
         if (Data.TrueCommandStr == "")

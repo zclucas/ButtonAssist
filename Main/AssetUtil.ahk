@@ -16,7 +16,6 @@ GetFloatValue(oriValue, floatValue) {
     return Random(min, max)
 }
 
-
 GetCurMSec() {
     return A_Hour * 3600 * 1000 + A_Min * 60 * 1000 + A_Sec * 1000 + A_mSec
 }
@@ -926,18 +925,31 @@ GetSelectVariableObjArr(macro) {
     cmdArr := SplitMacro(macro)
     loop cmdArr.Length {
         paramArr := StrSplit(cmdArr[A_Index], "_")
-        isVariable := StrCompare(paramArr[1], "变量", false) == 0
-        if (!isVariable)
+        IsVariable := StrCompare(paramArr[1], "变量", false) == 0
+        IsSearch := StrCompare(paramArr[1], "搜索", false) == 0
+        if (!IsVariable && !IsSearch)
             continue
 
-        if (isVariable) {
+        if (IsVariable) {
             saveStr := IniRead(VariableFile, IniSection, paramArr[2], "")
-            variableData := JSON.parse(saveStr, , false)
+            Data := JSON.parse(saveStr, , false)
             loop 4 {
-                if (variableData.ToggleArr[A_Index])
-                    VariableObjArr.Push(variableData.NameArr[A_Index])
+                if (Data.ToggleArr[A_Index])
+                    VariableObjArr.Push(Data.NameArr[A_Index])
             }
         }
+        else if (IsSearch) {
+            saveStr := IniRead(SearchFile, IniSection, paramArr[2], "")
+            Data := JSON.parse(saveStr, , false)
+            if (Data.ResultToggle)
+                VariableObjArr.Push(Data.ResultSaveName)
+
+            if (Data.CoordToogle) {
+                VariableObjArr.Push(Data.CoordXName)
+                VariableObjArr.Push(Data.CoordYName)
+            }
+        }
+
     }
     return VariableObjArr
 }
