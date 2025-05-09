@@ -137,10 +137,10 @@ class CoordGui {
         this.isGameViewCon.Value := this.Data.IsGameView
         this.SpeedCon.Value := this.Data.Speed
         this.CountCon.Value := this.Data.Count
-        this.IntervalCon := this.Data.Interval
+        this.IntervalCon.Value := this.Data.Interval
 
         hasRemark := this.RemarkCon.Value != ""
-        this.CommandStr := "坐标_" this.Data.SerialStr
+        this.CommandStr := "移动Pro_" this.Data.SerialStr
         if (hasRemark) {
             this.CommandStr .= "_" this.RemarkCon.Value
         }

@@ -31,7 +31,6 @@ global MyMacroGui := MacroEditGui()
 global MyReplaceKeyGui := ReplaceKeyGui()
 global MyWinClip := WinClip()
 
-
 InitFilePath()
 LoadSetting()
 EditListen()

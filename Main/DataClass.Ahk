@@ -120,6 +120,10 @@ class SoftData {
         this.IntervalFloatCtrl := ""
         this.ImageSearchBlur := 100
         this.ImageSearchBlurCtrl := ""
+        this.CoordXFloatCon := ""
+        this.CoordYFloatCon := ""
+        this.CoordXFloat := 0
+        this.CoordYFloat := 0
         this.IsLastSaved := false
         this.WinPosX := 0
         this.WinPosY := 0
@@ -213,8 +217,18 @@ class SearchData {
         this.SearchCount := 1
         this.SearchInterval := 1000
         this.AutoMove := 1
+        this.AutoClick := 0
+        this.ClickCount := 1
+        this.Speed := 90
         this.TrueCommandStr := ""
         this.FalseCommandStr := ""
+        this.ResultToggle := 0
+        this.ResultSaveName := "搜索结果"
+        this.TrueValue := 1
+        this.FalseValue := 0
+        this.CoordToogle := 0
+        this.CoordXName := "坐标X"
+        this.CoordYName := "坐标Y"
     }
 
 }
@@ -313,7 +327,7 @@ class OperationData {
         this.OperationArr := ["", "", "", ""]
         this.UpdateTypeArr := [1, 1, 1, 1]
         this.UpdateNameArr := ["空", "空", "空", "空"]
-        this.SymbolGroups  := [[], [], [], []]  ;操作符号
+        this.SymbolGroups := [[], [], [], []]  ;操作符号
         this.ValueGroups := [[], [], [], []]     ;运算对象
     }
 }

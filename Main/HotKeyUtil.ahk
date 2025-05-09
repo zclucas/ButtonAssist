@@ -130,7 +130,8 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
     tableItem.KilledArr[index] := false
     tableItem.ActionCount[index] := 0
     tableItem.SuccessClearActionArr[index] := Map()
-    isContinue := MySoftData.ContinueKeyMap.Has(tableItem.TKArr[index]) && tableItem.LoopCountArr[index] == 1
+    isContinue := tableItem.TKArr.Has(index) && MySoftData.ContinueKeyMap.Has(tableItem.TKArr[index]) && tableItem.LoopCountArr[
+        index] == 1
     isLoop := tableItem.LoopCountArr[index] == -1
 
     loop {
@@ -170,12 +171,12 @@ OnTriggerMacroOnce(tableItem, macro, index) {
 
         paramArr := StrSplit(cmdArr[A_Index], "_")
         IsMouseMove := StrCompare(paramArr[1], "移动", false) == 0
-        IsSearch := StrCompare(SubStr(paramArr[1], 1, 2), "搜索", false) == 0
+        IsSearch := StrCompare(paramArr[1], "搜索", false) == 0
         IsPressKey := StrCompare(paramArr[1], "按键", false) == 0
         IsInterval := StrCompare(paramArr[1], "间隔", false) == 0
         IsFile := StrCompare(paramArr[1], "文件", false) == 0
-        IsCompare := StrCompare(paramArr[1], "比较", false) == 0
-        IsCoord := StrCompare(paramArr[1], "坐标", false) == 0
+        IsIf := StrCompare(paramArr[1], "如果", false) == 0
+        IsCoord := StrCompare(paramArr[1], "移动Pro", false) == 0
         IsOutput := StrCompare(paramArr[1], "输出", false) == 0
         IsStop := StrCompare(paramArr[1], "终止", false) == 0
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
@@ -196,7 +197,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         else if (IsFile) {
             OnRunFile(tableItem, cmdArr[A_Index], index)
         }
-        else if (IsCompare) {
+        else if (IsIf) {
             OnCompare(tableItem, cmdArr[A_Index], index)
         }
         else if (IsCoord) {
@@ -244,61 +245,83 @@ OnSearch(tableItem, cmd, index) {
     }
 }
 
-OnSearchOnce(tableItem, searchData, index, isFinally) {
-    X1 := Integer(searchData.StartPosX)
-    Y1 := Integer(searchData.StartPosY)
-    X2 := Integer(searchData.EndPosX)
-    Y2 := Integer(searchData.EndPosY)
+OnSearchOnce(tableItem, Data, index, isFinally) {
+    X1 := Integer(Data.StartPosX)
+    Y1 := Integer(Data.StartPosY)
+    X2 := Integer(Data.EndPosX)
+    Y2 := Integer(Data.EndPosY)
+    VariableMap := tableItem.VariableMapArr[index]
 
     CoordMode("Pixel", "Screen")
-    if (searchData.SearchType == 1) {
-        SearchInfo := Format("*{} *w0 *h0 {}", Integer(MySoftData.ImageSearchBlur), searchData.SearchImagePath)
+    if (Data.SearchType == 1) {
+        SearchInfo := Format("*{} *w0 *h0 {}", Integer(MySoftData.ImageSearchBlur), Data.SearchImagePath)
         found := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, SearchInfo)
     }
-    else if (searchData.SearchType == 2) {
-        color := "0X" searchData.SearchColor
+    else if (Data.SearchType == 2) {
+        color := "0X" Data.SearchColor
         found := PixelSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, color, Integer(MySoftData.ImageSearchBlur
         ))
     }
-    else if (searchData.SearchType == 3) {
-        text := searchData.SearchText
+    else if (Data.SearchType == 3) {
+        text := Data.SearchText
         found := CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text)
     }
 
     if (found || isFinally) {
         ;清除后续的搜索和搜索记录
-        if (tableItem.SuccessClearActionArr[index].Has(searchData.SerialStr)) {
-            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(searchData.SerialStr)
+        if (tableItem.SuccessClearActionArr[index].Has(Data.SerialStr)) {
+            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(Data.SerialStr)
             loop SuccessClearActionArr.Length {
                 action := SuccessClearActionArr[A_Index]
                 SetTimer action, 0
             }
-            tableItem.SuccessClearActionArr[index].Delete(searchData.SerialStr)
+            tableItem.SuccessClearActionArr[index].Delete(Data.SerialStr)
         }
     }
 
     if (found) {
         ;自动移动鼠标
-        if (Integer(searchData.AutoMove)) {
-            Pos := [OutputVarX, OutputVarY]
-            if (searchData.SearchType == 1) {
-                imageSize := GetImageSize(searchData.SearchImagePath)
-                Pos := [OutputVarX + imageSize[1] / 2, OutputVarY + imageSize[2] / 2]
-            }
+        CoordMode("Mouse", "Screen")
+        SendMode("Event")
+        Pos := [OutputVarX, OutputVarY]
+        if (Data.SearchType == 1) {
+            imageSize := GetImageSize(Data.SearchImagePath)
+            Pos := [OutputVarX + imageSize[1] / 2, OutputVarY + imageSize[2] / 2]
+        }
+        
+        if (Data.ResultToggle) {
+            VariableMap[Data.ResultSaveName] := Data.TrueValue
+        }
 
-            CoordMode("Mouse", "Screen")
+        if (Data.CoordToogle) {
+            VariableMap[Data.CoordXName] := Pos[1]
+            VariableMap[Data.CoordYName] := Pos[2]
+        }
+
+        Pos[1] := GetFloatValue(Pos[1], MySoftData.CoordXFloat)
+        Pos[2] := GetFloatValue(Pos[2], MySoftData.CoordYFloat)
+        if (Data.AutoClick) {
+            SetDefaultMouseSpeed(Data.Speed)
+            Click(Format("{} {} {}"), Pos[1], Pos[2], Data.ClickCount)
+        }
+        else if (Data.AutoMove) {
             MouseMove(Pos[1], Pos[2])
         }
 
-        if (searchData.TrueCommandStr == "")
+        if (Data.TrueCommandStr == "")
             return
-        OnTriggerMacroOnce(tableItem, searchData.TrueCommandStr, index)
+        OnTriggerMacroOnce(tableItem, Data.TrueCommandStr, index)
     }
 
     if (isFinally && !found) {
-        if (searchData.FalseCommandStr == "")
+
+        if (Data.ResultToggle) {
+            VariableMap[Data.ResultSaveName] := Data.FalseValue
+        }
+
+        if (Data.FalseCommandStr == "")
             return
-        OnTriggerMacroOnce(tableItem, searchData.FalseCommandStr, index)
+        OnTriggerMacroOnce(tableItem, Data.FalseCommandStr, index)
     }
 }
 
@@ -412,6 +435,8 @@ OnCoordOnce(tableItem, index, Data) {
 
     PosX := Data.NameX != "空" ? VariableMap[Data.NameX] : Data.PosX
     PosY := Data.NameY != "空" ? VariableMap[Data.NameY] : Data.PosY
+    PosX := GetFloatValue(PosX, MySoftData.CoordXFloat)
+    PosY := GetFloatValue(PosY, MySoftData.CoordYFloat)
     if (Data.IsGameView) {
         MOUSEEVENTF_MOVE := 0x0001
         DllCall("mouse_event", "UInt", MOUSEEVENTF_MOVE, "UInt", PosX, "UInt", PosY, "UInt", 0, "UInt", 0)
@@ -439,7 +464,7 @@ OnOutput(tableItem, cmd, index) {
         SendText(OutputText)
     }
     else if (Data.OutputType == 2) {
-        Send "^v"
+        Send "{Blind}^v"
     }
     else if (Data.OutputType == 3) {
         MyWinClip.Paste(A_Clipboard)
@@ -471,28 +496,37 @@ OnStop(tableItem, cmd, index) {
 OnSubMacro(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     saveStr := IniRead(SubMacroFile, IniSection, paramArr[2], "")
-    subMacroData := JSON.parse(saveStr, , false)
+    Data := JSON.parse(saveStr, , false)
     macroItem := tableItem
     macro := tableItem.MacroArr[index]
-    macroIndex := subMacroData.Type != 1 ? subMacroData.Index : index
-    if (subMacroData.Type == 2) {
+    macroIndex := Data.Type != 1 ? Data.Index : index
+    if (Data.Type == 2) {
         macroItem := MySoftData.TableInfo[1]
-        macro := macroItem.MacroArr[subMacroData.Index]
+        macro := macroItem.MacroArr[Data.Index]
     }
-    else if (subMacroData.Type == 3) {
+    else if (Data.Type == 3) {
         macroItem := MySoftData.TableInfo[2]
-        macro := macroItem.MacroArr[subMacroData.Index]
+        macro := macroItem.MacroArr[Data.Index]
     }
-    else if (subMacroData.Type == 4) {
+    else if (Data.Type == 4) {
         macroItem := MySoftData.TableInfo[3]
-        macro := macroItem.MacroArr[subMacroData.Index]
+        macro := macroItem.MacroArr[Data.Index]
     }
 
-    if (subMacroData.CallType == 1) {   ;插入
-        OnTriggerMacroOnce(tableItem, macro, index)
+    if (Data.CallType == 1) {   ;插入
+        LoopCount := macroItem.LoopCountArr[index]
+        IsLoop := macroItem.LoopCountArr[index] == -1
+        loop {
+            if (!IsLoop && LoopCount <= 0)
+                break
+
+            OnTriggerMacroOnce(tableItem, macro, index)
+            LoopCount -= 1
+        }
     }
-    else if (subMacroData.CallType == 2) {  ;触发
-        OnTriggerMacroKeyAndInit(macroItem, macro, macroIndex)
+    else if (Data.CallType == 2) {  ;触发
+        action := OnTriggerMacroKeyAndInit.Bind(macroItem, macro, macroIndex)
+        SetTimer(action, -1)
     }
 }
 
@@ -610,36 +644,13 @@ OnOperation(tableItem, cmd, index) {
 
 OnMouseMove(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    count := paramArr.Length >= 7 ? Integer(paramArr[7]) : 1
-    interval := paramArr.Length >= 8 ? Integer(paramArr[8]) : 100
-    OnMouseMoveOnce(tableItem, cmd, index)
-
-    loop count {
-        if (A_Index == 1)
-            continue
-
-        tempAction := OnMouseMoveOnce.Bind(tableItem, cmd, index)
-        leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
-        tableItem.CmdActionArr[index].Push(tempAction)
-        SetTimer tempAction, -leftTime
-    }
-}
-
-OnMouseMoveOnce(tableItem, cmd, index) {
-    paramArr := StrSplit(cmd, "_")
-    SendMode("Event")
-    CoordMode("Mouse", "Screen")
     PosX := Integer(paramArr[2])
     PosY := Integer(paramArr[3])
     Speed := paramArr.Length >= 4 ? 100 - Integer(paramArr[4]) : 0
-    isRelative := paramArr.Length >= 5 ? Integer(paramArr[5]) : 0
-    isOffset := paramArr.Length >= 6 ? Integer(paramArr[6]) : 0
-
-    if (isOffset) {
-        MOUSEEVENTF_MOVE := 0x0001
-        DllCall("mouse_event", "UInt", MOUSEEVENTF_MOVE, "UInt", PosX, "UInt", PosY, "UInt", 0, "UInt", 0)
-    }
-    else if (isRelative) {
+    IsRelative := paramArr.Length >= 5 ? Integer(paramArr[5]) : 0
+    SendMode("Event")
+    CoordMode("Mouse", "Screen")
+    if (IsRelative) {
         MouseMove(PosX, PosY, Speed, "R")
     }
     else {

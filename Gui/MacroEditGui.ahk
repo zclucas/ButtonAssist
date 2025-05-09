@@ -56,6 +56,7 @@ class MacroEditGui {
         this.SubGuiMap.Set("移动", this.MoveMoveGui)
 
         this.SearchGui := SearchGui()
+        this.SearchGui.MacroEditGui := this
         this.SearchGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("搜索", this.SearchGui)
 
@@ -66,12 +67,12 @@ class MacroEditGui {
         this.CompareGui := CompareGui()
         this.CompareGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.CompareGui.MacroEditGui := this
-        this.SubGuiMap.Set("比较", this.CompareGui)
+        this.SubGuiMap.Set("如果", this.CompareGui)
 
         this.CoordGui := CoordGui()
         this.CoordGui.MacroEditGui := this
         this.CoordGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.SubGuiMap.Set("坐标", this.CoordGui)
+        this.SubGuiMap.Set("移动Pro", this.CoordGui)
 
         this.OutputGui := OutputGui()
         this.OutputGui.MacroEditGui := this
@@ -181,6 +182,12 @@ class MacroEditGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.MoveMoveGui))
         this.CmdBtnConMap.Set("移动", btnCon)
+    
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "移动Pro")
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CoordGui))
+        this.CmdBtnConMap.Set("移动Pro", btnCon)
 
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "输出")
@@ -194,30 +201,30 @@ class MacroEditGui {
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.FileGui))
         this.CmdBtnConMap.Set("文件", btnCon)
 
-        PosX += 100
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "比较")
-        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
-        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CompareGui))
-        this.CmdBtnConMap.Set("比较", btnCon)
-
-        PosX += 100
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "坐标")
-        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
-        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CoordGui))
-        this.CmdBtnConMap.Set("坐标", btnCon)
-
         PosY += 35
         PosX := 20
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "终止")
-        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
-        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.StopGui))
-        this.CmdBtnConMap.Set("终止", btnCon)
-
-        PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "变量")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.VariableGui))
         this.CmdBtnConMap.Set("变量", btnCon)
+    
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "运算")
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.OperationGui))
+        this.CmdBtnConMap.Set("运算", btnCon)
+    
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "如果")
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CompareGui))
+        this.CmdBtnConMap.Set("如果", btnCon)
+
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "终止")
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.StopGui))
+        this.CmdBtnConMap.Set("终止", btnCon)
         
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "子宏")
@@ -225,11 +232,6 @@ class MacroEditGui {
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.SubMacroGui))
         this.CmdBtnConMap.Set("子宏", btnCon)
     
-        PosX += 100
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "运算")
-        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
-        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.OperationGui))
-        this.CmdBtnConMap.Set("运算", btnCon)
 
         PosX := 20
         PosY += 110

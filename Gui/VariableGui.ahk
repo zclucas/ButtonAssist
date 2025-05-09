@@ -242,7 +242,7 @@ class VariableGui {
         VariableObjArr := GetSelectVariableObjArr(macro)
 
         this.CreateTypeCon.Value := this.Data.CreateType
-        this.ExtractStrCon := this.Data.ExtractStr
+        this.ExtractStrCon.Value := this.Data.ExtractStr
         this.ExtractTypeCon.Value := this.Data.ExtractType
         this.StartPosXCon.Value := this.Data.StartPosX
         this.StartPosYCon.Value := this.Data.StartPosY

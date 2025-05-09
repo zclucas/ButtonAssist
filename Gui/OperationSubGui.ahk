@@ -49,7 +49,11 @@ class OperationSubGui {
         this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 350), "选择/输入为空时与操作值进行运算，否则与选择/输入的变量值运算")
 
         PosX := 10
-        PosY += 40
+        PosY += 30
+        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 300, 20), "..按钮字符拼接操作")
+
+        PosX := 10
+        PosY += 25
         this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 300, 20), "当前运算表达式")
         PosY += 20
         this.ExpressionCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 350, 20), "")
@@ -61,7 +65,7 @@ class OperationSubGui {
         PosY += 20
         this.ValueCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "0")
         PosX += 150
-        this.NameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), [])
+        this.NameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY, 100), [])
 
         PosX := 10
         PosY += 30
@@ -89,7 +93,7 @@ class OperationSubGui {
         PosY += 20
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 120, 20), "换算后的变量是：")
-        this.BaseResultCon := MyGui.Add("Text", Format("x{} y{} h{}", PosX + 125, PosY, 20), "10")
+        this.BaseResultCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX + 125, PosY, 120, 20), "10")
 
         PosY += 30
         PosX := 10
@@ -98,7 +102,7 @@ class OperationSubGui {
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX + 225, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
-        MyGui.Show(Format("w{} h{}", 400, 310))
+        MyGui.Show(Format("w{} h{}", 400, 320))
     }
 
     OnChangeBaseValue() {

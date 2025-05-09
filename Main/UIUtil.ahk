@@ -433,7 +433,16 @@ AddSettingUI(index) {
     )
 
     posY += 40
-    MyGui.Add("Text", Format("x{} y{} w130", posX + 20, posY), "搜索模糊0~255:")
+    MyGui.Add("Text", Format("x{} y{} w130", posX + 20, posY), "坐标X浮动:(px)")
+    MySoftData.CoordXFloatCon := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 140, posY - 4), MySoftData.CoordXFloat
+    )
+
+    MyGui.Add("Text", Format("x{} y{} w130", posX + 290, posY), "坐标Y浮动:")
+    MySoftData.CoordYFloatCon := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 410, posY - 4),
+    MySoftData.CoordYFloat)
+
+    posY += 40
+    MyGui.Add("Text", Format("x{} y{} w130", posX + 20, posY), "搜索模糊(0~255):")
     MySoftData.ImageSearchBlurCtrl := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 140, posY - 4), MySoftData
     .ImageSearchBlur
     )

@@ -5,23 +5,12 @@ class MouseMoveGui {
         this.Gui := ""
         this.SureBtnAction := ""
         this.PosAction := () => this.RefreshMousePos()
-        this.PosX := 0
-        this.PosY := 0
-        this.Speed := 0
-        this.IsRelative := false
-        this.IsOffset := false
-        this.Count := 1
-        this.PerInterval := 1000
+
         this.PosXCon := ""
         this.PosYCon := ""
         this.SpeedCon := ""
-        this.CommandStr := ""
+        this.IsRelativeCon := ""
         this.CommandStrCon := ""
-        this.RelativeCon := ""
-        this.OffsetCon := ""
-        this.CountCon := ""
-        this.PerIntervalCon := ""
-
         this.MousePosCon := ""
     }
 
@@ -34,7 +23,6 @@ class MouseMoveGui {
         }
 
         this.Init(cmd)
-        this.Refresh()
         this.ToggleFunc(true)
     }
 
@@ -74,20 +62,7 @@ class MouseMoveGui {
         this.PosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
         this.PosYCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
-        PosX := 10
-        PosY += 30
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "移动次数:")
-        PosX += 80
-        this.CountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), 1)
-        this.CountCon.OnEvent("Change", (*) => this.OnChangeEditValue())
-
-        PosX += 120
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "每次间隔:")
-        PosX += 80
-        this.PerIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), 1000)
-        this.PerIntervalCon.OnEvent("Change", (*) => this.OnChangeEditValue())
-
-        PosY += 30
+        PosY += 40
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "移动速度(0~100):")
         PosX += 120
@@ -95,43 +70,34 @@ class MouseMoveGui {
         this.SpeedCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
         PosX += 80
-        this.RelativeCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "相对位移")
-        this.RelativeCon.OnEvent("Click", (*) => this.OnChangeEditValue())
-
-        PosX += 100
-        this.OffsetCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "游戏视角")
-        this.OffsetCon.OnEvent("Click", (*) => this.OnChangeEditValue())
+        this.IsRelativeCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "相对位移")
+        this.IsRelativeCon.OnEvent("Click", (*) => this.OnChangeEditValue())
 
         PosY += 40
         PosX := 10
-        this.CommandStrCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 350), "当前指令:MouseMove_0_0_0")
+        this.CommandStrCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 350), "MouseMove_0_0_0")
 
-        PosY += 20
+        PosY += 25
         PosX += 150
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 400, 255))
+        MyGui.Show(Format("w{} h{}", 400, 240))
     }
 
     Init(cmd) {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
-        this.PosX := cmdArr.Length >= 2 ? cmdArr[2] : 0
-        this.PosY := cmdArr.Length >= 3 ? cmdArr[3] : 0
-        this.Speed := cmdArr.Length >= 4 ? cmdArr[4] : 90
-        this.IsRelative := cmdArr.Length >= 5 ? cmdArr[5] : 0
-        this.IsOffset := cmdArr.Length >= 6 ? cmdArr[6] : 0
-        this.Count := cmdArr.Length >= 7 ? cmdArr[7] : 1
-        this.PerInterval := cmdArr.Length >= 8 ? cmdArr[8] : 1000
+        PosX := cmdArr.Length >= 2 ? cmdArr[2] : 0
+        PosY := cmdArr.Length >= 3 ? cmdArr[3] : 0
+        Speed := cmdArr.Length >= 4 ? cmdArr[4] : 90
+        IsRelative := cmdArr.Length >= 5 ? cmdArr[0] : 0
 
-        this.PosXCon.Value := this.PosX
-        this.PosYCon.Value := this.PosY
-        this.CountCon.Value := this.Count
-        this.PerIntervalCon.Value := this.PerInterval
-        this.SpeedCon.Value := this.Speed
-        this.RelativeCon.Value := this.IsRelative
-        this.OffsetCon.Value := this.IsOffset
+        this.PosXCon.Value := PosX
+        this.PosYCon.Value := PosY
+        this.SpeedCon.Value := Speed
+        this.IsRelativeCon.Value := IsRelative
+        this.UpdateCommandStr()
     }
 
     CheckIfValid() {
@@ -150,41 +116,25 @@ class MouseMoveGui {
             return false
         }
 
-        if (!IsNumber(this.CountCon.Value) || Number(this.CountCon.Value) <= 0) {
-            MsgBox("移动次数请输入大于0的数字")
-            return false
-        }
-
-        if (IsInteger(this.SpeedCon.Value) && ((Integer(this.SpeedCon.Value) < 0 || Integer(this.SpeedCon.Value) > 100))) {
-            MsgBox("移动速度请输入0~100的整数")
-            return false
-        }
-
         return true
     }
 
     UpdateCommandStr() {
-        showCount := Number(this.CountCon.Value) > 1
-        showState := this.RelativeCon.Value == 1 || this.OffsetCon.Value == 1 || showCount
-        showSpeed := this.SpeedCon.Value != 100 || showState
+        showSpeed := this.SpeedCon.Value != 100
+        showRelative := showSpeed || this.IsRelativeCon.Value == 1
 
-        this.CommandStr := "移动"
-        this.CommandStr .= "_" this.PosXCon.Value
-        this.CommandStr .= "_" this.PosYCon.Value
+        CommandStr := "移动"
+        CommandStr .= "_" this.PosXCon.Value
+        CommandStr .= "_" this.PosYCon.Value
 
         if (showSpeed) {
-            this.CommandStr .= "_" this.SpeedCon.Value
+            CommandStr .= "_" this.SpeedCon.Value
+        }
+        if (showRelative) {
+            CommandStr .= "_" this.IsRelativeCon.Value
         }
 
-        if (showState) {
-            this.CommandStr .= "_" this.RelativeCon.Value
-            this.CommandStr .= "_" this.OffsetCon.Value
-        }
-
-        if (showCount) {
-            this.CommandStr .= "_" this.CountCon.Value
-            this.CommandStr .= "_" this.PerIntervalCon.Value
-        }
+        this.CommandStrCon.Value := CommandStr
     }
 
     ToggleFunc(state) {
@@ -207,20 +157,8 @@ class MouseMoveGui {
         this.MousePosCon.Value := "当前鼠标位置:" mouseX "," mouseY
     }
 
-    Refresh() {
-        this.UpdateCommandStr()
-        this.CommandStrCon.Value := "当前指令:" this.CommandStr
-    }
-
     OnChangeEditValue() {
-        this.PosX := this.PosXCon.Value
-        this.PosY := this.PosYCon.Value
-        this.Speed := this.SpeedCon.Value
-        this.IsRelative := this.RelativeCon.Value
-        this.IsOffset := this.OffsetCon.Value
-        this.Count := this.CountCon.Value
-        this.PerInterval := this.PerIntervalCon.Value
-        this.Refresh()
+        this.UpdateCommandStr()
     }
 
     OnClickSureBtn() {
@@ -230,7 +168,7 @@ class MouseMoveGui {
 
         this.UpdateCommandStr()
         action := this.SureBtnAction
-        action(this.CommandStr)
+        action(this.CommandStrCon.Value)
         this.ToggleFunc(false)
         this.Gui.Hide()
     }
@@ -248,7 +186,7 @@ class MouseMoveGui {
         tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
 
-        OnMouseMove(tableItem, this.CommandStr, 1)
+        OnMouseMove(tableItem, this.CommandStrCon.Value, 1)
     }
 
     SureCoord() {
@@ -256,9 +194,7 @@ class MouseMoveGui {
         MouseGetPos &mouseX, &mouseY
         this.PosXCon.Value := mouseX
         this.PosYCon.Value := mouseY
-        this.PosX := this.PosXCon.Value
-        this.PosY := this.PosYCon.Value
-        this.Refresh()
+        this.UpdateCommandStr()
     }
 
 }

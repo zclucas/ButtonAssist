@@ -70,7 +70,7 @@ class OutputGui {
         this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 200, 50))
 
         PosX += 240
-        this.NameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), [])
+        this.NameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY, 100), [])
 
         PosY += 80
         PosX := 200

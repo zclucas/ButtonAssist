@@ -8,6 +8,15 @@ GetFloatTime(oriTime, floatValue) {
     return Random(min, max)
 }
 
+GetFloatValue(oriValue, floatValue) {
+    oriValue := Integer(oriValue)
+    value := Abs(floatValue)
+    max := oriValue + value
+    min := oriValue - value
+    return Random(min, max)
+}
+
+
 GetCurMSec() {
     return A_Hour * 3600 * 1000 + A_Min * 60 * 1000 + A_Sec * 1000 + A_mSec
 }
@@ -239,6 +248,8 @@ LoadSetting() {
     MySoftData.PreIntervalFloat := IniRead(IniFile, IniSection, "PreIntervalFloat", 0)
     MySoftData.IntervalFloat := IniRead(IniFile, IniSection, "IntervalFloat", 0)
     MySoftData.ImageSearchBlur := IniRead(IniFile, IniSection, "ImageSearchBlur", 100)
+    MySoftData.CoordXFloat := IniRead(IniFile, IniSection, "CoordXFloat", 0)
+    MySoftData.CoordYFloat := IniRead(IniFile, IniSection, "CoordYFloat", 0)
     MySoftData.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
     MySoftData.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!p")
     MySoftData.KillMacroHotkey := IniRead(IniFile, IniSection, "KillMacroHotkey", "!k")
@@ -403,6 +414,8 @@ OnSaveSetting(*) {
     IniWrite(MySoftData.PreIntervalFloatCtrl.Value, IniFile, IniSection, "PreIntervalFloat")
     IniWrite(MySoftData.IntervalFloatCtrl.Value, IniFile, IniSection, "IntervalFloat")
     IniWrite(MySoftData.ImageSearchBlurCtrl.Value, IniFile, IniSection, "ImageSearchBlur")
+    IniWrite(MySoftData.CoordXFloatCon.Value, IniFile, IniSection, "CoordXFloat")
+    IniWrite(MySoftData.CoordYFloatCon.Value, IniFile, IniSection, "CoordYFloat")
     IniWrite(MySoftData.PauseHotkeyCtrl.Value, IniFile, IniSection, "PauseHotkey")
     IniWrite(MySoftData.KillMacroHotkeyCtrl.Value, IniFile, IniSection, "KillMacroHotkey")
     IniWrite(true, IniFile, IniSection, "LastSaved")
@@ -451,7 +464,7 @@ GetSavedTableItemInfo(index) {
     symbol := GetTableSymbol(index)
 
     loop tableItem.ModeArr.Length {
-        TKArrStr .= tableItem.TKConArr[A_Index].Value
+        TKArrStr .= tableItem.TKConArr.Has(A_Index) ? tableItem.TKConArr[A_Index].Value : ""
         MacroStr := Trim(tableItem.InfoConArr[A_Index].Value, "`n")
         MacroStr := Trim(tableItem.InfoConArr[A_Index].Value, ",")
         MacroArrStr .= MacroStr

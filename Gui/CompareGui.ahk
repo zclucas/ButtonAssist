@@ -223,7 +223,7 @@ class CompareGui {
         }
 
         hasRemark := this.RemarkCon.Value != ""
-        this.CommandStr := "比较_" this.Data.SerialStr
+        this.CommandStr := "如果_" this.Data.SerialStr
         if (hasRemark) {
             this.CommandStr .= "_" this.RemarkCon.Value
         }

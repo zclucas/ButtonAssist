@@ -74,12 +74,8 @@ class SubMacroGui {
         MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "插入:插入到执行的宏里面，该子宏的变量操作都是依赖于当前宏环境")
     
         PosX := 10
-        PosY += 20
-        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "(插入时，子宏设置的循环次数无效，只调用一次子宏)")
-    
-        PosX := 10
         PosY += 25
-        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "触发:和正常的按键触发等效")
+        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "触发:与正常的按键触发等效，和当前宏多线程同时执行")
 
         PosY += 30
         PosX := 200
