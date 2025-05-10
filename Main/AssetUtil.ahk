@@ -1,11 +1,13 @@
+#Requires AutoHotkey v2.0
 ; 功能函数
 GetFloatTime(oriTime, floatValue) {
     oriTime := Integer(oriTime)
     floatValue := Integer(floatValue)
     value := Abs(oriTime * (floatValue * 0.01))
-    max := oriTime + value
-    min := oriTime - value
-    return Random(min, max)
+    maxValue := oriTime + value
+    minValue := oriTime - value
+    result := Max(0, Random(minValue, maxValue))  
+    return result
 }
 
 GetFloatValue(oriValue, floatValue) {
@@ -278,6 +280,7 @@ ReadTableItemInfo(index) {
     savedLoopCountStr := IniRead(IniFile, IniSection, symbol "LoopCountArr", "")
     savedHoldTimeArrStr := IniRead(IniFile, IniSection, symbol "HoldTimeArr", "")
     savedTriggerTypeArrStr := IniRead(IniFile, IniSection, symbol "TriggerTypeArr", "")
+    savedMacroTypeStr := IniRead(IniFile, IniSection, symbol "MacroTypeArr", "")
 
     if (!MySoftData.HasSaved) {
         if (savedTKArrStr == "")
@@ -298,6 +301,8 @@ ReadTableItemInfo(index) {
             savedLoopCountStr := defaultInfo[8]
         if (savedTriggerTypeArrStr == "")
             savedTriggerTypeArrStr := defaultInfo[9]
+        if (savedMacroTypeStr == "")
+            savedMacroTypeStr := defaultInfo[10]
     }
 
     tableItem := MySoftData.TableInfo[index]
@@ -310,6 +315,7 @@ ReadTableItemInfo(index) {
     SetIntArr(savedLoopCountStr, "π", tableItem.LoopCountArr)
     SetArr(savedHoldTimeArrStr, "π", tableItem.HoldTimeArr)
     SetArr(savedTriggerTypeArrStr, "π", tableItem.TriggerTypeArr)
+    SetArr(savedMacroTypeStr, "π", tableItem.MacroTypeArr)
 }
 
 SetArr(str, symbol, Arr) {
@@ -347,6 +353,7 @@ GetTableItemDefaultInfo(index) {
     savedLoopCountStr := ""
     savedHoldTimeArrStr := ""
     savedTriggerTypeStr := ""
+    savedMacroTypeArrStr := ""
     symbol := GetTableSymbol(index)
 
     if (symbol == "Normal") {
@@ -359,6 +366,7 @@ GetTableItemDefaultInfo(index) {
         savedRemarkArrStr := "取消禁止配置才能生效"
         savedLoopCountStr := "1"
         savedTriggerTypeStr := "1"
+        savedMacroTypeArrStr := "1"
     }
     else if (symbol == "String") {
         savedTKArrStr := ":?*:AA"
@@ -370,6 +378,7 @@ GetTableItemDefaultInfo(index) {
         savedRemarkArrStr := "按两次a触发"
         savedLoopCountStr := "1"
         savedTriggerTypeStr := "1"
+        savedMacroTypeArrStr := "1"
     }
     else if (symbol == "SubMacro") {
         savedTKArrStr := ""
@@ -381,6 +390,7 @@ GetTableItemDefaultInfo(index) {
         savedRemarkArrStr := "插入时循环无效"
         savedLoopCountStr := "1"
         savedTriggerTypeStr := "1"
+        savedMacroTypeArrStr := "1"
     }
     else if (symbol == "Replace") {
         savedTKArrStr := "l"
@@ -390,10 +400,11 @@ GetTableItemDefaultInfo(index) {
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
         savedTriggerTypeStr := "1"
+        savedMacroTypeArrStr := "1"
     }
     return [savedTKArrStr, savedMacroArrStr, savedHoldTimeArrStr, savedModeArrStr, savedForbidArrStr,
         savedProcessNameStr, savedRemarkArrStr,
-        savedLoopCountStr, savedTriggerTypeStr]
+        savedLoopCountStr, savedTriggerTypeStr, savedMacroTypeArrStr]
 }
 
 ;资源保存
@@ -439,6 +450,7 @@ SaveTableItemInfo(index) {
     IniWrite(SavedInfo[7], IniFile, IniSection, symbol "RemarkArr")
     IniWrite(SavedInfo[8], IniFile, IniSection, symbol "LoopCountArr")
     IniWrite(SavedInfo[9], IniFile, IniSection, symbol "TriggerTypeArr")
+    IniWrite(SavedInfo[10], IniFile, IniSection, symbol "MacroTypeArr")
 }
 
 GetSavedTableItemInfo(index) {
@@ -452,6 +464,7 @@ GetSavedTableItemInfo(index) {
     RemarkArrStr := ""
     LoopCountArrStr := ""
     TriggerTypeArrStr := ""
+    MacroTypeArrStr := ""
 
     tableItem := MySoftData.TableInfo[index]
     symbol := GetTableSymbol(index)
@@ -469,6 +482,7 @@ GetSavedTableItemInfo(index) {
         TriggerTypeArrStr .= tableItem.TriggerTypeConArr.Length >= A_Index ? tableItem.TriggerTypeConArr[A_Index].Value :
             ""
         LoopCountArrStr .= GetItemSaveCountValue(tableItem.Index, A_Index)
+        MacroTypeArrStr .= tableItem.MacroTypeArr.Length >= A_Index ? tableItem.MacroTypeConArr[A_Index].Value : 1
 
         if (tableItem.ModeArr.Length > A_Index) {
             TKArrStr .= "π"
@@ -480,11 +494,12 @@ GetSavedTableItemInfo(index) {
             RemarkArrStr .= "π"
             LoopCountArrStr .= "π"
             TriggerTypeArrStr .= "π"
+            MacroTypeArrStr .= "π"
         }
     }
     MacroArrStr := StrReplace(MacroArrStr, "`n", ",")
     return [TKArrStr, MacroArrStr, ModeArrStr, HoldTimeArrStr, ForbidArrStr, ProcessNameArrStr, RemarkArrStr,
-        LoopCountArrStr, TriggerTypeArrStr]
+        LoopCountArrStr, TriggerTypeArrStr, MacroTypeArrStr]
 }
 
 SaveWinPos() {

@@ -228,16 +228,31 @@ OnSearch(tableItem, cmd, index) {
     searchCount := Integer(Data.SearchCount)
     searchInterval := Integer(Data.SearchInterval)
     tableItem.SuccessClearActionArr[index].Set(Data.SerialStr, [])
-    loop searchCount {
+    MacroType := tableItem.MacroTypeArr[index]
 
+    LastSumTime := 0
+    loop searchCount {
         if (!tableItem.SuccessClearActionArr[index].Has(Data.SerialStr)) ;第一次搜索成功就退出
             break
 
-        action := OnSearchOnce.Bind(tableItem, Data, index, A_Index == searchCount)
-        leftTime := GetFloatTime(searchInterval * (A_Index - 1), MySoftData.PreIntervalFloat)
-        leftTime := leftTime == 0 ? 1 : leftTime
-        tableItem.SuccessClearActionArr[index][Data.SerialStr].Push(action)
-        SetTimer action, -leftTime
+        if (tableItem.KilledArr[index])
+            break
+
+        intervalTime := GetFloatTime(searchInterval, MySoftData.PreIntervalFloat)
+        if (MacroType == 1) {
+            OnSearchOnce(tableItem, Data, index, A_Index == searchCount)
+            if (searchCount != A_Index)
+                Sleep(intervalTime)
+        }
+        else if (MacroType == 2) {
+            Interval := LastSumTime + intervalTime
+            Interval := A_Index == 1 ? 1 : Interval
+            LastSumTime := Interval
+
+            action := OnSearchOnce.Bind(tableItem, Data, index, A_Index == searchCount)
+            tableItem.SuccessClearActionArr[index][Data.SerialStr].Push(action)
+            SetTimer action, -Interval
+        }
     }
 }
 
@@ -393,25 +408,47 @@ OnCompare(tableItem, cmd, index) {
         VariableMap[data.SaveName] := SaveValue
     }
 
-    if (result && data.TrueMacro != "")
-        OnTriggerMacroOnce(tableItem, data.TrueMacro, index)
+    MacroType := tableItem.MacroTypeArr[index]
+    macro := ""
+    macro := result && data.TrueMacro != "" ? data.TrueMacro : macro
+    macro := !result && data.FalseMacro != "" ? data.FalseMacro : macro
+    if (macro == "")
+        return
 
-    if (!result && data.FalseMacro != "")
-        OnTriggerMacroOnce(tableItem, data.FalseMacro, index)
+    if (MacroType == 1) {
+        OnTriggerMacroOnce(tableItem, macro, index)
+    }
+    else if (MacroType == 2) {
+        action := OnTriggerMacroOnce.Bind(tableItem, macro, index)
+        SetTimer(action, -1)
+    }
 }
 
 OnCoord(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     saveStr := IniRead(CoordFile, IniSection, paramArr[2], "")
     Data := JSON.parse(saveStr, , false)
-    OnCoordOnce(tableItem, index, Data)
-    loop Data.Count {
-        if (A_Index == 1)
-            continue
+    MacroType := tableItem.MacroTypeArr[index]
 
-        tempAction := OnCoordOnce.Bind(tableItem, index, Data, A_Index == Data.Count)
-        leftTime := GetFloatTime((Integer(Data.Interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
-        SetTimer tempAction, -leftTime
+    LastSumTime := 0
+    loop Data.Count {
+        if (tableItem.KilledArr[index])
+            return
+
+        IntervalTime := GetFloatTime(Data.Interval, MySoftData.PreIntervalFloat)
+        if (MacroType == 1) {
+            OnCoordOnce(tableItem, index, Data)
+            if (A_Index != Data.Count)
+                Sleep(IntervalTime)
+        }
+        else if (MacroType == 2) {
+            Interval := LastSumTime + IntervalTime
+            Interval := A_Index == 1 ? 1 : Interval
+            LastSumTime := Interval
+
+            tempAction := OnCoordOnce.Bind(tableItem, index, Data)
+            SetTimer tempAction, -Interval
+        }
     }
 }
 
@@ -683,18 +720,34 @@ OnPressKey(tableItem, cmd, index) {
 
     holdTime := Integer(paramArr[3])
     keyType := paramArr.Length >= 4 ? Integer(paramArr[4]) : 1
-    floatHoldTime := GetFloatTime(holdTime, MySoftData.HoldFloat)
     count := paramArr.Length >= 5 ? Integer(paramArr[5]) : 1
-    action(paramArr[2], floatHoldTime, tableItem, index, keyType)
-    loop count {
-        if (A_Index == 1)
-            continue
+    IntervalTime := paramArr.Length >= 6 ? Integer(paramArr[6]) : 1000
+    MacroType := tableItem.MacroTypeArr[index]
 
-        floatHoldTime := GetFloatTime(holdTime, MySoftData.HoldFloat)
-        tempAction := action.Bind(paramArr[2], floatHoldTime, tableItem, index, keyType)
-        leftTime := GetFloatTime((Integer(paramArr[6])) * (A_Index - 1), MySoftData.PreIntervalFloat)
-        tableItem.CmdActionArr[index].Push(tempAction)
-        SetTimer tempAction, -leftTime
+    LastSumTime := 0
+    loop count {
+        if (tableItem.KilledArr[index])
+            break
+
+        FloatHold := GetFloatTime(holdTime, MySoftData.HoldFloat)
+        FloatInterval := GetFloatTime(IntervalTime, MySoftData.PreIntervalFloat)
+
+        if (MacroType == 1) {
+            action(paramArr[2], FloatHold, tableItem, index, keyType)
+            Sleep(FloatHold)
+            if (A_Index != count)
+                Sleep(FloatInterval)
+
+        }
+        else if (MacroType == 2) {
+            Interval := LastSumTime + FloatInterval + FloatHold
+            Interval := A_Index == 1 ? 1 : Interval
+            LastSumTime := Interval
+
+            tempAction := action.Bind(paramArr[2], FloatHold, tableItem, index, keyType)
+            tableItem.CmdActionArr[index].Push(tempAction)
+            SetTimer tempAction, -Interval
+        }
     }
 }
 

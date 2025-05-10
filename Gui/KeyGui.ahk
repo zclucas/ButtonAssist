@@ -813,7 +813,8 @@ class KeyGui {
         PosX += 100
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 50), "类型:")
         PosX += 50
-        this.KeyTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} h{}", PosX, PosY - 3, 80, 100), ["点击", "按下", "松开"])
+        this.KeyTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} h{}", PosX, PosY - 3, 80, 100), ["点击", "按下",
+            "松开"])
         this.KeyTypeCon.OnEvent("Change", (*) => this.OnChangeEditValue())
         this.KeyTypeCon.Value := 1
 
@@ -862,23 +863,13 @@ class KeyGui {
             return false
         }
 
-        if (!IsInteger(this.HoldTimeCon.Value) || Integer(this.HoldTimeCon.Value) <= 0) {
-            MsgBox("按键按住时间必须为大于零的整数！")
-            return false
-        }
+        ; if (!IsInteger(this.HoldTimeCon.Value) || Integer(this.HoldTimeCon.Value) <= 0) {
+        ;     MsgBox("按键按住时间必须为大于零的整数！")
+        ;     return false
+        ; }
 
         if (!IsInteger(this.KeyCountCon.Value) || Integer(this.KeyCountCon.Value) <= 0) {
             MsgBox("按键次数必须为大于零的整数！")
-            return false
-        }
-
-        if (!IsInteger(this.PerIntervalCon.Value) || Integer(this.PerIntervalCon.Value) <= 0) {
-            MsgBox("每次间隔必须为大于零的整数！")
-            return false
-        }
-
-        if (Integer(this.KeyCountCon.Value) > 1 && Integer(this.HoldTimeCon.Value) >= Integer(this.PerIntervalCon.Value)) {
-            MsgBox("按键按住时间必须小于每次间隔！")
             return false
         }
 
@@ -886,6 +877,7 @@ class KeyGui {
     }
 
     UpdateCommandStr() {
+        isShowInterval := this.PerIntervalCon.Value != 0
         isShowCount := this.KeyTypeCon.Value == 1 && this.KeyCountCon.Value != 1
         isShowType := isShowCount || this.KeyTypeCon.Value != 1
 
@@ -898,6 +890,9 @@ class KeyGui {
 
         if (isShowCount) {
             CommandStr .= "_" this.KeyCountCon.Value
+        }
+
+        if (isShowCount && isShowInterval) {
             CommandStr .= "_" this.PerIntervalCon.Value
         }
 

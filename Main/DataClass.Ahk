@@ -9,6 +9,7 @@ class TableItem {
         this.LoopCountArr := []
         this.RemarkArr := []
         this.TriggerTypeArr := []
+        this.MacroTypeArr := []
         this.TKConArr := []
         this.InfoConArr := []
         this.KeyBtnConArr := []
@@ -23,6 +24,7 @@ class TableItem {
         this.RemarkConArr := []
         this.IndexConArr := []
         this.TriggerTypeConArr := []
+        this.MacroTypeConArr := []
 
         this.CmdActionArr := []
         this.SuccessClearActionArr := []        ;成功后清除后续操作
