@@ -9,7 +9,6 @@ class OperationGui {
         this.RemarkCon := ""
         this.Data := ""
         this.MacroEditGui := ""
-        this.CommandStr := ""
         this.OperationSubGui := ""
 
         this.ToggleConArr := []
@@ -71,7 +70,7 @@ class OperationGui {
 
         con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 455, PosY - 3, 100), [])
         this.UpdateNameConArr.Push(con)
-    
+
         PosY += 35
         PosX := 15
         con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
@@ -93,7 +92,7 @@ class OperationGui {
 
         con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 455, PosY - 3, 100), [])
         this.UpdateNameConArr.Push(con)
-    
+
         PosY += 35
         PosX := 15
         con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
@@ -115,7 +114,7 @@ class OperationGui {
 
         con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 455, PosY - 3, 100), [])
         this.UpdateNameConArr.Push(con)
-    
+
         PosY += 35
         PosX := 15
         con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
@@ -165,12 +164,15 @@ class OperationGui {
             this.UpdateNameConArr[A_Index].Add(VariableObjArr)
             this.UpdateNameConArr[A_Index].Text := this.Data.UpdateNameArr[A_Index]
         }
+    }
 
+    GetCommandStr() {
         hasRemark := this.RemarkCon.Value != ""
-        this.CommandStr := "运算_" this.Data.SerialStr
+        CommandStr := "运算_" this.Data.SerialStr
         if (hasRemark) {
-            this.CommandStr .= "_" this.RemarkCon.Value
+            CommandStr .= "_" this.RemarkCon.Value
         }
+        return CommandStr
     }
 
     OnSureOperationBtnClick(index, command, SymbolArr, ValueArr) {
@@ -192,7 +194,8 @@ class OperationGui {
         }
         SymbolArr := this.Data.SymbolGroups[index]
         ValueArr := this.Data.ValueGroups[index]
-        this.OperationSubGui.SureBtnAction := (index, command, SymbolArr, ValueArr) => this.OnSureOperationBtnClick(index, command, SymbolArr, ValueArr)
+        this.OperationSubGui.SureBtnAction := (index, command, SymbolArr, ValueArr) => this.OnSureOperationBtnClick(
+            index, command, SymbolArr, ValueArr)
         this.OperationSubGui.ShowGui(index, Name, this.OperationConArr[index].Value, SymbolArr, ValueArr)
     }
 
@@ -202,7 +205,7 @@ class OperationGui {
             return
         this.SaveOperationData()
         action := this.SureBtnAction
-        action(this.CommandStr)
+        action(this.GetCommandStr())
         this.Gui.Hide()
     }
 

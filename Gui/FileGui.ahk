@@ -10,7 +10,6 @@ class FileGui {
         this.MouseProNameCon := ""
         this.BackPlayCon := ""
 
-        this.CommandStr := ""
         this.RefreshAction := () => this.RefreshProcessName()
         this.Data := ""
     }
@@ -105,12 +104,15 @@ class FileGui {
         this.ProcessTextCon.Value := this.Data.ProcessName
         this.PathTextCon.Value := this.Data.FilePath
         this.BackPlayCon.Value := this.Data.BackPlay
-    
+    }
+
+    GetCommandStr() {
         hasRemark := this.RemarkCon.Value != ""
-        this.CommandStr := "文件_" this.Data.SerialStr
+        CommandStr := "文件_" this.Data.SerialStr
         if (hasRemark) {
-            this.CommandStr .= "_" this.RemarkCon.Value
+            CommandStr .= "_" this.RemarkCon.Value
         }
+        return CommandStr
     }
 
     ToggleFunc(state) {
@@ -156,7 +158,7 @@ class FileGui {
         this.SaveFileData()
         this.ToggleFunc(false)
         action := this.SureBtnAction
-        action(this.CommandStr)
+        action(this.GetCommandStr())
         this.Gui.Hide()
     }
 
@@ -177,7 +179,7 @@ class FileGui {
         tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
 
-        OnRunFile(tableItem, this.CommandStr, 1)
+        OnRunFile(tableItem, this.GetCommandStr(), 1)
     }
 
     GetSerialStr() {

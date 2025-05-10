@@ -8,7 +8,6 @@ class CoordGui {
         this.MacroEditGui := ""
         this.FocusCon := ""
         this.RemarkCon := ""
-        this.CommandStr := ""
         this.Data := ""
         this.PosAction := () => this.RefreshMousePos()
 
@@ -21,7 +20,7 @@ class CoordGui {
         this.SpeedCon := ""
         this.CountCon := ""
         this.IntervalCon := ""
-     }
+    }
 
     ShowGui(cmd) {
         if (this.Gui != "") {
@@ -50,7 +49,7 @@ class CoordGui {
         ; PosX += 90
         ; btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
         ; btnCon.OnEvent("Click", (*) => this.TriggerMacro())
-    
+
         ; PosX += 90
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "备注:")
         PosX += 50
@@ -63,7 +62,7 @@ class CoordGui {
         PosX := 10
         PosY += 20
         this.MousePosCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 380, 20), "当前鼠标位置:0,0")
-    
+
         PosY += 20
         PosX := 10
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "坐标：选择/输入为空,则使用值，否则使用选择/输入的变量数值")
@@ -77,7 +76,7 @@ class CoordGui {
         PosX += 80
         this.PosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
         this.NameXCon := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX + 55, PosY - 5, 100), [])
-    
+
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "坐标位置Y:")
@@ -138,12 +137,15 @@ class CoordGui {
         this.SpeedCon.Value := this.Data.Speed
         this.CountCon.Value := this.Data.Count
         this.IntervalCon.Value := this.Data.Interval
+    }
 
+    GetCommandStr() {
         hasRemark := this.RemarkCon.Value != ""
-        this.CommandStr := "移动Pro_" this.Data.SerialStr
+        CommandStr := "移动Pro_" this.Data.SerialStr
         if (hasRemark) {
-            this.CommandStr .= "_" this.RemarkCon.Value
+            CommandStr .= "_" this.RemarkCon.Value
         }
+        return CommandStr
     }
 
     CheckIfValid() {
@@ -174,7 +176,7 @@ class CoordGui {
 
         this.SaveCoordData()
         action := this.SureBtnAction
-        action(this.CommandStr)
+        action(this.GetCommandStr())
         this.ToggleFunc(false)
         this.Gui.Hide()
     }

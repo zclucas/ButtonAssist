@@ -7,7 +7,6 @@ class CompareGui {
         this.SureBtnAction := ""
         this.MacroEditGui := ""
         this.RemarkCon := ""
-        this.CommandStr := ""
         this.FocusCon := ""
         this.MacroGui := ""
 
@@ -222,12 +221,15 @@ class CompareGui {
             this.VariableConArr[A_Index].Add(VariableObjArr)
             this.VariableConArr[A_Index].Text := this.Data.VariableArr[A_Index]
         }
+    }
 
+    GetCommandStr() {
         hasRemark := this.RemarkCon.Value != ""
-        this.CommandStr := "如果_" this.Data.SerialStr
+        CommandStr := "如果_" this.Data.SerialStr
         if (hasRemark) {
-            this.CommandStr .= "_" this.RemarkCon.Value
+            CommandStr .= "_" this.RemarkCon.Value
         }
+        return CommandStr
     }
 
     CheckIfValid() {
@@ -251,7 +253,7 @@ class CompareGui {
 
         this.SaveCompareData()
         action := this.SureBtnAction
-        action(this.CommandStr)
+        action(this.GetCommandStr())
         ; this.ToggleFunc(false)
         this.Gui.Hide()
     }
@@ -295,7 +297,7 @@ class CompareGui {
         tableItem.ActionCount[1] := 0
         tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
-        OnCompare(tableItem, this.CommandStr, 1)
+        OnCompare(tableItem, this.GetCommandStr(), 1)
     }
 
     GetSerialStr() {

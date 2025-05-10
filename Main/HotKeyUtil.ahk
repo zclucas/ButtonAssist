@@ -511,8 +511,8 @@ OnSubMacro(tableItem, cmd, index) {
     }
 
     if (Data.CallType == 1) {   ;插入
-        LoopCount := macroItem.LoopCountArr[index]
-        IsLoop := macroItem.LoopCountArr[index] == -1
+        LoopCount := macroItem.LoopCountArr[macroIndex]
+        IsLoop := macroItem.LoopCountArr[macroIndex] == -1
         loop {
             if (!IsLoop && LoopCount <= 0)
                 break
