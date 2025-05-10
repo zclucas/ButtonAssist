@@ -9,6 +9,7 @@ class CompareGui {
         this.RemarkCon := ""
         this.CommandStr := ""
         this.FocusCon := ""
+        this.MacroGui := ""
 
         this.Data := ""
         this.ToggleConArr := []
@@ -60,11 +61,11 @@ class CompareGui {
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "选框勾选且第一个选择/输入不为空对应比较生效、勾选之间是且关系")
-    
+
         PosY += 20
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "若第二个选择/输入为空,则比较值，否则与第二个选择/输入的变量比较")
-    
+
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关  选择/输入                     值       选择/输入")
@@ -169,15 +170,15 @@ class CompareGui {
         PosY += 20
         PosX := 310
         this.FalseMacroCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 280, 50), "")
-    
+
         PosY += 60
         PosX := 10
         MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 320, 70), "结果保存到变量中")
-    
+
         PosY += 20
         PosX := 15
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 290), "开关    选择/输入      真值        假值")
-        
+
         PosY += 20
         PosX := 20
         this.SaveToggleCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
@@ -322,7 +323,7 @@ class CompareGui {
             this.Data.NameArr[A_Index] := this.NameConArr[A_Index].Text
             this.Data.CompareTypeArr[A_Index] := this.CompareTypeConArr[A_Index].Value
             this.Data.ValueArr[A_Index] := this.ValueConArr[A_Index].Value
-            this.Data.VariableArr := this.VariableConArr[A_Index].Text
+            this.Data.VariableArr[A_Index] := this.VariableConArr[A_Index].Text
         }
 
         saveStr := JSON.stringify(this.Data, 0)

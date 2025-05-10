@@ -62,8 +62,8 @@ class VariableGui {
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "创建方式:")
 
         PosX += 70
-        this.CreateTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["赋值", "复制",
-            "提取"])
+        this.CreateTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["赋值", "变量复制",
+            "变量提取"])
         this.CreateTypeCon.OnEvent("Change", (*) => this.OnRefresh())
 
         {
@@ -179,13 +179,14 @@ class VariableGui {
             PosY += 20
             PosX := 20
             MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 550),
-            "使用x、y、z、w代替变量位置   `n形如：`"坐标(x,y)`"可以提取`"坐标(10.5,8.6)`"中的10.5和8.6到变量1和变量2")
+            "使用&&x、&&y、&&z、&&w代替变量位置   `n形如：`"坐标(&&x,&&y)`"可以提取`"坐标(10.5,8.6)`"中的10.5和8.6到变量1和变量2")
 
             PosY += 40
             PosX := 20
             MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "提取文本：")
             this.ExtractStrCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 75, PosY - 5, 250), "")
-            this.ExtractTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 345, PosY - 5, 80), ["屏幕", "剪切板"])
+            this.ExtractTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 345, PosY - 5, 80), ["屏幕",
+                "剪切板"])
             this.ExtractTypeCon.Value := 1
 
             PosX := 20
@@ -276,9 +277,11 @@ class VariableGui {
         MacroAction := (*) => this.TriggerMacro()
         if (state) {
             Hotkey("!l", MacroAction, "On")
+            Hotkey("F1", (*) => this.EnableSelectAerea(), "On")
         }
         else {
             Hotkey("!l", MacroAction, "Off")
+            Hotkey("F1", (*) => this.EnableSelectAerea(), "Off")
         }
     }
 
@@ -301,6 +304,53 @@ class VariableGui {
         action := this.SureBtnAction
         action(CommandStr)
         this.Gui.Hide()
+    }
+
+    EnableSelectAerea() {
+        Hotkey("LButton", (*) => this.SelectArea(), "On")
+        Hotkey("LButton Up", (*) => this.DisSelectArea(), "On")
+    }
+
+    DisSelectArea(*) {
+        Hotkey("LButton", (*) => this.SelectArea(), "Off")
+        Hotkey("LButton Up", (*) => this.DisSelectArea(), "Off")
+    }
+
+    SelectArea(*) {
+        ; 获取起始点坐标
+        startX := startY := endX := endY := 0
+        CoordMode("Mouse", "Screen")
+        MouseGetPos(&startX, &startY)
+
+        ; 创建 GUI 用于绘制矩形框
+        MyGui := Gui("+ToolWindow -Caption +AlwaysOnTop -DPIScale")
+        MyGui.BackColor := "Red"
+        WinSetTransColor(" 150", MyGui)
+        MyGui.Opt("+LastFound")
+        GuiHwnd := WinExist()
+
+        ; 显示初始 GUI
+        MyGui.Show("NA x" startX " y" startY " w1 h1")
+
+        ; 跟踪鼠标移动
+        while GetKeyState("LButton", "P") {
+            CoordMode("Mouse", "Screen")
+            MouseGetPos(&endX, &endY)
+            width := Abs(endX - startX)
+            height := Abs(endY - startY)
+            x := Min(startX, endX)
+            y := Min(startY, endY)
+
+            MyGui.Show("NA x" x " y" y " w" width " h" height)
+        }
+        ; 销毁 GUI
+        MyGui.Destroy()
+        ; 返回坐标
+
+        this.StartPosXCon.Value := Min(startX, endX)
+        this.StartPosYCon.Value := Min(startY, endY)
+        this.EndPosXCon.Value := Max(startX, endX)
+        this.EndPosYCon.Value := Max(startY, endY)
     }
 
     CheckIfValid() {

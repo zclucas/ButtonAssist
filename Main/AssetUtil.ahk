@@ -158,7 +158,7 @@ WM_RBUTTONDOWN(wParam, lParam, msg, hwnd) {
     global MySoftData
     static EM_CHARFROMPOS := 0x00D7
     ; 检查是否点击在Edit控件上
-    if (hwnd = MySoftData.MacroEditCon.Hwnd) {
+    if (MySoftData.MacroEditCon != "" && hwnd = MySoftData.MacroEditCon.Hwnd) {
         ; 获取点击位置坐标
         x := lParam & 0xFFFF
         y := lParam >> 16
@@ -178,14 +178,8 @@ WM_RBUTTONDOWN(wParam, lParam, msg, hwnd) {
 
 WM_RBUTTONUP(wParam, lParam, msg, hwnd) {
     static EM_CHARFROMPOS := 0x00D7
-
-    ; 检查是否是在我们的Edit控件上
-    if (hwnd = MySoftData.MacroEditCon.Hwnd) {
-
-    }
-
     ; 检查是否在Edit控件上释放右键
-    if (hwnd = MySoftData.MacroEditCon.Hwnd) {
+    if (MySoftData.MacroEditCon != "" && hwnd = MySoftData.MacroEditCon.Hwnd) {
         ; 获取鼠标位置
         x := lParam & 0xFFFF
         y := lParam >> 16
@@ -358,7 +352,7 @@ GetTableItemDefaultInfo(index) {
     if (symbol == "Normal") {
         savedTKArrStr := "k"
         savedMacroArrStr := "按键_a_30_1_30_50,间隔_3000"
-        savedHoldTimeArrStr := "0"
+        savedHoldTimeArrStr := "500"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
@@ -380,7 +374,7 @@ GetTableItemDefaultInfo(index) {
     else if (symbol == "SubMacro") {
         savedTKArrStr := ""
         savedMacroArrStr := "按键_a_30_1_30_50,间隔_3000"
-        savedHoldTimeArrStr := "0"
+        savedHoldTimeArrStr := "500"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
@@ -391,7 +385,7 @@ GetTableItemDefaultInfo(index) {
     else if (symbol == "Replace") {
         savedTKArrStr := "l"
         savedMacroArrStr := "Left,a"
-        savedHoldTimeArrStr := "0"
+        savedHoldTimeArrStr := "500"
         savedModeArrStr := "0"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""

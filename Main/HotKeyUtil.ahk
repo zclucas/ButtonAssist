@@ -536,7 +536,7 @@ OnVariable(tableItem, cmd, index) {
     tableItem.SuccessClearActionArr[index].Set(variableData.ExtractStr, [])
     VariableMap := tableItem.VariableMapArr[index]
 
-    if (variableData.CreateType == 4) {     ;提取
+    if (variableData.CreateType == 3) {     ;提取
         OnExtractingVariablesOnce(tableItem, index, variableData, count == 1)
         loop count {
             if (A_Index == 1)
@@ -964,9 +964,10 @@ OnToolRecordMacro(*) {
         ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
     }
     else {
-        node := ToolCheckInfo.RecordNodeArr[ToolCheckInfo.RecordNodeArr.Length]
-        node.EndTime := GetCurMSec()
-
+        if (ToolCheckInfo.RecordNodeArr.Length > 0) {
+            node := ToolCheckInfo.RecordNodeArr[ToolCheckInfo.RecordNodeArr.Length]
+            node.EndTime := GetCurMSec()
+        }
         OnFinishRecordMacro()
     }
 }
