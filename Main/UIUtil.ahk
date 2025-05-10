@@ -1,7 +1,7 @@
 ;窗口&UI刷新
 InitUI() {
     global MySoftData
-    MyGui := Gui(, "RMTv1.0.0")
+    MyGui := Gui(, "RMTv1.0.1")
     MyGui.SetFont(, "Consolas")
     MySoftData.MyGui := MyGui
 

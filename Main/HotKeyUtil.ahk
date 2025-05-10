@@ -645,6 +645,9 @@ OnMouseMove(tableItem, cmd, index) {
     PosY := Integer(paramArr[3])
     Speed := paramArr.Length >= 4 ? 100 - Integer(paramArr[4]) : 0
     IsRelative := paramArr.Length >= 5 ? Integer(paramArr[5]) : 0
+
+    PosX := GetFloatValue(PosX, MySoftData.CoordXFloat)
+    PosY := GetFloatValue(PosY, MySoftData.CoordYFloat)
     SendMode("Event")
     CoordMode("Mouse", "Screen")
     if (IsRelative) {
