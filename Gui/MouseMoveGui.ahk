@@ -91,7 +91,7 @@ class MouseMoveGui {
         PosX := cmdArr.Length >= 2 ? cmdArr[2] : 0
         PosY := cmdArr.Length >= 3 ? cmdArr[3] : 0
         Speed := cmdArr.Length >= 4 ? cmdArr[4] : 90
-        IsRelative := cmdArr.Length >= 5 ? cmdArr[0] : 0
+        IsRelative := cmdArr.Length >= 5 ? cmdArr[5] : 0
 
         this.PosXCon.Value := PosX
         this.PosYCon.Value := PosY
