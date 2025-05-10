@@ -614,4 +614,5 @@ CustomTrayMenu() {
     A_TrayMenu.Delete("&Pause Script")
     A_TrayMenu.ClickCount := 1
     A_TrayMenu.Default := "显示窗口"
+    TraySetIcon(,, true)
 }
