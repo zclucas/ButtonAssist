@@ -320,6 +320,10 @@ class CompareGui {
     SaveCompareData() {
         this.Data.TrueMacro := this.TrueMacroCon.Value
         this.Data.FalseMacro := this.FalseMacroCon.Value
+        this.Data.SaveToggle := this.SaveToggleCon.Value
+        this.Data.SaveName := this.SaveNameCon.Text
+        this.Data.TrueValue := this.TrueValueCon.Value
+        this.Data.FalseValue := this.FalseValueCon.Value
         loop 4 {
             this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
             this.Data.NameArr[A_Index] := this.NameConArr[A_Index].Text

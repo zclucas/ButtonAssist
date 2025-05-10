@@ -242,7 +242,7 @@ class CompareData {
         this.VariableArr := ["空", "空", "空", "空"]
         this.TrueMacro := ""
         this.FalseMacro := ""
-        this.SaveToggle := 1
+        this.SaveToggle := 0
         this.SaveName := "结果"
         this.TrueValue := 1
         this.FalseValue := 0
