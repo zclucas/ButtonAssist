@@ -297,6 +297,7 @@ class CompareGui {
         tableItem.ActionCount[1] := 0
         tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
+
         OnCompare(tableItem, this.GetCommandStr(), 1)
     }
 

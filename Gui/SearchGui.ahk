@@ -136,18 +136,18 @@ class SearchGui {
         PosX := 10
         con := MyGui.Add("Checkbox", Format("x{} y{}", PosX, PosY), "找到后鼠标移动至目标")
         this.AutoMoveCon := con
-    
+
         PosY += 30
         PosX := 10
         con := MyGui.Add("Checkbox", Format("x{} y{}", PosX, PosY), "找到后鼠标移动至目标点击")
         this.AutoClickCon := con
-    
+
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "移动速度(0~100):")
         PosX += 120
         this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "90")
-    
+
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "鼠标点击次数:")
@@ -207,32 +207,32 @@ class SearchGui {
         PosY += 20
         PosX := 330
         this.UnFoundCommandStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 280, 80), "")
-    
+
         TempPosY := PosY
         PosY += 90
         PosX := 10
         MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 310, 70), "结果保存到变量中")
-    
+
         PosY += 20
         PosX := 15
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关    选择/输入      真值        假值")
-        
+
         PosY += 20
         PosX := 20
         this.ResultToggleCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
         this.ResultSaveNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
         this.TrueValueCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 70), 0)
         this.FalseValueCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 220, PosY - 4, 70), 0)
-    
+
         PosY := TempPosY
         PosY += 90
         PosX := 330
         MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 290, 70), "找到后目标点保存到变量中")
-    
+
         PosY += 20
         PosX := 335
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关  坐标X选择/输入  坐标Y选择/输入")
-        
+
         PosY += 20
         PosX := 340
         this.CoordToogleCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
@@ -254,7 +254,7 @@ class SearchGui {
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         macro := this.MacroEditGui.GetFinallyMacroStr()
         VariableArr := GetSelectVariableObjArr(macro)
-    
+
         this.Data := this.GetCompareData(this.SerialStr)
         this.SearchTypeCon.Value := this.Data.SearchType
         this.ImageCon.Value := this.Data.SearchImagePath
@@ -355,13 +355,13 @@ class SearchGui {
         if (state) {
             SetTimer this.PosAction, 100
             Hotkey("!l", MacroAction, "On")
-            Hotkey("F1", (*)=> this.EnableSelectAerea(), "On")
+            Hotkey("F1", (*) => this.EnableSelectAerea(), "On")
             Hotkey("F2", (*) => this.SureColor(), "On")
         }
         else {
             SetTimer this.PosAction, 0
             Hotkey("!l", MacroAction, "Off")
-            Hotkey("F1", (*)=> this.EnableSelectAerea(), "Off")
+            Hotkey("F1", (*) => this.EnableSelectAerea(), "Off")
             Hotkey("F2", (*) => this.SureColor(), "Off")
         }
     }
@@ -465,17 +465,18 @@ class SearchGui {
         tableItem.ActionCount[1] := 0
         tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
+
         OnSearch(tableItem, this.GetCommandStr(), 1)
     }
 
     EnableSelectAerea() {
-        Hotkey("LButton", (*)=>this.SelectArea(), "On")
-        Hotkey("LButton Up", (*)=>this.DisSelectArea(), "On")
+        Hotkey("LButton", (*) => this.SelectArea(), "On")
+        Hotkey("LButton Up", (*) => this.DisSelectArea(), "On")
     }
 
     DisSelectArea(*) {
-        Hotkey("LButton", (*)=>this.SelectArea(), "Off")
-        Hotkey("LButton Up", (*)=>this.DisSelectArea(), "Off")
+        Hotkey("LButton", (*) => this.SelectArea(), "Off")
+        Hotkey("LButton Up", (*) => this.DisSelectArea(), "Off")
     }
 
     SelectArea(*) {

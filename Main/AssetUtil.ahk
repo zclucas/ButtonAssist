@@ -6,7 +6,7 @@ GetFloatTime(oriTime, floatValue) {
     value := Abs(oriTime * (floatValue * 0.01))
     maxValue := oriTime + value
     minValue := oriTime - value
-    result := Max(0, Random(minValue, maxValue))  
+    result := Max(0, Random(minValue, maxValue))
     return result
 }
 
@@ -539,6 +539,7 @@ InitTableItemState() {
 
     tableItem := MySoftData.SpecialTableItem
     tableItem.ModeArr := [0]
+    tableItem.MacroTypeArr := [1]
     InitSingleTableState(tableItem)
 }
 
