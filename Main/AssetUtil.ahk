@@ -471,8 +471,9 @@ GetSavedTableItemInfo(index) {
 
     loop tableItem.ModeArr.Length {
         TKArrStr .= tableItem.TKConArr.Has(A_Index) ? tableItem.TKConArr[A_Index].Value : ""
-        MacroStr := Trim(tableItem.InfoConArr[A_Index].Value, "`n")
-        MacroStr := Trim(tableItem.InfoConArr[A_Index].Value, ",")
+        MacroStr .= tableItem.InfoConArr.Has(A_Index) ? tableItem.InfoConArr[A_Index].Value : ""
+        MacroStr := Trim(MacroStr, "`n")
+        MacroStr := Trim(MacroStr, ",")
         MacroArrStr .= MacroStr
         ModeArrStr .= tableItem.ModeConArr[A_Index].Value
         ForbidArrStr .= tableItem.ForbidConArr[A_Index].Value
