@@ -801,10 +801,39 @@ OnTriggerKeyUp(tableItem, macro, index) {
 }
 
 OnFinishMacro(tableItem, macro, index) {
-    if (tableItem.TriggerTypeArr[index] == 4) {  ;开关
-        if (tableItem.ToggleStateArr.Length < index)
-            return
-        tableItem.ToggleStateArr[index] := false
+
+    key := "$*" tableItem.TKArr[index]
+    actionArr := GetMacroAction(tableItem.Index, index)
+    isJoyKey := RegExMatch(tableItem.TKArr[index], "Joy")
+    isHotstring := SubStr(tableItem.TKArr[index], 1, 1) == ":"
+    curProcessName := tableItem.ProcessNameArr.Length >= index ? tableItem.ProcessNameArr[index] : ""
+
+    if (curProcessName != "") {
+        processInfo := Format("ahk_exe {}", curProcessName)
+        HotIfWinActive(processInfo)
+    }
+
+    if (isJoyKey) {
+        MyJoyMacro.AddMacro(tableItem.TKArr[index], actionArr[1], curProcessName)
+    }
+    else if (isHotstring) {
+        Hotstring(tableItem.TKArr[index], actionArr[1])
+    }
+    else {
+        if (actionArr[1] != "") {
+            Hotkey(key, actionArr[1], "OFF")
+            Hotkey(key, actionArr[1], "ON")
+        }
+
+        if (actionArr[2] != "") {
+            Hotkey(key " up", actionArr[2], "OFF")
+            Hotkey(key " up", actionArr[2], "ON")
+        }
+
+    }
+
+    if (curProcessName != "") {
+        HotIfWinActive
     }
 }
 

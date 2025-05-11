@@ -1,7 +1,7 @@
 ;窗口&UI刷新
 InitUI() {
     global MySoftData
-    MyGui := Gui(, "RMTv1.0.2")
+    MyGui := Gui(, "RMTv1.0.3")
     MyGui.SetFont(, "Consolas")
     MySoftData.MyGui := MyGui
 
@@ -206,7 +206,7 @@ LoadSavedSettingUI(index) {
         [
             "指令串联", "指令并联"])
         newMacroTypeCon.Enabled := isMacro
-        newMacroTypeCon.Value := 1
+        newMacroTypeCon.Value := tableItem.MacroTypeArr.Length >= A_Index ? tableItem.MacroTypeArr[A_Index] : 1
 
         newInfoControl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", TabPosX + 200 - subMacroWidth, tableItem.underPosY,
             325 + subMacroWidth,
@@ -530,7 +530,7 @@ AddToolUI(index) {
     )
 
     posY += 40
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "指令录制：")
+    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "指令并联录制：")
 
     ToolCheckInfo.ToolCheckRecordMacroCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 130, posY, 60), "开关")
     ToolCheckInfo.ToolCheckRecordMacroCtrl.Value := ToolCheckInfo.IsToolRecord
