@@ -248,6 +248,7 @@ class CompareData {
         this.SaveName := "结果"
         this.TrueValue := 1
         this.FalseValue := 0
+        this.LogicalType := 1
     }
 }
 

@@ -353,7 +353,6 @@ class SearchGui {
                 MsgBox("搜索文本时：搜索范围中起始坐标不能和终止坐标相同")
                 return false
             }
-            return false
         }
 
         return true

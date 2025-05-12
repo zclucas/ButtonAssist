@@ -363,15 +363,15 @@ OnCompare(tableItem, cmd, index) {
     saveStr := IniRead(CompareFile, IniSection, paramArr[2], "")
     data := JSON.parse(saveStr, , false)
     VariableMap := tableItem.VariableMapArr[index]
-    result := true
+    result := data.LogicalType == 1 ? true : false
     loop 4 {
         if (!data.ToggleArr[A_Index] || data.NameArr[A_Index] == "空")
             continue
 
         Name := data.NameArr[A_Index]
         OhterName := data.VariableArr[A_Index]
-        if (!VariableMap.Has(name)) {
-            MsgBox("当前环境不存在变量 " name)
+        if (!VariableMap.Has(Name)) {
+            MsgBox("当前环境不存在变量 " Name)
             return
         }
 
@@ -380,27 +380,27 @@ OnCompare(tableItem, cmd, index) {
             return
         }
 
-        Value := VariableMap[name]
+        Value := VariableMap[Name]
         OtherValue := OhterName != "空" ? VariableMap[OhterName] : data.ValueArr[A_Index]
 
-        if (data.CompareTypeArr[index] == 1) {
-            result := result && Value > OtherValue
-        }
-        else if (data.CompareTypeArr[index] == 2) {
-            result := result && Value >= OtherValue
-        }
-        else if (data.CompareTypeArr[index] == 3) {
-            result := result && Value == OtherValue
-        }
-        else if (data.CompareTypeArr[index] == 4) {
-            result := result && Value <= OtherValue
-        }
-        else if (data.CompareTypeArr[index] == 5) {
-            result := result && Value < OtherValue
+        currentComparison := false
+        switch data.CompareTypeArr[A_Index] {
+            case 1: currentComparison := Value > OtherValue
+            case 2: currentComparison := Value >= OtherValue
+            case 3: currentComparison := Value == OtherValue
+            case 4: currentComparison := Value <= OtherValue
+            case 5: currentComparison := Value < OtherValue
         }
 
-        if (!result)
-            break
+        if (data.LogicalType == 1) {
+            result := result && currentComparison
+            if (!result)
+                break
+        } else {
+            result := result || currentComparison
+            if (result)
+                break
+        }
     }
 
     if (data.SaveToggle) {
@@ -734,7 +734,8 @@ OnPressKey(tableItem, cmd, index) {
 
         if (MacroType == 1) {
             action(paramArr[2], FloatHold, tableItem, index, keyType)
-            Sleep(FloatHold)
+            if (keyType == 1)
+                Sleep(FloatHold)
             if (A_Index != count)
                 Sleep(FloatInterval)
 

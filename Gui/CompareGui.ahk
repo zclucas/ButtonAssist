@@ -22,6 +22,7 @@ class CompareGui {
         this.SaveNameCon := ""
         this.TrueValueCon := ""
         this.FalseValueCon := ""
+        this.LogicalTypeCon := ""
     }
 
     ShowGui(cmd) {
@@ -57,9 +58,13 @@ class CompareGui {
         PosX += 50
         this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
 
+        PosX += 200
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 30), "逻辑关系：")
+        this.LogicalTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 75, PosY - 3, 60), ["且", "或"])
+
         PosY += 30
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "选框勾选且第一个选择/输入不为空对应比较生效、勾选之间是且关系")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "选框勾选且第一个选择/输入不为空对应比较生效")
 
         PosY += 20
         PosX := 10
@@ -210,6 +215,7 @@ class CompareGui {
         this.SaveNameCon.Text := this.Data.SaveName
         this.TrueValueCon.Value := this.Data.TrueValue
         this.FalseValueCon.Value := this.Data.FalseValue
+        this.LogicalTypeCon.Value := this.Data.LogicalType
         loop 4 {
             this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
             this.NameConArr[A_Index].Delete()
@@ -325,6 +331,7 @@ class CompareGui {
         this.Data.SaveName := this.SaveNameCon.Text
         this.Data.TrueValue := this.TrueValueCon.Value
         this.Data.FalseValue := this.FalseValueCon.Value
+        this.Data.LogicalType := this.LogicalTypeCon.Value
         loop 4 {
             this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
             this.Data.NameArr[A_Index] := this.NameConArr[A_Index].Text
@@ -332,7 +339,6 @@ class CompareGui {
             this.Data.ValueArr[A_Index] := this.ValueConArr[A_Index].Value
             this.Data.VariableArr[A_Index] := this.VariableConArr[A_Index].Text
         }
-
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, CompareFile, IniSection, this.Data.SerialStr)
     }
