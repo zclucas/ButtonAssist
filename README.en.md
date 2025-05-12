@@ -1,3 +1,6 @@
+#### Legal
+[Disclaimer](DISCLAIMER.md) | [License](LICENSE)
+
 # RMT (Ruo Meng Tu)
 **Read this in other languages: [中文](README.md).**
 #### Introduction
