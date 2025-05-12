@@ -1,3 +1,6 @@
+#### Legal
+[Disclaimer](DISCLAIMER.md) | [License](LICENSE)
+
 # RMT（若梦兔）
 **Read this in other languages: [English](README.en.md).**
 #### 介绍
