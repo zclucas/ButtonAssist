@@ -1204,10 +1204,10 @@ OnBootStartChanged(*) {
     regPath := "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run"
     softPath := A_ScriptFullPath
     if (MySoftData.IsBootStart) {
-        RegWrite(softPath, "REG_SZ", regPath, "ButtonAssist")
+        RegWrite(softPath, "REG_SZ", regPath, "RMT")
     }
     else {
-        RegDelete(regPath, "ButtonAssist")
+        RegDelete(regPath, "RMT")
     }
 }
 
