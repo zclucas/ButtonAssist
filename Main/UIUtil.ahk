@@ -105,7 +105,7 @@ AddOperBtnUI() {
     posY += 40
 
     ; posY := 250
-    ; con := MyGui.Add("Picture", Format("x{} y{} w{} h{} center", 15, posY, 100, 100), "Images\advertise.png")
+    ; con := MyGui.Add("Picture", Format("x{} y{} w{} h{} center", 15, posY, 100, 100), "Images\Soft\WeiXin.png")
     ; MySoftData.FixedCons.Push(con)
 
     ; posY := 350
@@ -136,7 +136,7 @@ AddOperBtnUI() {
 
 GetUIAddFunc(index) {
     UIAddFuncArr := [AddMacroHotkeyUI, AddMacroHotkeyUI, AddMacroHotkeyUI, AddMacroHotkeyUI,
-        AddToolUI, AddSettingUI]
+        AddToolUI, AddSettingUI, AddRewardUI]
     return UIAddFuncArr[index]
 }
 
@@ -197,12 +197,14 @@ LoadSavedSettingUI(index) {
         newTkControl.Visible := isSubMacro ? false : true
         newTkControl.Value := tableItem.TKArr.Length >= A_Index ? tableItem.TKArr[A_Index] : ""
 
-        newHoldTimeControl := MyGui.Add("Edit", Format("x{} y{} w80 center", TabPosX + 115 - subMacroWidth, tableItem.underPosY), "500"
+        newHoldTimeControl := MyGui.Add("Edit", Format("x{} y{} w80 center", TabPosX + 115 - subMacroWidth, tableItem.underPosY
+        ), "500"
         )
         newHoldTimeControl.value := tableItem.HoldTimeArr[A_Index]
         newHoldTimeControl.Enabled := isNormal && newTriggerTypeCon.Value == 5 ;长按才能配置
 
-        newMacroTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 115 - subMacroWidth, tableItem.underPosY + 25, 80),
+        newMacroTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 115 - subMacroWidth, tableItem.underPosY +
+            25, 80),
         [
             "指令串联", "指令并联"])
         newMacroTypeCon.Enabled := isMacro
@@ -265,10 +267,14 @@ LoadSavedSettingUI(index) {
 
 OnAddSetting(*) {
     global MySoftData
-    MySoftData.SB.ResetVerticalValue()
-
-    MyGui := MySoftData.MyGui
     TableIndex := MySoftData.TabCtrl.Value
+    if (!CheckIfAddSetTable(TableIndex)) {
+        MsgBox("该页签不可添加配置啊喂")
+        return
+    }
+
+    MySoftData.SB.ResetVerticalValue()
+    MyGui := MySoftData.MyGui
     tableItem := MySoftData.TableInfo[TableIndex]
     TabPosX := MySoftData.TabPosX
     isMacro := CheckIsMacroTable(TableIndex)
@@ -307,10 +313,12 @@ OnAddSetting(*) {
     "")
     newTkControl.Visible := isSubMacro ? false : true
 
-    newHoldTimeControl := MyGui.Add("Edit", Format("x{} y{} w80 center", TabPosX + 115 - subMacroWidth, tableItem.underPosY), "500")
+    newHoldTimeControl := MyGui.Add("Edit", Format("x{} y{} w80 center", TabPosX + 115 - subMacroWidth, tableItem.underPosY
+    ), "500")
     newHoldTimeControl.Enabled := false
 
-    newMacroTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 115 - subMacroWidth, tableItem.underPosY + 25, 80),
+    newMacroTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 115 - subMacroWidth, tableItem.underPosY +
+        25, 80),
     [
         "指令串联", "指令并联"])
     newMacroTypeCon.Enabled := isMacro
@@ -475,6 +483,36 @@ AddSettingUI(index) {
 
     tableItem := MySoftData.TableInfo[index]
     tableItem.UnderPosY := posY
+}
+
+AddRewardUI(index) {
+    MyGui := MySoftData.MyGui
+    posY := MySoftData.TabPosY
+    posX := MySoftData.TabPosX
+
+    posY += 40
+    posX += 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 800, 60), "RMT(若梦兔)完全免费的开源软件，如果你觉得它提升了你的效率，欢迎请我喝杯咖啡~ `n你的打赏会让我更有动力持续更新和维护这个项目！")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 5)))
+
+    posY += 60
+    posX := MySoftData.TabPosX + 100
+    con := MyGui.Add("Picture", Format("x{} y{} w{} h{} center", posX, posY, 220, 220), "Images\Soft\WeiXin.png")
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{} center", posX, posY + 230, 220, 50), "微信打赏")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 5)))
+
+    posX += 450
+    con := MyGui.Add("Picture", Format("x{} y{} w{} h{} center", posX, posY, 220, 220), "Images\Soft\ZhiFuBao.png")
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{} center", posX, posY + 230, 220, 50), "支付宝打赏")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 5)))
+
+    posY += 300
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 860, 80), "即使只是5元、10元，也是对我莫大的鼓励！当然，如果你暂时不方便，分享给朋友也是很棒的支持~`n开发不易，感谢你的每一份温暖！")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 5)))
+
+    posY += 35
+    MySoftData.TableInfo[index].underPosY := posY
 }
 
 AddToolUI(index) {
