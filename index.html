@@ -1,15 +1,75 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>网站指南</title>
+    <!-- 引入 marked.js 用于渲染 Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        #content {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .nav {
+            margin: 20px 0;
+        }
+
+        .nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0066cc;
+        }
+
+        .nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
+
 <body>
     <h1>欢迎来到你的网站1</h1>
-    <ul>
-        <li><a href="Web/快速上手.md?plain=1" target="_blank">快速上手指南</a></li>
-        <li><a href="Web/环境配置（手柄）.md?plain=1" target="_blank">手柄功能指南</a></li>
-    </ul>
+
+    <div class="nav">
+        <a href="#" onclick="loadMarkdown('Web/快速上手.md')">快速上手指南</a>
+        <a href="#" onclick="loadMarkdown('Web/环境配置（手柄）.md')">手柄功能指南</a>
+    </div>
+
+    <div id="content">
+        <!-- Markdown 内容将在这里渲染 -->
+        <p>请点击上面的链接查看指南内容。</p>
+    </div>
+
+    <script>
+        // 加载并渲染 Markdown 文件
+        function loadMarkdown(filePath) {
+            fetch(filePath)
+                .then(response => response.text())
+                .then(text => {
+                    // 修复图片路径 - 添加基础路径
+                    const basePath = window.location.href.replace(/\/[^/]*$/, '/');
+                    const fixedText = text.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, src) => {
+                        // 处理相对路径
+                        if (!src.startsWith('http') && !src.startsWith('/')) {
+                            src = basePath + src;
+                        }
+                        return `![${alt}](${src})`;
+                    });
+
+                    // 使用 marked.js 渲染 Markdown
+                    document.getElementById('content').innerHTML = marked.parse(fixedText);
+                })
+                .catch(error => {
+                    document.getElementById('content').innerHTML =
+                        `<p style="color:red">加载文件失败: ${error}</p>`;
+                });
+        }
+    </script>
 </body>
+
 </html>
