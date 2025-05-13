@@ -105,6 +105,7 @@
 
         .md-links li {
             margin-bottom: 8px;
+            font-size: 14px;
         }
 
         .md-links a {
@@ -112,7 +113,6 @@
             padding: 6px 8px;
             border-radius: 6px;
             transition: background-color 0.2s;
-            font-size: 14px;
             color: var(--color-text-primary);
         }
 
@@ -415,13 +415,17 @@
                 });
 
                 // 为所有标题添加ID（如果marked没有自动添加）
-                document.querySelectorAll('#content h1, #content h2, #content h3, #content h4').forEach(heading => {
+                const headings = document.querySelectorAll('#content h1, #content h2, #content h3, #content h4');
+                const headingPositions = {};
+                headings.forEach(heading => {
                     if (!heading.id) {
                         heading.id = heading.textContent
                             .toLowerCase()
                             .replace(/[^\w\u4e00-\u9fa5]+/g, '-')
                             .replace(/^-+|-+$/g, '');
                     }
+                    const rect = heading.getBoundingClientRect();
+                    headingPositions[heading.id] = rect.top + window.pageYOffset;
                 });
 
                 // 为目录链接添加点击事件，实现平滑滚动
@@ -430,11 +434,10 @@
                     link.addEventListener('click', function (e) {
                         e.preventDefault();
                         const targetId = this.getAttribute('href').substring(1);
-                        const targetElement = document.getElementById(targetId);
-                        if (targetElement) {
-                            const rect = targetElement.getBoundingClientRect();
+                        const targetPosition = headingPositions[targetId];
+                        if (targetPosition) {
                             window.scrollTo({
-                                top: rect.top,
+                                top: targetPosition,
                                 behavior: 'smooth'
                             });
                         }
