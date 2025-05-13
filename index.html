@@ -299,15 +299,22 @@
         function generateTOC() {
             // 确保内容已渲染
             setTimeout(() => {
-                // 初始化 tocbot
+                // 先销毁现有的 tocbot 实例
+                if (window.tocbot) {
+                    tocbot.destroy();
+                }
+                
+                // 重新初始化 tocbot
                 tocbot.init({
                     tocSelector: '.js-toc',
                     contentSelector: '#content',
                     headingSelector: 'h1, h2, h3, h4',
-                    positionFixedSelector: '.sidebar-right',
-                    headingsOffset: 100,
-                    scrollSmoothOffset: -100,
-                    collapseDepth: 4
+                    hasInnerContainers: true,
+                    headingsOffset: 40,
+                    scrollSmoothOffset: -40,
+                    collapseDepth: 4,
+                    // 移除 positionFixedSelector 配置
+                    // 因为我们已经在 CSS 中使用 sticky 定位
                 });
             }, 100);
         }
