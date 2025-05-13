@@ -277,6 +277,7 @@
             body {
                 grid-template-columns: 200px 1fr;
             }
+
             .sidebar-right {
                 display: none;
             }
@@ -286,12 +287,14 @@
             body {
                 grid-template-columns: 1fr;
             }
+
             .sidebar-left {
                 height: auto;
                 position: static;
                 border-right: none;
                 border-bottom: 1px solid var(--color-border-primary);
             }
+
             .main-content {
                 padding: 16px;
             }
@@ -434,10 +437,11 @@
                     link.addEventListener('click', function (e) {
                         e.preventDefault();
                         const targetId = this.getAttribute('href').substring(1);
-                        const targetPosition = headingPositions[targetId];
-                        if (targetPosition) {
+                        const targetElement = document.getElementById(targetId);
+                        if (targetElement) {
+                            const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset - 70;
                             window.scrollTo({
-                                top: targetPosition,
+                                top: offsetTop,
                                 behavior: 'smooth'
                             });
                         }
