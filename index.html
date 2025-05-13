@@ -7,60 +7,313 @@
     <title>网站指南</title>
     <!-- 引入 marked.js 用于渲染 Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- 引入 tocbot 用于生成目录 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.12.3/tocbot.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.12.3/tocbot.min.js"></script>
     <style>
-        #content {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        :root {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --link-color: #4dabf7;
+            --border-color: #333;
+            --sidebar-bg: #1e1e1e;
+            --code-bg: #2d2d2d;
         }
 
-        .nav {
-            margin: 20px 0;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 250px 1fr 250px;
+            min-height: 100vh;
         }
 
-        .nav a {
-            margin-right: 15px;
+        h1, h2, h3, h4, h5, h6 {
+            color: #fff;
+            margin-top: 1.5em;
+        }
+
+        a {
+            color: var(--link-color);
             text-decoration: none;
-            color: #0066cc;
         }
 
-        .nav a:hover {
+        a:hover {
             text-decoration: underline;
+        }
+
+        /* 左侧导航栏 */
+        .sidebar-left {
+            background-color: var(--sidebar-bg);
+            padding: 20px;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+
+        .sidebar-left h2 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .md-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .md-links li {
+            margin-bottom: 10px;
+        }
+
+        .md-links a {
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .md-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+        }
+
+        .md-links a.active {
+            background-color: rgba(77, 171, 247, 0.2);
+            font-weight: bold;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Markdown 内容样式 */
+        #content {
+            line-height: 1.7;
+        }
+
+        #content p {
+            margin-bottom: 1.2em;
+        }
+
+        #content code {
+            background-color: var(--code-bg);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.9em;
+        }
+
+        #content pre {
+            background-color: var(--code-bg);
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 1.5em;
+        }
+
+        #content pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        #content blockquote {
+            border-left: 4px solid #666;
+            padding-left: 16px;
+            margin-left: 0;
+            color: #aaa;
+        }
+
+        #content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1.5em;
+        }
+
+        #content th, #content td {
+            border: 1px solid #444;
+            padding: 8px 12px;
+        }
+
+        #content th {
+            background-color: #2a2a2a;
+        }
+
+        #content tr:nth-child(even) {
+            background-color: #1e1e1e;
+        }
+
+        /* 右侧目录 */
+        .sidebar-right {
+            background-color: var(--sidebar-bg);
+            padding: 20px;
+            border-left: 1px solid var(--border-color);
+            overflow-y: auto;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+
+        .sidebar-right h2 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .js-toc {
+            overflow-y: auto;
+        }
+
+        .js-toc li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .js-toc a {
+            color: #aaa;
+            display: block;
+            padding: 4px 0;
+        }
+
+        .js-toc a:hover {
+            color: var(--link-color);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            body {
+                grid-template-columns: 200px 1fr 200px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            body {
+                grid-template-columns: 180px 1fr;
+            }
+            .sidebar-right {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                grid-template-columns: 1fr;
+            }
+            .sidebar-left {
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .main-content {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <h1>欢迎来到你的网站1</h1>
-
-    <div class="nav">
-        <a href="#" onclick="loadMarkdown('Web/快速上手.md')">快速上手指南</a>
-        <a href="#" onclick="loadMarkdown('Web/环境配置（手柄）.md')">手柄功能指南</a>
+    <!-- 左侧导航栏 -->
+    <div class="sidebar-left">
+        <h2>文档导航</h2>
+        <ul class="md-links">
+            <li><a href="#" class="active" onclick="loadMarkdown('Web/快速上手.md', this)">快速上手指南</a></li>
+            <li><a href="#" onclick="loadMarkdown('Web/环境配置（手柄）.md', this)">手柄功能指南</a></li>
+            <li><a href="#" onclick="loadMarkdown('Web/API文档.md', this)">API 文档</a></li>
+            <li><a href="#" onclick="loadMarkdown('Web/常见问题.md', this)">常见问题</a></li>
+            <li><a href="#" onclick="loadMarkdown('Web/开发指南.md', this)">开发指南</a></li>
+            <li><a href="#" onclick="loadMarkdown('Web/部署说明.md', this)">部署说明</a></li>
+            <li><a href="#" onclick="loadMarkdown('Web/贡献指南.md', this)">贡献指南</a></li>
+        </ul>
     </div>
 
-    <div id="content">
-        <!-- Markdown 内容将在这里渲染 -->
-        <p>请点击上面的链接查看指南内容。</p>
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <div id="content">
+            <!-- Markdown 内容将在这里渲染 -->
+            <p>请点击左侧的链接查看文档内容。</p>
+        </div>
+    </div>
+
+    <!-- 右侧目录 -->
+    <div class="sidebar-right">
+        <h2>目录</h2>
+        <div class="js-toc"></div>
     </div>
 
     <script>
-        function loadMarkdown(filePath) {
+        // 配置 marked.js
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            highlight: function(code, lang) {
+                // 这里可以添加代码高亮逻辑
+                return code;
+            }
+        });
+
+        // 加载并渲染 Markdown
+        function loadMarkdown(filePath, linkElement = null) {
+            // 更新活动链接样式
+            if (linkElement) {
+                document.querySelectorAll('.md-links a').forEach(a => {
+                    a.classList.remove('active');
+                });
+                linkElement.classList.add('active');
+            }
+
             fetch(filePath)
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.text();
+                })
                 .then(text => {
                     // 使用 marked.js 渲染 Markdown
                     document.getElementById('content').innerHTML = marked.parse(text);
+                    
+                    // 渲染完成后生成目录
+                    generateTOC();
                 })
                 .catch(error => {
-                    document.getElementById('content').innerHTML =
-                        `<p style="color:red">加载文件失败: ${error}</p>`;
+                    console.error('Error loading Markdown file:', error);
+                    document.getElementById('content').innerHTML = 
+                        `<div style="color:#ff6b6b; padding:20px; border:1px solid #ff6b6b; border-radius:4px;">
+                            <h3>加载文件失败</h3>
+                            <p>文件路径: ${filePath}</p>
+                            <p>错误信息: ${error.message}</p>
+                        </div>`;
                 });
         }
 
+        // 生成目录
+        function generateTOC() {
+            // 确保内容已渲染
+            setTimeout(() => {
+                // 初始化 tocbot
+                tocbot.init({
+                    tocSelector: '.js-toc',
+                    contentSelector: '#content',
+                    headingSelector: 'h1, h2, h3, h4',
+                    positionFixedSelector: '.sidebar-right',
+                    headingsOffset: 100,
+                    scrollSmoothOffset: -100,
+                    collapseDepth: 4
+                });
+            }, 100);
+        }
+
         // 页面加载完成后自动显示"快速上手"内容
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             loadMarkdown('Web/快速上手.md');
         });
     </script>
