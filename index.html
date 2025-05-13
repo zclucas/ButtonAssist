@@ -58,6 +58,11 @@
                         `<p style="color:red">加载文件失败: ${error}</p>`;
                 });
         }
+
+        // 页面加载完成后自动显示"快速上手"内容
+        document.addEventListener('DOMContentLoaded', function () {
+            loadMarkdown('Web/快速上手.md');
+        });
     </script>
 </body>
 
