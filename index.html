@@ -7,24 +7,30 @@
     <title>网站指南</title>
     <!-- 引入 marked.js 用于渲染 Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- 引入 highlight.js 用于代码高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
     <!-- 引入 tocbot 用于生成目录 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.12.3/tocbot.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.12.3/tocbot.min.js"></script>
     <style>
         :root {
-            --bg-color: #121212;
-            --text-color: #e0e0e0;
-            --link-color: #4dabf7;
-            --border-color: #333;
-            --sidebar-bg: #1e1e1e;
-            --code-bg: #2d2d2d;
+            --color-text-primary: #24292f;
+            --color-text-secondary: #57606a;
+            --color-border-primary: #d0d7de;
+            --color-border-secondary: #d8dee4;
+            --color-bg-canvas: #ffffff;
+            --color-bg-canvas-inset: #f6f8fa;
+            --color-accent-fg: #0969da;
+            --color-accent-emphasis: #0969da;
+            --color-neutral-muted: rgba(175, 184, 193, 0.2);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--bg-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-canvas);
             margin: 0;
             padding: 0;
             display: grid;
@@ -33,12 +39,34 @@
         }
 
         h1, h2, h3, h4, h5, h6 {
-            color: #fff;
-            margin-top: 1.5em;
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        h1 {
+            padding-bottom: 0.3em;
+            font-size: 2em;
+            border-bottom: 1px solid var(--color-border-secondary);
+        }
+
+        h2 {
+            padding-bottom: 0.3em;
+            font-size: 1.5em;
+            border-bottom: 1px solid var(--color-border-secondary);
+        }
+
+        h3 {
+            font-size: 1.25em;
+        }
+
+        h4 {
+            font-size: 1em;
         }
 
         a {
-            color: var(--link-color);
+            color: var(--color-accent-fg);
             text-decoration: none;
         }
 
@@ -48,9 +76,9 @@
 
         /* 左侧导航栏 */
         .sidebar-left {
-            background-color: var(--sidebar-bg);
-            padding: 20px;
-            border-right: 1px solid var(--border-color);
+            background-color: var(--color-bg-canvas);
+            padding: 16px;
+            border-right: 1px solid var(--color-border-primary);
             overflow-y: auto;
             height: 100vh;
             position: sticky;
@@ -59,105 +87,134 @@
 
         .sidebar-left h2 {
             margin-top: 0;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--color-border-secondary);
+            font-size: 1.25em;
         }
 
         .md-links {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
 
         .md-links li {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .md-links a {
             display: block;
-            padding: 8px 12px;
-            border-radius: 4px;
+            padding: 6px 8px;
+            border-radius: 6px;
             transition: background-color 0.2s;
+            font-size: 14px;
+            color: var(--color-text-primary);
         }
 
         .md-links a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: var(--color-neutral-muted);
             text-decoration: none;
         }
 
         .md-links a.active {
-            background-color: rgba(77, 171, 247, 0.2);
-            font-weight: bold;
+            background-color: var(--color-accent-emphasis);
+            color: white;
+            font-weight: 500;
         }
 
         /* 主内容区 */
         .main-content {
-            padding: 30px;
+            padding: 32px;
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
         }
 
-        /* Markdown 内容样式 */
+        /* GitHub Wiki 风格的 Markdown 内容 */
         #content {
             line-height: 1.7;
+            font-size: 16px;
         }
 
         #content p {
-            margin-bottom: 1.2em;
+            margin-top: 0;
+            margin-bottom: 16px;
         }
 
         #content code {
-            background-color: var(--code-bg);
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-            font-size: 0.9em;
+            font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+            font-size: 85%;
+            background-color: var(--color-neutral-muted);
+            padding: 0.2em 0.4em;
+            border-radius: 6px;
         }
 
         #content pre {
-            background-color: var(--code-bg);
+            background-color: var(--color-bg-canvas-inset);
             padding: 16px;
             border-radius: 6px;
             overflow-x: auto;
-            margin-bottom: 1.5em;
+            margin-bottom: 16px;
+            font-size: 85%;
+            line-height: 1.45;
+            border: 1px solid var(--color-border-primary);
         }
 
         #content pre code {
             background-color: transparent;
             padding: 0;
+            border-radius: 0;
         }
 
         #content blockquote {
-            border-left: 4px solid #666;
-            padding-left: 16px;
-            margin-left: 0;
-            color: #aaa;
+            padding: 0 1em;
+            color: var(--color-text-secondary);
+            border-left: 0.25em solid var(--color-border-primary);
+            margin: 0 0 16px 0;
         }
 
         #content table {
+            border-spacing: 0;
             border-collapse: collapse;
             width: 100%;
-            margin-bottom: 1.5em;
+            margin-bottom: 16px;
+            display: block;
+            overflow: auto;
         }
 
         #content th, #content td {
-            border: 1px solid #444;
-            padding: 8px 12px;
+            padding: 6px 13px;
+            border: 1px solid var(--color-border-primary);
         }
 
         #content th {
-            background-color: #2a2a2a;
+            font-weight: 600;
+            background-color: var(--color-bg-canvas-inset);
         }
 
         #content tr:nth-child(even) {
-            background-color: #1e1e1e;
+            background-color: var(--color-bg-canvas-inset);
+        }
+
+        #content img {
+            max-width: 100%;
+            box-sizing: content-box;
+            background-color: var(--color-bg-canvas);
+        }
+
+        #content hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 24px 0;
+            background-color: var(--color-border-primary);
+            border: 0;
         }
 
         /* 右侧目录 */
         .sidebar-right {
-            background-color: var(--sidebar-bg);
-            padding: 20px;
-            border-left: 1px solid var(--border-color);
+            background-color: var(--color-bg-canvas);
+            padding: 16px;
+            border-left: 1px solid var(--color-border-primary);
             overflow-y: auto;
             height: 100vh;
             position: sticky;
@@ -166,46 +223,66 @@
 
         .sidebar-right h2 {
             margin-top: 0;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--color-border-secondary);
+            font-size: 1.25em;
         }
 
         .js-toc {
             overflow-y: auto;
+            font-size: 14px;
         }
 
-        .js-toc li {
-            margin-bottom: 8px;
-            line-height: 1.4;
+        .js-toc > .toc-list {
+            position: relative;
+            padding-left: 12px;
+            list-style: none;
         }
 
-        .js-toc a {
-            color: #aaa;
+        .toc-list {
+            list-style: none;
+            padding-left: 12px;
+            margin: 0;
+        }
+
+        .toc-link {
             display: block;
             padding: 4px 0;
+            color: var(--color-text-primary);
+            transition: color 0.2s;
         }
 
-        .js-toc a:hover {
-            color: var(--link-color);
+        .toc-link:hover {
+            color: var(--color-accent-fg);
+            text-decoration: none;
+        }
+
+        .toc-link.is-active-link {
+            font-weight: 600;
+            color: var(--color-accent-fg);
+        }
+
+        .toc-list-item {
+            margin-bottom: 4px;
         }
 
         /* 响应式设计 */
         @media (max-width: 1200px) {
             body {
-                grid-template-columns: 200px 1fr 200px;
+                grid-template-columns: 220px 1fr 220px;
             }
         }
 
         @media (max-width: 900px) {
             body {
-                grid-template-columns: 180px 1fr;
+                grid-template-columns: 200px 1fr;
             }
             .sidebar-right {
                 display: none;
             }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             body {
                 grid-template-columns: 1fr;
             }
@@ -213,10 +290,10 @@
                 height: auto;
                 position: static;
                 border-right: none;
-                border-bottom: 1px solid var(--border-color);
+                border-bottom: 1px solid var(--color-border-primary);
             }
             .main-content {
-                padding: 20px;
+                padding: 16px;
             }
         }
     </style>
@@ -252,13 +329,22 @@
     </div>
 
     <script>
-        // 配置 marked.js
+        // 配置 marked.js 以匹配 GitHub Wiki 风格
         marked.setOptions({
             breaks: true,
             gfm: true,
+            pedantic: false,
+            smartLists: true,
+            smartypants: true,
             highlight: function(code, lang) {
-                // 这里可以添加代码高亮逻辑
-                return code;
+                if (lang && hljs.getLanguage(lang)) {
+                    try {
+                        return hljs.highlight(lang, code).value;
+                    } catch (e) {
+                        console.error('代码高亮错误:', e);
+                    }
+                }
+                return hljs.highlightAuto(code).value;
             }
         });
 
@@ -281,16 +367,21 @@
                     // 使用 marked.js 渲染 Markdown
                     document.getElementById('content').innerHTML = marked.parse(text);
                     
+                    // 高亮所有代码块
+                    document.querySelectorAll('pre code').forEach((block) => {
+                        hljs.highlightElement(block);
+                    });
+                    
                     // 渲染完成后生成目录
                     generateTOC();
                 })
                 .catch(error => {
-                    console.error('Error loading Markdown file:', error);
+                    console.error('加载 Markdown 文件错误:', error);
                     document.getElementById('content').innerHTML = 
-                        `<div style="color:#ff6b6b; padding:20px; border:1px solid #ff6b6b; border-radius:4px;">
-                            <h3>加载文件失败</h3>
-                            <p>文件路径: ${filePath}</p>
-                            <p>错误信息: ${error.message}</p>
+                        `<div style="color:#cf222e; padding:16px; border:1px solid #ffebe9; background-color:#ffebe9; border-radius:6px;">
+                            <h3 style="margin-top:0;">加载文件失败</h3>
+                            <p><strong>文件路径:</strong> ${filePath}</p>
+                            <p><strong>错误信息:</strong> ${error.message}</p>
                         </div>`;
                 });
         }
@@ -309,18 +400,38 @@
                     tocSelector: '.js-toc',
                     contentSelector: '#content',
                     headingSelector: 'h1, h2, h3, h4',
-                    hasInnerContainers: true,
-                    headingsOffset: 40,
-                    scrollSmoothOffset: -40,
+                    headingsOffset: 70,
+                    scrollSmoothOffset: -70,
                     collapseDepth: 4,
-                    // 移除 positionFixedSelector 配置
-                    // 因为我们已经在 CSS 中使用 sticky 定位
+                    listClass: 'toc-list',
+                    listItemClass: 'toc-list-item',
+                    linkClass: 'toc-link',
+                    activeLinkClass: 'is-active-link',
+                    // 确保锚点链接工作正常
+                    scrollEndCallback: function(e) {
+                        // 修复点击目录后滚动位置不准确的问题
+                        window.history.replaceState(null, null, window.location.pathname + window.location.search + e.hash);
+                    }
+                });
+
+                // 为所有标题添加ID（如果marked没有自动添加）
+                document.querySelectorAll('#content h1, #content h2, #content h3, #content h4').forEach(heading => {
+                    if (!heading.id) {
+                        heading.id = heading.textContent
+                            .toLowerCase()
+                            .replace(/[^\w\u4e00-\u9fa5]+/g, '-')
+                            .replace(/^-+|-+$/g, '');
+                    }
                 });
             }, 100);
         }
 
         // 页面加载完成后自动显示"快速上手"内容
         document.addEventListener('DOMContentLoaded', function() {
+            // 初始化 highlight.js
+            hljs.highlightAll();
+            
+            // 加载默认文档
             loadMarkdown('Web/快速上手.md');
         });
     </script>
