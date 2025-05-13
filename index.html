@@ -432,7 +432,11 @@
                         const targetId = this.getAttribute('href').substring(1);
                         const targetElement = document.getElementById(targetId);
                         if (targetElement) {
-                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                            const rect = targetElement.getBoundingClientRect();
+                            window.scrollTo({
+                                top: rect.top + window.pageYOffset,
+                                behavior: 'smooth'
+                            });
                         }
                     });
                 });
