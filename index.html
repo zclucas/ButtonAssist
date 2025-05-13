@@ -33,7 +33,7 @@
 </head>
 
 <body>
-    <h1>欢迎来到你的网站</h1>
+    <h1>欢迎来到你的网站1</h1>
 
     <div class="nav">
         <a href="#" onclick="loadMarkdown('Web/快速上手.md')">快速上手指南</a>
@@ -47,35 +47,17 @@
 
     <script>
         function loadMarkdown(filePath) {
-        // 获取仓库基础路径（适用于GitHub Pages）
-        const basePath = window.location.pathname.includes('/docs/') 
-            ? window.location.pathname.split('/docs/')[0] + '/docs/'
-            : window.location.pathname.split('/blob/')[0] + '/blob/main/';
-        
-        fetch(filePath)
-            .then(response => response.text())
-            .then(text => {
-                // 修复图片路径
-                const fixedText = text.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, src) => {
-                    if (!src.startsWith('http')) {
-                        // 处理相对路径
-                        if (src.startsWith('../')) {
-                            src = basePath + src.substring(3);
-                        } else if (src.startsWith('./')) {
-                            src = basePath + 'Web/' + src.substring(2);
-                        } else {
-                            src = basePath + 'Web/' + src;
-                        }
-                    }
-                    return `![${alt}](${src})`;
+            fetch(filePath)
+                .then(response => response.text())
+                .then(text => {
+                    // 使用 marked.js 渲染 Markdown
+                    document.getElementById('content').innerHTML = marked.parse(text);
+                })
+                .catch(error => {
+                    document.getElementById('content').innerHTML =
+                        `<p style="color:red">加载文件失败: ${error}</p>`;
                 });
-                document.getElementById('content').innerHTML = marked.parse(fixedText);
-            })
-            .catch(error => {
-                document.getElementById('content').innerHTML = 
-                    `<p style="color:red">加载失败: ${error.message}</p>`;
-            });
-    }
+        }
     </script>
 </body>
 
