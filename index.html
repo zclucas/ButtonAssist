@@ -434,7 +434,7 @@
                         if (targetElement) {
                             const rect = targetElement.getBoundingClientRect();
                             window.scrollTo({
-                                top: rect.top + window.pageYOffset,
+                                top: rect.top,
                                 behavior: 'smooth'
                             });
                         }
