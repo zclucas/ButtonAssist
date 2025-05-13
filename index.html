@@ -15,14 +15,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.12.3/tocbot.min.js"></script>
     <style>
         :root {
-            --color-text-primary: #24292f;
-            --color-text-secondary: #57606a;
-            --color-border-primary: #d0d7de;
-            --color-border-secondary: #d8dee4;
-            --color-bg-canvas: #ffffff;
-            --color-bg-canvas-inset: #f6f8fa;
-            --color-accent-fg: #0969da;
-            --color-accent-emphasis: #0969da;
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #888888;
+            --color-border-primary: #333333;
+            --color-border-secondary: #444444;
+            --color-bg-canvas: #111111;
+            --color-bg-canvas-inset: #222222;
+            --color-accent-fg: #0099ff;
+            --color-accent-emphasis: #0099ff;
             --color-neutral-muted: rgba(175, 184, 193, 0.2);
         }
 
@@ -38,7 +38,12 @@
             min-height: 100vh;
         }
 
-        h1, h2, h3, h4, h5, h6 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             margin-top: 24px;
             margin-bottom: 16px;
             font-weight: 600;
@@ -144,7 +149,7 @@
         #content code {
             font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
             font-size: 85%;
-            background-color: var(--color-neutral-muted);
+            background-color: var(--color-bg-canvas-inset);
             padding: 0.2em 0.4em;
             border-radius: 6px;
         }
@@ -182,7 +187,8 @@
             overflow: auto;
         }
 
-        #content th, #content td {
+        #content th,
+        #content td {
             padding: 6px 13px;
             border: 1px solid var(--color-border-primary);
         }
@@ -231,12 +237,6 @@
         .js-toc {
             overflow-y: auto;
             font-size: 14px;
-        }
-
-        .js-toc > .toc-list {
-            position: relative;
-            padding-left: 12px;
-            list-style: none;
         }
 
         .toc-list {
@@ -336,7 +336,7 @@
             pedantic: false,
             smartLists: true,
             smartypants: true,
-            highlight: function(code, lang) {
+            highlight: function (code, lang) {
                 if (lang && hljs.getLanguage(lang)) {
                     try {
                         return hljs.highlight(lang, code).value;
@@ -366,18 +366,18 @@
                 .then(text => {
                     // 使用 marked.js 渲染 Markdown
                     document.getElementById('content').innerHTML = marked.parse(text);
-                    
+
                     // 高亮所有代码块
                     document.querySelectorAll('pre code').forEach((block) => {
                         hljs.highlightElement(block);
                     });
-                    
+
                     // 渲染完成后生成目录
                     generateTOC();
                 })
                 .catch(error => {
                     console.error('加载 Markdown 文件错误:', error);
-                    document.getElementById('content').innerHTML = 
+                    document.getElementById('content').innerHTML =
                         `<div style="color:#cf222e; padding:16px; border:1px solid #ffebe9; background-color:#ffebe9; border-radius:6px;">
                             <h3 style="margin-top:0;">加载文件失败</h3>
                             <p><strong>文件路径:</strong> ${filePath}</p>
@@ -394,7 +394,7 @@
                 if (window.tocbot) {
                     tocbot.destroy();
                 }
-                
+
                 // 重新初始化 tocbot
                 tocbot.init({
                     tocSelector: '.js-toc',
@@ -408,7 +408,7 @@
                     linkClass: 'toc-link',
                     activeLinkClass: 'is-active-link',
                     // 确保锚点链接工作正常
-                    scrollEndCallback: function(e) {
+                    scrollEndCallback: function (e) {
                         // 修复点击目录后滚动位置不准确的问题
                         window.history.replaceState(null, null, window.location.pathname + window.location.search + e.hash);
                     }
@@ -423,14 +423,27 @@
                             .replace(/^-+|-+$/g, '');
                     }
                 });
+
+                // 为目录链接添加点击事件，实现平滑滚动
+                const tocLinks = document.querySelectorAll('.toc-link');
+                tocLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href').substring(1);
+                        const targetElement = document.getElementById(targetId);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    });
+                });
             }, 100);
         }
 
         // 页面加载完成后自动显示"快速上手"内容
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // 初始化 highlight.js
             hljs.highlightAll();
-            
+
             // 加载默认文档
             loadMarkdown('Web/快速上手.md');
         });
