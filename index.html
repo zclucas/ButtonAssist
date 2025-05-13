@@ -305,7 +305,7 @@
 <body>
     <!-- 左侧导航栏 -->
     <div class="sidebar-left">
-        <h2>文档导航1</h2>
+        <h2>文档导航</h2>
         <ul class="md-links">
             <li><a href="#" class="active" onclick="loadMarkdown('Web/快速上手.md', this)">快速上手指南</a></li>
             <li><a href="#" onclick="loadMarkdown('Web/环境配置（手柄）.md', this)">手柄功能指南</a></li>
@@ -398,28 +398,8 @@
                     tocbot.destroy();
                 }
 
-                // 重新初始化 tocbot
-                tocbot.init({
-                    tocSelector: '.js-toc',
-                    contentSelector: '#content',
-                    headingSelector: 'h1, h2, h3, h4',
-                    headingsOffset: 70,
-                    scrollSmoothOffset: -70,
-                    collapseDepth: 4,
-                    listClass: 'toc-list',
-                    listItemClass: 'toc-list-item',
-                    linkClass: 'toc-link',
-                    activeLinkClass: 'is-active-link',
-                    // 确保锚点链接工作正常
-                    scrollEndCallback: function (e) {
-                        // 修复点击目录后滚动位置不准确的问题
-                        window.history.replaceState(null, null, window.location.pathname + window.location.search + e.hash);
-                    }
-                });
-
                 // 为所有标题添加ID（如果marked没有自动添加）
                 const headings = document.querySelectorAll('#content h1, #content h2, #content h3, #content h4');
-                const headingPositions = {};
                 headings.forEach(heading => {
                     if (!heading.id) {
                         heading.id = heading.textContent
@@ -427,23 +407,48 @@
                             .replace(/[^\w\u4e00-\u9fa5]+/g, '-')
                             .replace(/^-+|-+$/g, '');
                     }
-                    const rect = heading.getBoundingClientRect();
-                    headingPositions[heading.id] = rect.top + window.pageYOffset;
                 });
 
-                // 为目录链接添加点击事件，实现平滑滚动
+                // 重新初始化 tocbot
+                tocbot.init({
+                    tocSelector: '.js-toc',
+                    contentSelector: '#content',
+                    headingSelector: 'h1, h2, h3, h4',
+                    headingsOffset: 70,       // 考虑顶部固定元素的高度
+                    scrollSmoothOffset: -70,   // 滚动偏移量
+                    collapseDepth: 4,
+                    listClass: 'toc-list',
+                    listItemClass: 'toc-list-item',
+                    linkClass: 'toc-link',
+                    activeLinkClass: 'is-active-link',
+                    // 自定义滚动行为
+                    scrollEndCallback: function (e) {
+                        // 更新URL哈希而不触发滚动
+                        history.replaceState(null, null, e.hash);
+                    }
+                });
+
+                // 为目录链接添加点击事件，覆盖tocbot的默认行为以实现更好的控制
                 const tocLinks = document.querySelectorAll('.toc-link');
                 tocLinks.forEach(link => {
                     link.addEventListener('click', function (e) {
                         e.preventDefault();
-                        const targetId = this.getAttribute('href').substring(1);
-                        const targetElement = document.getElementById(targetId);
-                        if (targetElement) {
-                            const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset - 70;
-                            window.scrollTo({
-                                top: offsetTop,
-                                behavior: 'smooth'
-                            });
+                        const targetId = this.getAttribute('href');
+                        if (targetId) {
+                            const targetElement = document.querySelector(targetId);
+                            if (targetElement) {
+                                // 计算目标位置，考虑顶部固定导航栏的高度
+                                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 70;
+
+                                // 平滑滚动
+                                window.scrollTo({
+                                    top: targetPosition,
+                                    behavior: 'smooth'
+                                });
+
+                                // 更新URL哈希
+                                history.replaceState(null, null, targetId);
+                            }
                         }
                     });
                 });
@@ -457,6 +462,20 @@
 
             // 加载默认文档
             loadMarkdown('Web/快速上手.md');
+
+            // 检查URL哈希并滚动到对应位置
+            setTimeout(function () {
+                if (window.location.hash) {
+                    const targetElement = document.querySelector(window.location.hash);
+                    if (targetElement) {
+                        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 70;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            }, 500); // 稍等一会儿确保内容加载完成
         });
     </script>
 </body>
