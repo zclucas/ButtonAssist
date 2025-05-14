@@ -56,7 +56,8 @@ class SearchGui {
     AddGui() {
         MyGui := Gui(, "搜索指令编辑")
         this.Gui := MyGui
-        MyGui.SetFont(, "Consolas")
+        ; MyGui.SetFont(, "Consolas")
+        MyGui.SetFont("S10 W550 Q2", "Consolas")
 
         PosX := 10
         PosY := 10
@@ -348,8 +349,8 @@ class SearchGui {
         }
 
         if (this.SearchTypeCon.Value == 3) {
-            if (Number(this.StartPosXCon.Value) == Number(this.EndPosXCon.Value) || 
-                Number(this.StartPosYCon.Value) == Number(this.EndPosYCon.Value)) {
+            if (Number(this.StartPosXCon.Value) == Number(this.EndPosXCon.Value) ||
+            Number(this.StartPosYCon.Value) == Number(this.EndPosYCon.Value)) {
                 MsgBox("搜索文本时：搜索范围中起始坐标不能和终止坐标相同")
                 return false
             }

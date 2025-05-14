@@ -226,7 +226,7 @@ class TriggerKeyGui {
         {
             MyGui := Gui()
             this.Gui := MyGui
-            MyGui.SetFont(, "Consolas")
+            MyGui.SetFont("S10 W550 Q2", "Consolas")
             
             MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", 10, 10, 1260, 500), "请从下面选框中勾选触发宏的按键：")
             PosX := 20

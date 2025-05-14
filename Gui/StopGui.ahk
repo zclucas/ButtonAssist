@@ -27,7 +27,7 @@ class StopGui {
     AddGui() {
         MyGui := Gui(, "终止指令编辑")
         this.Gui := MyGui
-        MyGui.SetFont(, "Consolas")
+        MyGui.SetFont("S10 W550 Q2", "Consolas")
 
         PosX := 10
         PosY := 10

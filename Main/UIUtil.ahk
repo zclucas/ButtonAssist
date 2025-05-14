@@ -2,7 +2,7 @@
 InitUI() {
     global MySoftData
     MyGui := Gui(, "RMTv1.0.4")
-    MyGui.SetFont(, "Consolas")
+    MyGui.SetFont("S10 W550 Q2", "Consolas")
     MySoftData.MyGui := MyGui
 
     AddUI()
@@ -492,24 +492,26 @@ AddRewardUI(index) {
 
     posY += 40
     posX += 15
-    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 800, 60), "RMT(若梦兔)完全免费的开源软件，如果你觉得它提升了你的效率，欢迎请我喝杯咖啡~ `n你的打赏会让我更有动力持续更新和维护这个项目！")
-    con.SetFont((Format("S{} W{} Q{}", 12, 600, 5)))
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 800, 60),
+    "RMT(若梦兔)完全免费的开源软件，如果你觉得它提升了你的效率，欢迎请我喝杯咖啡~ `n你的打赏会让我更有动力持续更新和维护这个项目！")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
 
     posY += 60
     posX := MySoftData.TabPosX + 100
     con := MyGui.Add("Picture", Format("x{} y{} w{} h{} center", posX, posY, 220, 220), "Images\Soft\WeiXin.png")
     con := MyGui.Add("Text", Format("x{} y{} w{} h{} center", posX, posY + 230, 220, 50), "微信打赏")
-    con.SetFont((Format("S{} W{} Q{}", 12, 600, 5)))
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
 
     posX += 450
     con := MyGui.Add("Picture", Format("x{} y{} w{} h{} center", posX, posY, 220, 220), "Images\Soft\ZhiFuBao.png")
     con := MyGui.Add("Text", Format("x{} y{} w{} h{} center", posX, posY + 230, 220, 50), "支付宝打赏")
-    con.SetFont((Format("S{} W{} Q{}", 12, 600, 5)))
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
 
     posY += 300
     posX := MySoftData.TabPosX + 15
-    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 860, 80), "即使只是5元、10元，也是对我莫大的鼓励！当然，如果你暂时不方便，分享给朋友也是很棒的支持~`n开发不易，感谢你的每一份温暖！")
-    con.SetFont((Format("S{} W{} Q{}", 12, 600, 5)))
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 860, 80),
+    "即使只是5元、10元，也是对我莫大的鼓励！当然，如果你暂时不方便，分享给朋友也是很棒的支持~`n开发不易，感谢你的每一份温暖！")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
 
     posY += 35
     MySoftData.TableInfo[index].underPosY := posY

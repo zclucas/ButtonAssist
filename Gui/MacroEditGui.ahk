@@ -126,7 +126,7 @@ class MacroEditGui {
     AddGui() {
         MyGui := Gui(, "指令编辑器")
         this.Gui := MyGui
-        MyGui.SetFont(, "Consolas")
+        MyGui.SetFont("S10 W550 Q2", "Consolas")
 
         PosX := 10
         PosY := 10
