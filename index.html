@@ -344,7 +344,7 @@
 
     <script>
         // 配置 marked.js 以匹配 VS Code 风格
-        marked.setOptions({
+        /*marked.setOptions({
             breaks: true,
             gfm: true,
             pedantic: false,
@@ -360,7 +360,61 @@
                 }
                 return hljs.highlightAuto(code).value;
             }
-        });
+        });*/
+
+        // 确保所有依赖已加载
+        function checkDependencies() {
+            if (typeof marked === 'undefined' || typeof hljs === 'undefined' || typeof tocbot === 'undefined') {
+                setTimeout(checkDependencies, 100);
+                return;
+            }
+
+            // 所有依赖已加载，继续初始化
+            initializeApp();
+        }
+
+        function initializeApp() {
+            // 配置 marked.js
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                pedantic: false,
+                smartLists: true,
+                smartypants: true,
+                highlight: function (code, lang) {
+                    if (lang && hljs.getLanguage(lang)) {
+                        try {
+                            return hljs.highlight(lang, code).value;
+                        } catch (e) {
+                            console.error('代码高亮错误:', e);
+                        }
+                    }
+                    return hljs.highlightAuto(code).value;
+                }
+            });
+
+            // 其他初始化代码...
+            document.addEventListener('DOMContentLoaded', function () {
+                hljs.highlightAll();
+                loadMarkdown('Web/快速上手.md');
+
+                setTimeout(function () {
+                    if (window.location.hash) {
+                        const targetElement = document.querySelector(window.location.hash);
+                        if (targetElement) {
+                            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 70;
+                            window.scrollTo({
+                                top: targetPosition,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                }, 500);
+            });
+        }
+
+        // 启动依赖检查
+        checkDependencies();
 
         // 加载并渲染 Markdown
         function loadMarkdown(filePath, linkElement = null) {
