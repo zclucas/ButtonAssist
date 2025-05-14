@@ -759,6 +759,8 @@ OnPressKey(tableItem, cmd, index) {
 OnTriggerKeyDown(tableItem, macro, index) {
     if (tableItem.TriggerTypeArr[index] == 1) { ;按下触发
         OnTriggerMacroKeyAndInit(tableItem, macro, index)
+        ; action := OnTriggerMacroKeyAndInit.Bind(tableItem, macro, index)
+        ; SetTimer(action, -1)
     }
     else if (tableItem.TriggerTypeArr[index] == 3) { ;松开停止
         OnTriggerMacroKeyAndInit(tableItem, macro, index)
