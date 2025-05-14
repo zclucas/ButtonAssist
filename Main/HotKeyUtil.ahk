@@ -1164,6 +1164,8 @@ OnChangeRecordOption(*) {
 OnToolTextFilterSelectImage(*) {
     global ToolCheckInfo
     path := FileSelect(, , "选择图片")
+    if (path == "")
+        return
     result := MyOcr.ocr_from_file(path)
     ToolCheckInfo.ToolTextCtrl.Value := result
     A_Clipboard := result
