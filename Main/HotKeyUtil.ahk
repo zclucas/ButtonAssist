@@ -238,22 +238,22 @@ OnSearch(tableItem, cmd, index) {
         if (tableItem.KilledArr[index])
             break
 
-        intervalTime := GetFloatTime(searchInterval, MySoftData.PreIntervalFloat)
+        FloatInterval := GetFloatTime(searchInterval, MySoftData.PreIntervalFloat)
         if (MacroType == 1) {
             OnSearchOnce(tableItem, Data, index, A_Index == searchCount)
             if (searchCount != A_Index)
-                Sleep(intervalTime)
+                Sleep(FloatInterval)
         }
         else if (MacroType == 2) {
-            Interval := LastSumTime + intervalTime
-            Interval := A_Index == 1 ? 1 : Interval
-            LastSumTime := Interval
-
-            action := OnSearchOnce.Bind(tableItem, Data, index, A_Index == searchCount)
-            tableItem.SuccessClearActionArr[index][Data.SerialStr].Push(action)
-            SetTimer action, -Interval
-            if (Interval == 1)
-                Sleep(1)
+            if (A_Index == 1) {
+                OnSearchOnce(tableItem, Data, index, A_Index == searchCount)
+            }
+            else {
+                action := OnSearchOnce.Bind(tableItem, Data, index, A_Index == searchCount)
+                tableItem.SuccessClearActionArr[index][Data.SerialStr].Push(action)
+                SetTimer action, -LastSumTime
+            }
+            LastSumTime := LastSumTime + FloatInterval
         }
     }
 }
@@ -437,21 +437,22 @@ OnCoord(tableItem, cmd, index) {
         if (tableItem.KilledArr[index])
             return
 
-        IntervalTime := GetFloatTime(Data.Interval, MySoftData.PreIntervalFloat)
+        FloatInterval := GetFloatTime(Data.Interval, MySoftData.PreIntervalFloat)
         if (MacroType == 1) {
             OnCoordOnce(tableItem, index, Data)
             if (A_Index != Data.Count)
-                Sleep(IntervalTime)
+                Sleep(FloatInterval)
         }
         else if (MacroType == 2) {
-            Interval := LastSumTime + IntervalTime
-            Interval := A_Index == 1 ? 1 : Interval
-            LastSumTime := Interval
-
-            tempAction := OnCoordOnce.Bind(tableItem, index, Data)
-            SetTimer tempAction, -Interval
-            if (Interval == 1)
-                Sleep(1)
+            if (A_Index == 1) {
+                OnCoordOnce(tableItem, index, Data)
+            }
+            else {
+                tempAction := OnCoordOnce.Bind(tableItem, index, Data)
+                tableItem.CmdActionArr[index].Push(tempAction)
+                SetTimer tempAction, -LastSumTime
+            }
+            LastSumTime := LastSumTime + FloatInterval
         }
     }
 }
@@ -686,7 +687,6 @@ OnMouseMove(tableItem, cmd, index) {
     PosY := Integer(paramArr[3])
     Speed := paramArr.Length >= 4 ? 100 - Integer(paramArr[4]) : 0
     IsRelative := paramArr.Length >= 5 ? Integer(paramArr[5]) : 0
-    MacroType := tableItem.MacroTypeArr[index]
 
     PosX := GetFloatValue(PosX, MySoftData.CoordXFloat)
     PosY := GetFloatValue(PosY, MySoftData.CoordYFloat)
@@ -703,16 +703,17 @@ OnMouseMove(tableItem, cmd, index) {
 OnInterval(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     interval := Integer(paramArr[2])
-    interval := GetFloatTime(interval, MySoftData.IntervalFloat)
-    curTime := 0
-    clip := Min(500, interval)
-    while (curTime < interval) {
-        if (tableItem.KilledArr[index])
-            break
-        Sleep(clip)
-        curTime += clip
-        clip := Min(500, interval - curTime)
-    }
+    FloatInterval := GetFloatTime(interval, MySoftData.IntervalFloat)
+    Sleep(FloatInterval)
+    ; curTime := 0
+    ; clip := Min(500, FloatInterval)
+    ; while (curTime < FloatInterval) {
+    ;     if (tableItem.KilledArr[index])
+    ;         break
+    ;     Sleep(clip)
+    ;     curTime += clip
+    ;     clip := Min(500, FloatInterval - curTime)
+    ; }
 }
 
 OnPressKey(tableItem, cmd, index) {
@@ -739,19 +740,21 @@ OnPressKey(tableItem, cmd, index) {
 
         if (MacroType == 1) {
             action(paramArr[2], FloatHold, tableItem, index, keyType)
+            if (keyType == 1)
+                Sleep(FloatHold)
             if (A_Index != count)
                 Sleep(FloatInterval)
         }
         else if (MacroType == 2) {
-            Interval := LastSumTime + FloatInterval + FloatHold
-            Interval := A_Index == 1 ? 1 : Interval
-            LastSumTime := Interval
-
-            tempAction := action.Bind(paramArr[2], FloatHold, tableItem, index, keyType)
-            tableItem.CmdActionArr[index].Push(tempAction)
-            SetTimer tempAction, -Interval
-            if (Interval == 1)
-                Sleep(1)
+            if (A_Index == 1) {
+                action(paramArr[2], FloatHold, tableItem, index, keyType)
+            }
+            else {
+                tempAction := action.Bind(paramArr[2], FloatHold, tableItem, index, keyType)
+                tableItem.CmdActionArr[index].Push(tempAction)
+                SetTimer tempAction, -LastSumTime
+            }
+            LastSumTime := LastSumTime + FloatInterval + FloatHold
         }
     }
 }
@@ -759,8 +762,6 @@ OnPressKey(tableItem, cmd, index) {
 OnTriggerKeyDown(tableItem, macro, index) {
     if (tableItem.TriggerTypeArr[index] == 1) { ;按下触发
         OnTriggerMacroKeyAndInit(tableItem, macro, index)
-        ; action := OnTriggerMacroKeyAndInit.Bind(tableItem, macro, index)
-        ; SetTimer(action, -1)
     }
     else if (tableItem.TriggerTypeArr[index] == 3) { ;松开停止
         OnTriggerMacroKeyAndInit(tableItem, macro, index)
@@ -1223,14 +1224,8 @@ OnBootStartChanged(*) {
 ;按键模拟
 SendGameModeKeyClick(key, holdTime, tableItem, index, keyType) {
     if (keyType == 1) {
-        if (tableItem.MacroTypeArr[index] == 1) {
-            SendGameModeKey(Key, 1, tableItem, index)
-            Sleep(holdTime)
-            SendGameModeKey(Key, 0, tableItem, index)
-            return
-        }
-        SendGameModeKey(Key, 1, tableItem, index)
-        SetTimer(() => SendGameModeKey(Key, 0, tableItem, index), -holdTime)
+        SendGameModeKey(key, 1, tableItem, index)
+        SetTimer(() => SendGameModeKey(key, 0, tableItem, index), -holdTime)
     }
     else {
         state := keyType == 2 ? 1 : 0
@@ -1300,12 +1295,6 @@ SendGameMouseKey(key, state, tableItem, index) {
 
 SendNormalKeyClick(Key, holdTime, tableItem, index, keyType) {
     if (keyType == 1) {
-        if (tableItem.MacroTypeArr[index] == 1) {
-            SendNormalKey(Key, 1, tableItem, index)
-            Sleep(holdTime)
-            SendNormalKey(Key, 0, tableItem, index)
-            return
-        }
         SendNormalKey(Key, 1, tableItem, index)
         SetTimer(() => SendNormalKey(Key, 0, tableItem, index), -holdTime)
     }
@@ -1350,14 +1339,8 @@ SendJoyBtnClick(key, holdTime, tableItem, index, keyType) {
         return
     }
     if (keyType == 1) {
-        if (tableItem.MacroTypeArr[index] == 1) {
-            SendJoyBtnKey(Key, 1, tableItem, index)
-            Sleep(holdTime)
-            SendJoyBtnKey(Key, 0, tableItem, index)
-            return
-        }
-        SendJoyBtnKey(Key, 1, tableItem, index)
-        SetTimer(() => SendJoyBtnKey(Key, 0, tableItem, index), -holdTime)
+        SendJoyBtnKey(key, 1, tableItem, index)
+        SetTimer(() => SendJoyBtnKey(key, 0, tableItem, index), -holdTime)
     }
     else {
         state := keyType == 2 ? 1 : 0
@@ -1386,12 +1369,6 @@ SendJoyAxisClick(key, holdTime, tableItem, index, keyType) {
     }
 
     if (keyType == 1) {
-        if (tableItem.MacroTypeArr[index] == 1) {
-            SendJoyAxisKey(Key, 1, tableItem, index)
-            Sleep(holdTime)
-            SendJoyAxisKey(Key, 0, tableItem, index)
-            return
-        }
         SendJoyAxisKey(key, 1, tableItem, index)
         SetTimer(() => SendJoyAxisKey(key, 0, tableItem, index), -holdTime)
     }
