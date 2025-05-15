@@ -211,6 +211,8 @@ InitFilePath() {
 
     FileInstall("Images\Soft\WeiXin.png", "Images\Soft\WeiXin.png", 1)
     FileInstall("Images\Soft\ZhiFuBao.png", "Images\Soft\ZhiFuBao.png", 1)
+    FileInstall("Images\Soft\rabit.ico", "Images\Soft\rabit.ico", 1)
+    FileInstall("Images\Soft\IcoPause.ico", "Images\Soft\IcoPause.ico", 1)
 
     global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
     global SearchFile := A_WorkingDir "\Setting\SearchFile.ini"

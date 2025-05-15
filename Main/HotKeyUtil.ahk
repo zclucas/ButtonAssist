@@ -974,7 +974,10 @@ OnPauseHotkey(*) {
     MySoftData.IsPause := !MySoftData.IsPause
     MySoftData.PauseToggleCtrl.Value := MySoftData.IsPause
     OnKillAllMacro()
-
+    if (MySoftData.IsPause)
+        TraySetIcon("Images\Soft\IcoPause.ico")
+    else
+        TraySetIcon("Images\Soft\rabit.ico")
     Suspend(MySoftData.IsPause)
 }
 
