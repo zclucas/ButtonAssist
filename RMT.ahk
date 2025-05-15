@@ -6,6 +6,7 @@ SetWorkingDir A_ScriptDir
 #Include RapidOcr\RapidOcr.ahk
 #Include Plugins\WinClipAPI.ahk
 #Include Plugins\WinClip.ahk
+#Include Plugins\Thread.ahk
 
 #Include Gui\TriggerKeyGui.ahk
 #Include Gui\TriggerStrGui.ahk
