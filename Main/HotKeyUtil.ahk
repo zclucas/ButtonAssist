@@ -129,6 +129,7 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
     tableItem.CmdActionArr[index] := []
     tableItem.KilledArr[index] := false
     tableItem.ActionCount[index] := 0
+    tableItem.VariableMapArr[index]["循环次数"] := 1
     tableItem.SuccessClearActionArr[index] := Map()
     isContinue := tableItem.TKArr.Has(index) && MySoftData.ContinueKeyMap.Has(tableItem.TKArr[index]) && tableItem.LoopCountArr[
         index] == 1
@@ -157,6 +158,7 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
 
         OnTriggerMacroOnce(tableItem, macro, index)
         tableItem.ActionCount[index]++
+        tableItem.VariableMapArr[index]["循环次数"] += 1
     }
     ; OnFinishMacro(tableItem, macro, index)
 }

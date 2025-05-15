@@ -424,7 +424,7 @@ AddSettingUI(index) {
     ToolCheckInfo.ToolCheckHotkey)
     ToolCheckInfo.ToolCheckHotKeyCtrl.Enabled := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 845, posY - 5), "编辑")
-    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(MySoftData.ToolCheckHotKeyCtrl, false))
+    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(ToolCheckInfo.ToolCheckHotKeyCtrl, false))
 
     posY += 30
     con := MyGui.Add("Text", Format("x{} y{} w130", posX + 20, posY), "指令录制快捷方式:")
@@ -432,14 +432,14 @@ AddSettingUI(index) {
     ToolCheckInfo.ToolRecordMacroHotKey)
     ToolCheckInfo.ToolRecordMacroHotKeyCtrl.Enabled := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 245, posY - 5), "编辑")
-    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(MySoftData.ToolRecordMacroHotKeyCtrl, false))
+    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(ToolCheckInfo.ToolRecordMacroHotKeyCtrl, false))
 
     con := MyGui.Add("Text", Format("x{} y{} w130", posX + 320, posY), "文本提取快捷方式:")
     ToolCheckInfo.ToolTextFilterHotKeyCtrl := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 440, posY - 4),
     ToolCheckInfo.ToolTextFilterHotKey)
     ToolCheckInfo.ToolTextFilterHotKeyCtrl.Enabled := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 545, posY - 5), "编辑")
-    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(MySoftData.ToolRecordMacroHotKeyCtrl, false))
+    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(ToolCheckInfo.ToolRecordMacroHotKeyCtrl, false))
 
     posY += 40
     MyGui.Add("Text", Format("x{} y{} w130", posX + 20, posY), "按住时间浮动:(%)")

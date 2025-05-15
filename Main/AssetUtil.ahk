@@ -573,7 +573,10 @@ InitSingleTableState(tableItem) {
         tableItem.HoldKeyArr.Push(Map())
         tableItem.ToggleStateArr.Push(false)
         tableItem.ToggleActionArr.Push("")
-        tableItem.VariableMapArr.Push(Map())
+
+        VariableMap := Map()
+        VariableMap["循环次数"] := 0
+        tableItem.VariableMapArr.Push(VariableMap)
     }
 }
 
@@ -1035,6 +1038,7 @@ GetSelectVariableObjArr(macro) {
     for key in VariableMap {
         VariableArr.Push(key)
     }
+    VariableArr.Push("循环次数")
     return VariableArr
 }
 
