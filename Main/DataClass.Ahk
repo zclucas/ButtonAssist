@@ -104,6 +104,7 @@ class ToolCheck {
 
 class SoftData {
     __New() {
+        this.AgreeAgreement := false
         this.IsExecuteShow := true
         this.ShowWinCtrl := ""
         this.IsBootStart := false
@@ -145,8 +146,8 @@ class SoftData {
         this.EditHotKeyCtrl := ""
         this.EditHotStrCtrl := ""
 
-        this.TabNameArr := ["按键宏", "字串宏", "子宏", "按键替换", "工具", "设置", "打赏作者"]
-        this.TabSymbolArr := ["Normal", "String", "SubMacro", "Replace", "Tool", "Setting", "Reward"]
+        this.TabNameArr := ["按键宏", "字串宏", "子宏", "按键替换", "工具", "设置", "帮助", "打赏作者"]
+        this.TabSymbolArr := ["Normal", "String", "SubMacro", "Replace", "Tool", "Setting", "Help", "Reward"]
         this.TabCtrl := {}
         this.TableInfo := []
 

@@ -12,6 +12,13 @@ InitUI() {
 
 OnOpen() {
     global MySoftData
+    if (!MySoftData.AgreeAgreement) {
+        AgreeAgreementStr := '1. 本软件按"原样"提供，开发者不承担因使用、修改或分发导致的任何法律责任。`n2. 严禁用于违法用途，包括但不限于:游戏作弊、未经授权的系统访问或数据篡改`n3. 使用者需自行承担所有风险，开发者对因违反法律或第三方条款导致的后果概不负责。`n4. 通过使用本软件，您确认：不会将其用于任何非法目的、已充分了解并接受所有潜在法律风险、同意免除开发者因滥用行为导致的一切追责权利`n若不同意上述条款，请立即停止使用本软件。'
+        result := MsgBox(AgreeAgreementStr, "免责声明", "4")
+        if (result == "Cancel")
+            ExitApp()
+        IniWrite(true, IniFile, IniSection, "AgreeAgreement")
+    }
 
     if (!MySoftData.IsExecuteShow && !MySoftData.IsLastSaved)
         return
@@ -136,7 +143,7 @@ AddOperBtnUI() {
 
 GetUIAddFunc(index) {
     UIAddFuncArr := [AddMacroHotkeyUI, AddMacroHotkeyUI, AddMacroHotkeyUI, AddMacroHotkeyUI,
-        AddToolUI, AddSettingUI, AddRewardUI]
+        AddToolUI, AddSettingUI, AddHelpUI, AddRewardUI]
     return UIAddFuncArr[index]
 }
 
@@ -511,6 +518,111 @@ AddRewardUI(index) {
     posX := MySoftData.TabPosX + 15
     con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 860, 80),
     "即使只是5元、10元，也是对我莫大的鼓励！当然，如果你暂时不方便，分享给朋友也是很棒的支持~`n开发不易，感谢你的每一份温暖！")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+
+    posY += 35
+    MySoftData.TableInfo[index].underPosY := posY
+}
+
+AddHelpUI(index) {
+    MyGui := MySoftData.MyGui
+    posY := MySoftData.TabPosY
+    posX := MySoftData.TabPosX
+
+    posY += 40
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{} Center", posX, posY, 700, 25),
+    "免责声明")
+    con.SetFont((Format("S{} W{} Q{}", 14, 600, 2)))
+
+    posY += 25
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{} Center", posX, posY, 700, 35),
+    "本文件是对 GNU Affero General Public License v3.0 的补充说明，不影响原协议效力")
+    con.SetFont((Format("S{} W{} Q{}", 10, 600, 0)))
+
+    posY += 40
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 800, 25),
+    '1. 本软件按"原样"提供，开发者不承担因使用、修改或分发导致的任何法律责任。')
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+
+    posY += 25
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 800, 25),
+    '2. 严禁用于违法用途，包括但不限于:游戏作弊、未经授权的系统访问或数据篡改')
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+
+    posY += 25
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 800, 25),
+    '3. 使用者需自行承担所有风险，开发者对因违反法律或第三方条款导致的后果概不负责。')
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+
+    posY += 25
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 800, 50),
+    '4. 通过使用本软件，您确认：不会将其用于任何非法目的、已充分了解并接受所有潜在法律风险、同意免除开发者因滥用行为导致的一切追责权利')
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+
+    posY += 50
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{} Center", posX, posY, 800, 35),
+    "若不同意上述条款，请立即停止使用本软件。")
+    con.SetFont((Format("cRed  S{} W{} Q{}", 12, 600, 0)))
+
+    posY += 50
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 35),
+    "操作说明文档：")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 500, 35),
+    '<a href="https://zclucas.github.io/RMT/">帮助你快速上手，理解词条，10分钟秒变大神</a>')
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+
+    posY += 30
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 30),
+    "国内开源网址：")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 500, 30),
+    '<a href="https://gitee.com/fateman/RMT">https://gitee.com/fateman/RMT</a>')
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+
+    posY += 30
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 30),
+    "国外开源网址：")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 500, 30),
+    '<a href="https://github.com/zclucas/RMT">https://github.com/zclucas/RMT</a>')
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+
+    posY += 30
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 30),
+    "软件检查更新：")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX + 140, posY, 500, 30),
+    "浏览开源网址，查看右侧发行版处即可知道软件最新版本")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+
+    posY += 30
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 30),
+    "软件交流QQ群：")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX + 140, posY, 500, 30),
+    "837661891(提交优化方案，使用心得分享，问题反馈)")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+
+    posY += 30
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 30),
+    "软件开源协议：")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 500, 30),
+    '<a href="https://github.com/zclucas/RMT">AGPL-3.0</a>')
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
 
     posY += 35

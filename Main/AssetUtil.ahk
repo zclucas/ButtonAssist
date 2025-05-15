@@ -266,6 +266,7 @@ LoadSetting() {
     ToolCheckInfo.RecordMouseRelativeValue := IniRead(IniFile, IniSection, "RecordMouseRelativeValue", false)
     MySoftData.IsExecuteShow := IniRead(IniFile, IniSection, "IsExecuteShow", true)
     MySoftData.IsBootStart := IniRead(IniFile, IniSection, "IsBootStart", false)
+    MySoftData.AgreeAgreement := IniRead(IniFile, IniSection, "AgreeAgreement", false)
     MySoftData.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
     MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
     MySoftData.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
