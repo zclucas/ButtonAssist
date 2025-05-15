@@ -6,10 +6,10 @@ SetWorkingDir A_ScriptDir
 #Include RapidOcr\RapidOcr.ahk
 #Include Plugins\WinClipAPI.ahk
 #Include Plugins\WinClip.ahk
-#Include Plugins\Thread.ahk
 
 #Include Gui\TriggerKeyGui.ahk
 #Include Gui\TriggerStrGui.ahk
+#Include Gui\EditHotkeyGui.ahk
 #Include Gui\MacroEditGui.ahk
 #Include Gui\ReplaceKeyGui.ahk
 #Include Gui\ScrollBar.ahk
@@ -28,6 +28,7 @@ global ToolCheckInfo := ToolCheck()
 global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
 global MyTriggerKeyGui := TriggerKeyGui()
 global MyTriggerStrGui := TriggerStrGui()
+global MyEditHotkeyGui := EditHotkeyGui()
 global MyJoyMacro := JoyMacro()
 global MyMacroGui := MacroEditGui()
 global MyReplaceKeyGui := ReplaceKeyGui()

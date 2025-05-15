@@ -958,18 +958,6 @@ OnTableEditTriggerStr(tableItem, index) {
     MyTriggerStrGui.ShowGui(triggerStr, true)
 }
 
-OnEditHotKey(*) {
-    triggerKey := MySoftData.EditHotKeyCtrl.Value
-    MyTriggerKeyGui.SureBtnAction := (sureTriggerKey) => MySoftData.EditHotKeyCtrl.Value := sureTriggerKey
-    MyTriggerKeyGui.ShowGui(triggerKey, false)
-}
-
-OnEditHotStr(*) {
-    triggerKey := MySoftData.EditHotStrCtrl.Value
-    MyTriggerStrGui.SureBtnAction := (sureTriggerStr) => MySoftData.EditHotStrCtrl.Value := sureTriggerStr
-    MyTriggerStrGui.ShowGui(triggerKey, false)
-}
-
 MenuReload(*) {
     SaveWinPos()
     Reload()

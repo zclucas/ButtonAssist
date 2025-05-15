@@ -392,21 +392,23 @@ AddSettingUI(index) {
     posY := MySoftData.TabPosY
     posX := MySoftData.TabPosX
     ; 配置规则说明
-    posY += 35
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "获取快捷方式：(暂停只能用快捷键触发，其他可以用快捷键或字串触发)")
-    posY += 25
-    MySoftData.EditHotKeyCtrl := MyGui.Add("Edit", Format("x{} y{} center w120", posX + 20, posY - 5), "")
-    con := MyGui.Add("Button", Format("x{} y{} center w80", posX + 140, posY - 5), "编辑快捷键")
-    con.OnEvent("Click", OnEditHotkey)
+    ; posY += 35
+    ; MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "获取快捷方式：(暂停只能用快捷键触发，其他可以用快捷键或字串触发)")
+    ; posY += 25
+    ; MySoftData.EditHotKeyCtrl := MyGui.Add("Edit", Format("x{} y{} center w120", posX + 20, posY - 5), "")
+    ; con := MyGui.Add("Button", Format("x{} y{} center w80", posX + 140, posY - 5), "编辑快捷键")
+    ; con.OnEvent("Click", OnEditHotkey)
 
-    MySoftData.EditHotStrCtrl := MyGui.Add("Edit", Format("x{} y{} center w120", posX + 320, posY - 5), "")
-    con := MyGui.Add("Button", Format("x{} y{} center w80", posX + 440, posY - 5), "编辑字串")
-    con.OnEvent("Click", OnEditHotStr)
+    ; MySoftData.EditHotStrCtrl := MyGui.Add("Edit", Format("x{} y{} center w120", posX + 320, posY - 5), "")
+    ; con := MyGui.Add("Button", Format("x{} y{} center w80", posX + 440, posY - 5), "编辑字串")
+    ; con.OnEvent("Click", OnEditHotStr)
 
     posY += 40
     con := MyGui.Add("Text", Format("x{} y{} w130", posX + 20, posY), "脚本暂停快捷键:")
     MySoftData.PauseHotkeyCtrl := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 140, posY - 4), MySoftData.PauseHotkey
     )
+    con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 245, posY - 5), "编辑")
+    con.OnEvent("Click", (*)=> MyEditHotkeyGui.ShowGui(MySoftData.PauseHotkeyCtrl, true))
 
     con := MyGui.Add("Text", Format("x{} y{} w130", posX + 290, posY), "终止宏快捷方式:")
     MySoftData.KillMacroHotkeyCtrl := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 410, posY - 4), MySoftData
@@ -463,30 +465,6 @@ AddSettingUI(index) {
     MySoftData.BootStartCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 550, posY), "开机自启")
     MySoftData.BootStartCtrl.Value := MySoftData.IsBootStart
     MySoftData.BootStartCtrl.OnEvent("Click", OnBootStartChanged)
-
-    posY += 30
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "禁止：勾选后对应配置不生效")
-    posY += 20
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "游戏：勾选为游戏模式。若游戏内仍然无效请以管理员身份运行软件，如果非游戏模式功能正常，请忽略此项")
-    posY += 20
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "指定进程名：填写后，仅在该进程获得焦点时生效，否则对所有进程生效（可通过工具模块获取进程名）")
-    posY += 20
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "循环次数：-1为无限循环(通过终止所有宏按键取消循环),大于0的整数为循环次数")
-    posY += 20
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "快捷键：通过%设置%下的编辑快捷键获取配置")
-    posY += 20
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "快捷方式：通过%设置%下的 编辑快捷 或者 编辑字串 获取配置")
-    posY += 30
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "其他说明：")
-    posY += 20
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "按键宏的触发键与字串宏的触发键可以混用。")
-    posY += 20
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "所有操作只有点击%应用并保存%按钮后才会生效。")
-
-    posY += 20
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "软件使用交流QQ群:837661891")
-
-    posY += 20
 
     tableItem := MySoftData.TableInfo[index]
     tableItem.UnderPosY := posY
