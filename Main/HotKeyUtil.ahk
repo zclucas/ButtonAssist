@@ -1013,6 +1013,7 @@ OnToolCheckHotkey(*) {
 
 OnToolRecordMacro(*) {
     global ToolCheckInfo, MySoftData
+    spacialKeyArr := ["NumpadEnter"]
     ToolCheckInfo.IsToolRecord := !ToolCheckInfo.IsToolRecord
     ToolCheckInfo.ToolCheckRecordMacroCtrl.Value := ToolCheckInfo.IsToolRecord
     if (MySoftData.MacroEditGui != "") {
@@ -1035,6 +1036,15 @@ OnToolRecordMacro(*) {
             continue
         }
     }
+
+    loop spacialKeyArr.Length {
+        key := Format("$*~sc{:X}", GetKeySC(spacialKeyArr[A_Index]))
+        Hotkey(key, OnRecordMacroKeyDonw, StateSymbol)
+        Hotkey(key " Up", OnRecordMacroKeyUp, StateSymbol)
+    }
+
+    Hotkey(key, OnRecordMacroKeyDonw, StateSymbol)
+    Hotkey(key " Up", OnRecordMacroKeyUp, StateSymbol)
 
     if (state) {
         ToolCheckInfo.RecordNodeArr := []
@@ -1082,6 +1092,11 @@ OnRecordMacroKeyDonw(*) {
     node.StartTime := GetCurMSec()
     ToolCheckInfo.RecordNodeArr.Push(node)
 
+    if (keyName == "WheelUp" || keyName == "WheelDown") {
+        ToolCheckInfo.RecordHoldKeyMap.Delete(keyName)
+        data.EndTime := data.StartTime + 50
+        data.EndPos := [mouseX, mouseY]
+    }
 }
 
 OnRecordMacroKeyUp(*) {
