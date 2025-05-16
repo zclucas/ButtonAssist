@@ -1,22 +1,22 @@
 #Requires AutoHotkey v2.0
 
-class IntervalGui{
-    __new(){
+class IntervalGui {
+    __new() {
         this.Gui := ""
         this.SureBtnAction := ""
         this.TimeTextCon := ""
     }
 
-    ShowGui(cmd){
+    ShowGui(cmd) {
         if (this.Gui != "") {
             this.Gui.Show()
         }
-        else{
+        else {
             this.AddGui()
         }
 
         this.TimeTextCon.Value := ""
-        if (cmd != ""){
+        if (cmd != "") {
             cmdArr := StrSplit(cmd, "_")
             this.TimeTextCon.Value := cmdArr[2]
         }
@@ -25,6 +25,7 @@ class IntervalGui{
     AddGui() {
         MyGui := Gui(, "指令间隔编辑")
         this.Gui := MyGui
+        MyGui.SetFont(, "Arial")
         MyGui.SetFont("S10 W550 Q2", "Consolas")
 
         PosX := 10
@@ -42,12 +43,12 @@ class IntervalGui{
         MyGui.Show(Format("w{} h{}", 320, 120))
     }
 
-    OnClickSureBtn(){
+    OnClickSureBtn() {
         if (this.SureBtnAction == "")
             return
 
         timeText := this.TimeTextCon.Value
-        if (!IsInteger(timeText) || Integer(timeText) < 0){
+        if (!IsInteger(timeText) || Integer(timeText) < 0) {
             MsgBox("请输入大于等于0的整数")
             return
         }

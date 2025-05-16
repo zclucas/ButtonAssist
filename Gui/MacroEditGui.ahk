@@ -87,11 +87,11 @@ class MacroEditGui {
         this.VariableGui.MacroEditGui := this
         this.VariableGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("变量", this.VariableGui)
-    
+
         this.SubMacroGui := SubMacroGui()
         this.SubMacroGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("子宏", this.SubMacroGui)
-    
+
         this.OperationGui := OperationGui()
         this.OperationGui.MacroEditGui := this
         this.OperationGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
@@ -126,6 +126,7 @@ class MacroEditGui {
     AddGui() {
         MyGui := Gui(, "指令编辑器")
         this.Gui := MyGui
+        MyGui.SetFont(, "Arial")
         MyGui.SetFont("S10 W550 Q2", "Consolas")
 
         PosX := 10
@@ -146,7 +147,7 @@ class MacroEditGui {
         this.RecordMacroCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 100, 20), "指令并联录制")
         this.RecordMacroCon.Value := false
         this.RecordMacroCon.OnEvent("Click", (*) => this.OnChangeRecordMode())
-        
+
         PosX += 110
         isHotKey := CheckIsHotKey(ToolCheckInfo.ToolRecordMacroHotKey)
         CtrlType := isHotKey ? "Hotkey" : "Text"
@@ -182,7 +183,7 @@ class MacroEditGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.MoveMoveGui))
         this.CmdBtnConMap.Set("移动", btnCon)
-    
+
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "移动Pro")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
@@ -207,13 +208,13 @@ class MacroEditGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.VariableGui))
         this.CmdBtnConMap.Set("变量", btnCon)
-    
+
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "运算")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.OperationGui))
         this.CmdBtnConMap.Set("运算", btnCon)
-    
+
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "如果")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
@@ -225,13 +226,12 @@ class MacroEditGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.StopGui))
         this.CmdBtnConMap.Set("终止", btnCon)
-        
+
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "子宏")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.SubMacroGui))
         this.CmdBtnConMap.Set("子宏", btnCon)
-    
 
         PosX := 20
         PosY += 110

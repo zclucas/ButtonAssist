@@ -32,7 +32,7 @@ class OperationSubGui {
         this.ExpressionCon.Value := cmd != "" ? cmd : Name
         this.SymbolArr := SymbolArr
         this.ValueArr := ValurArr
-    
+
         this.NameCon.Delete()
         this.NameCon.Add(VariableArr)
         this.NameCon.Text := "空"
@@ -42,6 +42,7 @@ class OperationSubGui {
     AddGui() {
         MyGui := Gui(, "变量换算编辑")
         this.Gui := MyGui
+        MyGui.SetFont(, "Arial")
         MyGui.SetFont("S10 W550 Q2", "Consolas")
 
         PosX := 10

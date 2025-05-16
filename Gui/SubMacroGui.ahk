@@ -28,6 +28,7 @@ class SubMacroGui {
     AddGui() {
         MyGui := Gui(, "子宏调用指令编辑")
         this.Gui := MyGui
+        MyGui.SetFont(, "Arial")
         MyGui.SetFont("S10 W550 Q2", "Consolas")
 
         PosX := 10
@@ -51,7 +52,8 @@ class SubMacroGui {
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "宏类型:")
 
         PosX += 70
-        this.TypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["当前宏", "按键宏", "字串宏", "子宏"])
+        this.TypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["当前宏", "按键宏", "字串宏",
+            "子宏"])
         this.TypeCon.Value := 1
         this.TypeCon.OnEvent("Change", (*) => this.OnRefresh())
 
@@ -60,7 +62,7 @@ class SubMacroGui {
 
         PosX += 70
         this.IndexCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY - 5, 80, 20), "1")
-    
+
         PosX := 10
         PosY += 40
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "调用方式:")
@@ -68,11 +70,11 @@ class SubMacroGui {
         PosX += 70
         this.CallTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["插入", "触发"])
         this.CallTypeCon.Value := 1
-    
+
         PosX := 10
         PosY += 25
         MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "插入:插入到执行的宏里面，该子宏的变量操作都是依赖于当前宏环境")
-    
+
         PosX := 10
         PosY += 25
         MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "触发:与正常的按键触发等效，和当前宏多线程同时执行")

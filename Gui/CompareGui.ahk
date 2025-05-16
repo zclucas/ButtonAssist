@@ -40,6 +40,7 @@ class CompareGui {
     AddGui() {
         MyGui := Gui(, "搜索指令编辑")
         this.Gui := MyGui
+        MyGui.SetFont(, "Arial")
         MyGui.SetFont("S10 W550 Q2", "Consolas")
 
         PosX := 10

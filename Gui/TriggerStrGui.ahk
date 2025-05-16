@@ -89,6 +89,7 @@ class TriggerStrGui {
         {
             MyGui := Gui()
             this.Gui := MyGui
+            MyGui.SetFont(, "Arial")
             MyGui.SetFont("S10 W550 Q2", "Consolas")
             MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", 10, 10, 1150, 260), "请从下面字符中组合你想要触发宏的字串：")
 

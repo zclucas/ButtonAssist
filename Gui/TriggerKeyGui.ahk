@@ -40,7 +40,7 @@ class TriggerKeyGui {
         }
 
         for index, value in this.CheckedBox {
-            if (!this.ModifyKeyMap.Has(value) && isNormalIndex == 0){
+            if (!this.ModifyKeyMap.Has(value) && isNormalIndex == 0) {
                 isNormalIndex := index
             }
 
@@ -160,12 +160,12 @@ class TriggerKeyGui {
                 hasJoy := true
             }
 
-            if (!this.ModifyKeyMap.Has(value)){
+            if (!this.ModifyKeyMap.Has(value)) {
                 onlyModifyKey := false
             }
         }
 
-        for index, value in this.CheckedBox{
+        for index, value in this.CheckedBox {
             isKeyMap := this.ModifyKeyMap.Has(value)
             isLast := index == this.CheckedBox.Length
             subTriggerKey := (isKeyMap && !isLast) ? this.ModifyKeyMap.Get(value) : value
@@ -226,8 +226,9 @@ class TriggerKeyGui {
         {
             MyGui := Gui()
             this.Gui := MyGui
+            MyGui.SetFont(, "Arial")
             MyGui.SetFont("S10 W550 Q2", "Consolas")
-            
+
             MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", 10, 10, 1260, 500), "请从下面选框中勾选触发宏的按键：")
             PosX := 20
             PosY := 30
@@ -1230,17 +1231,17 @@ class TriggerKeyGui {
 
         if (this.CheckedBox.Length == 0)
             infoStr := "  无"
-        else{
+        else {
             if (!hasJoy && this.EnableTriggerKeyCon.Value) {
                 infoStr := "~" infoStr
             }
         }
 
-        if (hasJoy){
+        if (hasJoy) {
             this.EnableTriggerKeyCon.Value := 1
             this.EnableTriggerKeyCon.Enabled := false
         }
-        else{
+        else {
             this.EnableTriggerKeyCon.Enabled := true
         }
 

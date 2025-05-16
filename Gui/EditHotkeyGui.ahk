@@ -24,6 +24,7 @@ class EditHotkeyGui {
     AddGui() {
         MyGui := Gui(, "快捷方式编辑")
         this.Gui := MyGui
+        MyGui.SetFont(, "Arial")
         MyGui.SetFont("S12 W550 Q2", "Consolas")
 
         PosX := 75

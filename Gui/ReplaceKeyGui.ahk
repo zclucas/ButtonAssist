@@ -54,7 +54,7 @@ class ReplaceKeyGui {
     Init(replaceKey) {
         this.CheckedBox := []
         keyArr := StrSplit(replaceKey, ",")
-        for key, value in this.ConMap{
+        for key, value in this.ConMap {
             con := this.ConMap.Get(key)
             con.Value := 0
         }
@@ -67,7 +67,7 @@ class ReplaceKeyGui {
 
     GetReplaceKey() {
         replaceKey := ""
-        for index, value in this.CheckedBox{
+        for index, value in this.CheckedBox {
             replaceKey .= value ","
         }
         replaceKey := Trim(replaceKey, ",")
@@ -106,6 +106,7 @@ class ReplaceKeyGui {
         {
             MyGui := Gui()
             this.Gui := MyGui
+            MyGui.SetFont(, "Arial")
             MyGui.SetFont("S10 W550 Q2", "Consolas")
 
             MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", 10, 10, 1260, 500), "请从下面选框中勾选替换后的按键：")
@@ -1058,7 +1059,6 @@ class ReplaceKeyGui {
         PosX += 400
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "确定选项")
         btnCon.OnEvent("Click", (*) => this.OnSureBtnClick())
-
 
         MyGui.Show(Format("w{} h{}", 1280, 620))
     }

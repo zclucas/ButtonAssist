@@ -28,6 +28,7 @@ class OutputGui {
     AddGui() {
         MyGui := Gui(, "输出指令编辑")
         this.Gui := MyGui
+        MyGui.SetFont(, "Arial")
         MyGui.SetFont("S10 W550 Q2", "Consolas")
 
         PosX := 10
@@ -45,7 +46,7 @@ class OutputGui {
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "备注:")
         PosX += 50
         this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
-    
+
         PosX := 10
         PosY += 25
         MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "选择/输入为空时输出文本，否则输出选择/输入的变量值")
