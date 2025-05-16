@@ -318,9 +318,9 @@
     <div class="sidebar-left">
         <h2>文档导航</h2>
         <ul class="md-links">
-            <li><a href="#" class="active" onclick="loadMarkdown('Web/快速上手.md', this)">快速上手指南</a></li>
+            <li><a href="#" class="active" onclick="loadMarkdown('Web/词条介绍.md', this)">软件词条介绍</a></li>
+            <li><a href="#" onclick="loadMarkdown('Web/快速上手.md', this)">快速上手指南</a></li>
             <li><a href="#" onclick="loadMarkdown('Web/手柄功能指南.md', this)">手柄功能指南</a></li>
-            <li><a href="#" onclick="loadMarkdown('Web/词条介绍.md', this)">词条介绍</a></li>
             <li><a href="#" onclick="loadMarkdown('Web/常见问题.md', this)">常见问题</a></li>
             <li><a href="#" onclick="loadMarkdown('Web/开发指南.md', this)">开发指南</a></li>
             <li><a href="#" onclick="loadMarkdown('Web/部署说明.md', this)">部署说明</a></li>
@@ -396,7 +396,7 @@
             // 其他初始化代码...
             document.addEventListener('DOMContentLoaded', function () {
                 hljs.highlightAll();
-                loadMarkdown('Web/快速上手.md');
+                loadMarkdown('Web/词条介绍.md');
 
                 setTimeout(function () {
                     if (window.location.hash) {
@@ -520,13 +520,13 @@
             }, 100);
         }
 
-        // 页面加载完成后自动显示"快速上手"内容
+        // 页面加载完成后自动显示"词条介绍"内容
         document.addEventListener('DOMContentLoaded', function () {
             // 初始化 highlight.js
             hljs.highlightAll();
 
             // 加载默认文档
-            loadMarkdown('Web/快速上手.md');
+            loadMarkdown('Web/词条介绍.md');
 
             // 检查URL哈希并滚动到对应位置
             setTimeout(function () {
