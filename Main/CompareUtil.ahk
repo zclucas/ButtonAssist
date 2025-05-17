@@ -6,9 +6,7 @@ ExtractNumbers(Text, Pattern) {
 
     ; 将Pattern中的x, y, z, w替换为正则表达式的捕获组
     Pattern := RegExReplace(Pattern, "&x", "(\d{1,3}(?:[，,]\d{3})*(?:\.\d+)?)")
-    Pattern := RegExReplace(Pattern, "&y", "(\d{1,3}(?:[，,]\d{3})*(?:\.\d+)?)")
-    Pattern := RegExReplace(Pattern, "&z", "(\d{1,3}(?:[，,]\d{3})*(?:\.\d+)?)")
-    Pattern := RegExReplace(Pattern, "&w", "(\d{1,3}(?:[，,]\d{3})*(?:\.\d+)?)")
+    Pattern := RegExReplace(Pattern, "&c", "(.*)")
 
     ; 使用正则表达式匹配Text
     if (RegExMatch(Text, Pattern, &Match)) {
@@ -17,9 +15,18 @@ ExtractNumbers(Text, Pattern) {
         for i, Value in Match {
             if (i == 0)
                 continue ; 跳过第一个匹配项（整个匹配文本）
+
+            oriStr := Value
+            IsNumber1 := IsNumber(Value)
             Value := StrReplace(Value, ",", "")
             Value := StrReplace(Value, "，", "")
-            tempValue := IsFloat(Value) ? Format("{:.4g}", Value) : Integer(Value)
+            IsNumber2 := IsNumber(Value)
+            if (IsNumber1 || IsNumber2) {
+                tempValue := IsFloat(Value) ? Format("{:.4g}", Value) : Integer(Value)
+            }
+            else {
+                tempValue := oriStr
+            }
             Result.Push(tempValue)
         }
         return Result
