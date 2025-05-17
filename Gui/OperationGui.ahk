@@ -52,7 +52,7 @@ class OperationGui {
 
         PosY += 20
         PosX := 15
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 25))
         this.ToggleConArr.Push(con)
 
         con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
@@ -74,7 +74,7 @@ class OperationGui {
 
         PosY += 35
         PosX := 15
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 25))
         this.ToggleConArr.Push(con)
 
         con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
@@ -96,7 +96,7 @@ class OperationGui {
 
         PosY += 35
         PosX := 15
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 25))
         this.ToggleConArr.Push(con)
 
         con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
@@ -118,7 +118,7 @@ class OperationGui {
 
         PosY += 35
         PosX := 15
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 25))
         this.ToggleConArr.Push(con)
 
         con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])

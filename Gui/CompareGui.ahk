@@ -38,7 +38,7 @@ class CompareGui {
     }
 
     AddGui() {
-        MyGui := Gui(, "搜索指令编辑")
+        MyGui := Gui(, "如果指令编辑")
         this.Gui := MyGui
         MyGui.SetFont(, "Arial")
         MyGui.SetFont("S10 W550 Q2", "Consolas")
@@ -60,16 +60,16 @@ class CompareGui {
         this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
 
         PosX += 200
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 30), "逻辑关系：")
-        this.LogicalTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 75, PosY - 3, 60), ["且", "或"])
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "逻辑关系：")
+        this.LogicalTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 85, PosY - 3, 60), ["且", "或"])
 
         PosY += 30
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "选框勾选且第一个选择/输入不为空对应比较生效")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "选框勾选且第一个选择/输入不为空时对应比较生效")
 
         PosY += 20
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "若第二个选择/输入为空,则比较值，否则与第二个选择/输入的变量比较")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "若第二个选择/输入为空，则比较值，否则与第二个选择/输入的变量比较")
 
         PosY += 30
         PosX := 10

@@ -543,15 +543,22 @@ OnSubMacro(tableItem, cmd, index) {
     macroIndex := Data.Type != 1 ? Data.Index : index
     if (Data.Type == 2) {
         macroItem := MySoftData.TableInfo[1]
-        macro := macroItem.MacroArr[Data.Index]
     }
     else if (Data.Type == 3) {
         macroItem := MySoftData.TableInfo[2]
-        macro := macroItem.MacroArr[Data.Index]
     }
     else if (Data.Type == 4) {
         macroItem := MySoftData.TableInfo[3]
-        macro := macroItem.MacroArr[Data.Index]
+    }
+
+    if (Data.Type != 1) {
+        loop macroItem.ModeArr.Length {
+            if (Data.MacroSerial == macroItem.SerialArr[A_Index]) {
+                macro := macroItem.MacroArr[A_Index]
+                macroIndex := A_Index
+                break
+            }
+        }
     }
 
     if (Data.CallType == 1) {   ;插入
@@ -768,6 +775,8 @@ OnPressKey(tableItem, cmd, index) {
 
 OnTriggerKeyDown(tableItem, macro, index) {
     if (tableItem.TriggerTypeArr[index] == 1) { ;按下触发
+        if (SubStr(tableItem.TKArr[index], 1, 1) != "~")
+            LoosenModifyKey(tableItem.TKArr[index])
         OnTriggerMacroKeyAndInit(tableItem, macro, index)
     }
     else if (tableItem.TriggerTypeArr[index] == 3) { ;松开停止
@@ -921,6 +930,8 @@ OnTableDelete(tableItem, index) {
         tableItem.LoopCountArr.RemoveAt(index)
     if (tableItem.RemarkArr.Length >= index)
         tableItem.RemarkArr.RemoveAt(index)
+    if (tableItem.SerialArr.Length >= index)
+        tableItem.SerialArr.RemoveAt(index)
     tableItem.IndexConArr.RemoveAt(index)
     tableItem.TriggerTypeConArr.RemoveAt(index)
     tableItem.ModeConArr.RemoveAt(index)

@@ -488,9 +488,9 @@ class TriggerKeyGui {
             this.ConMap.Set("]", con)
 
             PosX += 50
-            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "|")
-            con.OnEvent("Click", (*) => this.OnCheckedKey("|"))
-            this.ConMap.Set("|", con)
+            con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "\")
+            con.OnEvent("Click", (*) => this.OnCheckedKey("\"))
+            this.ConMap.Set("\", con)
 
             PosX += 100
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "Del")
@@ -1169,14 +1169,14 @@ class TriggerKeyGui {
         PosY += 50
         PosX := 20
         MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000),
-        "特殊按键:Shift, Alt, Ctrl, Win, LShift, RShift, LAlt, RAlt, LCtrl, RCtrl, LWin, RWin")
+        "特殊按键：Shift, Alt, Ctrl, Win, LShift, RShift, LAlt, RAlt, LCtrl, RCtrl, LWin, RWin")
         PosY += 20
-        MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000), "普通按键:除特殊按键的其他按键")
+        MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000), "普通按键：除特殊按键的其他按键")
         PosY += 20
         MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000),
-        "勾选规则1:特殊按键中可以 同时勾选多个按键 或 不选，普通按键中只能 勾选一个按键 或 不选")
+        "勾选规则1：特殊按键中可以 同时勾选多个按键 或 不选，普通按键中只能 勾选一个按键 或 不选")
         PosY += 20
-        MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000), "勾选规则2:手柄按钮、摇杆只能单独选")
+        MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000), "勾选规则2：手柄按钮、摇杆只能单独选")
 
         PosY += 20
         con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 180, 20), "保留触发键原本功能")

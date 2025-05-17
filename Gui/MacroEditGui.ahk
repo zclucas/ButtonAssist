@@ -137,18 +137,18 @@ class MacroEditGui {
 
         PosX := 20
         PosY += 160
-        this.DefaultFocusCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 70), "编辑模式：")
-        PosX += 70
+        this.DefaultFocusCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "编辑模式：")
+        PosX += 80
         this.EditModeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} h{}", PosX, PosY - 3, 150, 100), ["末尾追加指令",
             "调整光标行指令", "光标行插入指令"])
         this.EditModeCon.OnEvent("Change", (*) => this.OnChangeEditMode())
 
         PosX += 180
-        this.RecordMacroCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 100, 20), "指令并联录制")
+        this.RecordMacroCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 110, 20), "指令并联录制")
         this.RecordMacroCon.Value := false
         this.RecordMacroCon.OnEvent("Click", (*) => this.OnChangeRecordMode())
 
-        PosX += 110
+        PosX += 120
         isHotKey := CheckIsHotKey(ToolCheckInfo.ToolRecordMacroHotKey)
         CtrlType := isHotKey ? "Hotkey" : "Text"
         con := MyGui.Add(CtrlType, Format("x{} y{} w{} h{}", posX, posY - 3, 100, 20), ToolCheckInfo.ToolRecordMacroHotKey

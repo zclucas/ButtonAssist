@@ -95,8 +95,25 @@ class SubMacroGui {
         this.Data := this.GetSubMacroData(this.SerialStr)
 
         this.TypeCon.Value := this.Data.Type
-        this.IndexCon.Value := this.Data.Index
         this.CallTypeCon.Value := this.Data.CallType
+        this.IndexCon.Value := this.Data.Index
+        if (this.Data.Type != 1) {
+            SerialArr := ""
+            if (this.TypeCon.Value == 2) {
+                SerialArr := MySoftData.TableInfo[1].SerialArr
+            }
+            else if (this.TypeCon.Value == 3) {
+                SerialArr := MySoftData.TableInfo[2].SerialArr
+            }
+            else if (this.TypeCon.Value == 4) {
+                SerialArr := MySoftData.TableInfo[3].SerialArr
+            }
+
+            loop SerialArr.Length {
+                if (SerialArr[A_Index] == this.Data.MacroSerial)
+                    this.IndexCon.Value := A_Index
+            }
+        }
     }
 
     ToggleFunc(state) {
@@ -127,6 +144,22 @@ class SubMacroGui {
     }
 
     CheckIfValid() {
+        SerialArr := ""
+        if (this.TypeCon.Value == 2) {
+            SerialArr := MySoftData.TableInfo[1].SerialArr
+        }
+        else if (this.TypeCon.Value == 3) {
+            SerialArr := MySoftData.TableInfo[2].SerialArr
+        }
+        else if (this.TypeCon.Value == 4) {
+            SerialArr := MySoftData.TableInfo[3].SerialArr
+        }
+
+        if (SerialArr != "" && SerialArr.Length < this.IndexCon.Value) {
+            MsgBox("配置无效，序号不正确")
+            return false
+        }
+
         return true
     }
 
@@ -173,6 +206,18 @@ class SubMacroGui {
         this.Data.Type := this.TypeCon.Value
         this.Data.Index := this.IndexCon.value
         this.Data.CallType := this.CallTypeCon.Value
+
+        SerialArr := ""
+        if (this.TypeCon.Value == 2) {
+            SerialArr := MySoftData.TableInfo[1].SerialArr
+        }
+        else if (this.TypeCon.Value == 3) {
+            SerialArr := MySoftData.TableInfo[2].SerialArr
+        }
+        else if (this.TypeCon.Value == 4) {
+            SerialArr := MySoftData.TableInfo[3].SerialArr
+        }
+        this.Data.MacroSerial := SerialArr != "" ? SerialArr[this.Data.Index] : ""
 
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, SubMacroFile, IniSection, this.Data.SerialStr)

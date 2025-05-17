@@ -26,6 +26,7 @@ class TableItem {
         this.TriggerTypeConArr := []
         this.MacroTypeConArr := []
 
+        this.SerialArr := []
         this.CmdActionArr := []
         this.SuccessClearActionArr := []        ;成功后清除后续操作
         this.HoldKeyArr := []
@@ -301,6 +302,7 @@ class SubMacroData {
         this.Type := 1
         this.CallType := 1
         this.Index := 1
+        this.MacroSerial := "009973"
     }
 }
 

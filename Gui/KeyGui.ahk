@@ -262,8 +262,8 @@ class KeyGui {
             con.OnEvent("Click", (*) => this.OnCheckKey("]"))
 
             PosX += 50
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "|")
-            con.OnEvent("Click", (*) => this.OnCheckKey("|"))
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "\")
+            con.OnEvent("Click", (*) => this.OnCheckKey("\"))
 
             PosX += 100
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "Del")
@@ -407,7 +407,7 @@ class KeyGui {
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "RShift")
             con.OnEvent("Click", (*) => this.OnCheckKey("RShift"))
 
-            PosX += 200
+            PosX += 210
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "↑")
             con.OnEvent("Click", (*) => this.OnCheckKey("Up"))
 

@@ -293,6 +293,7 @@ ReadTableItemInfo(index) {
     savedHoldTimeArrStr := IniRead(IniFile, IniSection, symbol "HoldTimeArr", "")
     savedTriggerTypeArrStr := IniRead(IniFile, IniSection, symbol "TriggerTypeArr", "")
     savedMacroTypeStr := IniRead(IniFile, IniSection, symbol "MacroTypeArr", "")
+    savedSerialStr := IniRead(IniFile, IniSection, symbol "SerialArr", "")
 
     if (!MySoftData.HasSaved) {
         if (savedTKArrStr == "")
@@ -315,6 +316,8 @@ ReadTableItemInfo(index) {
             savedTriggerTypeArrStr := defaultInfo[9]
         if (savedMacroTypeStr == "")
             savedMacroTypeStr := defaultInfo[10]
+        if (savedSerialStr == "")
+            savedSerialStr := defaultInfo[11]
     }
 
     tableItem := MySoftData.TableInfo[index]
@@ -328,6 +331,7 @@ ReadTableItemInfo(index) {
     SetArr(savedHoldTimeArrStr, "π", tableItem.HoldTimeArr)
     SetArr(savedTriggerTypeArrStr, "π", tableItem.TriggerTypeArr)
     SetArr(savedMacroTypeStr, "π", tableItem.MacroTypeArr)
+    SetArr(savedSerialStr, "π", tableItem.SerialArr)
 }
 
 SetArr(str, symbol, Arr) {
@@ -366,6 +370,7 @@ GetTableItemDefaultInfo(index) {
     savedHoldTimeArrStr := ""
     savedTriggerTypeStr := ""
     savedMacroTypeArrStr := ""
+    savedSerialeArrStr := ""
     symbol := GetTableSymbol(index)
 
     if (symbol == "Normal") {
@@ -379,6 +384,7 @@ GetTableItemDefaultInfo(index) {
         savedLoopCountStr := "1"
         savedTriggerTypeStr := "1"
         savedMacroTypeArrStr := "1"
+        savedSerialeArrStr := "000001"
     }
     else if (symbol == "String") {
         savedTKArrStr := ":?*:AA"
@@ -391,6 +397,7 @@ GetTableItemDefaultInfo(index) {
         savedLoopCountStr := "1"
         savedTriggerTypeStr := "1"
         savedMacroTypeArrStr := "1"
+        savedSerialeArrStr := "000002"
     }
     else if (symbol == "SubMacro") {
         savedTKArrStr := ""
@@ -403,6 +410,7 @@ GetTableItemDefaultInfo(index) {
         savedLoopCountStr := "1"
         savedTriggerTypeStr := "1"
         savedMacroTypeArrStr := "1"
+        savedSerialeArrStr := "000003"
     }
     else if (symbol == "Replace") {
         savedTKArrStr := "l"
@@ -413,10 +421,11 @@ GetTableItemDefaultInfo(index) {
         savedProcessNameStr := ""
         savedTriggerTypeStr := "1"
         savedMacroTypeArrStr := "1"
+        savedSerialeArrStr := "000004"
     }
     return [savedTKArrStr, savedMacroArrStr, savedHoldTimeArrStr, savedModeArrStr, savedForbidArrStr,
         savedProcessNameStr, savedRemarkArrStr,
-        savedLoopCountStr, savedTriggerTypeStr, savedMacroTypeArrStr]
+        savedLoopCountStr, savedTriggerTypeStr, savedMacroTypeArrStr, savedSerialeArrStr]
 }
 
 ;资源保存
@@ -437,7 +446,7 @@ OnSaveSetting(*) {
     IniWrite(true, IniFile, IniSection, "LastSaved")
     IniWrite(MySoftData.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
     IniWrite(MySoftData.BootStartCtrl.Value, IniFile, IniSection, "IsBootStart")
-    IniWrite(ToolCheckInfo.IsToolCheck, IniFile, IniSection, "IsToolCheck")
+    ; IniWrite(ToolCheckInfo.IsToolCheck, IniFile, IniSection, "IsToolCheck")
     IniWrite(ToolCheckInfo.ToolCheckHotKeyCtrl.Value, IniFile, IniSection, "ToolCheckHotKey")
     IniWrite(ToolCheckInfo.ToolRecordMacroHotKeyCtrl.Value, IniFile, IniSection, "RecordMacroHotKey")
     IniWrite(ToolCheckInfo.ToolTextFilterHotKeyCtrl.Value, IniFile, IniSection, "ToolTextFilterHotKey")
@@ -463,6 +472,7 @@ SaveTableItemInfo(index) {
     IniWrite(SavedInfo[8], IniFile, IniSection, symbol "LoopCountArr")
     IniWrite(SavedInfo[9], IniFile, IniSection, symbol "TriggerTypeArr")
     IniWrite(SavedInfo[10], IniFile, IniSection, symbol "MacroTypeArr")
+    IniWrite(SavedInfo[11], IniFile, IniSection, symbol "SerialArr")
 }
 
 GetSavedTableItemInfo(index) {
@@ -477,6 +487,7 @@ GetSavedTableItemInfo(index) {
     LoopCountArrStr := ""
     TriggerTypeArrStr := ""
     MacroTypeArrStr := ""
+    SerialArrStr := ""
 
     tableItem := MySoftData.TableInfo[index]
     symbol := GetTableSymbol(index)
@@ -496,7 +507,7 @@ GetSavedTableItemInfo(index) {
             ""
         LoopCountArrStr .= GetItemSaveCountValue(tableItem.Index, A_Index)
         MacroTypeArrStr .= tableItem.MacroTypeArr.Length >= A_Index ? tableItem.MacroTypeConArr[A_Index].Value : 1
-
+        SerialArrStr .= tableItem.SerialArr.Length >= A_Index ? tableItem.SerialArr[A_Index] : "000000"
         if (tableItem.ModeArr.Length > A_Index) {
             TKArrStr .= "π"
             MacroArrStr .= "π"
@@ -508,11 +519,12 @@ GetSavedTableItemInfo(index) {
             LoopCountArrStr .= "π"
             TriggerTypeArrStr .= "π"
             MacroTypeArrStr .= "π"
+            SerialArrStr .= "π"
         }
     }
     MacroArrStr := StrReplace(MacroArrStr, "`n", ",")
     return [TKArrStr, MacroArrStr, ModeArrStr, HoldTimeArrStr, ForbidArrStr, ProcessNameArrStr, RemarkArrStr,
-        LoopCountArrStr, TriggerTypeArrStr, MacroTypeArrStr]
+        LoopCountArrStr, TriggerTypeArrStr, MacroTypeArrStr, SerialArrStr]
 }
 
 SaveWinPos() {
@@ -888,6 +900,56 @@ ClearUselessSetting(deleteMacro) {
             continue
         IniDelete(CoordFile, IniSection, value)
     }
+}
+
+LoosenModifyKey(keyCombo) {
+    modifiers := []
+    modPrefixes := ["^", "<^", ">^", "!", "<!", ">!", "+", "<+", ">+", "#", "<#", ">#"]
+    ; 检查是否以修饰键开头
+    for prefix in modPrefixes {
+        if (SubStr(keyCombo, 1, StrLen(prefix)) == prefix) {
+            modifiers.Push(prefix)
+            keyCombo := SubStr(keyCombo, StrLen(prefix) + 1)
+            break
+        }
+    }
+
+    ; 检查所有修饰键是否按下
+    for mod in modifiers {
+        key := ""
+        switch mod {
+            case "^":
+                key := "Ctrl"
+            case "<^":
+                key := "LCtrl"
+            case ">^":
+                key := "RCtrl"
+            case "!":
+                key := "Alt"
+            case "<!":
+                key := "LAlt"
+            case ">!":
+                key := "RAlt"
+            case "+":
+                key := "Shift"
+            case "<+":
+                key := "LShift"
+            case ">+":
+                key := "RShift"
+            case "#":
+                key := "Win"
+            case "<#":
+                key := "LWin"
+            case ">#":
+                key := "RWin"
+        }
+        if (key != "") {
+            VK := GetKeyVK(key)
+            SC := GetKeySC(key)
+            DllCall("keybd_event", "UChar", VK, "UChar", SC, "UInt", 0x2, "UPtr", 0)
+        }
+    }
+
 }
 
 AreKeysPressed(keyCombo) {

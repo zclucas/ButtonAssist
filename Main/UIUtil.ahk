@@ -301,6 +301,7 @@ OnAddSetting(*) {
     tableItem.RemarkArr.Push("")
     tableItem.LoopCountArr.Push("1")
     tableItem.HoldTimeArr.Push(0)
+    tableItem.SerialArr.Push(FormatTime(, "HHmmss"))
 
     heightValue := 60
     TKPosY := tableItem.underPosY + 10
@@ -440,7 +441,7 @@ AddSettingUI(index) {
     ToolCheckInfo.ToolTextFilterHotKey)
     ToolCheckInfo.ToolTextFilterHotKeyCtrl.Enabled := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 545, posY - 5), "编辑")
-    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(ToolCheckInfo.ToolRecordMacroHotKeyCtrl, false))
+    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(ToolCheckInfo.ToolTextFilterHotKeyCtrl, false))
 
     posY += 40
     MyGui.Add("Text", Format("x{} y{} w130", posX + 20, posY), "按住时间浮动:(%)")
