@@ -604,7 +604,12 @@ OnVariable(tableItem, cmd, index) {
         value := variableData.ValueArr[A_Index]
         if (variableData.CreateType == 2) {     ;选择复制
             copyName := variableData.SelectCopyNameArr[A_Index]
-            if (VariableMap.Has(copyName)) {
+            if (copyName == "X坐标" || copyName == "Y坐标") {
+                CoordMode("Mouse", "Screen")
+                MouseGetPos &mouseX, &mouseY
+                value := copyName == "X坐标" ? mouseX : mouseY
+            }
+            else if (VariableMap.Has(copyName)) {
                 value := VariableMap[copyName]
             }
         }

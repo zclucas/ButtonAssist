@@ -242,6 +242,8 @@ class VariableGui {
         this.Data := this.GetVariableData(this.SerialStr)
         macro := this.MacroEditGui.GetFinallyMacroStr()
         VariableObjArr := GetSelectVariableObjArr(macro)
+        VariableObjArr.Push("X坐标")
+        VariableObjArr.Push("Y坐标")
 
         this.CreateTypeCon.Value := this.Data.CreateType
         this.ExtractStrCon.Value := this.Data.ExtractStr
