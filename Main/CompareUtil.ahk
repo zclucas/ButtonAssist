@@ -1,11 +1,26 @@
 #Requires AutoHotkey v2.0
 
+GetAmpersandSequence(str) {
+    sequence := Map()
+    counter := 1
+    needle := "&[xc]"  ; 正则表达式匹配 &x 或 &c
+
+    foundPos := 1
+    while (foundPos := RegExMatch(str, needle, &match, foundPos)) {
+        sequence[counter] := match[0]  ; 按顺序编号存储
+        counter += 1
+        foundPos += match.Len  ; 移动到匹配后的位置继续搜索
+    }
+
+    return sequence
+}
+
 ExtractNumbers(Text, Pattern) {
     ; 转义Pattern中的特殊字符（如括号）
     Pattern := RegExReplace(Pattern, "[.*+?()\[\]{}|^$\\]", "\$0")
-
+    SymbolMap := GetAmpersandSequence(Pattern)
     ; 将Pattern中的x, y, z, w替换为正则表达式的捕获组
-    Pattern := RegExReplace(Pattern, "&x", "(\d{1,3}(?:[，,]\d{3})*(?:\.\d+)?)")
+    Pattern := RegExReplace(Pattern, "&x", "([+-]?(?!0)\d+(?:\.\d+)?|[+-]?\d{1,3}(?:[，,]\d{3})*(?:\.\d+)?)")
     Pattern := RegExReplace(Pattern, "&c", "(.*)")
 
     ; 使用正则表达式匹配Text
@@ -17,11 +32,9 @@ ExtractNumbers(Text, Pattern) {
                 continue ; 跳过第一个匹配项（整个匹配文本）
 
             oriStr := Value
-            IsNumber1 := IsNumber(Value)
-            Value := StrReplace(Value, ",", "")
-            Value := StrReplace(Value, "，", "")
-            IsNumber2 := IsNumber(Value)
-            if (IsNumber1 || IsNumber2) {
+            if (SymbolMap[i] == "&x") {
+                Value := StrReplace(Value, ",", "")
+                Value := StrReplace(Value, "，", "")
                 tempValue := IsFloat(Value) ? Format("{:.4g}", Value) : Integer(Value)
             }
             else {
