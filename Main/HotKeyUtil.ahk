@@ -266,6 +266,7 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
     X2 := Integer(Data.EndPosX)
     Y2 := Integer(Data.EndPosY)
     VariableMap := tableItem.VariableMapArr[index]
+    MacroType := tableItem.MacroTypeArr[index]
 
     CoordMode("Pixel", "Screen")
     if (Data.SearchType == 1) {
@@ -326,7 +327,14 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
 
         if (Data.TrueCommandStr == "")
             return
-        OnTriggerMacroOnce(tableItem, Data.TrueCommandStr, index)
+
+        if (MacroType == 1) {
+            OnTriggerMacroOnce(tableItem, Data.TrueCommandStr, index)
+        }
+        else if (MacroType == 2) {
+            action := OnTriggerMacroOnce.Bind(tableItem, Data.TrueCommandStr, index)
+            SetTimer(action, -1)
+        }
     }
 
     if (isFinally && !found) {
@@ -337,7 +345,14 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
 
         if (Data.FalseCommandStr == "")
             return
-        OnTriggerMacroOnce(tableItem, Data.FalseCommandStr, index)
+
+        if (MacroType == 1) {
+            OnTriggerMacroOnce(tableItem, Data.FalseCommandStr, index)
+        }
+        else if (MacroType == 2) {
+            action := OnTriggerMacroOnce.Bind(tableItem, Data.FalseCommandStr, index)
+            SetTimer(action, -1)
+        }
     }
 }
 
@@ -932,6 +947,8 @@ OnTableDelete(tableItem, index) {
         tableItem.RemarkArr.RemoveAt(index)
     if (tableItem.SerialArr.Length >= index)
         tableItem.SerialArr.RemoveAt(index)
+    if (tableItem.MacroTypeArr.Length >= index)
+        tableItem.MacroTypeArr.RemoveAt(index)
     tableItem.IndexConArr.RemoveAt(index)
     tableItem.TriggerTypeConArr.RemoveAt(index)
     tableItem.ModeConArr.RemoveAt(index)
@@ -942,6 +959,7 @@ OnTableDelete(tableItem, index) {
     tableItem.ProcessNameConArr.RemoveAt(index)
     tableItem.LoopCountConArr.RemoveAt(index)
     tableItem.RemarkConArr.RemoveAt(index)
+    tableItem.MacroTypeConArr.RemoveAt(index)
 
     OnSaveSetting()
 }

@@ -143,8 +143,8 @@ class OperationSubGui {
             rightBracket := A_Index == 1 ? "" : ")"
             Symbol := this.SymbolArr[A_Index]
             Value := this.ValueArr[A_Index]
-            if (SubStr(CurValue, 1, 1) == "&")
-                CurValue := SubStr(CurValue, 2)
+            if (SubStr(Value, 1, 1) == "&")
+                Value := SubStr(Value, 2)
             text := leftBracket text rightBracket Symbol Value
         }
         this.ExpressionCon.Value := text

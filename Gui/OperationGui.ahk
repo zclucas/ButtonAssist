@@ -48,94 +48,94 @@ class OperationGui {
         PosX := 10
         PosY += 25
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY, 70, 20),
-        "开关  选择/输入1       运算表达式                                    选择/输入2")
+        "开关  选择/输入1       运算表达式                                 选择/输入2")
 
         PosY += 20
         PosX := 15
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 25))
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
         this.ToggleConArr.Push(con)
 
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 35, PosY - 3, 100), [])
         this.NameConArr.Push(con)
 
-        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 135, PosY - 3, 150), "")
+        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 140, PosY - 3, 150), "")
         con.Enabled := false
         this.OperationConArr.Push(con)
 
-        con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 290, PosY - 4, 50), "编辑")
+        con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 295, PosY - 4, 50), "编辑")
         con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(1))
 
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 350, PosY - 3, 100), ["更新自己", "创建或更新"])
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 355, PosY - 3, 100), ["更新自己", "创建或更新"])
         con.Value := 1
         this.UpdateTypeConArr.Push(con)
 
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 455, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 460, PosY - 3, 100), [])
         this.UpdateNameConArr.Push(con)
 
         PosY += 35
         PosX := 15
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 25))
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
         this.ToggleConArr.Push(con)
 
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 35, PosY - 3, 100), [])
         this.NameConArr.Push(con)
 
-        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 135, PosY - 3, 150), "")
+        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 140, PosY - 3, 150), "")
         con.Enabled := false
         this.OperationConArr.Push(con)
 
-        con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 290, PosY - 4, 50), "编辑")
+        con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 295, PosY - 4, 50), "编辑")
         con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(2))
 
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 350, PosY - 3, 100), ["更新自己", "创建或更新"])
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 355, PosY - 3, 100), ["更新自己", "创建或更新"])
         con.Value := 1
         this.UpdateTypeConArr.Push(con)
 
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 455, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 460, PosY - 3, 100), [])
         this.UpdateNameConArr.Push(con)
 
         PosY += 35
         PosX := 15
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 25))
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
         this.ToggleConArr.Push(con)
 
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 35, PosY - 3, 100), [])
         this.NameConArr.Push(con)
 
-        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 135, PosY - 3, 150), "")
+        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 140, PosY - 3, 150), "")
         con.Enabled := false
         this.OperationConArr.Push(con)
 
-        con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 290, PosY - 4, 50), "编辑")
+        con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 295, PosY - 4, 50), "编辑")
         con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(3))
 
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 350, PosY - 3, 100), ["更新自己", "创建或更新"])
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 355, PosY - 3, 100), ["更新自己", "创建或更新"])
         con.Value := 1
         this.UpdateTypeConArr.Push(con)
 
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 455, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 460, PosY - 3, 100), [])
         this.UpdateNameConArr.Push(con)
 
         PosY += 35
         PosX := 15
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 25))
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
         this.ToggleConArr.Push(con)
 
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 35, PosY - 3, 100), [])
         this.NameConArr.Push(con)
 
-        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 135, PosY - 3, 150), "")
+        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 140, PosY - 3, 150), "")
         con.Enabled := false
         this.OperationConArr.Push(con)
 
-        con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 290, PosY - 4, 50), "编辑")
+        con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 295, PosY - 4, 50), "编辑")
         con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(4))
 
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 350, PosY - 3, 100), ["更新自己", "创建或更新"])
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 355, PosY - 3, 100), ["更新自己", "创建或更新"])
         con.Value := 1
         this.UpdateTypeConArr.Push(con)
 
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 455, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 460, PosY - 3, 100), [])
         this.UpdateNameConArr.Push(con)
 
         PosY += 40
