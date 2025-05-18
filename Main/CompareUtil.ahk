@@ -16,35 +16,60 @@ GetAmpersandSequence(str) {
 }
 
 ExtractNumbers(Text, Pattern) {
-    ; 转义Pattern中的特殊字符（如括号）
+    ; 转义Pattern中的特殊字符
     Pattern := RegExReplace(Pattern, "[.*+?()\[\]{}|^$\\]", "\$0")
     SymbolMap := GetAmpersandSequence(Pattern)
-    ; 将Pattern中的x, y, z, w替换为正则表达式的捕获组
-    Pattern := RegExReplace(Pattern, "&x", "([+-]?(?!0)\d+(?:\.\d+)?|[+-]?\d{1,3}(?:[，,]\d{3})*(?:\.\d+)?)")
+
+    ; 优化数字匹配模式，区分千分位和普通数字
+    Pattern := RegExReplace(Pattern, "&x", BuildNumberPattern())
     Pattern := RegExReplace(Pattern, "&c", "(.*)")
 
-    ; 使用正则表达式匹配Text
     if (RegExMatch(Text, Pattern, &Match)) {
-        ; 提取匹配的数字
         Result := []
         for i, Value in Match {
             if (i == 0)
-                continue ; 跳过第一个匹配项（整个匹配文本）
+                continue
 
-            oriStr := Value
             if (SymbolMap[i] == "&x") {
-                Value := StrReplace(Value, ",", "")
-                Value := StrReplace(Value, "，", "")
-                tempValue := IsFloat(Value) ? Format("{:.4g}", Value) : Integer(Value)
-            }
-            else {
-                tempValue := oriStr
+                ; 智能处理千分位和普通数字
+                tempValue := ProcessNumberValue(Value)
+            } else {
+                tempValue := Value
             }
             Result.Push(tempValue)
         }
         return Result
     }
-    return "" ; 如果没有匹配到，返回空字符串
+    return ""
+}
+
+BuildNumberPattern() {
+    ; 千分位模式：必须包含逗号且格式正确
+    ThousandFormat := "\d{1,3}(?:,\d{3})+(?:\.\d+)?"
+    ; 普通数字模式：不包含逗号或仅含小数点
+    NormalFormat := "[+-]?\d+(?:\.\d+)?"
+    ; 小数模式：以小数点开头
+    DecimalFormat := "[+-]?\.\d+"
+
+    return "(" ThousandFormat "|" NormalFormat "|" DecimalFormat ")"
+}
+
+ProcessNumberValue(Value) {
+    Cleaned := StrReplace(Value, ",")
+    Cleaned := StrReplace(Cleaned, "，", "")
+    Cleaned := StrReplace(Cleaned, "＋", "+")
+    Cleaned := StrReplace(Cleaned, "－", "-")
+
+    if (IsFloat(Cleaned)) {
+        ; 处理整数部分前导零
+        Cleaned := RegExReplace(Cleaned, "^([+-])?0+(\d)", "$1$2")
+        
+        ; 处理小数部分末尾零
+        return RegExReplace(Cleaned, "(\.\d*?[1-9])0+$|(\.)0+$", "$1$2")
+    }
+    
+    ; 处理整数前导零
+    return Integer(RegExReplace(Cleaned, "^0+(\d)", "$1"))
 }
 
 CompareExtractOperAndNum(expression) {
