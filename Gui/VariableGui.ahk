@@ -6,6 +6,7 @@ class VariableGui {
         this.SureBtnAction := ""
         this.MacroEditGui := ""
         this.RemarkCon := ""
+        this.SelectToggleCon := ""
 
         this.CreateTypeCon := ""
         this.ToggleConArr := []
@@ -171,13 +172,19 @@ class VariableGui {
         {
             PosX := 10
             PosY += 40
-            MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 580, 210), "提取相关配置：")
+            MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 580, 220), "提取相关配置：")
 
-            PosY += 20
+            PosY += 25
             PosX := 20
-            MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "F1:左键选取搜索范围")
+            con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY, 25), "F1")
+            con.Enabled := false
 
-            PosY += 20
+            PosX += 30
+            this.SelectToggleCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Left", PosX, PosY, 150, 25),
+            "左键框选搜索范围")
+            this.SelectToggleCon.OnEvent("Click", (*) => this.OnClickSelectToggle())
+
+            PosY += 25
             PosX := 20
             MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 550),
             "使用&&x代替数字变量位置，使用&&c代替文本变量位置`n形如：`"坐标(&&x,&&x)`"可以提取`"坐标(10.5,8.6)`"中的10.5和8.6到变量1和变量2")
@@ -227,7 +234,7 @@ class VariableGui {
         }
 
         PosY += 50
-        PosX := 350
+        PosX := 250
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{} Center", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
@@ -309,12 +316,22 @@ class VariableGui {
         this.Gui.Hide()
     }
 
+    OnClickSelectToggle() {
+        state := this.SelectToggleCon.Value
+        if (state == 1)
+            this.EnableSelectAerea()
+        else
+            this.DisSelectArea()
+    }
+
     EnableSelectAerea() {
+        this.SelectToggleCon.Value := 1
         Hotkey("LButton", (*) => this.SelectArea(), "On")
         Hotkey("LButton Up", (*) => this.DisSelectArea(), "On")
     }
 
     DisSelectArea(*) {
+        this.SelectToggleCon.Value := 0
         Hotkey("LButton", (*) => this.SelectArea(), "Off")
         Hotkey("LButton Up", (*) => this.DisSelectArea(), "Off")
     }

@@ -317,11 +317,11 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
 
         Pos[1] := GetFloatValue(Pos[1], MySoftData.CoordXFloat)
         Pos[2] := GetFloatValue(Pos[2], MySoftData.CoordYFloat)
-        if (Data.AutoClick) {
+        if (Data.AutoType == 3) {
             SetDefaultMouseSpeed(Speed)
             Click(Format("{} {} {}"), Pos[1], Pos[2], Data.ClickCount)
         }
-        else if (Data.AutoMove) {
+        else if (Data.AutoType == 2) {
             MouseMove(Pos[1], Pos[2], Speed)
         }
 

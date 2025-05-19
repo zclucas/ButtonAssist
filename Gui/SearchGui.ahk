@@ -7,6 +7,7 @@ class SearchGui {
         this.SureBtnAction := ""
         this.RemarkCon := ""
         this.PosAction := () => this.RefreshMouseInfo()
+        this.SelectToggleCon := ""
         this.MacroEditGui := ""
         this.Data := ""
         this.MousePosCon := ""
@@ -27,10 +28,8 @@ class SearchGui {
         this.FoundCommandStrCon := ""
         this.UnFoundCommandStrCon := ""
         this.SearchTypeCon := ""
-        this.AutoMoveCon := ""
+        this.AutoTypeCon := ""
         this.SpeedCon := ""
-        this.AutoClickCon := ""
-        this.ClickCountCon := ""
         this.ResultToggleCon := ""
         this.ResultSaveNameCon := ""
         this.TrueValueCon := ""
@@ -75,22 +74,31 @@ class SearchGui {
         PosX += 50
         this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
 
-        PosY += 20
+        PosY += 25
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "F1:左键选取搜索范围  F2:选取当前颜色")
+        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY, 25), "F1")
+        con.Enabled := false
+
+        PosX += 30
+        this.SelectToggleCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Left", PosX, PosY, 150, 25), "左键框选搜索范围")
+        this.SelectToggleCon.OnEvent("Click", (*) => this.OnClickSelectToggle())
+
+        PosX += 150
+        con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY, 25), "F2")
+        con.Enabled := false
+        PosX += 30
+        MyGui.Add("Text", Format("x{} y{} h{} Center", PosX, PosY + 3, 25), "选取当前颜色")
 
         PosX := 10
-        PosY += 20
+        PosY += 25
         this.MousePosCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 200, 20), "当前鼠标坐标:0,0")
         PosX += 330
         this.MouseColorCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 140, 20), "当前鼠标颜色:FFFFFF")
         PosX += 140
         this.MouseColorTipCon := MyGui.Add("Text", Format("x{} y{} w{} Background{}", PosX, PosY, 20, "FF0000"), "")
-
         PosX := 10
         PosY += 30
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 100), "搜索范围:")
-
         PosX := 330
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索类型:")
         PosX += 80
@@ -98,153 +106,122 @@ class SearchGui {
             "文本"])
         this.SearchTypeCon.OnEvent("Change", (*) => this.OnChangeSearchType())
         this.SearchTypeCon.Value := 1
-
         PosY += 30
         PosX := 10
         SplitPosY := PosY
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "起始坐标X:")
         PosX += 75
         this.StartPosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-
         PosX := 150
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "起始坐标Y:")
         PosX += 75
         this.StartPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "终止坐标X:")
         PosX += 75
         this.EndPosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-
         PosX := 150
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "终止坐标Y:")
         PosX += 75
         this.EndPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "搜索次数:")
         PosX += 75
         this.SearchCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-
         PosX := 150
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "每次间隔:")
         PosX += 75
         this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-
         PosY += 30
         PosX := 10
-        con := MyGui.Add("Checkbox", Format("x{} y{}", PosX, PosY), "找到后鼠标移动至目标")
-        this.AutoMoveCon := con
-
-        PosY += 30
-        PosX := 10
-        con := MyGui.Add("Checkbox", Format("x{} y{}", PosX, PosY), "找到后鼠标移动至目标点击")
-        this.AutoClickCon := con
-
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "鼠标动作:")
+        PosX += 75
+        this.AutoTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["无动作", "移动至目标", "移动至目标点击"])
+        this.AutoTypeCon.Value := 1
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "移动速度(0~100):")
         PosX += 120
         this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "90")
-
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "鼠标点击次数:")
         PosX += 120
         this.ClickCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "1")
-
         PosY := SplitPosY
         PosX := 330
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "选择图片")
         btnCon.OnEvent("Click", (*) => this.OnClickSetPicBtn())
         btnCon.Focus()
         this.ImageBtn := btnCon
-
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "截图")
         btnCon.OnEvent("Click", (*) => this.OnScreenShotBtnClick())
         this.ScreenshotBtn := btnCon
-
         PosY += 30
         PosX := 330
         this.ImageCon := MyGui.Add("Picture", Format("x{} y{} w{} h{}", PosX, PosY, 100, 100), "")
-
         PosY += 110
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 40), "颜色:")
         PosX += 40
         this.HexColorCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 80), "FFFFFF")
         PosX += 90
         this.HexColorTipCon := MyGui.Add("Text", Format("x{} y{} w{} Background{}", PosX, PosY, 20, "FF0000"), "")
-
         PosY += 35
         PosX := 330
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 40), "文本:")
         PosX += 40
         this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 150, 20), "检索文本")
-
         PosY += 35
         TempPosY := PosY
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 170, 20), "找到后的指令:（可选）")
-
         PosX += 180
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 5, 80, 20), "编辑指令")
         btnCon.OnEvent("Click", (*) => this.OnEditFoundMacroBtnClick())
-
         PosY += 20
         PosX := 10
         this.FoundCommandStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 280, 80), "")
-
         PosY := TempPosY
         PosX := 330
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 170, 20), "未找到后的指令:（可选）")
-
         PosX += 180
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 5, 80, 20), "编辑指令")
         btnCon.OnEvent("Click", (*) => this.OnEditUnFoundMacroBtnClick())
-
         PosY += 20
         PosX := 330
         this.UnFoundCommandStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 280, 80), "")
-
         TempPosY := PosY
         PosY += 90
         PosX := 10
         MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 310, 70), "结果保存到变量中")
-
         PosY += 20
         PosX := 15
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关    选择/输入      真值        假值")
-
         PosY += 20
         PosX := 20
         this.ResultToggleCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
         this.ResultSaveNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
         this.TrueValueCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 70), 0)
         this.FalseValueCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 220, PosY - 4, 70), 0)
-
         PosY := TempPosY
         PosY += 90
         PosX := 330
         MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 290, 70), "找到后目标点保存到变量中")
-
         PosY += 20
         PosX := 335
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关  坐标X选择/输入  坐标Y选择/输入")
-
         PosY += 20
         PosX := 340
         this.CoordToogleCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
         this.CoordXNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 35, PosY - 3, 100), [])
         this.CoordYNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 150, PosY - 3, 100), [])
-
         PosY += 40
         PosX := 270
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
-
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
         MyGui.Show(Format("w{} h{}", 640, 570))
     }
@@ -267,9 +244,8 @@ class SearchGui {
         this.EndPosYCon.Value := this.Data.EndPosY
         this.SearchCountCon.Value := this.Data.SearchCount
         this.SearchIntervalCon.Value := this.Data.SearchInterval
-        this.AutoMoveCon.Value := this.Data.AutoMove
+        this.AutoTypeCon.Value := this.Data.AutoType
         this.SpeedCon.Value := this.Data.Speed
-        this.AutoClickCon.Value := this.Data.AutoClick
         this.ClickCountCon.Value := this.Data.ClickCount
         this.FoundCommandStrCon.Value := this.Data.TrueCommandStr
         this.UnFoundCommandStrCon.Value := this.Data.FalseCommandStr
@@ -322,7 +298,8 @@ class SearchGui {
             return false
         }
 
-        if (Number(this.StartPosXCon.Value) > Number(this.EndPosXCon.Value) || Number(this.StartPosYCon.Value) > Number(
+        if (Number(this.StartPosXCon.Value) > Number(this.EndPosXCon.Value) || Number(this.StartPosYCon.Value) >
+        Number(
             this.EndPosYCon.Value)) {
             MsgBox("起始坐标不能大于终止坐标")
             return false
@@ -478,12 +455,22 @@ class SearchGui {
         OnSearch(tableItem, this.GetCommandStr(), 1)
     }
 
+    OnClickSelectToggle() {
+        state := this.SelectToggleCon.Value
+        if (state == 1)
+            this.EnableSelectAerea()
+        else
+            this.DisSelectArea()
+    }
+
     EnableSelectAerea() {
+        this.SelectToggleCon.Value := 1
         Hotkey("LButton", (*) => this.SelectArea(), "On")
         Hotkey("LButton Up", (*) => this.DisSelectArea(), "On")
     }
 
-    DisSelectArea(*) {
+    DisSelectArea() {
+        this.SelectToggleCon.Value := 0
         Hotkey("LButton", (*) => this.SelectArea(), "Off")
         Hotkey("LButton Up", (*) => this.DisSelectArea(), "Off")
     }
@@ -570,8 +557,7 @@ class SearchGui {
         data.EndPosY := this.EndPosYCon.Value
         data.SearchCount := this.SearchCountCon.Value
         data.SearchInterval := this.SearchIntervalCon.Value
-        data.AutoMove := this.AutoMoveCon.Value
-        data.AutoClick := this.AutoClickCon.Value
+        data.AutoType := this.AutoTypeCon.Value
         data.ClickCount := this.ClickCountCon.Value
         data.Speed := this.SpeedCon.Value
         data.TrueCommandStr := this.FoundCommandStrCon.Value

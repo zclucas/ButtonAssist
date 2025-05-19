@@ -220,8 +220,7 @@ class SearchData {
         this.EndPosY := A_ScreenHeight
         this.SearchCount := 1
         this.SearchInterval := 1000
-        this.AutoMove := 1
-        this.AutoClick := 0
+        this.AutoType := 1
         this.ClickCount := 1
         this.Speed := 90
         this.TrueCommandStr := ""
