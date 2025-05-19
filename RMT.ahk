@@ -34,12 +34,12 @@ global MyMacroGui := MacroEditGui()
 global MyReplaceKeyGui := ReplaceKeyGui()
 global MyWinClip := WinClip()
 
-InitFilePath()
-LoadSetting()
-EditListen()
-InitData()
-InitUI()
-BindKey()
+InitFilePath()  ;初始化文件路径
+LoadSetting()   ;加载配置
+EditListen()    ;右键编辑数据监听
+InitData()      ;初始化软件数据
+InitUI()        ;初始化UI
+BindKey()       ;绑定快捷键
 
 ;放后面初始化，因为这两个初始化时间比较长
 global MyOcr := RapidOcr()
