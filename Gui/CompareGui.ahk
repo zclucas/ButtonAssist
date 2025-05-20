@@ -182,7 +182,7 @@ class CompareGui {
 
         PosY += 20
         PosX := 15
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 290), "开关    选择/输入      真值        假值")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 310), "开关    选择/输入      真值        假值")
 
         PosY += 20
         PosX := 20

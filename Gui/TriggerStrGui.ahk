@@ -422,7 +422,7 @@ class TriggerStrGui {
 
         PosY += 90
         PosX := 20
-        con := MyGui.Add("Checkbox", Format("x{} y{} h{} w{}", PosX, PosY, 20, 100), "不需要终止符")
+        con := MyGui.Add("Checkbox", Format("x{} y{} h{} w{}", PosX, PosY, 20, 120), "不需要终止符")
         con.OnEvent("Click", (*) => this.OnClickNoEndCharCon())
         this.IsNoEndCharCon := con
 

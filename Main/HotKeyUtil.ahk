@@ -928,7 +928,7 @@ OnTableDelete(tableItem, index) {
     if (result == "Cancel")
         return
 
-    deleteMacro := tableItem.LoopCountArr.Length >= index ? tableItem.MacroArr[index] : ""
+    deleteMacro := tableItem.MacroArr.Length >= index ? tableItem.MacroArr[index] : ""
     ClearUselessSetting(deleteMacro)
 
     MySoftData.BtnAdd.Enabled := false
