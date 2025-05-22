@@ -17,7 +17,6 @@ SetWorkingDir A_ScriptDir
 #Include Main\Gdip_All.ahk
 #Include Main\DataClass.ahk
 #Include Main\AssetUtil.ahk
-#Include Main\TimerUtil.ahk
 #Include Main\HotkeyUtil.ahk
 #Include Main\UIUtil.ahk
 #Include Main\JsonUtil.ahk
@@ -44,3 +43,9 @@ BindKey()       ;绑定快捷键
 ;放后面初始化，因为这两个初始化时间比较长
 global MyOcr := RapidOcr()
 global MyPToken := Gdip_Startup()
+
+
+; path := A_WorkingDir "\Thread\Work1.exe"
+; tableHexStr := StrToHex(JSON.stringify(MySoftData.TableInfo[1], 0))
+; indexHexStr := StrToHex(JSON.stringify(1, 0))
+; Run (Format("{} {} {}", path, tableHexStr, indexHexStr))

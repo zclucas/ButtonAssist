@@ -1146,3 +1146,12 @@ GetVariableOperationResult(VariableMap, Name, SymbolArr, ValueArr) {
     }
     return sum
 }
+
+
+StrToHex(str) {
+    hex := ""
+    loop Parse str {
+        hex .= Format("{:02X}", Ord(A_LoopField))
+    }
+    return hex
+}

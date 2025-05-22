@@ -1042,7 +1042,13 @@ OnToolCheckHotkey(*) {
     global ToolCheckInfo
     ToolCheckInfo.IsToolCheck := !ToolCheckInfo.IsToolCheck
     ToolCheckInfo.ToolCheckCtrl.Value := ToolCheckInfo.IsToolCheck
-    ToolCheckInfo.MouseInfoSwitch()
+
+    if (ToolCheckInfo.IsToolCheck) {
+        ToolCheckInfo.MouseInfoTimer := Timer(SetToolCheckInfo, 100)
+        ToolCheckInfo.MouseInfoTimer.On()
+    }
+    else
+        ToolCheckInfo.MouseInfoTimer := ""
 }
 
 OnToolRecordMacro(*) {

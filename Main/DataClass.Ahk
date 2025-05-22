@@ -40,6 +40,33 @@ class TableItem {
     }
 }
 
+class Timer
+{
+    __New(callback, period)
+    {
+        this.binding := callback
+        this.period := period
+        this.priority := 0
+    }
+
+    __Delete()
+    {
+        this.Off()
+    }
+
+    On()
+    {
+        funcObj := this.binding
+        SetTimer funcObj, this.period, this.priority
+    }
+
+    Off()
+    {
+        funcObj := this.binding
+        SetTimer funcObj, 0
+    }
+}
+
 class ToolCheck {
     __New() {
         this.ToolCheckCtrl := ""
@@ -84,15 +111,6 @@ class ToolCheck {
         this.RecordMouseRelativeValue := ""
     }
 
-    MouseInfoSwitch() {
-        if (this.IsToolCheck) {
-            this.MouseInfoTimer := Timer(SetToolCheckInfo, 100)
-            this.MouseInfoTimer.On()
-        }
-        else
-            this.MouseInfoTimer := ""
-    }
-
     RecordMacroSwitch() {
         if (this.IsToolRecord) {
             this.RecordMacroTimer := Timer(() => {}, 100)
@@ -102,6 +120,8 @@ class ToolCheck {
             this.RecordMacroTimer := ""
     }
 }
+
+
 
 class SoftData {
     __New() {
