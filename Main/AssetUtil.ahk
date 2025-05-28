@@ -1146,3 +1146,8 @@ GetVariableOperationResult(VariableMap, Name, SymbolArr, ValueArr) {
     }
     return sum
 }
+
+OpenCVLoadDll() {
+    dllpath := A_ScriptDir "\OpenCV\x64\ImageFinder.dll"
+    DllCall('LoadLibrary', 'str', dllpath, "Ptr")
+}

@@ -1,0 +1,258 @@
+﻿
+Language: Cpp   # C/C++语言
+IndentWidth: 4  # 缩进-4个空格
+TabWidth: 4     # Tab宽度-4个空格
+ColumnLimit: 120 # 列限制-120个字符
+AccessModifierOffset: -4  # 访问标签不缩进
+
+# 括号后参数对齐，Like:
+# someLongFunction(argument1,
+#                  argument2);
+AlignAfterOpenBracket: Align
+
+# 连续赋值对齐, Like:
+# int aaaa = 12;
+# int b    = 23;
+# int ccc  = 23;
+# clang-format 12 AcrossEmptyLinesAndComments
+AlignConsecutiveAssignments: true
+
+# 连续宏对齐
+AlignConsecutiveMacros: true
+
+# 转义换行符右对齐
+AlignEscapedNewlines: Left
+
+# 对齐操作数 Like：
+# int aaa = bbbbbbbbbbbbbbb +
+#           ccccccccccccccc;
+AlignOperands: true
+
+# 对齐尾接注释
+AlignTrailingComments: true
+
+# 允许所有形参声明位于下一行
+AllowAllParametersOfDeclarationOnNextLine: false
+
+# 允许短函数声明与函数体在一行：只允许内联函数
+# class Foo
+# {
+#      void f() { foo(); }
+# }
+AllowShortFunctionsOnASingleLine: InlineOnly
+
+# 允许短if从句位于一行
+# if (a) return;
+AllowShortIfStatementsOnASingleLine: false
+
+AllowShortLambdasOnASingleLine: false
+
+# 允许短循环位于一行
+# while (condition) {}
+# while (condition) continue;
+AllowShortLoopsOnASingleLine: false
+
+# 总是打断多字符串
+# true:                                  false:
+# aaaa =                         vs.     aaaa = "bbbb"
+#     "bbbb"                                    "cccc";
+#     "cccc";
+AlwaysBreakBeforeMultilineStrings: false
+
+# 允许模板参数后换行
+AlwaysBreakTemplateDeclarations: true
+
+# true:
+# void f()
+# {
+#   f(aaaaaaaaaaaaaaaaaaaa, aaaaaaaaaaaaaaaaaaaa,
+#     aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa);
+# }
+
+# false:
+# void f()
+# {
+#   f(aaaaaaaaaaaaaaaaaaaa,
+#     aaaaaaaaaaaaaaaaaaaa,
+#     aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa);
+# }
+# false表示所有形参要么都在同一行，要么都各自一行
+BinPackParameters: false
+# false表示函数实参要么都在同一行，要么都各自一行
+BinPackArguments: false
+
+BraceWrapping:
+    AfterClass:     true # 类后左大括号后换行
+    AfterEnum:  true     # Enum后大括号后换行
+    AfterFunction: true  # 函数声明后大括号换行
+    AfterNamespace: true # 命名空间声明后大括号换行
+    AfterStruct: true    # struct声明后大括号换行
+    AfterUnion: true     # union声明后大括号换行
+    AfterExternBlock: true # extern 声明后换行
+    BeforeCatch: true      # catch大括号后换行
+    BeforeElse: true       # else后大括号换行
+    IndentBraces: true
+
+    # 展开空大括号对
+    # int f()   vs int f()
+    # {}           {
+    #              }
+    SplitEmptyFunction: false
+    # 展开空class, union struct后的大括号对
+    # class Foo    vs    class Foo
+    # {}                 {
+    #                    }
+    SplitEmptyRecord: true
+
+    SplitEmptyNamespace: true # 展开命名空间后的空大括号对
+    AfterControlStatement: true
+
+# 双目操作符前换行
+# None
+# bool value = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa +
+#                     aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ==
+#                 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa &&
+#             aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa >
+#                 ccccccccccccccccccccccccccccccccccccccccc;
+# NonAssignment
+#bool value = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+#                     + aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+#                == aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+#             && aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+#                    > ccccccccccccccccccccccccccccccccccccccccc;
+BreakBeforeBinaryOperators: None
+
+# 花括号前换行
+BreakBeforeBraces: Allman
+# 三目运算符前换行
+#true:
+#veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongDescription
+#    ? firstValue
+#    : SecondValueVeryVeryVeryVeryLong;
+BreakBeforeTernaryOperators: true
+
+# 构造函数初始化列表换行写
+# BeforeColon
+# Constructor()
+#    : initializer1(),
+#      initializer2()
+BreakConstructorInitializers: BeforeComma
+
+# class Foo
+#    : Base1
+#    , Base2
+# {};
+BreakInheritanceList: BeforeComma
+
+# 字符串换行
+# true:
+# const char* x = "veryVeryVeryVeryVeryVe"
+#                 "ryVeryVeryVeryVeryVery"
+#                 "VeryLongString";
+
+# false:
+# const char* x =
+#   "veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongString";
+BreakStringLiterals: false
+
+# 允许构造函数初始化列表位于同一行
+#ConstructorInitializerAllOnOneLineOrOnePerLine: false
+
+# 构造函数初始化列表缩进宽度
+ConstructorInitializerIndentWidth: 4
+
+# 修复命名空间注释
+# true:                                  false:
+# namespace a {                  vs.     namespace a {
+# foo();                                 foo();
+# } // namespace a                       }
+FixNamespaceComments: true
+
+# case 从句不缩进
+IndentCaseLabels: false
+
+# 预处理缩进
+# AfterHash
+# #if FOO
+# #  if BAR
+# #    include <foo>
+# #  endif
+# #endif
+#
+# BeforeHash
+# #if FOO
+#   #if BAR
+#     #include <foo>
+#   #endif
+# #endif
+# IndentPPDirectives: AfterHash
+
+# 块起始处是否要空行
+# true:                                  false:
+# if (foo) {                     vs.     if (foo) {
+#                                          bar();
+#   bar();                               }
+#  }
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# 垂直最大空白行
+MaxEmptyLinesToKeep: 1
+
+# 命名空间内缩进
+NamespaceIndentation: None
+
+# 指针对齐方式
+PointerAlignment: Right
+
+# 注释太长时，重新排版注释
+ReflowComments: true
+
+# C风格的强制转换后加空格
+SpaceAfterCStyleCast: false
+
+# 关键字template后加空格： 不
+SpaceAfterTemplateKeyword: false
+
+# 赋值操作符前加空格：
+SpaceBeforeAssignmentOperators: true
+
+# 开括号前加空格: 控制语句
+# void foo()
+# {
+#     if (true) // 控制语句
+#     {
+#         f();
+#     }
+# }
+SpaceBeforeParens: ControlStatements
+
+# 一对空括号间加空格
+SpaceInEmptyParentheses: false
+
+# 尾接注释前空格数
+SpacesBeforeTrailingComments: 2
+
+# 尖括号内加空间
+SpacesInAngles: false
+
+# 嵌套容器后尖括号加空格
+# vector<set<int> > x;
+# 可选参数：Cpp03、Cpp11
+Standard: Cpp11
+
+# C风格强制转换括号内加空格
+SpacesInCStyleCastParentheses: false
+
+# 条件语句括号中加空格
+SpacesInContainerLiterals: false
+
+# 圆括号内加空格
+SpacesInParentheses: false
+
+# 方括号内加空格
+SpacesInSquareBrackets: false
+
+# 是否使用tab
+UseTab: Never
+
+SortIncludes: false

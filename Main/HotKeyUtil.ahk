@@ -260,6 +260,13 @@ OnSearch(tableItem, cmd, index) {
     }
 }
 
+; 定义OpenCV图片搜索函数原型
+FindImage(targetPath, searchX, searchY, searchW, searchH, matchThreshold, x, y) {
+    return DllCall("ImageFinder.dll\FindImage", "AStr", targetPath,
+        "Int", searchX, "Int", searchY, "Int", searchW, "Int", searchH,
+        "Int", matchThreshold, "Int*", x, "Int*", y, "Cdecl Int")
+}
+
 OnSearchOnce(tableItem, Data, index, isFinally) {
     X1 := Integer(Data.StartPosX)
     Y1 := Integer(Data.StartPosY)
@@ -270,8 +277,13 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
 
     CoordMode("Pixel", "Screen")
     if (Data.SearchType == 1) {
-        SearchInfo := Format("*{} *w0 *h0 {}", Integer(MySoftData.ImageSearchBlur), Data.SearchImagePath)
-        found := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, SearchInfo)
+        ; SearchInfo := Format("*{} *w0 *h0 {}", Integer(MySoftData.ImageSearchBlur), Data.SearchImagePath)
+        ; found := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, SearchInfo)
+        OutputVarX := 0
+        OutputVarY := 0
+        found := FindImage(Data.SearchImagePath, X1, Y1, X2 - X1, Y2 - Y1, Data.SearchImageBlur, &OutputVarX, &
+            OutputVarY)
+        MsgBox(found)
     }
     else if (Data.SearchType == 2) {
         color := "0X" Data.SearchColor

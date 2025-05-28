@@ -34,8 +34,7 @@ class RapidOcr {
             if (!init){
                 ; throw OSError()
                 return  ;部分电脑无法加载，那么就直接返回吧
-            }
-                
+            }   
         }
         if !IsSet(config)
             config := { models: A_LineFile '\..\models' }

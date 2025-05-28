@@ -19,6 +19,7 @@ class SearchGui {
         this.EndPosYCon := ""
         this.ImageCon := ""
         this.ImageBtn := ""
+        this.ImageBlurCon := ""
         this.ScreenshotBtn := ""
         this.HexColorCon := ""
         this.HexColorTipCon := ""
@@ -99,6 +100,12 @@ class SearchGui {
         PosX := 10
         PosY += 30
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 100), "搜索范围:")
+        PosX := 150
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "模糊匹配:")
+        PosX += 75
+        this.ImageBlurCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
+
+
         PosX := 330
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索类型:")
         PosX += 80
@@ -235,6 +242,7 @@ class SearchGui {
 
         this.Data := this.GetCompareData(this.SerialStr)
         this.SearchTypeCon.Value := this.Data.SearchType
+        this.ImageBlurCon.Value := this.Data.SearchImageBlur
         this.ImageCon.Value := this.Data.SearchImagePath
         this.HexColorCon.Value := this.Data.SearchColor
         this.TextCon.Value := this.Data.SearchText
@@ -299,8 +307,8 @@ class SearchGui {
         }
 
         if (Number(this.StartPosXCon.Value) > Number(this.EndPosXCon.Value) || Number(this.StartPosYCon.Value) >
-        Number(
-            this.EndPosYCon.Value)) {
+            Number(
+                this.EndPosYCon.Value)) {
             MsgBox("起始坐标不能大于终止坐标")
             return false
         }
@@ -327,7 +335,7 @@ class SearchGui {
 
         if (this.SearchTypeCon.Value == 3) {
             if (Number(this.StartPosXCon.Value) == Number(this.EndPosXCon.Value) ||
-            Number(this.StartPosYCon.Value) == Number(this.EndPosYCon.Value)) {
+                Number(this.StartPosYCon.Value) == Number(this.EndPosYCon.Value)) {
                 MsgBox("搜索文本时：搜索范围中起始坐标不能和终止坐标相同")
                 return false
             }
@@ -548,6 +556,7 @@ class SearchGui {
 
     SaveSearchData() {
         data := this.Data
+        data.SearchImageBlur := this.ImageBlurCon.Value
         data.SearchType := this.SearchTypeCon.Value
         data.SearchColor := this.HexColorCon.Value
         data.SearchText := this.TextCon.Value
