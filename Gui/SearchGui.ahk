@@ -318,11 +318,6 @@ class SearchGui {
             return false
         }
 
-        if (RegExMatch(this.Data.SearchImagePath, "_")) {
-            MsgBox("图片路径中不能包含下划线")
-            return false
-        }
-
         if (this.SearchTypeCon.Value == 1 && this.Data.SearchImagePath == "") {
             MsgBox("请选择图片")
             return false
@@ -331,8 +326,8 @@ class SearchGui {
         if (this.SearchTypeCon.Value == 1) {
             searchWidth := this.EndPosXCon.Value - this.StartPosXCon.Value
             searchHeight := this.EndPosYCon.Value - this.StartPosYCon.Value
-            size := GetImageSize(this.ImageCon.Value)
-            if (size[0] > searchWidth || size[1] > searchHeight) {
+            size := GetImageSize(this.Data.SearchImagePath)
+            if (size[1] > searchWidth || size[2] > searchHeight) {
                 MsgBox("搜索范围不能小于图片大小")
                 return false
             }
