@@ -281,14 +281,13 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
         ; found := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, SearchInfo)
         OutputVarX := 0
         OutputVarY := 0
-        found := FindImage(Data.SearchImagePath, X1, Y1, X2 - X1, Y2 - Y1, Data.SearchImageBlur, &OutputVarX, &
+        found := FindImage(Data.SearchImagePath, X1, Y1, X2 - X1, Y2 - Y1, Data.Similar, &OutputVarX, &
             OutputVarY)
-        MsgBox(found)
     }
     else if (Data.SearchType == 2) {
         color := "0X" Data.SearchColor
-        found := PixelSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, color, Integer(MySoftData.ImageSearchBlur
-        ))
+        similar := Integer(-2.55 * Data.Similar + 255)
+        found := PixelSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, color, similar)
     }
     else if (Data.SearchType == 3) {
         text := Data.SearchText

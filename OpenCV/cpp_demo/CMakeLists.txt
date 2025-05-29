@@ -18,7 +18,7 @@ endif()
 # add_definitions(-DIMAGEFINDER_EXPORTS)
 
 # 创建进程
-add_executable(demo main.cpp ../ImageFinder.cpp ../ImageFinder.h)
+add_executable(demo main.cpp )
 
 # 链接OpenCV库
 target_link_libraries(demo ${OpenCV_LIBS})

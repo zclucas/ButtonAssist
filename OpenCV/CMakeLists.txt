@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(ImageFinder)
 
-# add_subdirectory(cpp_demo)
+add_subdirectory(cpp_demo)
 
 # 设置C++11标准
 set(CMAKE_CXX_STANDARD 11)

@@ -6,7 +6,7 @@ global searchX := 0                   ; 搜索区域X
 global searchY := 0                   ; 搜索区域Y
 global searchW := A_ScreenWidth       ; 默认全屏宽度
 global searchH := A_ScreenHeight      ; 默认全屏高度
-global matchThreshold := 80           ; 匹配阈值(0-100)
+global matchThreshold := 90           ; 匹配阈值(0-100)
 
 ; 加载DLL
 dllPath := A_ScriptDir "\ImageFinder.dll"

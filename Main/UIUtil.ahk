@@ -460,10 +460,10 @@ AddSettingUI(index) {
     MySoftData.CoordYFloatCon := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 440, posY - 4),
     MySoftData.CoordYFloat)
 
-    MyGui.Add("Text", Format("x{} y{} w120 Right", posX + 635, posY), "搜索模糊(0~255):")
-    MySoftData.ImageSearchBlurCtrl := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 760, posY - 4), MySoftData
-    .ImageSearchBlur
-    )
+    ; MyGui.Add("Text", Format("x{} y{} w120 Right", posX + 635, posY), "搜索模糊(0~255):")
+    ; MySoftData.ImageSearchBlurCtrl := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 760, posY - 4), MySoftData
+    ; .ImageSearchBlur
+    ; )
 
     posY += 50
     MyGui.Add("GroupBox", Format("x{} y{} w900 h110", posX + 10, posY), "开关选项")

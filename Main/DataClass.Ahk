@@ -214,7 +214,7 @@ class SearchData {
         this.SearchColor := ""
         this.SearchText := ""
         this.SearchImagePath := ""
-        this.SearchImageBlur := 90 ; 图片搜索模糊匹配度100  - 50
+        this.Similar := 90 ; 图片搜索模糊匹配度100  - 50
         this.StartPosX := 0
         this.StartPosY := 0
         this.EndPosX := A_ScreenWidth
