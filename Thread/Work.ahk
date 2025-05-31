@@ -1,26 +1,43 @@
 #Requires AutoHotkey v2.0
-#Include "../Main/DataClass.ahk"
-#Include "../Main/JsonUtil.ahk"
-#Include "../Main/AssetUtil.ahk"
-#Include "../Main/HotkeyUtil.ahk"
+#Include "..\Main\DataClass.ahk"
+#Include "..\Main\JsonUtil.ahk"
+#Include "..\Main\AssetUtil.ahk"
+#Include "..\Main\HotkeyUtil.ahk"
+#Include "..\Main\Gdip_All.ahk"
+#Include "..\Main\CompareUtil.ahk"
+#Include "..\Joy\SuperCvJoyInterface.ahk"
+#Include "..\Joy\JoyMacro.ahk"
+#Include "..\RapidOcr\RapidOcr.ahk"
+#Include "..\Plugins\WinClipAPI.ahk"
+#Include "..\Plugins\WinClip.ahk"
+#Include "WorkUtil.ahk"
+DetectHiddenWindows true
+Persistent
 #NoTrayIcon
 
-; 16进制串转字符串
-HexToStr(hex) {
-    str := ""
-    loop parse hex {
-        if (Mod(A_Index, 2) = 1) {
-            charCode := "0x" SubStr(hex, A_Index, 2)
-            str .= Chr(charCode)
-        }
-    }
-    return str
-}
+global parentHwnd := A_Args[1]
+global workIndex := A_Args[2]
+global MySoftData := SoftData()
+global ToolCheckInfo := ToolCheck()
+global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
+global MyJoyMacro := JoyMacro()
+global MyWinClip := WinClip()
+InitWorkFilePath()  ;初始化文件路径
+LoadSetting()   ;加载配置
+InitData()
+InitWork()
 
-global tableData := JSON.parse(HexToStr(A_Args[1]), false, false)
-global macro := JSON.parse(HexToStr(A_Args[2]), false, false)
-global index := A_Args[2]
-    
-OnTriggerMacroKeyAndInit(tableData, macro, index)
-    
+;放后面初始化，因为这初始化时间比较长
+global MyOcr := RapidOcr(A_ScriptDir "\..")
+global MyPToken := Gdip_Startup()
+WorkOpenCVLoadDll()
 
+; 注册消息
+OnMessage(WM_TR_MACRO, MsgHandler)
+
+myTitle := "RMTWork" workIndex
+mygui := Gui("+ToolWindow")          ; 创建 GUI，无标题栏
+mygui.Title := myTitle               ; 设置窗口标题（这才是 WinGetTitle 能读到的）
+mygui.Show("Hide")                   ; 隐藏窗口
+global myHwnd := mygui.Hwnd
+MsgSendHandler(WM_LOAD_WORK, workIndex, 0)

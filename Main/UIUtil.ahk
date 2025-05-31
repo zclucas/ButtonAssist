@@ -1,7 +1,8 @@
 ;窗口&UI刷新
 InitUI() {
     global MySoftData
-    MyGui := Gui(, "RMTv1.0.5")
+    MyGui := Gui()
+    MyGui.Title := "RMTv1.0.5"
     MyGui.SetFont(, "Arial")
     MyGui.SetFont("S10 W550 Q2", "Consolas")
     MySoftData.MyGui := MyGui
@@ -35,7 +36,6 @@ RefreshGui() {
         MySoftData.MyGui.Show(Format("x{} y{} w{} h{}", MySoftData.WinPosX, MySoftData.WinPosY, 1090, 520))
     else
         MySoftData.MyGui.Show(Format("w{} h{} center", 1090, 520))
-
 }
 
 RefreshToolUI() {

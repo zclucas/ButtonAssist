@@ -24,9 +24,9 @@ class RapidOcr {
      * ocr := RapidOcr({ models: A_ScriptDir '\models' })
      * MsgBox ocr.ocr_from_file('1.jpg', param)
      */
-    __New(config?, dllpath?) {
-        config := { models: A_ScriptDir "\RapidOcr\models" }
-        dllpath := A_ScriptDir "\RapidOcr\" (A_PtrSize * 8) "bit\RapidOcrOnnx.dll"
+    __New(path) {
+        config := { models: path "\RapidOcr\models" }
+        dllpath := path "\RapidOcr\" (A_PtrSize * 8) "bit\RapidOcrOnnx.dll"
         static init := 0
         if (!init) {
             init := DllCall('LoadLibrary', 'str', dllpath ?? A_LineFile '\..\' (A_PtrSize * 8) 'bit\RapidOcrOnnx.dll',

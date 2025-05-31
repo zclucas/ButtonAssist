@@ -5,21 +5,6 @@ OnExitSoft(*) {
     MyOcr := ""
 }
 
-BindKey() {
-    BindPauseHotkey()
-    BindShortcut(MySoftData.KillMacroHotkey, OnKillAllMacro)
-    BindShortcut(ToolCheckInfo.ToolCheckHotKey, OnToolCheckHotkey)
-    BindShortcut(ToolCheckInfo.ToolTextFilterHotKey, OnToolTextFilterScreenShot)
-    BindShortcut(ToolCheckInfo.ToolRecordMacroHotKey, OnToolRecordMacro)
-    BindTabHotKey()
-    BindScrollHotkey("~WheelUp", OnChangeSrollValue)
-    BindScrollHotkey("~WheelDown", OnChangeSrollValue)
-    BindScrollHotkey("~+WheelUp", OnChangeSrollValue)
-    BindScrollHotkey("~+WheelDown", OnChangeSrollValue)
-
-    OnExit(OnExitSoft)
-}
-
 BindScrollHotkey(key, action) {
     if (MySoftData.SB == "")
         return
@@ -53,70 +38,9 @@ BindShortcut(triggerInfo, action) {
     }
 }
 
-BindTabHotKey() {
-    tableIndex := 0
-    loop MySoftData.TabNameArr.Length {
-        tableItem := MySoftData.TableInfo[A_Index]
-        tableIndex := A_Index
-        for index, value in tableItem.ModeArr {
-            if (tableItem.TKArr.Length < index || tableItem.TKArr[index] == "" || (Integer)(tableItem.ForbidArr[index]))
-                continue
-
-            if (tableItem.MacroArr.Length < index || tableItem.MacroArr[index] == "")
-                continue
-
-            key := "$*" tableItem.TKArr[index]
-            actionArr := GetMacroAction(tableIndex, index)
-            isJoyKey := RegExMatch(tableItem.TKArr[index], "Joy")
-            isHotstring := SubStr(tableItem.TKArr[index], 1, 1) == ":"
-            curProcessName := tableItem.ProcessNameArr.Length >= index ? tableItem.ProcessNameArr[index] : ""
-
-            if (curProcessName != "") {
-                processInfo := Format("ahk_exe {}", curProcessName)
-                HotIfWinActive(processInfo)
-            }
-
-            if (isJoyKey) {
-                MyJoyMacro.AddMacro(tableItem.TKArr[index], actionArr[1], curProcessName)
-            }
-            else if (isHotstring) {
-                Hotstring(tableItem.TKArr[index], actionArr[1])
-            }
-            else {
-                if (actionArr[1] != "")
-                    Hotkey(key, actionArr[1])
-
-                if (actionArr[2] != "")
-                    Hotkey(key " up", actionArr[2])
-            }
-
-            if (curProcessName != "") {
-                HotIfWinActive
-            }
-        }
-    }
-}
-
-GetMacroAction(tableIndex, index) {
-    tableItem := MySoftData.TableInfo[tableIndex]
-    macro := tableItem.MacroArr[index]
-    tableSymbol := GetTableSymbol(tableIndex)
-    actionDown := ""
-    actionUp := ""
-
-    if (tableSymbol == "Normal") {
-        actionDown := GetClosureAction(tableItem, macro, index, OnTriggerKeyDown)
-        actionUp := GetClosureAction(tableItem, macro, index, OnTriggerKeyUp)
-    }
-    else if (tableSymbol == "String") {
-        actionDown := GetClosureAction(tableItem, macro, index, OnTriggerMacroKeyAndInit)
-    }
-    else if (tableSymbol == "Replace") {
-        actionDown := GetClosureAction(tableItem, macro, index, OnReplaceDownKey)
-        actionUp := GetClosureAction(tableItem, macro, index, OnReplaceUpKey)
-    }
-
-    return [actionDown, actionUp]
+GetClosureActionNew(tableIndex, itemIndex, func) {
+    funcObj := func.Bind(tableIndex, itemIndex)
+    return (*) => funcObj()
 }
 
 GetClosureAction(tableItem, macro, index, func) {     ;获取闭包函数
@@ -777,8 +701,12 @@ OnPressKey(tableItem, cmd, index) {
 
         FloatHold := GetFloatTime(holdTime, MySoftData.HoldFloat)
         FloatInterval := GetFloatTime(IntervalTime, MySoftData.PreIntervalFloat)
-
-        if (MacroType == 1) {
+        if (MySoftData.isWork) {
+            action(paramArr[2], FloatHold, tableItem, index, keyType)
+            if (A_Index != count)
+                Sleep(FloatInterval)
+        }
+        else if (MacroType == 1) {
             action(paramArr[2], FloatHold, tableItem, index, keyType)
             if (keyType == 1)
                 Sleep(FloatHold)
@@ -799,43 +727,6 @@ OnPressKey(tableItem, cmd, index) {
     }
 }
 
-OnTriggerKeyDown(tableItem, macro, index) {
-    if (tableItem.TriggerTypeArr[index] == 1) { ;按下触发
-        if (SubStr(tableItem.TKArr[index], 1, 1) != "~")
-            LoosenModifyKey(tableItem.TKArr[index])
-        OnTriggerMacroKeyAndInit(tableItem, macro, index)
-    }
-    else if (tableItem.TriggerTypeArr[index] == 3) { ;松开停止
-        OnTriggerMacroKeyAndInit(tableItem, macro, index)
-    }
-    else if (tableItem.TriggerTypeArr[index] == 4) {  ;开关
-        if (tableItem.ToggleStateArr.Length < index)
-            return
-        isTrigger := tableItem.ToggleStateArr[index]
-        if (!isTrigger) {
-            action := OnTriggerMacroKeyAndInit.Bind(tableItem, macro, index)
-            SetTimer(action, -1)
-            tableItem.ToggleActionArr[index] := action
-            tableItem.ToggleStateArr[index] := true
-        }
-        else {
-            action := tableItem.ToggleActionArr[index]
-            if (action == "")
-                return
-
-            SetTimer(action, 0)
-            KillTableItemMacro(tableItem, index)
-            tableItem.ToggleStateArr[index] := false
-        }
-    }
-    else if (tableItem.TriggerTypeArr[index] == 5) {
-        Sleep(tableItem.HoldTimeArr[index])
-
-        keyCombo := LTrim(tableItem.TKArr[index], "~")
-        if (AreKeysPressed(keyCombo))
-            OnTriggerMacroKeyAndInit(tableItem, macro, index)
-    }
-}
 
 ;松开停止
 OnTriggerKeyUp(tableItem, macro, index) {
@@ -847,43 +738,6 @@ OnTriggerKeyUp(tableItem, macro, index) {
             return
 
         KillTableItemMacro(tableItem, index)
-    }
-}
-
-OnFinishMacro(tableItem, macro, index) {
-
-    key := "$*" tableItem.TKArr[index]
-    actionArr := GetMacroAction(tableItem.Index, index)
-    isJoyKey := RegExMatch(tableItem.TKArr[index], "Joy")
-    isHotstring := SubStr(tableItem.TKArr[index], 1, 1) == ":"
-    curProcessName := tableItem.ProcessNameArr.Length >= index ? tableItem.ProcessNameArr[index] : ""
-
-    if (curProcessName != "") {
-        processInfo := Format("ahk_exe {}", curProcessName)
-        HotIfWinActive(processInfo)
-    }
-
-    if (isJoyKey) {
-        MyJoyMacro.AddMacro(tableItem.TKArr[index], actionArr[1], curProcessName)
-    }
-    else if (isHotstring) {
-        Hotstring(tableItem.TKArr[index], actionArr[1])
-    }
-    else {
-        if (actionArr[1] != "") {
-            Hotkey(key, actionArr[1], "OFF")
-            Hotkey(key, actionArr[1], "ON")
-        }
-
-        if (actionArr[2] != "") {
-            Hotkey(key " up", actionArr[2], "OFF")
-            Hotkey(key " up", actionArr[2], "ON")
-        }
-
-    }
-
-    if (curProcessName != "") {
-        HotIfWinActive
     }
 }
 
@@ -981,39 +835,9 @@ OnChangeTriggerType(tableItem, index) {
     tableItem.HoldTimeConArr[index].Enabled := enableHoldTime
 }
 
-OnTableEditMacro(tableItem, index) {
-    macro := tableItem.InfoConArr[index].Value
-    MyMacroGui.SureBtnAction := (sureMacro) => tableItem.InfoConArr[index].Value := sureMacro
-    MyMacroGui.ShowGui(macro, true)
-}
-
-OnTableEditReplaceKey(tableItem, index) {
-    replaceKey := tableItem.InfoConArr[index].Value
-    MyReplaceKeyGui.SureBtnAction := (sureReplaceKey) => tableItem.InfoConArr[index].Value := sureReplaceKey
-    MyReplaceKeyGui.ShowGui(replaceKey)
-}
-
-OnTableEditTriggerKey(tableItem, index) {
-    triggerKey := tableItem.TKConArr[index].Value
-    MyTriggerKeyGui.SureBtnAction := (sureTriggerKey) => tableItem.TKConArr[index].Value := sureTriggerKey
-    MyTriggerKeyGui.ShowGui(triggerKey, true)
-}
-
-OnTableEditTriggerStr(tableItem, index) {
-    triggerStr := tableItem.TKConArr[index].Value
-    MyTriggerStrGui.SureBtnAction := (sureTriggerStr) => tableItem.TKConArr[index].Value := sureTriggerStr
-    MyTriggerStrGui.ShowGui(triggerStr, true)
-}
-
 MenuReload(*) {
     SaveWinPos()
     Reload()
-}
-
-ResetWinPosAndRefreshGui(*) {
-    IniWrite(false, IniFile, IniSection, "IsSavedWinPos")
-    MySoftData.IsSavedWinPos := false
-    RefreshGui()
 }
 
 OnPauseHotkey(*) {
@@ -1047,19 +871,6 @@ OnChangeSrollValue(*) {
     for index, value in MySoftData.GroupFixedCons {
         value.redraw()
     }
-}
-
-OnToolCheckHotkey(*) {
-    global ToolCheckInfo
-    ToolCheckInfo.IsToolCheck := !ToolCheckInfo.IsToolCheck
-    ToolCheckInfo.ToolCheckCtrl.Value := ToolCheckInfo.IsToolCheck
-
-    if (ToolCheckInfo.IsToolCheck) {
-        ToolCheckInfo.MouseInfoTimer := Timer(SetToolCheckInfo, 100)
-        ToolCheckInfo.MouseInfoTimer.On()
-    }
-    else
-        ToolCheckInfo.MouseInfoTimer := ""
 }
 
 OnToolRecordMacro(*) {
@@ -1282,7 +1093,12 @@ OnBootStartChanged(*) {
 
 ;按键模拟
 SendGameModeKeyClick(key, holdTime, tableItem, index, keyType) {
-    if (keyType == 1) {
+    if (MySoftData.isWork && keyType == 1) {
+        SendGameModeKey(Key, 1, tableItem, index)
+        Sleep(holdTime)
+        SendGameModeKey(Key, 0, tableItem, index)
+    }
+    else if (keyType == 1) {
         SendGameModeKey(key, 1, tableItem, index)
         SetTimer(() => SendGameModeKey(key, 0, tableItem, index), -holdTime)
     }
@@ -1353,7 +1169,12 @@ SendGameMouseKey(key, state, tableItem, index) {
 }
 
 SendNormalKeyClick(Key, holdTime, tableItem, index, keyType) {
-    if (keyType == 1) {
+    if (MySoftData.isWork && keyType == 1) {
+        SendNormalKey(Key, 1, tableItem, index)
+        Sleep(holdTime)
+        SendNormalKey(Key, 0, tableItem, index)
+    }
+    else if (keyType == 1) {
         SendNormalKey(Key, 1, tableItem, index)
         SetTimer(() => SendNormalKey(Key, 0, tableItem, index), -holdTime)
     }

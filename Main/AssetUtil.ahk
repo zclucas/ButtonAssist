@@ -1,4 +1,9 @@
 #Requires AutoHotkey v2.0
+global WM_LOAD_WORK := 0x500  ;资源加载完成事件
+global WM_RELEASE_WORK := 0x501  ;资源释放事件
+global WM_CLEAR_WORK := 0x502  ;资源释放事件
+global WM_TR_MACRO := 0x503 ;触发宏事件
+
 ; 功能函数
 GetFloatTime(oriTime, floatValue) {
     oriTime := Integer(oriTime)
@@ -195,36 +200,6 @@ WM_RBUTTONUP(wParam, lParam, msg, hwnd) {
 InitData() {
     InitTableItemState()
     InitJoyAxis()
-    InitGui()
-}
-
-InitFilePath() {
-    if (!DirExist(A_WorkingDir "\Setting")) {
-        DirCreate(A_WorkingDir "\Setting")
-    }
-    if (!DirExist(A_WorkingDir "\Images")) {
-        DirCreate(A_WorkingDir "\Images")
-    }
-    if (!DirExist(A_WorkingDir "\Images\Soft")) {
-        DirCreate(A_WorkingDir "\Images\Soft")
-    }
-
-    FileInstall("Images\Soft\WeiXin.png", "Images\Soft\WeiXin.png", 1)
-    FileInstall("Images\Soft\ZhiFuBao.png", "Images\Soft\ZhiFuBao.png", 1)
-    FileInstall("Images\Soft\rabit.ico", "Images\Soft\rabit.ico", 1)
-    FileInstall("Images\Soft\IcoPause.ico", "Images\Soft\IcoPause.ico", 1)
-
-    global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
-    global SearchFile := A_WorkingDir "\Setting\SearchFile.ini"
-    global CompareFile := A_WorkingDir "\Setting\CompareFile.ini"
-    global CoordFile := A_WorkingDir "\Setting\CoordFile.ini"
-    global FileFile := A_WorkingDir "\Setting\FileFile.ini"
-    global OutputFile := A_WorkingDir "\Setting\OutputFile.ini"
-    global StopFile := A_WorkingDir "\Setting\StopFile.ini"
-    global VariableFile := A_WorkingDir "\Setting\VariableFile.ini"
-    global SubMacroFile := A_WorkingDir "\Setting\SubMacroFile.ini"
-    global OperationFile := A_WorkingDir "\Setting\OperationFile.ini"
-    global IniSection := "UserSettings"
 }
 
 ;手柄轴未使用时，状态会变为0，而非中间值
@@ -237,12 +212,6 @@ InitJoyAxis() {
     loop joyAxisNum {
         SendJoyAxisClick("JoyAxis" A_Index "Max", 30, tableItem, 1, 1)
     }
-}
-
-InitGui() {
-    MyTriggerKeyGui.SaveBtnAction := OnSaveSetting
-    MyTriggerStrGui.SaveBtnAction := OnSaveSetting
-    MyMacroGui.SaveBtnAction := OnSaveSetting
 }
 
 ;资源读取
@@ -1161,7 +1130,7 @@ OpenCVLoadDll() {
 
 StrToHex(str) {
     hex := ""
-    loop Parse str {
+    loop parse str {
         hex .= Format("{:02X}", Ord(A_LoopField))
     }
     return hex

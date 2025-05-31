@@ -125,6 +125,7 @@ class ToolCheck {
 
 class SoftData {
     __New() {
+        this.isWork := false
         this.AgreeAgreement := false
         this.IsExecuteShow := true
         this.ShowWinCtrl := ""
