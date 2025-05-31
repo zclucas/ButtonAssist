@@ -19,6 +19,7 @@ class SearchGui {
         this.EndPosYCon := ""
         this.ImageCon := ""
         this.ImageBtn := ""
+        this.SimilarCon := ""
         this.ScreenshotBtn := ""
         this.HexColorCon := ""
         this.HexColorTipCon := ""
@@ -91,7 +92,7 @@ class SearchGui {
 
         PosX := 10
         PosY += 25
-        this.MousePosCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 200, 20), "当前鼠标坐标:0,0")
+        this.MousePosCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 230, 20), "当前鼠标坐标:0,0")
         PosX += 330
         this.MouseColorCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 140, 20), "当前鼠标颜色:FFFFFF")
         PosX += 140
@@ -99,6 +100,11 @@ class SearchGui {
         PosX := 10
         PosY += 30
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 100), "搜索范围:")
+        PosX := 150
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "相似度(%):")
+        PosX += 75
+        this.SimilarCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
+
         PosX := 330
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索类型:")
         PosX += 80
@@ -138,7 +144,8 @@ class SearchGui {
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "鼠标动作:")
         PosX += 75
-        this.AutoTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["无动作", "移动至目标", "移动至目标点击"])
+        this.AutoTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["无动作",
+            "移动至目标", "移动至目标点击"])
         this.AutoTypeCon.Value := 1
         PosY += 30
         PosX := 10
@@ -235,6 +242,7 @@ class SearchGui {
 
         this.Data := this.GetCompareData(this.SerialStr)
         this.SearchTypeCon.Value := this.Data.SearchType
+        this.SimilarCon.Value := this.Data.Similar
         this.ImageCon.Value := this.Data.SearchImagePath
         this.HexColorCon.Value := this.Data.SearchColor
         this.TextCon.Value := this.Data.SearchText
@@ -310,14 +318,19 @@ class SearchGui {
             return false
         }
 
-        if (RegExMatch(this.Data.SearchImagePath, "_")) {
-            MsgBox("图片路径中不能包含下划线")
-            return false
-        }
-
         if (this.SearchTypeCon.Value == 1 && this.Data.SearchImagePath == "") {
             MsgBox("请选择图片")
             return false
+        }
+
+        if (this.SearchTypeCon.Value == 1) {
+            searchWidth := this.EndPosXCon.Value - this.StartPosXCon.Value
+            searchHeight := this.EndPosYCon.Value - this.StartPosYCon.Value
+            size := GetImageSize(this.Data.SearchImagePath)
+            if (size[1] > searchWidth || size[2] > searchHeight) {
+                MsgBox("搜索范围不能小于图片大小")
+                return false
+            }
         }
 
         if (this.SearchTypeCon.Value == 2 && !RegExMatch(this.HexColorCon.Value, "^([0-9A-Fa-f]{6})$")) {
@@ -548,6 +561,7 @@ class SearchGui {
 
     SaveSearchData() {
         data := this.Data
+        data.Similar := this.SimilarCon.Value
         data.SearchType := this.SearchTypeCon.Value
         data.SearchColor := this.HexColorCon.Value
         data.SearchText := this.TextCon.Value

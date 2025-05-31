@@ -253,7 +253,7 @@ LoadSetting() {
     MySoftData.HoldFloat := IniRead(IniFile, IniSection, "HoldFloat", 0)
     MySoftData.PreIntervalFloat := IniRead(IniFile, IniSection, "PreIntervalFloat", 0)
     MySoftData.IntervalFloat := IniRead(IniFile, IniSection, "IntervalFloat", 0)
-    MySoftData.ImageSearchBlur := IniRead(IniFile, IniSection, "ImageSearchBlur", 100)
+    ; MySoftData.ImageSearchBlur := IniRead(IniFile, IniSection, "ImageSearchBlur", 100)
     MySoftData.CoordXFloat := IniRead(IniFile, IniSection, "CoordXFloat", 0)
     MySoftData.CoordYFloat := IniRead(IniFile, IniSection, "CoordYFloat", 0)
     MySoftData.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
@@ -438,7 +438,7 @@ OnSaveSetting(*) {
     IniWrite(MySoftData.HoldFloatCtrl.Value, IniFile, IniSection, "HoldFloat")
     IniWrite(MySoftData.PreIntervalFloatCtrl.Value, IniFile, IniSection, "PreIntervalFloat")
     IniWrite(MySoftData.IntervalFloatCtrl.Value, IniFile, IniSection, "IntervalFloat")
-    IniWrite(MySoftData.ImageSearchBlurCtrl.Value, IniFile, IniSection, "ImageSearchBlur")
+    ; IniWrite(MySoftData.ImageSearchBlurCtrl.Value, IniFile, IniSection, "ImageSearchBlur")
     IniWrite(MySoftData.CoordXFloatCon.Value, IniFile, IniSection, "CoordXFloat")
     IniWrite(MySoftData.CoordYFloatCon.Value, IniFile, IniSection, "CoordYFloat")
     IniWrite(MySoftData.PauseHotkeyCtrl.Value, IniFile, IniSection, "PauseHotkey")
@@ -1147,6 +1147,17 @@ GetVariableOperationResult(VariableMap, Name, SymbolArr, ValueArr) {
     return sum
 }
 
+OpenCVLoadDll() {
+    dllpath := A_ScriptDir "\OpenCV\x64\ImageFinder.dll"
+
+    ; 构建包含 DLL 文件的目录路径
+    dllDir := A_ScriptDir "\OpenCV\x64"
+
+    ; 使用 SetDllDirectory 将 dllDir 添加到 DLL 搜索路径中
+    DllCall("SetDllDirectory", "Str", dllDir)
+
+    DllCall('LoadLibrary', 'str', dllpath, "Ptr")
+}
 
 StrToHex(str) {
     hex := ""

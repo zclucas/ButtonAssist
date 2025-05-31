@@ -2,3 +2,9 @@ settings.ini
 .vscode
 /*.code-workspace
 /*.ini
+# Ignore all files in any directory named build
+build/
+build_*
+build-*
+installed
+*/build*
