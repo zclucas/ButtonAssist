@@ -373,3 +373,21 @@ SubMacroStopAction(tableIndex, itemIndex) {
     tableItem.IsWorkArr[itemIndex] := false
     MyWorkPool.PostMessage(WM_STOP_MACRO, workPath)
 }
+
+TriggerSubMacro(tableIndex, itemIndex) {
+    tableItem := MySoftData.TableInfo[tableIndex]
+    macro := tableItem.MacroArr[itemIndex]
+    isSeries := tableItem.MacroTypeArr[itemIndex] == 1  ;触发串联指令
+    isWork := tableItem.IsWorkArr[itemIndex]
+    hasWork := MyWorkPool.CheckHasWork()
+
+    if (isSeries && hasWork) {
+        workPath := MyWorkPool.Get()
+        workIndex := MyWorkPool.GetWorkIndex(workPath)
+        tableItem.IsWorkArr[itemIndex] := workIndex
+        MyWorkPool.PostMessage(WM_TR_MACRO, workPath, tableIndex, itemIndex)
+    }
+    else {
+        OnTriggerMacroKeyAndInit(tableItem, macro, itemIndex)
+    }
+}

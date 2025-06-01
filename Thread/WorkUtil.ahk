@@ -58,3 +58,7 @@ WorkOpenCVLoadDll() {
 SubMacroStopAction(tableIndex, itemIndex){
     MsgSendHandler(WM_STOP_MACRO, tableIndex, itemIndex)
 }
+
+TriggerSubMacro(tableIndex, itemIndex) {
+    MsgSendHandler(WM_TR_MACRO, tableIndex, itemIndex)
+}

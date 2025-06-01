@@ -479,7 +479,7 @@ OnStop(tableItem, cmd, index) {
         MySubMacroStopAction(tableIndex, stopData.StopIndex)
         return
     }
-    
+
     KillTableItemMacro(stopTableItem, stopData.StopIndex)
 }
 
@@ -487,16 +487,20 @@ OnSubMacro(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     saveStr := IniRead(SubMacroFile, IniSection, paramArr[2], "")
     Data := JSON.parse(saveStr, , false)
+    macroTableIndex := 1
     macroItem := tableItem
     macro := tableItem.MacroArr[index]
     macroIndex := Data.Type != 1 ? Data.Index : index
     if (Data.Type == 2) {
+        macroTableIndex := 1
         macroItem := MySoftData.TableInfo[1]
     }
     else if (Data.Type == 3) {
+        macroTableIndex := 2
         macroItem := MySoftData.TableInfo[2]
     }
     else if (Data.Type == 4) {
+        macroTableIndex := 3
         macroItem := MySoftData.TableInfo[3]
     }
 
@@ -522,6 +526,10 @@ OnSubMacro(tableItem, cmd, index) {
         }
     }
     else if (Data.CallType == 2) {  ;触发
+        if (Data.Type != 1 && macroItem.MacroTypeArr[index] == 1) {
+            MyTriggerSubMacro(macroTableIndex, macroIndex)
+            return
+        }
         action := OnTriggerMacroKeyAndInit.Bind(macroItem, macro, macroIndex)
         SetTimer(action, -1)
     }

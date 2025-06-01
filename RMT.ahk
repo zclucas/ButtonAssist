@@ -36,6 +36,7 @@ global MyEditHotkeyGui := EditHotkeyGui()
 global MyMacroGui := MacroEditGui()
 global MyReplaceKeyGui := ReplaceKeyGui()
 global MySubMacroStopAction := SubMacroStopAction
+global MyTriggerSubMacro := TriggerSubMacro
 
 InitFilePath()  ;初始化文件路径
 LoadSetting()   ;加载配置

@@ -12,6 +12,7 @@ class WorkPool {
         OnMessage(WM_LOAD_WORK, this.MsgFinishLoad.Bind(this))  ; 工作器完成工作回调
         OnMessage(WM_RELEASE_WORK, this.MsgReleaseHandler.Bind(this))  ; 工作器完成工作回调
         OnMessage(WM_STOP_MACRO, this.MsgStopMacro.Bind(this))  ;终止其他宏
+        OnMessage(WM_TR_MACRO, this.MsgTriggerMacro.Bind(this)) ;触发宏
     }
 
     __Delete() {
@@ -92,5 +93,9 @@ class WorkPool {
         }
 
         KillTableItemMacro(tableItem, itemIndex)
+    }
+
+    MsgTriggerMacro(wParam, lParam, msg, hwnd) {
+        TriggerSubMacro(wParam, lParam)
     }
 }
