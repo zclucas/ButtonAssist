@@ -32,10 +32,12 @@ InitWork()
 global MySpeedOcr := RapidOcr(A_ScriptDir "\..")
 global MyStandardOcr := RapidOcr(A_ScriptDir "\..", 2)
 global MyPToken := Gdip_Startup()
+global MySubMacroStopAction := SubMacroStopAction
 WorkOpenCVLoadDll()
 
 ; 注册消息
 OnMessage(WM_TR_MACRO, MsgTriggerMacroHandler)
+OnMessage(WM_STOP_MACRO, MsgStopMacroHandler)
 OnMessage(WM_CLEAR_WORK, MsgExitHandler)
 
 myTitle := "RMTWork" workIndex

@@ -3,6 +3,7 @@ global WM_LOAD_WORK := 0x500  ;资源加载完成事件
 global WM_RELEASE_WORK := 0x501  ;资源释放事件
 global WM_CLEAR_WORK := 0x502  ;资源释放事件
 global WM_TR_MACRO := 0x503 ;触发宏事件
+global WM_STOP_MACRO := 0x504 ;停止宏事件
 
 ; 功能函数
 GetFloatTime(oriTime, floatValue) {
@@ -517,6 +518,7 @@ InitSingleTableState(tableItem) {
     tableItem.ToggleStateArr := []
     tableItem.ToggleActionArr := []
     tableItem.VariableMapArr := []
+    tableItem.IsWorkArr := []
     for index, value in tableItem.ModeArr {
         tableItem.KilledArr.Push(false)
         tableItem.CmdActionArr.Push([])
@@ -525,6 +527,7 @@ InitSingleTableState(tableItem) {
         tableItem.HoldKeyArr.Push(Map())
         tableItem.ToggleStateArr.Push(false)
         tableItem.ToggleActionArr.Push("")
+        tableItem.IsWorkArr.Push(false)
 
         VariableMap := Map()
         VariableMap["循环次数"] := 0

@@ -175,10 +175,10 @@ GetMacroAction(tableIndex, index) {
 
     if (tableSymbol == "Normal") {
         actionDown := GetClosureActionNew(tableIndex, index, OnTriggerKeyDown)
-        actionUp := GetClosureAction(tableItem, macro, index, OnTriggerKeyUp)
+        actionUp := GetClosureActionNew(tableIndex, index, OnTriggerKeyUp)
     }
     else if (tableSymbol == "String") {
-        actionDown := GetClosureAction(tableItem, macro, index, OnTriggerMacroKeyAndInit)
+        actionDown := GetClosureActionNew(tableIndex, index, TriggerMacroHandler)
     }
     else if (tableSymbol == "Replace") {
         actionDown := GetClosureAction(tableItem, macro, index, OnReplaceDownKey)
@@ -191,6 +191,9 @@ GetMacroAction(tableIndex, index) {
 OnTriggerKeyDown(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
     macro := tableItem.MacroArr[itemIndex]
+    if (tableItem.IsWorkArr[itemIndex] && tableItem.TriggerTypeArr[itemIndex] != 4) ;不是开关
+        return
+
     if (tableItem.TriggerTypeArr[itemIndex] == 1) { ;按下触发
         if (SubStr(tableItem.TKArr[itemIndex], 1, 1) != "~")
             LoosenModifyKey(tableItem.TKArr[itemIndex])
@@ -199,27 +202,10 @@ OnTriggerKeyDown(tableIndex, itemIndex) {
     else if (tableItem.TriggerTypeArr[itemIndex] == 3) { ;松开停止
         TriggerMacroHandler(tableIndex, itemIndex)
     }
-    else if (tableItem.TriggerTypeArr[itemIndex] == 4) {  ;开关  todo
-        if (tableItem.ToggleStateArr.Length < itemIndex)
-            return
-        isTrigger := tableItem.ToggleStateArr[itemIndex]
-        if (!isTrigger) {
-            action := OnTriggerMacroKeyAndInit.Bind(tableItem, macro, itemIndex)
-            SetTimer(action, -1)
-            tableItem.ToggleActionArr[itemIndex] := action
-            tableItem.ToggleStateArr[itemIndex] := true
-        }
-        else {
-            action := tableItem.ToggleActionArr[itemIndex]
-            if (action == "")
-                return
-
-            SetTimer(action, 0)
-            KillTableItemMacro(tableItem, itemIndex)
-            tableItem.ToggleStateArr[itemIndex] := false
-        }
+    else if (tableItem.TriggerTypeArr[itemIndex] == 4) {  ;开关
+        OnToggleTriggerMacro(tableIndex, itemIndex)
     }
-    else if (tableItem.TriggerTypeArr[itemIndex] == 5) {
+    else if (tableItem.TriggerTypeArr[itemIndex] == 5) {    ;长按
         Sleep(tableItem.HoldTimeArr[itemIndex])
 
         keyCombo := LTrim(tableItem.TKArr[itemIndex], "~")
@@ -228,13 +214,58 @@ OnTriggerKeyDown(tableIndex, itemIndex) {
     }
 }
 
-TriggerMacroHandler(tableIndex, itemIndex) {
+OnToggleTriggerMacro(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
     macro := tableItem.MacroArr[itemIndex]
     isSeries := tableItem.MacroTypeArr[itemIndex] == 1  ;触发串联指令
     hasWork := MyWorkPool.CheckHasWork()
+
+    if (tableItem.IsWorkArr[itemIndex]) {
+        workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
+        tableItem.IsWorkArr[itemIndex] := false
+        MyWorkPool.PostMessage(WM_STOP_MACRO, workPath)
+        return
+    }
+
     if (isSeries && hasWork) {
         workPath := MyWorkPool.Get()
+        workIndex := MyWorkPool.GetWorkIndex(workPath)
+        tableItem.IsWorkArr[itemIndex] := workIndex
+        MyWorkPool.PostMessage(WM_TR_MACRO, workPath, tableIndex, itemIndex)
+        return
+    }
+
+    isTrigger := tableItem.ToggleStateArr[itemIndex]
+    if (!isTrigger) {
+        action := OnTriggerMacroKeyAndInit.Bind(tableItem, macro, itemIndex)
+        SetTimer(action, -1)
+        tableItem.ToggleActionArr[itemIndex] := action
+        tableItem.ToggleStateArr[itemIndex] := true
+    }
+    else {
+        action := tableItem.ToggleActionArr[itemIndex]
+        if (action == "")
+            return
+
+        SetTimer(action, 0)
+        KillTableItemMacro(tableItem, itemIndex)
+        tableItem.ToggleStateArr[itemIndex] := false
+    }
+}
+
+TriggerMacroHandler(tableIndex, itemIndex) {
+    tableItem := MySoftData.TableInfo[tableIndex]
+    macro := tableItem.MacroArr[itemIndex]
+    isSeries := tableItem.MacroTypeArr[itemIndex] == 1  ;触发串联指令
+    isWork := tableItem.IsWorkArr[itemIndex]
+    hasWork := MyWorkPool.CheckHasWork()
+    if (isWork)
+        return
+
+    if (isSeries && hasWork) {
+        workPath := MyWorkPool.Get()
+        workIndex := MyWorkPool.GetWorkIndex(workPath)
+        tableItem.IsWorkArr[itemIndex] := workIndex
         MyWorkPool.PostMessage(WM_TR_MACRO, workPath, tableIndex, itemIndex)
     }
     else {
@@ -334,4 +365,11 @@ InitFilePath() {
     global SubMacroFile := A_WorkingDir "\Setting\SubMacroFile.ini"
     global OperationFile := A_WorkingDir "\Setting\OperationFile.ini"
     global IniSection := "UserSettings"
+}
+
+SubMacroStopAction(tableIndex, itemIndex) {
+    tableItem := MySoftData.TableInfo[tableIndex]
+    workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
+    tableItem.IsWorkArr[itemIndex] := false
+    MyWorkPool.PostMessage(WM_STOP_MACRO, workPath)
 }

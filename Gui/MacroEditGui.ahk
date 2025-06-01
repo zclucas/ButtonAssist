@@ -542,9 +542,6 @@ class MacroEditGui {
     OnChangeRecordMode() {
         state := this.RecordMacroCon.Value
         OnToolRecordMacro()
-        if (!state) {
-            this.OnFinishRecordMacro()
-        }
     }
 
     OnFinishRecordMacro() {

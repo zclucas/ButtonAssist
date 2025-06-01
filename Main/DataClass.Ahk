@@ -37,6 +37,7 @@ class TableItem {
         this.VariableMapArr := []    ;  每条宏对应的变量映射
         this.UnderPosY := 0
         this.Index := 0
+        this.IsWorkArr := []        ;work正在执行中
     }
 }
 

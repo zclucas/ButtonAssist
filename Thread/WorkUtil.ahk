@@ -9,6 +9,11 @@ MsgExitHandler(wParam, lParam, msg, hwnd) {
    ExitApp()
 }
 
+MsgStopMacroHandler(wParam, lParam, msg, hwnd) {
+   KillTableItemMacro(wParam, lParam)
+}
+
+
 TriggerMacro(tableIndex, itemIndex) {
     tableData := MySoftData.TableInfo[tableIndex]
     macro := tableData.MacroArr[itemIndex]
@@ -48,4 +53,8 @@ WorkOpenCVLoadDll() {
     ; 使用 SetDllDirectory 将 dllDir 添加到 DLL 搜索路径中
     DllCall("SetDllDirectory", "Str", dllDir)
     DllCall('LoadLibrary', 'str', dllpath, "Ptr")
+}
+
+SubMacroStopAction(tableIndex, itemIndex){
+    MsgSendHandler(WM_STOP_MACRO, tableIndex, itemIndex)
 }

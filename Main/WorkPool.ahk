@@ -11,6 +11,7 @@ class WorkPool {
         }
         OnMessage(WM_LOAD_WORK, this.MsgFinishLoad.Bind(this))  ; 工作器完成工作回调
         OnMessage(WM_RELEASE_WORK, this.MsgReleaseHandler.Bind(this))  ; 工作器完成工作回调
+        OnMessage(WM_STOP_MACRO, this.MsgStopMacro.Bind(this))  ;终止其他宏
     }
 
     __Delete() {
@@ -28,6 +29,16 @@ class WorkPool {
             workPath := this.pool.Pop()
         }
         return workPath
+    }
+
+    GetWorkPath(workIndex) {
+        return A_ScriptDir "\Thread\Work" workIndex ".exe"
+    }
+
+    GetWorkIndex(workPath) {
+        workIndex := StrReplace(workPath, A_ScriptDir "\Thread\Work")
+        workIndex := StrReplace(workIndex, ".exe")
+        return workIndex
     }
 
     GetWorkHwnd(workPath) {
@@ -66,5 +77,20 @@ class WorkPool {
     MsgFinishLoad(wParam, lParam, msg, hwnd) {
         workPath := A_ScriptDir "\Thread\Work" wParam ".exe"
         this.pool.Push(workPath)
+    }
+
+    MsgStopMacro(wParam, lParam, msg, hwnd) {
+        tableIndex := wParam
+        itemIndex := lParam
+        tableItem := MySoftData.TableInfo[tableIndex]
+        isWork := tableItem.IsWorkArr[itemIndex]
+        if (isWork) {
+            workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
+            tableItem.IsWorkArr[itemIndex] := false
+            MyWorkPool.PostMessage(WM_STOP_MACRO, workPath)
+            return
+        }
+
+        KillTableItemMacro(tableItem, itemIndex)
     }
 }

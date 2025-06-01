@@ -1,4 +1,3 @@
-
 BindScrollHotkey(key, action) {
     if (MySoftData.SB == "")
         return
@@ -460,22 +459,28 @@ OnStop(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     saveStr := IniRead(StopFile, IniSection, paramArr[2], "")
     stopData := JSON.parse(saveStr, , false)
-
+    tableIndex := 0
     if (stopData.StopType == 1) {       ;终止自己
         KillTableItemMacro(tableItem, index)
+        return
     }
     else if (stopData.StopType == 2) {      ;终止按键宏
-        stopTableItem := MySoftData.TableInfo[1]
-        KillTableItemMacro(stopTableItem, stopData.StopIndex)
+        tableIndex := 1
     }
     else if (stopData.StopType == 3) {      ;终止字串宏
-        stopTableItem := MySoftData.TableInfo[2]
-        KillTableItemMacro(stopTableItem, stopData.StopIndex)
+        tableIndex := 2
     }
     else if (stopData.StopType == 4) {      ;终止子宏
-        stopTableItem := MySoftData.TableInfo[3]
-        KillTableItemMacro(stopTableItem, stopData.StopIndex)
+        stopTableItem := 3
     }
+    stopTableItem := MySoftData.TableInfo[tableIndex]
+    isWork := stopTableItem.IsWorkArr[stopData.StopIndex]
+    if (isWork || MySoftData.isWork) {
+        MySubMacroStopAction(tableIndex, stopData.StopIndex)
+        return
+    }
+    
+    KillTableItemMacro(stopTableItem, stopData.StopIndex)
 }
 
 OnSubMacro(tableItem, cmd, index) {
@@ -695,7 +700,7 @@ OnPressKey(tableItem, cmd, index) {
 
         FloatHold := GetFloatTime(holdTime, MySoftData.HoldFloat)
         FloatInterval := GetFloatTime(IntervalTime, MySoftData.PreIntervalFloat)
-        if (MySoftData.isWork) {
+        if (MySoftData.isWork && MacroType == 1) {
             action(paramArr[2], FloatHold, tableItem, index, keyType)
             if (A_Index != count)
                 Sleep(FloatInterval)
@@ -721,17 +726,22 @@ OnPressKey(tableItem, cmd, index) {
     }
 }
 
-
 ;松开停止
-OnTriggerKeyUp(tableItem, macro, index) {
-    if (tableItem.TriggerTypeArr[index] == 2) { ;松开触发
-        OnTriggerMacroKeyAndInit(tableItem, macro, index)
+OnTriggerKeyUp(tableIndex, itemIndex) {
+    tableItem := MySoftData.TableInfo[tableIndex]
+    isWork := tableItem.IsWorkArr[itemIndex]
+    if (tableItem.TriggerTypeArr[itemIndex] == 2 && !isWork) { ;松开触发
+        TriggerMacroHandler(tableIndex, itemIndex)
     }
-    else if (tableItem.TriggerTypeArr[index] == 3) {  ;松开停止
-        if (tableItem.HoldTimeArr.Length < index)
+    else if (tableItem.TriggerTypeArr[itemIndex] == 3) {  ;松开停止
+        if (isWork) {
+            workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
+            tableItem.IsWorkArr[itemIndex] := false
+            MyWorkPool.PostMessage(WM_STOP_MACRO, workPath)
             return
+        }
 
-        KillTableItemMacro(tableItem, index)
+        KillTableItemMacro(tableItem, itemIndex)
     }
 }
 
@@ -841,7 +851,7 @@ OnToolRecordMacro(*) {
         }
 
         try {
-            Hotkey(key, OnRecordMacroKeyDonw, StateSymbol)
+            Hotkey(key, OnRecordMacroKeyDown, StateSymbol)
             Hotkey(key " Up", OnRecordMacroKeyUp, StateSymbol)
         }
         catch {
@@ -851,11 +861,11 @@ OnToolRecordMacro(*) {
 
     loop spacialKeyArr.Length {
         key := Format("$*~sc{:X}", GetKeySC(spacialKeyArr[A_Index]))
-        Hotkey(key, OnRecordMacroKeyDonw, StateSymbol)
+        Hotkey(key, OnRecordMacroKeyDown, StateSymbol)
         Hotkey(key " Up", OnRecordMacroKeyUp, StateSymbol)
     }
 
-    Hotkey(key, OnRecordMacroKeyDonw, StateSymbol)
+    Hotkey(key, OnRecordMacroKeyDown, StateSymbol)
     Hotkey(key " Up", OnRecordMacroKeyUp, StateSymbol)
 
     if (state) {
@@ -880,7 +890,7 @@ OnToolRecordMacro(*) {
     }
 }
 
-OnRecordMacroKeyDonw(*) {
+OnRecordMacroKeyDown(*) {
     key := StrReplace(A_ThisHotkey, "$", "")
     key := StrReplace(key, "*~", "")
     keyName := GetKeyName(key)
