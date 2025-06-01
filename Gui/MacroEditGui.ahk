@@ -3,6 +3,7 @@
 #Include KeyGui.ahk
 #Include MouseMoveGui.ahk
 #Include SearchGui.ahk
+#Include SearchProGui.ahk
 #Include FileGui.ahk
 #Include CompareGui.ahk
 #Include CoordGui.ahk
@@ -59,6 +60,11 @@ class MacroEditGui {
         this.SearchGui.MacroEditGui := this
         this.SearchGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("搜索", this.SearchGui)
+
+        this.SearchProGui := SearchProGui()
+        this.SearchProGui.MacroEditGui := this
+        this.SearchProGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("搜索Pro", this.SearchProGui)
 
         this.FileGui := FileGui()
         this.FileGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
@@ -179,6 +185,12 @@ class MacroEditGui {
         this.CmdBtnConMap.Set("搜索", btnCon)
 
         PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "搜索Pro")
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.SearchProGui))
+        this.CmdBtnConMap.Set("搜索Pro", btnCon)
+
+        PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "移动")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.MoveMoveGui))
@@ -196,14 +208,14 @@ class MacroEditGui {
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.OutputGui))
         this.CmdBtnConMap.Set("输出", btnCon)
 
-        PosX += 100
+        PosY += 35
+        PosX := 20
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "文件")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.FileGui))
         this.CmdBtnConMap.Set("文件", btnCon)
 
-        PosY += 35
-        PosX := 20
+        PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "变量")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.VariableGui))

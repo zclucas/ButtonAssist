@@ -11,6 +11,7 @@
 #Include "..\Plugins\WinClipAPI.ahk"
 #Include "..\Plugins\WinClip.ahk"
 #Include "WorkUtil.ahk"
+#SingleInstance Force
 DetectHiddenWindows true
 Persistent
 #NoTrayIcon
@@ -28,12 +29,14 @@ InitData()
 InitWork()
 
 ;放后面初始化，因为这初始化时间比较长
-global MyOcr := RapidOcr(A_ScriptDir "\..")
+global MySpeedOcr := RapidOcr(A_ScriptDir "\..")
+global MyStandardOcr := RapidOcr(A_ScriptDir "\..", 2)
 global MyPToken := Gdip_Startup()
 WorkOpenCVLoadDll()
 
 ; 注册消息
-OnMessage(WM_TR_MACRO, MsgHandler)
+OnMessage(WM_TR_MACRO, MsgTriggerMacroHandler)
+OnMessage(WM_CLEAR_WORK, MsgExitHandler)
 
 myTitle := "RMTWork" workIndex
 mygui := Gui("+ToolWindow")          ; 创建 GUI，无标题栏

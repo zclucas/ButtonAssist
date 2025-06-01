@@ -24,7 +24,7 @@ class RapidOcr {
      * ocr := RapidOcr({ models: A_ScriptDir '\models' })
      * MsgBox ocr.ocr_from_file('1.jpg', param)
      */
-    __New(path) {
+    __New(path, mode := 1) {
         config := { models: path "\RapidOcr\models" }
         dllpath := path "\RapidOcr\" (A_PtrSize * 8) "bit\RapidOcrOnnx.dll"
         static init := 0
@@ -70,6 +70,7 @@ class RapidOcr {
                     throw ValueError('No value is specified: ' k)
             } else if !FileExist(%k%)
                 throw TargetError('file "' k '" does not exist')
+        cls_model := mode == 1 ? cls_model : ""
         this.ptr := DllCall('RapidOcrOnnx\OcrInit', 'str', det_model, 'str', cls_model, 'str', rec_model, 'str',
             keys_dict, 'int', numThread, 'ptr')
     }

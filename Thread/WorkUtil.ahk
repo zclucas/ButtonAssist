@@ -1,10 +1,12 @@
 #Requires AutoHotkey v2.0
 
-MsgHandler(wParam, lParam, msg, hwnd) {
-    if (myHwnd != hwnd)
-        return
+MsgTriggerMacroHandler(wParam, lParam, msg, hwnd) {
     TriggerMacro(wParam, lParam)
     MsgSendHandler(WM_RELEASE_WORK, workIndex, 0)
+}
+
+MsgExitHandler(wParam, lParam, msg, hwnd) {
+   ExitApp()
 }
 
 TriggerMacro(tableIndex, itemIndex) {
@@ -20,6 +22,7 @@ MsgSendHandler(type, wParam, lParam) {
 InitWorkFilePath() {
     global IniFile := A_WorkingDir "\..\Setting\MainSettings.ini"
     global SearchFile := A_WorkingDir "\..\Setting\SearchFile.ini"
+    global SearchProFile := A_WorkingDir "\..\Setting\SearchProFile.ini"
     global CompareFile := A_WorkingDir "\..\Setting\CompareFile.ini"
     global CoordFile := A_WorkingDir "\..\Setting\CoordFile.ini"
     global FileFile := A_WorkingDir "\..\Setting\FileFile.ini"

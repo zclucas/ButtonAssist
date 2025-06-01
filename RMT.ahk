@@ -36,6 +36,7 @@ global MyEditHotkeyGui := EditHotkeyGui()
 global MyMacroGui := MacroEditGui()
 global MyReplaceKeyGui := ReplaceKeyGui()
 
+
 InitFilePath()  ;初始化文件路径
 LoadSetting()   ;加载配置
 EditListen()    ;右键编辑数据监听
@@ -45,7 +46,8 @@ BindSave()      ;绑定保存方法
 BindKey()       ;绑定快捷键
 
 ;放后面初始化，因为这初始化时间比较长
-global MyOcr := RapidOcr(A_ScriptDir)
-global MyPToken := Gdip_Startup()
 global MyWorkPool := WorkPool()
+global MySpeedOcr := RapidOcr(A_ScriptDir)
+global MyStandardOcr := RapidOcr(A_ScriptDir, 2)
+global MyPToken := Gdip_Startup()
 OpenCVLoadDll()

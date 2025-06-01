@@ -222,7 +222,6 @@ LoadSetting() {
     MySoftData.HoldFloat := IniRead(IniFile, IniSection, "HoldFloat", 0)
     MySoftData.PreIntervalFloat := IniRead(IniFile, IniSection, "PreIntervalFloat", 0)
     MySoftData.IntervalFloat := IniRead(IniFile, IniSection, "IntervalFloat", 0)
-    ; MySoftData.ImageSearchBlur := IniRead(IniFile, IniSection, "ImageSearchBlur", 100)
     MySoftData.CoordXFloat := IniRead(IniFile, IniSection, "CoordXFloat", 0)
     MySoftData.CoordYFloat := IniRead(IniFile, IniSection, "CoordYFloat", 0)
     MySoftData.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
@@ -235,8 +234,11 @@ LoadSetting() {
     ToolCheckInfo.RecordKeyboardValue := IniRead(IniFile, IniSection, "RecordKeyboardValue", true)
     ToolCheckInfo.RecordMouseValue := IniRead(IniFile, IniSection, "RecordMouseValue", true)
     ToolCheckInfo.RecordMouseRelativeValue := IniRead(IniFile, IniSection, "RecordMouseRelativeValue", false)
+    ToolCheckInfo.OCRTypeValue := IniRead(IniFile, IniSection, "OCRType", 1)
     MySoftData.IsExecuteShow := IniRead(IniFile, IniSection, "IsExecuteShow", true)
     MySoftData.IsBootStart := IniRead(IniFile, IniSection, "IsBootStart", false)
+    MySoftData.MutiThread := IniRead(IniFile, IniSection, "MutiThread", false)
+    MySoftData.MutiThreadNum := IniRead(IniFile, IniSection, "MutiThreadNum", 3)
     MySoftData.AgreeAgreement := IniRead(IniFile, IniSection, "AgreeAgreement", false)
     MySoftData.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
     MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
@@ -395,37 +397,6 @@ GetTableItemDefaultInfo(index) {
     return [savedTKArrStr, savedMacroArrStr, savedHoldTimeArrStr, savedModeArrStr, savedForbidArrStr,
         savedProcessNameStr, savedRemarkArrStr,
         savedLoopCountStr, savedTriggerTypeStr, savedMacroTypeArrStr, savedSerialeArrStr]
-}
-
-;资源保存
-OnSaveSetting(*) {
-    global MySoftData
-    loop MySoftData.TabNameArr.Length {
-        SaveTableItemInfo(A_Index)
-    }
-
-    IniWrite(MySoftData.HoldFloatCtrl.Value, IniFile, IniSection, "HoldFloat")
-    IniWrite(MySoftData.PreIntervalFloatCtrl.Value, IniFile, IniSection, "PreIntervalFloat")
-    IniWrite(MySoftData.IntervalFloatCtrl.Value, IniFile, IniSection, "IntervalFloat")
-    ; IniWrite(MySoftData.ImageSearchBlurCtrl.Value, IniFile, IniSection, "ImageSearchBlur")
-    IniWrite(MySoftData.CoordXFloatCon.Value, IniFile, IniSection, "CoordXFloat")
-    IniWrite(MySoftData.CoordYFloatCon.Value, IniFile, IniSection, "CoordYFloat")
-    IniWrite(MySoftData.PauseHotkeyCtrl.Value, IniFile, IniSection, "PauseHotkey")
-    IniWrite(MySoftData.KillMacroHotkeyCtrl.Value, IniFile, IniSection, "KillMacroHotkey")
-    IniWrite(true, IniFile, IniSection, "LastSaved")
-    IniWrite(MySoftData.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
-    IniWrite(MySoftData.BootStartCtrl.Value, IniFile, IniSection, "IsBootStart")
-    ; IniWrite(ToolCheckInfo.IsToolCheck, IniFile, IniSection, "IsToolCheck")
-    IniWrite(ToolCheckInfo.ToolCheckHotKeyCtrl.Value, IniFile, IniSection, "ToolCheckHotKey")
-    IniWrite(ToolCheckInfo.ToolRecordMacroHotKeyCtrl.Value, IniFile, IniSection, "RecordMacroHotKey")
-    IniWrite(ToolCheckInfo.ToolTextFilterHotKeyCtrl.Value, IniFile, IniSection, "ToolTextFilterHotKey")
-    IniWrite(ToolCheckInfo.RecordKeyboardCtrl.Value, IniFile, IniSection, "RecordKeyboardValue")
-    IniWrite(ToolCheckInfo.RecordMouseCtrl.Value, IniFile, IniSection, "RecordMouseValue")
-    IniWrite(ToolCheckInfo.RecordMouseRelativeCtrl.Value, IniFile, IniSection, "RecordMouseRelativeValue")
-    IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
-    IniWrite(true, IniFile, IniSection, "HasSaved")
-    SaveWinPos()
-    Reload()
 }
 
 SaveTableItemInfo(index) {
@@ -786,8 +757,8 @@ CheckContainText(source, text) {
     return InStr(source, text) > 0
 }
 
-GetScreenTextObjArr(X1, Y1, X2, Y2) {
-    global MyOcr
+GetScreenTextObjArr(X1, Y1, X2, Y2, mode) {
+    global MySpeedOcr, MyStandardOcr
     width := X2 - X1
     height := Y2 - Y1
     pBitmap := Gdip_BitmapFromScreen(X1 "|" Y1 "|" width "|" height)
@@ -808,7 +779,8 @@ GetScreenTextObjArr(X1, Y1, X2, Y2) {
     NumPut("int", 4, BITMAP_DATA, 20)  ; bytespixel (假设是 32 位图像)
 
     ; 调用 ocr_from_bitmapdata 方法
-    result := MyOcr.ocr_from_bitmapdata(BITMAP_DATA, , true)
+    ocr := mode == 1 ? MySpeedOcr : MyStandardOcr
+    result := ocr.ocr_from_bitmapdata(BITMAP_DATA, , true)
 
     ; 解锁位图
     Gdip_UnlockBits(pBitmap, &BitmapData)
@@ -817,8 +789,8 @@ GetScreenTextObjArr(X1, Y1, X2, Y2) {
     return result
 }
 
-CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text) {
-    result := GetScreenTextObjArr(X1, Y1, X2, Y2)
+CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text, mode) {
+    result := GetScreenTextObjArr(X1, Y1, X2, Y2, mode)
     if (result == "" || !result)
         return false
     for index, value in result {
@@ -996,11 +968,11 @@ GetSelectVariableObjArr(macro) {
     loop cmdArr.Length {
         paramArr := StrSplit(cmdArr[A_Index], "_")
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
-        IsSearch := StrCompare(paramArr[1], "搜索", false) == 0
+        IsSearchPro := StrCompare(paramArr[1], "搜索Pro", false) == 0
         IsOperation := StrCompare(paramArr[1], "运算", false) == 0
         IsIf := StrCompare(paramArr[1], "如果", false) == 0
         IsSubMacro := StrCompare(paramArr[1], "子宏", false) == 0
-        if (!IsVariable && !IsSearch && !IsOperation && !IsIf && !IsSubMacro)
+        if (!IsVariable && !IsSearchPro && !IsOperation && !IsIf && !IsSubMacro)
             continue
 
         if (IsVariable) {
@@ -1011,8 +983,8 @@ GetSelectVariableObjArr(macro) {
                     VariableMap[Data.NameArr[A_Index]] := true
             }
         }
-        else if (IsSearch) {
-            saveStr := IniRead(SearchFile, IniSection, paramArr[2], "")
+        else if (IsSearchPro) {
+            saveStr := IniRead(SearchProFile, IniSection, paramArr[2], "")
             Data := JSON.parse(saveStr, , false)
             if (Data.ResultToggle)
                 VariableMap[Data.ResultSaveName] := true

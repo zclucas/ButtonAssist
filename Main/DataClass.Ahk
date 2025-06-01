@@ -109,6 +109,8 @@ class ToolCheck {
         this.RecordMouseValue := ""
         this.RecordMouseRelativeCtrl := ""
         this.RecordMouseRelativeValue := ""
+        this.OCRTypeCtrl := ""
+        this.OCRTypeValue := 1
     }
 
     RecordMacroSwitch() {
@@ -131,6 +133,10 @@ class SoftData {
         this.ShowWinCtrl := ""
         this.IsBootStart := false
         this.BootStartCtrl := ""
+        this.MutiThread := false
+        this.MutiThreadCtrl := ""
+        this.MutiThreadNum := 3
+        this.MutiThreadNumCtrl := ""
         this.IsPause := false
         this.PauseToggleCtrl := ""
         this.PauseHotkey := ""
@@ -143,8 +149,6 @@ class SoftData {
         this.PreIntervalFloatCtrl := ""
         this.IntervalFloat := 0
         this.IntervalFloatCtrl := ""
-        this.ImageSearchBlur := 100
-        this.ImageSearchBlurCtrl := ""
         this.CoordXFloatCon := ""
         this.CoordYFloatCon := ""
         this.CoordXFloat := 0
@@ -236,6 +240,7 @@ class SearchData {
         this.SearchText := ""
         this.SearchImagePath := ""
         this.Similar := 90 ; 图片搜索模糊匹配度100  - 50
+        this.OCRType := 1
         this.StartPosX := 0
         this.StartPosY := 0
         this.EndPosX := A_ScreenWidth
@@ -337,6 +342,7 @@ class VariableData {
         this.SelectCopyNameArr := ["NameA", "NameB", "NameC", "NameD"]
         this.ExtractStr := ""
         this.ExtractType := 1
+        this.OCRType := 1
         this.StartPosX := 0
         this.StartPosY := 0
         this.EndPosX := A_ScreenWidth

@@ -1,9 +1,3 @@
-;绑定热键
-OnExitSoft(*) {
-    global MyPToken, MyOcr
-    Gdip_Shutdown(MyPToken)
-    MyOcr := ""
-}
 
 BindScrollHotkey(key, action) {
     if (MySoftData.SB == "")
@@ -98,6 +92,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         paramArr := StrSplit(cmdArr[A_Index], "_")
         IsMouseMove := StrCompare(paramArr[1], "移动", false) == 0
         IsSearch := StrCompare(paramArr[1], "搜索", false) == 0
+        IsSearchPro := StrCompare(paramArr[1], "搜索Pro", false) == 0
         IsPressKey := StrCompare(paramArr[1], "按键", false) == 0
         IsInterval := StrCompare(paramArr[1], "间隔", false) == 0
         IsFile := StrCompare(paramArr[1], "文件", false) == 0
@@ -111,7 +106,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
-        else if (IsSearch) {
+        else if (IsSearch || IsSearchPro) {
             OnSearch(tableItem, cmdArr[A_Index], index)
         }
         else if (IsPressKey) {
@@ -149,7 +144,8 @@ OnTriggerMacroOnce(tableItem, macro, index) {
 
 OnSearch(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    saveStr := IniRead(SearchFile, IniSection, paramArr[2], "")
+    dataFile := StrCompare(paramArr[1], "搜索", false) == 0 ? SearchFile : SearchProFile
+    saveStr := IniRead(dataFile, IniSection, paramArr[2], "")
     Data := JSON.parse(saveStr, , false)
     searchCount := Integer(Data.SearchCount)
     searchInterval := Integer(Data.SearchInterval)
@@ -201,8 +197,6 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
 
     CoordMode("Pixel", "Screen")
     if (Data.SearchType == 1) {
-        ; SearchInfo := Format("*{} *w0 *h0 {}", Integer(MySoftData.ImageSearchBlur), Data.SearchImagePath)
-        ; found := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, SearchInfo)
         OutputVarX := 0
         OutputVarY := 0
         found := FindImage(Data.SearchImagePath, X1, Y1, X2 - X1, Y2 - Y1, Data.Similar, &OutputVarX, &
@@ -215,7 +209,7 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
     }
     else if (Data.SearchType == 3) {
         text := Data.SearchText
-        found := CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text)
+        found := CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text, Data.OCRType)
     }
 
     if (found || isFinally) {
@@ -580,7 +574,7 @@ OnExtractingVariablesOnce(tableItem, index, variableData, isFinally) {
     X2 := variableData.EndPosX
     Y2 := variableData.EndPosY
     if (variableData.ExtractType == 1) {
-        TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2)
+        TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2, variableData.OCRType)
         TextObjs := TextObjs == "" ? [] : TextObjs
     }
     else {
@@ -783,50 +777,6 @@ OnSoftTriggerKey(tableItem, info, index) {
 GetTableClosureAction(action, TableItem, index) {
     funcObj := action.Bind(TableItem, index)
     return (*) => funcObj()
-}
-
-OnTableDelete(tableItem, index) {
-    if (tableItem.ModeArr.Length == 0) {
-        return
-    }
-    result := MsgBox("是否删除当前配置", "提示", 1)
-    if (result == "Cancel")
-        return
-
-    deleteMacro := tableItem.MacroArr.Length >= index ? tableItem.MacroArr[index] : ""
-    ClearUselessSetting(deleteMacro)
-
-    MySoftData.BtnAdd.Enabled := false
-    tableItem.ModeArr.RemoveAt(index)
-    tableItem.ForbidArr.RemoveAt(index)
-    tableItem.HoldTimeArr.RemoveAt(index)
-    if (tableItem.TKArr.Length >= index)
-        tableItem.TKArr.RemoveAt(index)
-    if (tableItem.MacroArr.Length >= index)
-        tableItem.MacroArr.RemoveAt(index)
-    if (tableItem.ProcessNameArr.Length >= index)
-        tableItem.ProcessNameArr.RemoveAt(index)
-    if (tableItem.LoopCountArr.Length >= index)
-        tableItem.LoopCountArr.RemoveAt(index)
-    if (tableItem.RemarkArr.Length >= index)
-        tableItem.RemarkArr.RemoveAt(index)
-    if (tableItem.SerialArr.Length >= index)
-        tableItem.SerialArr.RemoveAt(index)
-    if (tableItem.MacroTypeArr.Length >= index)
-        tableItem.MacroTypeArr.RemoveAt(index)
-    tableItem.IndexConArr.RemoveAt(index)
-    tableItem.TriggerTypeConArr.RemoveAt(index)
-    tableItem.ModeConArr.RemoveAt(index)
-    tableItem.ForbidConArr.RemoveAt(index)
-    tableItem.HoldTimeConArr.RemoveAt(index)
-    tableItem.TKConArr.RemoveAt(index)
-    tableItem.InfoConArr.RemoveAt(index)
-    tableItem.ProcessNameConArr.RemoveAt(index)
-    tableItem.LoopCountConArr.RemoveAt(index)
-    tableItem.RemarkConArr.RemoveAt(index)
-    tableItem.MacroTypeConArr.RemoveAt(index)
-
-    OnSaveSetting()
 }
 
 OnChangeTriggerType(tableItem, index) {
@@ -1039,7 +989,8 @@ OnToolTextFilterSelectImage(*) {
     path := FileSelect(, , "选择图片")
     if (path == "")
         return
-    result := MyOcr.ocr_from_file(path)
+    ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MySpeedOcr : MyStandardOcr
+    result := ocr.ocr_from_file(path)
     ToolCheckInfo.ToolTextCtrl.Value := result
     A_Clipboard := result
 }
@@ -1064,7 +1015,8 @@ OnToolTextCheckScreenShot() {
         }
 
         SaveClipToBitmap(filePath)
-        result := MyOcr.ocr_from_file(filePath)
+        ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MySpeedOcr : MyStandardOcr
+        result := ocr.ocr_from_file(filePath)
         ToolCheckInfo.ToolTextCtrl.Value := result
         A_Clipboard := result
         ; 停止监听

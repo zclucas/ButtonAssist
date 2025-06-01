@@ -21,6 +21,7 @@ class VariableGui {
         this.EndPosYCon := ""
         this.SearchCountCon := ""
         this.SearchIntervalCon := ""
+        this.OCRTypeCon := ""
         this.Data := ""
     }
 
@@ -184,6 +185,13 @@ class VariableGui {
             "左键框选搜索范围")
             this.SelectToggleCon.OnEvent("Click", (*) => this.OnClickSelectToggle())
 
+            PosX += 200
+            MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY + 3, 110), "文本识别模型:")
+            PosX += 110
+            this.OCRTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 2, 130), ["极速版",
+                "标准版"])
+            this.OCRTypeCon.Value := 1
+
             PosY += 25
             PosX := 20
             MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 550),
@@ -255,6 +263,7 @@ class VariableGui {
         this.CreateTypeCon.Value := this.Data.CreateType
         this.ExtractStrCon.Value := this.Data.ExtractStr
         this.ExtractTypeCon.Value := this.Data.ExtractType
+        this.OCRTypeCon.Value := this.Data.OCRType
         this.StartPosXCon.Value := this.Data.StartPosX
         this.StartPosYCon.Value := this.Data.StartPosY
         this.EndPosXCon.Value := this.Data.EndPosX
@@ -420,6 +429,7 @@ class VariableGui {
         this.Data.CreateType := this.CreateTypeCon.Value
         this.Data.ExtractStr := this.ExtractStrCon.Value
         this.Data.ExtractType := this.ExtractTypeCon.Value
+        this.Data.OCRType := this.OCRTypeCon.Value
         this.Data.StartPosX := this.StartPosXCon.Value
         this.Data.StartPosY := this.StartPosYCon.Value
         this.Data.EndPosX := this.EndPosXCon.Value

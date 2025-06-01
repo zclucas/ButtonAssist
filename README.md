@@ -11,7 +11,7 @@ RMT（若梦兔）是一个基于 AutoHotkey v2 实现的免费开源按键工�
 [🚀 10分钟上手指南，助你成为宏界大神](https://zclucas.github.io/RMT/)
 
 ## 软件更新与功能演示视频
-- [第一条更新视频，千里之行始于足下：ButtonAssist](https://www.bilibili.com/video/BV1EU411f7dC)
+- [ButtonAssist: 第一条更新视频，千里之行始于足下](https://www.bilibili.com/video/BV1EU411f7dC)
 - [ButtonAssist v1.0：功能优化，无图形界面](https://www.bilibili.com/video/BV1nYvieSETz)
 - [ButtonAssist v2.0：支持指定进程触发](https://www.bilibili.com/video/BV1ojtHeUEjR)
 - [ButtonAssist v3.0：图片搜索功能上线](https://www.bilibili.com/video/BV1i5CEYtEok)
@@ -29,7 +29,7 @@ RMT（若梦兔）是完全免费的开源项目，如果你觉得它对你有�
 |------|--------|
 | ![微信打赏](Images/Soft/WeiXin.png) | ![支付宝打赏](Images/Soft/ZhiFuBao.png) |
 
-即使只是 5 元、10 元，也是一份温暖的鼓励。如果暂时不方便，也可以通过 **Star 本项目** 或 **分享给朋友** 支持我们！
+如果暂时不方便，也可以通过 **Star 本项目** 或 **分享给朋友** 支持我们！
 
 ## ⭐ 特别感谢以下朋友对 RMT（若梦兔）的赞助
 | 时间（2025）         | 昵称     | 备注             | 时间（2025）       | 昵称     | 备注             |

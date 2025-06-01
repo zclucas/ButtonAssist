@@ -460,10 +460,9 @@ AddSettingUI(index) {
     MySoftData.CoordYFloatCon := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 440, posY - 4),
     MySoftData.CoordYFloat)
 
-    ; MyGui.Add("Text", Format("x{} y{} w120 Right", posX + 635, posY), "搜索模糊(0~255):")
-    ; MySoftData.ImageSearchBlurCtrl := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 760, posY - 4), MySoftData
-    ; .ImageSearchBlur
-    ; )
+    MyGui.Add("Text", Format("x{} y{} w120 Right", posX + 635, posY), "多线程数(1~5):")
+    MySoftData.MutiThreadNumCtrl := MyGui.Add("Edit", Format("x{} y{} w100 center", posX + 760, posY - 4), MySoftData
+    .MutiThreadNum)
 
     posY += 50
     MyGui.Add("GroupBox", Format("x{} y{} w900 h110", posX + 10, posY), "开关选项")
@@ -475,6 +474,9 @@ AddSettingUI(index) {
     MySoftData.BootStartCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 325, posY), "开机自启")
     MySoftData.BootStartCtrl.Value := MySoftData.IsBootStart
     MySoftData.BootStartCtrl.OnEvent("Click", OnBootStartChanged)
+
+    MySoftData.MutiThreadCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 635, posY), "指令串联多线程")
+    MySoftData.MutiThreadCtrl.Value := MySoftData.MutiThread
 
     tableItem := MySoftData.TableInfo[index]
     tableItem.UnderPosY := posY
@@ -505,7 +507,7 @@ AddRewardUI(index) {
     posY += 300
     posX := MySoftData.TabPosX + 15
     con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 860, 80),
-    "即使只是5元、10元，也是对我莫大的鼓励！当然，如果你暂时不方便，分享给朋友也是很棒的支持~`n开发不易，感谢你的每一份温暖！")
+    "当然，如果你暂时不方便，分享给朋友也是很棒的支持~`n开发不易，感谢你的每一份温暖！")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
 
     posY += 35
@@ -709,6 +711,14 @@ AddToolUI(index) {
 
     con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 350, posY - 5, 60, 25), "截图")
     con.OnEvent("Click", OnToolTextFilterScreenShot)
+    posY += 25
+    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "相关选项：")
+
+    MyGui.Add("Text", Format("x{} y{} w{}", PosX + 130, PosY, 110), "文本识别模型:")
+    ToolCheckInfo.OCRTypeCtrl := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX + 240, PosY - 5, 130), [
+        "极速版",
+        "标准版"])
+    ToolCheckInfo.OCRTypeCtrl.Value := ToolCheckInfo.OCRTypeValue
 
     posY += 40
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "录制的指令或提取的文本内容：")

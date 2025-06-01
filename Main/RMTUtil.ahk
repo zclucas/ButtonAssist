@@ -1,5 +1,90 @@
 #Requires AutoHotkey v2.0
 
+;绑定热键
+OnExitSoft(*) {
+    global MyPToken, MySpeedOcr
+    Gdip_Shutdown(MyPToken)
+    MySpeedOcr := ""
+    MyStandardOcr := ""
+    MyWorkPool.Clear()
+}
+
+;资源保存
+OnSaveSetting(*) {
+    global MySoftData
+    MyWorkPool.Clear()
+    loop MySoftData.TabNameArr.Length {
+        SaveTableItemInfo(A_Index)
+    }
+
+    IniWrite(MySoftData.HoldFloatCtrl.Value, IniFile, IniSection, "HoldFloat")
+    IniWrite(MySoftData.PreIntervalFloatCtrl.Value, IniFile, IniSection, "PreIntervalFloat")
+    IniWrite(MySoftData.IntervalFloatCtrl.Value, IniFile, IniSection, "IntervalFloat")
+    IniWrite(MySoftData.CoordXFloatCon.Value, IniFile, IniSection, "CoordXFloat")
+    IniWrite(MySoftData.CoordYFloatCon.Value, IniFile, IniSection, "CoordYFloat")
+    IniWrite(MySoftData.PauseHotkeyCtrl.Value, IniFile, IniSection, "PauseHotkey")
+    IniWrite(MySoftData.KillMacroHotkeyCtrl.Value, IniFile, IniSection, "KillMacroHotkey")
+    IniWrite(true, IniFile, IniSection, "LastSaved")
+    IniWrite(MySoftData.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
+    IniWrite(MySoftData.BootStartCtrl.Value, IniFile, IniSection, "IsBootStart")
+    IniWrite(MySoftData.MutiThreadNumCtrl.Value, IniFile, IniSection, "MutiThreadNum")
+    IniWrite(MySoftData.MutiThreadCtrl.Value, IniFile, IniSection, "MutiThread")
+    IniWrite(ToolCheckInfo.ToolCheckHotKeyCtrl.Value, IniFile, IniSection, "ToolCheckHotKey")
+    IniWrite(ToolCheckInfo.ToolRecordMacroHotKeyCtrl.Value, IniFile, IniSection, "RecordMacroHotKey")
+    IniWrite(ToolCheckInfo.ToolTextFilterHotKeyCtrl.Value, IniFile, IniSection, "ToolTextFilterHotKey")
+    IniWrite(ToolCheckInfo.RecordKeyboardCtrl.Value, IniFile, IniSection, "RecordKeyboardValue")
+    IniWrite(ToolCheckInfo.RecordMouseCtrl.Value, IniFile, IniSection, "RecordMouseValue")
+    IniWrite(ToolCheckInfo.RecordMouseRelativeCtrl.Value, IniFile, IniSection, "RecordMouseRelativeValue")
+    IniWrite(ToolCheckInfo.OCRTypeCtrl.Value, IniFile, IniSection, "OCRType")
+    IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
+    IniWrite(true, IniFile, IniSection, "HasSaved")
+    SaveWinPos()
+    Reload()
+}
+
+OnTableDelete(tableItem, index) {
+    if (tableItem.ModeArr.Length == 0) {
+        return
+    }
+    result := MsgBox("是否删除当前配置", "提示", 1)
+    if (result == "Cancel")
+        return
+
+    deleteMacro := tableItem.MacroArr.Length >= index ? tableItem.MacroArr[index] : ""
+    ClearUselessSetting(deleteMacro)
+
+    MySoftData.BtnAdd.Enabled := false
+    tableItem.ModeArr.RemoveAt(index)
+    tableItem.ForbidArr.RemoveAt(index)
+    tableItem.HoldTimeArr.RemoveAt(index)
+    if (tableItem.TKArr.Length >= index)
+        tableItem.TKArr.RemoveAt(index)
+    if (tableItem.MacroArr.Length >= index)
+        tableItem.MacroArr.RemoveAt(index)
+    if (tableItem.ProcessNameArr.Length >= index)
+        tableItem.ProcessNameArr.RemoveAt(index)
+    if (tableItem.LoopCountArr.Length >= index)
+        tableItem.LoopCountArr.RemoveAt(index)
+    if (tableItem.RemarkArr.Length >= index)
+        tableItem.RemarkArr.RemoveAt(index)
+    if (tableItem.SerialArr.Length >= index)
+        tableItem.SerialArr.RemoveAt(index)
+    if (tableItem.MacroTypeArr.Length >= index)
+        tableItem.MacroTypeArr.RemoveAt(index)
+    tableItem.IndexConArr.RemoveAt(index)
+    tableItem.TriggerTypeConArr.RemoveAt(index)
+    tableItem.ModeConArr.RemoveAt(index)
+    tableItem.ForbidConArr.RemoveAt(index)
+    tableItem.HoldTimeConArr.RemoveAt(index)
+    tableItem.TKConArr.RemoveAt(index)
+    tableItem.InfoConArr.RemoveAt(index)
+    tableItem.ProcessNameConArr.RemoveAt(index)
+    tableItem.LoopCountConArr.RemoveAt(index)
+    tableItem.RemarkConArr.RemoveAt(index)
+    tableItem.MacroTypeConArr.RemoveAt(index)
+
+    OnSaveSetting()
+}
 BindTabHotKey() {
     tableIndex := 0
     loop MySoftData.TabNameArr.Length {
@@ -239,6 +324,7 @@ InitFilePath() {
 
     global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
     global SearchFile := A_WorkingDir "\Setting\SearchFile.ini"
+    global SearchProFile := A_WorkingDir "\Setting\SearchProFile.ini"
     global CompareFile := A_WorkingDir "\Setting\CompareFile.ini"
     global CoordFile := A_WorkingDir "\Setting\CoordFile.ini"
     global FileFile := A_WorkingDir "\Setting\FileFile.ini"
