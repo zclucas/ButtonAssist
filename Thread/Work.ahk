@@ -33,6 +33,7 @@ global MySpeedOcr := RapidOcr(A_ScriptDir "\..")
 global MyStandardOcr := RapidOcr(A_ScriptDir "\..", 2)
 global MyPToken := Gdip_Startup()
 global MySubMacroStopAction := SubMacroStopAction
+global MyTriggerSubMacro := TriggerSubMacro
 WorkOpenCVLoadDll()
 
 ; 注册消息

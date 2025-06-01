@@ -734,24 +734,7 @@ OnPressKey(tableItem, cmd, index) {
     }
 }
 
-;松开停止
-OnTriggerKeyUp(tableIndex, itemIndex) {
-    tableItem := MySoftData.TableInfo[tableIndex]
-    isWork := tableItem.IsWorkArr[itemIndex]
-    if (tableItem.TriggerTypeArr[itemIndex] == 2 && !isWork) { ;松开触发
-        TriggerMacroHandler(tableIndex, itemIndex)
-    }
-    else if (tableItem.TriggerTypeArr[itemIndex] == 3) {  ;松开停止
-        if (isWork) {
-            workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
-            tableItem.IsWorkArr[itemIndex] := false
-            MyWorkPool.PostMessage(WM_STOP_MACRO, workPath)
-            return
-        }
 
-        KillTableItemMacro(tableItem, itemIndex)
-    }
-}
 
 ;按键替换
 OnReplaceDownKey(tableItem, info, index) {

@@ -2,7 +2,7 @@
 
 MsgTriggerMacroHandler(wParam, lParam, msg, hwnd) {
     TriggerMacro(wParam, lParam)
-    MsgSendHandler(WM_RELEASE_WORK, workIndex, 0)
+    MsgSendHandler(WM_RELEASE_WORK, wParam, lParam)
 }
 
 MsgExitHandler(wParam, lParam, msg, hwnd) {

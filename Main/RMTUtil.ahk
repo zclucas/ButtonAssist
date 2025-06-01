@@ -214,6 +214,25 @@ OnTriggerKeyDown(tableIndex, itemIndex) {
     }
 }
 
+;松开停止
+OnTriggerKeyUp(tableIndex, itemIndex) {
+    tableItem := MySoftData.TableInfo[tableIndex]
+    isWork := tableItem.IsWorkArr[itemIndex]
+    if (tableItem.TriggerTypeArr[itemIndex] == 2 && !isWork) { ;松开触发
+        TriggerMacroHandler(tableIndex, itemIndex)
+    }
+    else if (tableItem.TriggerTypeArr[itemIndex] == 3) {  ;松开停止
+        if (isWork) {
+            workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
+            tableItem.IsWorkArr[itemIndex] := false
+            MyWorkPool.PostMessage(WM_STOP_MACRO, workPath)
+            return
+        }
+
+        KillTableItemMacro(tableItem, itemIndex)
+    }
+}
+
 OnToggleTriggerMacro(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
     macro := tableItem.MacroArr[itemIndex]

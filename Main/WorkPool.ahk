@@ -71,8 +71,13 @@ class WorkPool {
     }
 
     MsgReleaseHandler(wParam, lParam, msg, hwnd) {
-        workPath := A_ScriptDir "\Thread\Work" wParam ".exe"
+        tableIndex := wParam
+        itemIndex := lParam
+        tableItem := MySoftData.TableInfo[tableIndex]
+        workIndex := tableItem.IsWorkArr[itemIndex]
+        workPath := A_ScriptDir "\Thread\Work" workIndex ".exe"
         this.pool.Push(workPath)
+        tableItem.IsWorkArr[itemIndex] := false
     }
 
     MsgFinishLoad(wParam, lParam, msg, hwnd) {
