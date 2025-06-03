@@ -9,7 +9,8 @@ RMT（若梦兔）是一个基于 AutoHotkey v2 实现的免费开源按键工�
 
 ## 操作指南
 [🚀 10分钟上手指南，助你成为宏界大神](https://zclucas.github.io/RMT/)
-[🚀 快速上手指南](web/快速上手.md)
+
+[🚀 快速上手指南](Web/快速上手.md)
 
 ## 软件更新与功能演示视频
 - [ButtonAssist: 第一条更新视频，千里之行始于足下](https://www.bilibili.com/video/BV1EU411f7dC)
