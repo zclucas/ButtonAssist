@@ -129,8 +129,17 @@ extern "C" IMAGEFINDER_API int __cdecl FindImage(const char *targetPath,
 
     // 2. 转换为灰度图（提高处理速度）
     cv::Mat grayLarge, graySmall;
-    cv::cvtColor(capturedImage, grayLarge, cv::COLOR_BGR2GRAY);
-    cv::cvtColor(templateImage, graySmall, cv::COLOR_BGR2GRAY);
+    // 相似度98及其以上，不做灰度处理
+    if (matchThreshold >= 98)
+    {
+        grayLarge = capturedImage;
+        graySmall = templateImage;
+    }
+    else
+    {
+        cv::cvtColor(capturedImage, grayLarge, cv::COLOR_BGR2GRAY);
+        cv::cvtColor(templateImage, graySmall, cv::COLOR_BGR2GRAY);
+    }
 
     // 3. 模板匹配
     cv::Mat result;
