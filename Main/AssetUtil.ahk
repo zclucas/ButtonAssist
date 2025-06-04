@@ -576,6 +576,12 @@ KillTableItemMacro(tableItem, index) {
         }
     }
     tableItem.SuccessClearActionArr[index] := Map()
+
+    ; 如果是开关型按键宏，重置其开关状态
+    if (tableItem.TriggerTypeArr.Length >= index && tableItem.TriggerTypeArr[index] == 4) {
+        if (tableItem.ToggleStateArr.Length >= index)
+            tableItem.ToggleStateArr[index] := false
+    }
 }
 
 GetTabHeight() {

@@ -9,6 +9,37 @@ OnExitSoft(*) {
     MyWorkPool.Clear()
 }
 
+BindPauseHotkey() {
+    global MySoftData
+    if (MySoftData.PauseHotkey != "") {
+        key := "$*~" MySoftData.PauseHotkey
+        Hotkey(key, OnPauseHotkey, "S")
+    }
+}
+
+OnPauseHotkey(*) {
+    global MySoftData ; 访问全局变量
+    MySoftData.IsPause := !MySoftData.IsPause
+    MySoftData.PauseToggleCtrl.Value := MySoftData.IsPause
+    OnKillAllMacro()
+    if (MySoftData.IsPause)
+        TraySetIcon("Images\Soft\IcoPause.ico")
+    else
+        TraySetIcon("Images\Soft\rabit.ico")
+    Suspend(MySoftData.IsPause)
+}
+
+OnKillAllMacro(*) {
+    global MySoftData ; 访问全局变量
+
+    loop MySoftData.TableInfo.Length {
+        tableItem := MySoftData.TableInfo[A_Index]
+        KillSingleTableMacro(tableItem)
+    }
+    MyWorkPool.Clear()
+    KillSingleTableMacro(MySoftData.SpecialTableItem)
+}
+
 ;资源保存
 OnSaveSetting(*) {
     global MySoftData
@@ -192,7 +223,9 @@ OnTriggerKeyDown(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
     macro := tableItem.MacroArr[itemIndex]
     if (tableItem.IsWorkArr[itemIndex] && tableItem.TriggerTypeArr[itemIndex] != 4) ;不是开关
+    {
         return
+    }
 
     if (tableItem.TriggerTypeArr[itemIndex] == 1) { ;按下触发
         if (SubStr(tableItem.TKArr[itemIndex], 1, 1) != "~")
@@ -225,7 +258,7 @@ OnTriggerKeyUp(tableIndex, itemIndex) {
         if (isWork) {
             workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
             tableItem.IsWorkArr[itemIndex] := false
-            MyWorkPool.PostMessage(WM_STOP_MACRO, workPath)
+            MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
             return
         }
 
@@ -242,7 +275,7 @@ OnToggleTriggerMacro(tableIndex, itemIndex) {
     if (tableItem.IsWorkArr[itemIndex]) {
         workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
         tableItem.IsWorkArr[itemIndex] := false
-        MyWorkPool.PostMessage(WM_STOP_MACRO, workPath)
+        MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
         return
     }
 
@@ -391,7 +424,7 @@ SubMacroStopAction(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
     workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
     tableItem.IsWorkArr[itemIndex] := false
-    MyWorkPool.PostMessage(WM_STOP_MACRO, workPath)
+    MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
 }
 
 TriggerSubMacro(tableIndex, itemIndex) {

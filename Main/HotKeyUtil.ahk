@@ -8,14 +8,6 @@ BindScrollHotkey(key, action) {
     HotIfWinActive
 }
 
-BindPauseHotkey() {
-    global MySoftData
-    if (MySoftData.PauseHotkey != "") {
-        key := "$*~" MySoftData.PauseHotkey
-        Hotkey(key, OnPauseHotkey, "S")
-    }
-}
-
 BindShortcut(triggerInfo, action) {
     if (triggerInfo == "")
         return
@@ -527,7 +519,7 @@ OnSubMacro(tableItem, cmd, index) {
         }
     }
     else if (Data.CallType == 2) {  ;触发
-        if (Data.Type != 1 && macroItem.MacroTypeArr[index] == 1) {
+        if (Data.Type != 1 && macroItem.MacroTypeArr[index] == 1) { ;串联
             MyTriggerSubMacro(macroTableIndex, macroIndex)
             return
         }
@@ -676,16 +668,15 @@ OnInterval(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     interval := Integer(paramArr[2])
     FloatInterval := GetFloatTime(interval, MySoftData.IntervalFloat)
-    Sleep(FloatInterval)
-    ; curTime := 0
-    ; clip := Min(500, FloatInterval)
-    ; while (curTime < FloatInterval) {
-    ;     if (tableItem.KilledArr[index])
-    ;         break
-    ;     Sleep(clip)
-    ;     curTime += clip
-    ;     clip := Min(500, FloatInterval - curTime)
-    ; }
+    curTime := 0
+    clip := Min(500, FloatInterval)
+    while (curTime < FloatInterval) {
+        if (tableItem.KilledArr[index])
+            break
+        Sleep(clip)
+        curTime += clip
+        clip := Min(500, FloatInterval - curTime)
+    }
 }
 
 OnPressKey(tableItem, cmd, index) {
@@ -790,29 +781,6 @@ OnChangeTriggerType(tableItem, index) {
 MenuReload(*) {
     SaveWinPos()
     Reload()
-}
-
-OnPauseHotkey(*) {
-    global MySoftData ; 访问全局变量
-    MySoftData.IsPause := !MySoftData.IsPause
-    MySoftData.PauseToggleCtrl.Value := MySoftData.IsPause
-    OnKillAllMacro()
-    if (MySoftData.IsPause)
-        TraySetIcon("Images\Soft\IcoPause.ico")
-    else
-        TraySetIcon("Images\Soft\rabit.ico")
-    Suspend(MySoftData.IsPause)
-}
-
-OnKillAllMacro(*) {
-    global MySoftData ; 访问全局变量
-
-    loop MySoftData.TableInfo.Length {
-        tableItem := MySoftData.TableInfo[A_Index]
-        KillSingleTableMacro(tableItem)
-    }
-    MyWorkPool.Clear()
-    KillSingleTableMacro(MySoftData.SpecialTableItem)
 }
 
 OnChangeSrollValue(*) {
