@@ -503,7 +503,9 @@ OnSubMacro(tableItem, cmd, index) {
         macroItem := MySoftData.TableInfo[3]
     }
 
-    if (Data.Type != 1) {
+
+    redirect := macroItem.SerialArr.Length < Data.Index || macroItem.SerialArr[Data.Index] != Data.MacroSerial
+    if (Data.Type != 1 && redirect) {
         loop macroItem.ModeArr.Length {
             if (Data.MacroSerial == macroItem.SerialArr[A_Index]) {
                 macro := macroItem.MacroArr[A_Index]

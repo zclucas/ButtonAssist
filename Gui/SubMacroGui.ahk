@@ -109,9 +109,14 @@ class SubMacroGui {
                 SerialArr := MySoftData.TableInfo[3].SerialArr
             }
 
-            loop SerialArr.Length {
-                if (SerialArr[A_Index] == this.Data.MacroSerial)
-                    this.IndexCon.Value := A_Index
+            if (SerialArr.Length < this.Data.Index || SerialArr[this.Data.Index] != this.Data.MacroSerial) {
+                loop SerialArr.Length {
+                    if (SerialArr[A_Index] == this.Data.MacroSerial) {
+                        this.IndexCon.Value := A_Index
+                        break
+                    }
+                    
+                }
             }
         }
     }
