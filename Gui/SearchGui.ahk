@@ -377,7 +377,7 @@ class SearchGui {
         }
 
         this.MacroGui.SureBtnAction := (command) => this.OnSureFoundMacroBtnClick(command)
-        this.MacroGui.ShowGui(this.Data.TrueCommandStr, false)
+        this.MacroGui.ShowGui(this.FoundCommandStrCon.Value, false)
     }
 
     OnEditUnFoundMacroBtnClick() {
@@ -386,7 +386,7 @@ class SearchGui {
             this.MacroGui.SureFocusCon := this.MousePosCon
         }
         this.MacroGui.SureBtnAction := (command) => this.OnSureUnFoundMacroBtnClick(command)
-        this.MacroGui.ShowGui(this.Data.FalseCommandStr, false)
+        this.MacroGui.ShowGui(this.UnFoundCommandStrCon.Value, false)
     }
 
     OnChangeSearchType() {

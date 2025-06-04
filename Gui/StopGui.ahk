@@ -52,7 +52,7 @@ class StopGui {
 
         PosX += 70
         this.StopTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["当前宏", "按键宏", "字串宏",
-            "子宏"])
+            "宏"])
         this.StopTypeCon.Value := 1
         this.StopTypeCon.OnEvent("Change", (*) => this.OnRefresh())
 

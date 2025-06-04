@@ -296,7 +296,6 @@ OnRunFile(tableItem, cmd, index) {
 
     isMp3 := RegExMatch(fileData.FilePath, ".mp3$")
     if (isMp3 && fileData.BackPlay) {
-        vbsPath := A_WorkingDir "\VBS\PlayAudio.vbs"
         playAudioCmd := Format('wscript.exe "{}" "{}"', vbsPath, fileData.FilePath)
         Run(playAudioCmd)
         return

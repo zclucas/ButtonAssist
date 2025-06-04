@@ -53,7 +53,7 @@ class SubMacroGui {
 
         PosX += 70
         this.TypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["当前宏", "按键宏", "字串宏",
-            "子宏"])
+            "宏"])
         this.TypeCon.Value := 1
         this.TypeCon.OnEvent("Change", (*) => this.OnRefresh())
 

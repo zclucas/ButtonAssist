@@ -25,6 +25,7 @@ MsgSendHandler(type, wParam, lParam) {
 }
 
 InitWorkFilePath() {
+    global vbsPath := A_WorkingDir "\..\VBS\PlayAudio.vbs"
     global IniFile := A_WorkingDir "\..\Setting\MainSettings.ini"
     global SearchFile := A_WorkingDir "\..\Setting\SearchFile.ini"
     global SearchProFile := A_WorkingDir "\..\Setting\SearchProFile.ini"
