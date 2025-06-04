@@ -809,7 +809,7 @@ OnKillAllMacro(*) {
         tableItem := MySoftData.TableInfo[A_Index]
         KillSingleTableMacro(tableItem)
     }
-
+    MyWorkPool.Clear()
     KillSingleTableMacro(MySoftData.SpecialTableItem)
 }
 
