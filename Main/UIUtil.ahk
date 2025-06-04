@@ -249,10 +249,11 @@ LoadSavedSettingUI(index) {
         )
         newRemarkControl.value := tableItem.RemarkArr.Length >= A_Index ? tableItem.RemarkArr[A_Index] : ""
 
-        newLoopCountControl := MyGui.Add("Edit", Format("x{} y{} w60 center", TabPosX + 675, tableItem.underPosY), "")
+        newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w60 center", TabPosX + 675, tableItem.underPosY),
+        ["无限"])
         conValue := tableItem.LoopCountArr.Length >= A_Index ? tableItem.LoopCountArr[A_Index] : "1"
-        conValue := conValue == "-1" ? "∞" : conValue
-        newLoopCountControl.Value := conValue
+        conValue := conValue == "-1" ? "无限" : conValue
+        newLoopCountControl.Text := conValue
         newLoopCountControl.Enabled := isMacro
 
         tableItem.MacroBtnConArr.Push(newMacroBtnControl)
@@ -360,7 +361,8 @@ OnAddSetting(*) {
     )
     newRemarkControl := MyGui.Add("Edit", Format("x{} y{} w180", TabPosX + 740, tableItem.underPosY + 25), "")
 
-    newLoopCountControl := MyGui.Add("Edit", Format("x{} y{} w60 center", TabPosX + 675, tableItem.underPosY), "1")
+    newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w60 center", TabPosX + 675, tableItem.underPosY), ["无限"])
+    newLoopCountControl.Text := "1"
     newLoopCountControl.Enabled := isMacro
 
     tableItem.LoopCountConArr.Push(newLoopCountControl)

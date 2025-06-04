@@ -603,8 +603,8 @@ GetTableSymbol(index) {
 GetItemSaveCountValue(tableIndex, Index) {
     itemtable := MySoftData.TableInfo[tableIndex]
     if (itemtable.LoopCountConArr.Length >= Index) {
-        value := itemtable.LoopCountConArr[Index].Value
-        if (value == "∞")
+        value := itemtable.LoopCountConArr[Index].Text
+        if (value == "无限")
             return -1
         if (IsInteger(value)) {
             if (Integer(value) < 0)
