@@ -18,6 +18,8 @@ GetAmpersandSequence(str) {
 ExtractNumbers(Text, Pattern) {
     ; 转义Pattern中的特殊字符
     Pattern := RegExReplace(Pattern, "[.*+?()\[\]{}|^$\\]", "\$0")
+    ; 将 pattern 中的中英文冒号统一替换为正则通配 [:：]
+    Pattern := RegExReplace(Pattern, "[:：]", "[:：]")
     SymbolMap := GetAmpersandSequence(Pattern)
 
     ; 优化数字匹配模式，区分千分位和普通数字
@@ -63,11 +65,11 @@ ProcessNumberValue(Value) {
     if (IsFloat(Cleaned)) {
         ; 处理整数部分前导零
         Cleaned := RegExReplace(Cleaned, "^([+-])?0+(\d)", "$1$2")
-        
+
         ; 处理小数部分末尾零
         return RegExReplace(Cleaned, "(\.\d*?[1-9])0+$|(\.)0+$", "$1$2")
     }
-    
+
     ; 处理整数前导零
     return Integer(RegExReplace(Cleaned, "^0+(\d)", "$1"))
 }
