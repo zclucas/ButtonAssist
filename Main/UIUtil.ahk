@@ -48,6 +48,7 @@ RefreshToolUI() {
     ToolCheckInfo.ToolProcessClassCtrl.Value := ToolCheckInfo.ProcessClass
     ToolCheckInfo.ToolProcessIdCtrl.Value := ToolCheckInfo.ProcessId
     ToolCheckInfo.ToolColorCtrl.Value := ToolCheckInfo.Color
+    ToolCheckInfo.ToolMouseWinPosCtrl.Value := ToolCheckInfo.WinPosStr
 }
 
 ;UI元素相关函数
@@ -361,7 +362,8 @@ OnAddSetting(*) {
     )
     newRemarkControl := MyGui.Add("Edit", Format("x{} y{} w180", TabPosX + 740, tableItem.underPosY + 25), "")
 
-    newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w60 center", TabPosX + 675, tableItem.underPosY), ["无限"])
+    newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w60 center", TabPosX + 675, tableItem.underPosY), [
+        "无限"])
     newLoopCountControl.Text := "1"
     newLoopCountControl.Enabled := isMacro
 
@@ -639,13 +641,17 @@ AddToolUI(index) {
     ToolCheckInfo.ToolCheckCtrl.Value := ToolCheckInfo.IsToolCheck
     ToolCheckInfo.ToolCheckCtrl.OnEvent("Click", OnToolCheckHotkey)
 
+    ToolCheckInfo.AlwaysOnTopCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 300, posY, 60), "窗口置顶")
+    ToolCheckInfo.AlwaysOnTopCtrl.Value := false
+    ToolCheckInfo.AlwaysOnTopCtrl.OnEvent("Click", OnToolAlwaysOnTop)
+
     posY += 30
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "位置坐标：")
+    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "屏幕坐标：")
     ToolCheckInfo.ToolMousePosCtrl := MyGui.Add("Edit", Format("x{} y{} w250", posX + 120, posY - 5), ToolCheckInfo.PosStr
     )
 
-    MyGui.Add("Text", Format("x{} y{}", posX + 390, posY), "进程名：")
-    ToolCheckInfo.ToolProcessNameCtrl := MyGui.Add("Edit", Format("x{} y{} w250", posX + 450, posY - 5), ToolCheckInfo.ProcessName
+    MyGui.Add("Text", Format("x{} y{}", posX + 390, posY), "窗口坐标：")
+    ToolCheckInfo.ToolMouseWinPosCtrl := MyGui.Add("Edit", Format("x{} y{} w250", posX + 455, posY - 5), ToolCheckInfo.ProcessName
     )
 
     posY += 30
@@ -653,8 +659,8 @@ AddToolUI(index) {
     ToolCheckInfo.ToolProcessTileCtrl := MyGui.Add("Edit", Format("x{} y{} w250", posX + 120, posY - 5), ToolCheckInfo.ProcessTile
     )
 
-    MyGui.Add("Text", Format("x{} y{}", posX + 390, posY), "进程PID:")
-    ToolCheckInfo.ToolProcessPidCtrl := MyGui.Add("Edit", Format("x{} y{} w250", posX + 450, posY - 5), ToolCheckInfo.ProcessPid
+    MyGui.Add("Text", Format("x{} y{}", posX + 390, posY), "进程名：")
+    ToolCheckInfo.ToolProcessNameCtrl := MyGui.Add("Edit", Format("x{} y{} w250", posX + 455, posY - 5), ToolCheckInfo.ProcessName
     )
 
     posY += 30
@@ -663,13 +669,17 @@ AddToolUI(index) {
     .ProcessClass
     )
 
-    MyGui.Add("Text", Format("x{} y{}", posX + 390, posY), "句柄Id:")
-    ToolCheckInfo.ToolProcessIdCtrl := MyGui.Add("Edit", Format("x{} y{} w250", posX + 450, posY - 5), ToolCheckInfo.ProcessId
+    MyGui.Add("Text", Format("x{} y{}", posX + 390, posY), "进程PID:")
+    ToolCheckInfo.ToolProcessPidCtrl := MyGui.Add("Edit", Format("x{} y{} w250", posX + 455, posY - 5), ToolCheckInfo.ProcessPid
     )
 
     posY += 30
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "位置颜色值：")
-    ToolCheckInfo.ToolColorCtrl := MyGui.Add("Edit", Format("x{} y{} w250", posX + 120, posY - 5), ToolCheckInfo.Color
+    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "句柄Id:")
+    ToolCheckInfo.ToolProcessIdCtrl := MyGui.Add("Edit", Format("x{} y{} w250", posX + 120, posY - 5), ToolCheckInfo.ProcessId
+    )
+
+    MyGui.Add("Text", Format("x{} y{}", posX + 390, posY), "位置颜色：")
+    ToolCheckInfo.ToolColorCtrl := MyGui.Add("Edit", Format("x{} y{} w250", posX + 455, posY - 5), ToolCheckInfo.Color
     )
 
     posY += 40
@@ -746,6 +756,9 @@ SetToolCheckInfo() {
     ToolCheckInfo.ProcessClass := WinGetClass(winId)
     ToolCheckInfo.ProcessId := winId
     ToolCheckInfo.Color := StrReplace(PixelGetColor(mouseX, mouseY, "Slow"), "0x", "")
+
+    WinPosArr := GetWinPos()
+    ToolCheckInfo.WinPosStr := WinPosArr[1] . "," . WinPosArr[2]
     RefreshToolUI()
 }
 

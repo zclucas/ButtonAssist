@@ -52,22 +52,3 @@ global MySpeedOcr := RapidOcr(A_ScriptDir)
 global MyStandardOcr := RapidOcr(A_ScriptDir, 2)
 global MyPToken := Gdip_Startup()
 OpenCVLoadDll()
-
-a:: {
-    targetTitle := "QQ"
-    hwndList := WinGetList(targetTitle)
-    loop hwndList.Length {
-        hwnd := hwndList[A_Index]
-        ; 点击位置（窗口客户区坐标）
-        x := 40
-        y := 60
-        lParam := (y << 16) | (x & 0xFFFF)
-
-        ; 发送鼠标按下消息
-        PostMessage 0x201, 1, lParam, , "ahk_id " hwnd  ; WM_LBUTTONDOWN
-        Sleep 50
-        ; 发送鼠标抬起消息
-        PostMessage 0x202, 0, lParam, , "ahk_id " hwnd  ; WM_LBUTTONUP
-    }
-
-}

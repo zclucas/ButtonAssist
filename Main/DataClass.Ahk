@@ -65,9 +65,11 @@ class Timer {
 
 class ToolCheck {
     __New() {
+        this.AlwaysOnTopCtrl := ""
         this.ToolCheckCtrl := ""
         this.ToolCheckHotKeyCtrl := ""
         this.ToolMousePosCtrl := ""
+        this.ToolMouseWinPosCtrl := ""
         this.ToolProcessNameCtrl := ""
         this.ToolProcessTileCtrl := ""
         this.ToolProcessPidCtrl := ""
@@ -85,6 +87,7 @@ class ToolCheck {
         this.IsToolCheck := false
         this.ToolCheckHotKey := ""
         this.PosStr := ""
+        this.WinPosStr := ""
         this.ProcessName := ""
         this.ProcessTile := ""
         this.ProcessPid := ""
@@ -362,7 +365,7 @@ class OperationData {
 class BGMouseData {
     __New() {
         this.SerialStr := ""
-        this.TargetTitle := "请输入目标窗口标题"
+        this.TargetTitle := ""
         this.OperateType := 1 ;点击 双击 按下 松开
         this.MouseType := 1 ;左键 中键 右键
         this.PosX := 100

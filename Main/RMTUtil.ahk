@@ -389,6 +389,17 @@ OnToolCheckHotkey(*) {
         ToolCheckInfo.MouseInfoTimer := ""
 }
 
+OnToolAlwaysOnTop(*) {
+    global MySoftData, ToolCheckInfo
+    state := ToolCheckInfo.AlwaysOnTopCtrl.Value
+    if (state) {
+        MySoftData.MyGui.Opt("+AlwaysOnTop")
+    }
+    else {
+        MySoftData.MyGui.Opt("-AlwaysOnTop")
+    }
+}
+
 InitFilePath() {
     if (!DirExist(A_WorkingDir "\Setting")) {
         DirCreate(A_WorkingDir "\Setting")

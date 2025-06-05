@@ -652,9 +652,51 @@ OnBGMouse(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     saveStr := IniRead(BGMouseFile, IniSection, paramArr[2], "")
     Data := JSON.parse(saveStr, , false)
-   
-}
 
+    WM_DOWN_ARR := [0x201, 0x204, 0x207]    ;左键，中键，右键
+    WM_UP_ARR := [0x202, 0x205, 0x208]    ;左键，中键，右键
+    WM_DCLICK_ARR := [0x203, 0x206, 0x209]    ;左键，中键，右键
+
+    VariableMap := tableItem.VariableMapArr[index]
+    if (Data.PosXName != "空" && !VariableMap.Has(Data.PosXName)) {
+        MsgBox("当前环境不存在变量 " Data.PosXName)
+        return
+    }
+
+    if (Data.PosYName != "空" && !VariableMap.Has(Data.PosYName)) {
+        MsgBox("当前环境不存在变量 " Data.PosYName)
+        return
+    }
+
+    PosX := Data.PosXName != "空" ? VariableMap[Data.PosXName] : Data.PosX
+    PosY := Data.PosYName != "空" ? VariableMap[Data.PosYName] : Data.PosY
+    PosX := GetFloatValue(PosX, MySoftData.CoordXFloat)
+    PosY := GetFloatValue(PosY, MySoftData.CoordYFloat)
+
+    hwndList := WinGetList(Data.TargetTitle)
+    loop hwndList.Length {
+        hwnd := hwndList[A_Index]
+        ; 点击位置（窗口客户区坐标）
+        lParam := (PosY << 16) | (PosX & 0xFFFF)
+
+        if (Data.OperateType == 1) {
+            PostMessage WM_DOWN_ARR[Data.MouseType], 1, lParam, , "ahk_id " hwnd
+            Sleep Data.ClickTime
+            PostMessage WM_UP_ARR[Data.MouseType], 0, lParam, , "ahk_id " hwnd
+        }
+        else if (Data.OperateType == 2) {
+            PostMessage WM_DCLICK_ARR[Data.MouseType], 1, lParam, , "ahk_id " hwnd
+            Sleep Data.ClickTime
+            PostMessage WM_UP_ARR[Data.MouseType], 0, lParam, , "ahk_id " hwnd
+        }
+        else if (Data.OperateType == 3) {
+            PostMessage WM_DOWN_ARR[Data.MouseType], 1, lParam, , "ahk_id " hwnd
+        }
+        else if (Data.OperateType == 4) {
+            PostMessage WM_UP_ARR[Data.MouseType], 0, lParam, , "ahk_id " hwnd
+        }
+    }
+}
 
 OnMouseMove(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")

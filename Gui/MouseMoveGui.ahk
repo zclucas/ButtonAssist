@@ -45,7 +45,7 @@ class MouseMoveGui {
 
         PosY += 20
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 400), "F1:选取当前坐标")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "F1:选取当前坐标")
 
         PosX := 10
         PosY += 20

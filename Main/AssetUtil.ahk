@@ -1116,3 +1116,28 @@ StrToHex(str) {
     }
     return hex
 }
+
+GetWinPos() {
+    DllCall("SetProcessDPIAware")
+    CoordMode("Mouse", "Screen")
+    MouseGetPos &mouseX, &mouseY
+
+    ; 获取鼠标下窗口句柄
+    winId := DllCall("User32\WindowFromPoint", "int64", (mouseY << 32) | (mouseX & 0xFFFFFFFF), "ptr")
+
+    ; 获取该窗口的主窗口（避免偏移）
+    GA_ROOT := 2
+    rootHwnd := DllCall("GetAncestor", "ptr", winId, "uint", GA_ROOT, "ptr")
+
+    ; 创建结构体 POINT
+    pt := Buffer(8, 0)
+    NumPut("int", mouseX, pt, 0)  ; X
+    NumPut("int", mouseY, pt, 4)  ; Y
+
+    ; 屏幕坐标转客户区
+    DllCall("User32\ScreenToClient", "ptr", rootHwnd, "ptr", pt)
+
+    xClient := NumGet(pt, 0, "int")
+    yClient := NumGet(pt, 4, "int")
+    return [xClient, yClient]
+}
