@@ -39,6 +39,7 @@ InitWorkFilePath() {
     global VariableFile := A_WorkingDir "\..\Setting\VariableFile.ini"
     global SubMacroFile := A_WorkingDir "\..\Setting\SubMacroFile.ini"
     global OperationFile := A_WorkingDir "\..\Setting\OperationFile.ini"
+    global BGMouseFile := A_WorkingDir "\..\Setting\BGMouseFile.ini"
     global IniSection := "UserSettings"
 }
 
@@ -56,4 +57,12 @@ WorkOpenCVLoadDll() {
     ; 使用 SetDllDirectory 将 dllDir 添加到 DLL 搜索路径中
     DllCall("SetDllDirectory", "Str", dllDir)
     DllCall('LoadLibrary', 'str', dllpath, "Ptr")
+}
+
+SubMacroStopAction(tableIndex, itemIndex) {
+    MsgSendHandler(WM_STOP_MACRO, tableIndex, itemIndex)
+}
+
+TriggerSubMacro(tableIndex, itemIndex) {
+    MsgSendHandler(WM_TR_MACRO, tableIndex, itemIndex)
 }

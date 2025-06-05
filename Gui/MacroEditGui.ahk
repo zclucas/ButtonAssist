@@ -12,6 +12,7 @@
 #Include VariableGui.ahk
 #Include SubMacroGui.ahk
 #Include OperationGui.ahk
+#Include BGMouseGui.ahk
 
 class MacroEditGui {
     __new() {
@@ -102,6 +103,11 @@ class MacroEditGui {
         this.OperationGui.MacroEditGui := this
         this.OperationGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("运算", this.OperationGui)
+
+        this.BGMouseGui := BGMouseGui()
+        this.BGMouseGui.MacroEditGui := this
+        this.BGMouseGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("后台鼠标", this.BGMouseGui)
     }
 
     GetSubGuiSymbol(subGui) {
@@ -244,6 +250,12 @@ class MacroEditGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.SubMacroGui))
         this.CmdBtnConMap.Set("子宏", btnCon)
+
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "后台鼠标")
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.BGMouseGui))
+        this.CmdBtnConMap.Set("后台鼠标", btnCon)
 
         PosX := 20
         PosY += 110

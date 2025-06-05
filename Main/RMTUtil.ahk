@@ -417,6 +417,7 @@ InitFilePath() {
     global VariableFile := A_WorkingDir "\Setting\VariableFile.ini"
     global SubMacroFile := A_WorkingDir "\Setting\SubMacroFile.ini"
     global OperationFile := A_WorkingDir "\Setting\OperationFile.ini"
+    global BGMouseFile := A_WorkingDir "\Setting\BGMouseFile.ini"
     global IniSection := "UserSettings"
 }
 

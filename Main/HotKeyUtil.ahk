@@ -94,6 +94,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
         IsSubMacro := StrCompare(paramArr[1], "子宏", false) == 0
         IsOperation := StrCompare(paramArr[1], "运算", false) == 0
+        IsBGMouse := StrCompare(paramArr[1], "后台鼠标", false) == 0
         if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
@@ -129,6 +130,9 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         }
         else if (IsOperation) {
             OnOperation(tableItem, cmdArr[A_Index], index)
+        }
+        else if (IsBGMouse) {
+            OnBGMouse(tableItem, cmdArr[A_Index], index)
         }
     }
 }
@@ -495,7 +499,6 @@ OnSubMacro(tableItem, cmd, index) {
         macroItem := MySoftData.TableInfo[3]
     }
 
-
     redirect := macroItem.SerialArr.Length < Data.Index || macroItem.SerialArr[Data.Index] != Data.MacroSerial
     if (Data.Type != 1 && redirect) {
         loop macroItem.ModeArr.Length {
@@ -645,6 +648,14 @@ OnOperation(tableItem, cmd, index) {
     }
 }
 
+OnBGMouse(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
+    saveStr := IniRead(BGMouseFile, IniSection, paramArr[2], "")
+    Data := JSON.parse(saveStr, , false)
+   
+}
+
+
 OnMouseMove(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     PosX := Integer(paramArr[2])
@@ -725,8 +736,6 @@ OnPressKey(tableItem, cmd, index) {
         }
     }
 }
-
-
 
 ;按键替换
 OnReplaceDownKey(tableItem, info, index) {
