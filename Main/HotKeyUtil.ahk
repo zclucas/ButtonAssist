@@ -462,7 +462,7 @@ OnStop(tableItem, cmd, index) {
         tableIndex := 2
     }
     else if (stopData.StopType == 4) {      ;终止子宏
-        stopTableItem := 3
+        tableIndex := 3
     }
     stopTableItem := MySoftData.TableInfo[tableIndex]
     isWork := stopTableItem.IsWorkArr[stopData.StopIndex]
