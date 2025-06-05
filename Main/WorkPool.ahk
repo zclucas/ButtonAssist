@@ -92,8 +92,7 @@ class WorkPool {
         isWork := tableItem.IsWorkArr[itemIndex]
         if (isWork) {
             workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
-            tableItem.IsWorkArr[itemIndex] := false
-            MyWorkPool.PostMessage(WM_STOP_MACRO, workPath)
+            MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
             return
         }
 

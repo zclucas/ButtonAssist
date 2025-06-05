@@ -6,22 +6,24 @@ MsgTriggerMacroHandler(wParam, lParam, msg, hwnd) {
 }
 
 MsgExitHandler(wParam, lParam, msg, hwnd) {
-   ExitApp()
+    ExitApp()
 }
 
 MsgStopMacroHandler(wParam, lParam, msg, hwnd) {
-   KillTableItemMacro(wParam, lParam)
+    loop MySoftData.TableInfo.Length {
+        tableItem := MySoftData.TableInfo[A_Index]
+        KillSingleTableMacro(tableItem)
+    }
 }
 
-
 TriggerMacro(tableIndex, itemIndex) {
-    tableData := MySoftData.TableInfo[tableIndex]
-    macro := tableData.MacroArr[itemIndex]
-    OnTriggerMacroKeyAndInit(tableData, macro, itemIndex)
+    tableItem := MySoftData.TableInfo[tableIndex]
+    macro := tableItem.MacroArr[itemIndex]
+    OnTriggerMacroKeyAndInit(tableItem, macro, itemIndex)
 }
 
 MsgSendHandler(type, wParam, lParam) {
-    PostMessage(type, wParam, lParam, ,"ahk_id " parentHwnd)
+    PostMessage(type, wParam, lParam, , "ahk_id " parentHwnd)
 }
 
 InitWorkFilePath() {
@@ -37,10 +39,11 @@ InitWorkFilePath() {
     global VariableFile := A_WorkingDir "\..\Setting\VariableFile.ini"
     global SubMacroFile := A_WorkingDir "\..\Setting\SubMacroFile.ini"
     global OperationFile := A_WorkingDir "\..\Setting\OperationFile.ini"
+    global BGMouseFile := A_WorkingDir "\..\Setting\BGMouseFile.ini"
     global IniSection := "UserSettings"
 }
 
-InitWork(){
+InitWork() {
     global MySoftData
     MySoftData.isWork := true
 }
@@ -56,7 +59,7 @@ WorkOpenCVLoadDll() {
     DllCall('LoadLibrary', 'str', dllpath, "Ptr")
 }
 
-SubMacroStopAction(tableIndex, itemIndex){
+SubMacroStopAction(tableIndex, itemIndex) {
     MsgSendHandler(WM_STOP_MACRO, tableIndex, itemIndex)
 }
 

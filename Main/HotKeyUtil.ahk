@@ -8,14 +8,6 @@ BindScrollHotkey(key, action) {
     HotIfWinActive
 }
 
-BindPauseHotkey() {
-    global MySoftData
-    if (MySoftData.PauseHotkey != "") {
-        key := "$*~" MySoftData.PauseHotkey
-        Hotkey(key, OnPauseHotkey, "S")
-    }
-}
-
 BindShortcut(triggerInfo, action) {
     if (triggerInfo == "")
         return
@@ -102,6 +94,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
         IsSubMacro := StrCompare(paramArr[1], "子宏", false) == 0
         IsOperation := StrCompare(paramArr[1], "运算", false) == 0
+        IsBGMouse := StrCompare(paramArr[1], "后台鼠标", false) == 0
         if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
         }
@@ -137,6 +130,9 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         }
         else if (IsOperation) {
             OnOperation(tableItem, cmdArr[A_Index], index)
+        }
+        else if (IsBGMouse) {
+            OnBGMouse(tableItem, cmdArr[A_Index], index)
         }
     }
 }
@@ -470,7 +466,7 @@ OnStop(tableItem, cmd, index) {
         tableIndex := 2
     }
     else if (stopData.StopType == 4) {      ;终止子宏
-        stopTableItem := 3
+        tableIndex := 3
     }
     stopTableItem := MySoftData.TableInfo[tableIndex]
     isWork := stopTableItem.IsWorkArr[stopData.StopIndex]
@@ -503,7 +499,6 @@ OnSubMacro(tableItem, cmd, index) {
         macroItem := MySoftData.TableInfo[3]
     }
 
-
     redirect := macroItem.SerialArr.Length < Data.Index || macroItem.SerialArr[Data.Index] != Data.MacroSerial
     if (Data.Type != 1 && redirect) {
         loop macroItem.ModeArr.Length {
@@ -527,7 +522,7 @@ OnSubMacro(tableItem, cmd, index) {
         }
     }
     else if (Data.CallType == 2) {  ;触发
-        if (Data.Type != 1 && macroItem.MacroTypeArr[index] == 1) {
+        if (Data.Type != 1 && macroItem.MacroTypeArr[index] == 1) { ;串联
             MyTriggerSubMacro(macroTableIndex, macroIndex)
             return
         }
@@ -653,6 +648,56 @@ OnOperation(tableItem, cmd, index) {
     }
 }
 
+OnBGMouse(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
+    saveStr := IniRead(BGMouseFile, IniSection, paramArr[2], "")
+    Data := JSON.parse(saveStr, , false)
+
+    WM_DOWN_ARR := [0x201, 0x204, 0x207]    ;左键，中键，右键
+    WM_UP_ARR := [0x202, 0x205, 0x208]    ;左键，中键，右键
+    WM_DCLICK_ARR := [0x203, 0x206, 0x209]    ;左键，中键，右键
+
+    VariableMap := tableItem.VariableMapArr[index]
+    if (Data.PosXName != "空" && !VariableMap.Has(Data.PosXName)) {
+        MsgBox("当前环境不存在变量 " Data.PosXName)
+        return
+    }
+
+    if (Data.PosYName != "空" && !VariableMap.Has(Data.PosYName)) {
+        MsgBox("当前环境不存在变量 " Data.PosYName)
+        return
+    }
+
+    PosX := Data.PosXName != "空" ? VariableMap[Data.PosXName] : Data.PosX
+    PosY := Data.PosYName != "空" ? VariableMap[Data.PosYName] : Data.PosY
+    PosX := GetFloatValue(PosX, MySoftData.CoordXFloat)
+    PosY := GetFloatValue(PosY, MySoftData.CoordYFloat)
+
+    hwndList := WinGetList(Data.TargetTitle)
+    loop hwndList.Length {
+        hwnd := hwndList[A_Index]
+        ; 点击位置（窗口客户区坐标）
+        lParam := (PosY << 16) | (PosX & 0xFFFF)
+
+        if (Data.OperateType == 1) {
+            PostMessage WM_DOWN_ARR[Data.MouseType], 1, lParam, , "ahk_id " hwnd
+            Sleep Data.ClickTime
+            PostMessage WM_UP_ARR[Data.MouseType], 0, lParam, , "ahk_id " hwnd
+        }
+        else if (Data.OperateType == 2) {
+            PostMessage WM_DCLICK_ARR[Data.MouseType], 1, lParam, , "ahk_id " hwnd
+            Sleep Data.ClickTime
+            PostMessage WM_UP_ARR[Data.MouseType], 0, lParam, , "ahk_id " hwnd
+        }
+        else if (Data.OperateType == 3) {
+            PostMessage WM_DOWN_ARR[Data.MouseType], 1, lParam, , "ahk_id " hwnd
+        }
+        else if (Data.OperateType == 4) {
+            PostMessage WM_UP_ARR[Data.MouseType], 0, lParam, , "ahk_id " hwnd
+        }
+    }
+}
+
 OnMouseMove(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     PosX := Integer(paramArr[2])
@@ -676,16 +721,15 @@ OnInterval(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     interval := Integer(paramArr[2])
     FloatInterval := GetFloatTime(interval, MySoftData.IntervalFloat)
-    Sleep(FloatInterval)
-    ; curTime := 0
-    ; clip := Min(500, FloatInterval)
-    ; while (curTime < FloatInterval) {
-    ;     if (tableItem.KilledArr[index])
-    ;         break
-    ;     Sleep(clip)
-    ;     curTime += clip
-    ;     clip := Min(500, FloatInterval - curTime)
-    ; }
+    curTime := 0
+    clip := Min(500, FloatInterval)
+    while (curTime < FloatInterval) {
+        if (tableItem.KilledArr[index])
+            break
+        Sleep(clip)
+        curTime += clip
+        clip := Min(500, FloatInterval - curTime)
+    }
 }
 
 OnPressKey(tableItem, cmd, index) {
@@ -734,8 +778,6 @@ OnPressKey(tableItem, cmd, index) {
         }
     }
 }
-
-
 
 ;按键替换
 OnReplaceDownKey(tableItem, info, index) {
@@ -790,29 +832,6 @@ OnChangeTriggerType(tableItem, index) {
 MenuReload(*) {
     SaveWinPos()
     Reload()
-}
-
-OnPauseHotkey(*) {
-    global MySoftData ; 访问全局变量
-    MySoftData.IsPause := !MySoftData.IsPause
-    MySoftData.PauseToggleCtrl.Value := MySoftData.IsPause
-    OnKillAllMacro()
-    if (MySoftData.IsPause)
-        TraySetIcon("Images\Soft\IcoPause.ico")
-    else
-        TraySetIcon("Images\Soft\rabit.ico")
-    Suspend(MySoftData.IsPause)
-}
-
-OnKillAllMacro(*) {
-    global MySoftData ; 访问全局变量
-
-    loop MySoftData.TableInfo.Length {
-        tableItem := MySoftData.TableInfo[A_Index]
-        KillSingleTableMacro(tableItem)
-    }
-    MyWorkPool.Clear()
-    KillSingleTableMacro(MySoftData.SpecialTableItem)
 }
 
 OnChangeSrollValue(*) {

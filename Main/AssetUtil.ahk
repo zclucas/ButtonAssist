@@ -576,6 +576,12 @@ KillTableItemMacro(tableItem, index) {
         }
     }
     tableItem.SuccessClearActionArr[index] := Map()
+
+    ; 如果是开关型按键宏，重置其开关状态
+    if (tableItem.TriggerTypeArr.Length >= index && tableItem.TriggerTypeArr[index] == 4) {
+        if (tableItem.ToggleStateArr.Length >= index)
+            tableItem.ToggleStateArr[index] := false
+    }
 }
 
 GetTabHeight() {
@@ -757,7 +763,7 @@ CheckAutoStart() {
 
 CheckContainText(source, text) {
     ; 返回布尔值：true 表示包含，false 表示不包含
-    return InStr(source, text) > 0
+    return RegExMatch(source, text)
 }
 
 GetScreenTextObjArr(X1, Y1, X2, Y2, mode) {
@@ -1109,4 +1115,29 @@ StrToHex(str) {
         hex .= Format("{:02X}", Ord(A_LoopField))
     }
     return hex
+}
+
+GetWinPos() {
+    DllCall("SetProcessDPIAware")
+    CoordMode("Mouse", "Screen")
+    MouseGetPos &mouseX, &mouseY
+
+    ; 获取鼠标下窗口句柄
+    winId := DllCall("User32\WindowFromPoint", "int64", (mouseY << 32) | (mouseX & 0xFFFFFFFF), "ptr")
+
+    ; 获取该窗口的主窗口（避免偏移）
+    GA_ROOT := 2
+    rootHwnd := DllCall("GetAncestor", "ptr", winId, "uint", GA_ROOT, "ptr")
+
+    ; 创建结构体 POINT
+    pt := Buffer(8, 0)
+    NumPut("int", mouseX, pt, 0)  ; X
+    NumPut("int", mouseY, pt, 4)  ; Y
+
+    ; 屏幕坐标转客户区
+    DllCall("User32\ScreenToClient", "ptr", rootHwnd, "ptr", pt)
+
+    xClient := NumGet(pt, 0, "int")
+    yClient := NumGet(pt, 4, "int")
+    return [xClient, yClient]
 }

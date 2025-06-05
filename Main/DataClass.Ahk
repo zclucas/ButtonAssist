@@ -41,28 +41,23 @@ class TableItem {
     }
 }
 
-class Timer
-{
-    __New(callback, period)
-    {
+class Timer {
+    __New(callback, period) {
         this.binding := callback
         this.period := period
         this.priority := 0
     }
 
-    __Delete()
-    {
+    __Delete() {
         this.Off()
     }
 
-    On()
-    {
+    On() {
         funcObj := this.binding
         SetTimer funcObj, this.period, this.priority
     }
 
-    Off()
-    {
+    Off() {
         funcObj := this.binding
         SetTimer funcObj, 0
     }
@@ -70,9 +65,11 @@ class Timer
 
 class ToolCheck {
     __New() {
+        this.AlwaysOnTopCtrl := ""
         this.ToolCheckCtrl := ""
         this.ToolCheckHotKeyCtrl := ""
         this.ToolMousePosCtrl := ""
+        this.ToolMouseWinPosCtrl := ""
         this.ToolProcessNameCtrl := ""
         this.ToolProcessTileCtrl := ""
         this.ToolProcessPidCtrl := ""
@@ -90,6 +87,7 @@ class ToolCheck {
         this.IsToolCheck := false
         this.ToolCheckHotKey := ""
         this.PosStr := ""
+        this.WinPosStr := ""
         this.ProcessName := ""
         this.ProcessTile := ""
         this.ProcessPid := ""
@@ -123,8 +121,6 @@ class ToolCheck {
             this.RecordMacroTimer := ""
     }
 }
-
-
 
 class SoftData {
     __New() {
@@ -363,5 +359,19 @@ class OperationData {
         this.UpdateNameArr := ["空", "空", "空", "空"]
         this.SymbolGroups := [[], [], [], []]  ;操作符号
         this.ValueGroups := [[], [], [], []]     ;运算对象
+    }
+}
+
+class BGMouseData {
+    __New() {
+        this.SerialStr := ""
+        this.TargetTitle := ""
+        this.OperateType := 1 ;点击 双击 按下 松开
+        this.MouseType := 1 ;左键 中键 右键
+        this.PosX := 100
+        this.PosY := 100
+        this.PosXName := "空"
+        this.PosYName := "空"
+        this.ClickTime := 50 ;点击时间跨度
     }
 }
