@@ -763,7 +763,7 @@ CheckAutoStart() {
 
 CheckContainText(source, text) {
     ; 返回布尔值：true 表示包含，false 表示不包含
-    return InStr(source, text) > 0
+    return RegExMatch(source, text)
 }
 
 GetScreenTextObjArr(X1, Y1, X2, Y2, mode) {

@@ -47,3 +47,11 @@ mygui.Title := myTitle               ; 设置窗口标题（这才是 WinGetTitl
 mygui.Show("Hide")                   ; 隐藏窗口
 global myHwnd := mygui.Hwnd
 MsgSendHandler(WM_LOAD_WORK, workIndex, 0)
+
+SubMacroStopAction(tableIndex, itemIndex) {
+    MsgSendHandler(WM_STOP_MACRO, tableIndex, itemIndex)
+}
+
+TriggerSubMacro(tableIndex, itemIndex) {
+    MsgSendHandler(WM_TR_MACRO, tableIndex, itemIndex)
+}
