@@ -257,7 +257,6 @@ OnTriggerKeyUp(tableIndex, itemIndex) {
     else if (tableItem.TriggerTypeArr[itemIndex] == 3) {  ;松开停止
         if (isWork) {
             workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
-            tableItem.IsWorkArr[itemIndex] := false
             MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
             return
         }

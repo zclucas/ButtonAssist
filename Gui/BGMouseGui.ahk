@@ -18,6 +18,8 @@ class BGMouseGui {
         this.PosYCon := ""
         this.PosXNameCon := ""
         this.PosYNameCon := ""
+        this.ScrollVCon := ""
+        this.ScrollHCon := ""
         this.ClickTimeCon := ""
         this.Data := ""
     }
@@ -31,6 +33,7 @@ class BGMouseGui {
         }
 
         this.Init(cmd)
+        this.OnRefresh()
         this.ToggleFunc(true)
     }
 
@@ -81,7 +84,9 @@ class BGMouseGui {
         PosY += 40
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "鼠标按键:")
         PosX += 80
-        this.MouseTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 3, 70), ["左键", "中", "右键"])
+        this.MouseTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 3, 70), ["左键", "中键", "右键",
+            "滚轮"])
+        this.MouseTypeCon.OnEvent("Change", (*) => this.OnRefresh())
 
         PosX += 120
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "操作类型:")
@@ -100,7 +105,7 @@ class BGMouseGui {
         this.PosXNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY - 3, 100), [])
 
         PosX := 10
-        PosY += 40
+        PosY += 30
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "窗口坐标Y:")
         PosX += 80
         this.PosYCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 3, 70), "")
@@ -108,6 +113,16 @@ class BGMouseGui {
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "选择/输入:")
         PosX += 80
         this.PosYNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY - 3, 100), [])
+
+        PosX := 10
+        PosY += 40
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "垂直滚动:")
+        PosX += 80
+        this.ScrollVCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 3, 70), "")
+        PosX += 120
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "水平滚动")
+        PosX += 80
+        this.ScrollHCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 3, 100), "")
 
         PosX := 10
         PosY += 40
@@ -123,7 +138,7 @@ class BGMouseGui {
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 500, 340))
+        MyGui.Show(Format("w{} h{}", 500, 375))
     }
 
     Init(cmd) {
@@ -146,6 +161,15 @@ class BGMouseGui {
         this.PosYNameCon.Delete()
         this.PosYNameCon.Add(VariableObjArr)
         this.PosYNameCon.Text := this.Data.PosYName
+        this.ScrollVCon.Value := this.Data.ScrollV
+        this.ScrollHCon.Value := this.Data.ScrollH
+    }
+
+    OnRefresh() {
+        isScroll := this.MouseTypeCon.Value == 4    ;滚轮
+        this.OperateTypeCon.Enabled := !isScroll
+        this.ScrollVCon.Enabled := isScroll
+        this.ScrollHCon.Enabled := isScroll
     }
 
     ToggleFunc(state) {
@@ -206,6 +230,10 @@ class BGMouseGui {
     }
 
     CheckIfValid() {
+        if (this.TargetTitleCon.Value == "") {
+            MsgBox("目标窗口标题不能为空")
+            return false
+        }
         return true
     }
 
@@ -257,6 +285,8 @@ class BGMouseGui {
         this.Data.PosXName := this.PosXNameCon.Text
         this.Data.PosYName := this.PosYNameCon.Text
         this.Data.ClickTime := this.ClickTimeCon.Value
+        this.Data.ScrollV := this.ScrollVCon.Value
+        this.Data.ScrollH := this.ScrollHCon.Value
 
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, BGMouseFile, IniSection, this.Data.SerialStr)
