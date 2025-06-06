@@ -334,7 +334,7 @@ OnAddSetting(*) {
     [
         "指令串联", "指令并联"])
     newMacroTypeCon.Enabled := isMacro
-    newMacroTypeCon.Value := 1
+    newMacroTypeCon.Value := 2
 
     newInfoControl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", TabPosX + 200 - subMacroWidth, tableItem.underPosY,
         325 + subMacroWidth, InfoHeight),
