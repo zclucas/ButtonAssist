@@ -509,7 +509,7 @@ OnSubMacro(tableItem, cmd, index) {
             }
         }
     }
-
+    macro := macroItem.MacroArr[Data.Index]
     if (Data.CallType == 1) {   ;插入
         LoopCount := macroItem.LoopCountArr[macroIndex]
         IsLoop := macroItem.LoopCountArr[macroIndex] == -1

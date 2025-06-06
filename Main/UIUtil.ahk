@@ -606,8 +606,8 @@ AddHelpUI(index) {
     con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 30),
     "软件交流QQ群：")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
-    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX + 140, posY, 500, 30),
-    "837661891(提交优化方案，使用心得分享，问题反馈)")
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 700, 30),
+    '<a href="https://qm.qq.com/q/DgpDumEPzq">[1群]837661891</a>、<a href="https://qm.qq.com/q/uZszuxabPW">[2群]1050141694</a>(提交优化方案，使用心得分享，问题反馈)')
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
 
     posY += 30
