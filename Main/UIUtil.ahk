@@ -18,7 +18,7 @@ OnOpen() {
         AgreeAgreementStr :=
             '1. 本软件按"原样"提供，开发者不承担因使用、修改或分发导致的任何法律责任。`n2. 严禁用于违法用途，包括但不限于:游戏作弊、未经授权的系统访问或数据篡改`n3. 使用者需自行承担所有风险，开发者对因违反法律或第三方条款导致的后果概不负责。`n4. 通过使用本软件，您确认：不会将其用于任何非法目的、已充分了解并接受所有潜在法律风险、同意免除开发者因滥用行为导致的一切追责权利`n若不同意上述条款，请立即停止使用本软件。'
         result := MsgBox(AgreeAgreementStr, "免责声明", "4")
-        if (result == "Cancel")
+        if (result == "No")
             ExitApp()
         IniWrite(true, IniFile, IniSection, "AgreeAgreement")
     }
