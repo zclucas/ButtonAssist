@@ -372,6 +372,8 @@ class BGMouseData {
         this.PosY := 100
         this.PosXName := "空"
         this.PosYName := "空"
+        this.ScrollV := 1 ;水平滚动
+        this.ScrollH := 0 ; 垂直滚动
         this.ClickTime := 50 ;点击时间跨度
     }
 }

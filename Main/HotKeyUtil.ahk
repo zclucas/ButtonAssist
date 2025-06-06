@@ -522,7 +522,7 @@ OnSubMacro(tableItem, cmd, index) {
         }
     }
     else if (Data.CallType == 2) {  ;触发
-        if (Data.Type != 1 && macroItem.MacroTypeArr[index] == 1) { ;串联
+        if (Data.Type != 1 && macroItem.MacroTypeArr[macroIndex] == 1) { ;串联
             MyTriggerSubMacro(macroTableIndex, macroIndex)
             return
         }
@@ -679,20 +679,32 @@ OnBGMouse(tableItem, cmd, index) {
         ; 点击位置（窗口客户区坐标）
         lParam := (PosY << 16) | (PosX & 0xFFFF)
 
-        if (Data.OperateType == 1) {
+        if (Data.MouseType == 4) {  ;滚轮
+            if (Data.ScrollV != 0) {
+                value := 120 * Data.ScrollV
+                PostMessage(0x020A, (value << 16), lParam, , "ahk_id " hwnd)
+            }
+            else if (Data.ScrollH != 0) {
+                value := 120 * Data.ScrollH
+                PostMessage(0x020E, (value << 16), lParam, , "ahk_id " hwnd)
+            }
+            return
+        }
+
+        if (Data.OperateType == 1) {    ;点击
             PostMessage WM_DOWN_ARR[Data.MouseType], 1, lParam, , "ahk_id " hwnd
             Sleep Data.ClickTime
             PostMessage WM_UP_ARR[Data.MouseType], 0, lParam, , "ahk_id " hwnd
         }
-        else if (Data.OperateType == 2) {
+        else if (Data.OperateType == 2) {   ;双击
             PostMessage WM_DCLICK_ARR[Data.MouseType], 1, lParam, , "ahk_id " hwnd
             Sleep Data.ClickTime
             PostMessage WM_UP_ARR[Data.MouseType], 0, lParam, , "ahk_id " hwnd
         }
-        else if (Data.OperateType == 3) {
+        else if (Data.OperateType == 3) {   ;按下
             PostMessage WM_DOWN_ARR[Data.MouseType], 1, lParam, , "ahk_id " hwnd
         }
-        else if (Data.OperateType == 4) {
+        else if (Data.OperateType == 4) {   ;松开
             PostMessage WM_UP_ARR[Data.MouseType], 0, lParam, , "ahk_id " hwnd
         }
     }
