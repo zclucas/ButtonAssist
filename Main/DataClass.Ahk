@@ -188,6 +188,8 @@ class SoftData {
         this.SpecialNumKeyMap := Map("WheelDown", 0, "WheelUp", 0)
         this.ContinueSecondIntervale := 200
         this.ContinueIntervale := 50
+        this.DataCacheMap := Map()
+        this.TestCount := 0
 
         this.GroupFixedCons := []
         this.FixedCons := []

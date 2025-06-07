@@ -1141,3 +1141,15 @@ GetWinPos() {
     yClient := NumGet(pt, 4, "int")
     return [xClient, yClient]
 }
+
+GetMacroCMDData(fileName, serialStr) {
+    global MySoftData
+    if (MySoftData.DataCacheMap.Has(serialStr)) {
+        return MySoftData.DataCacheMap[serialStr]
+    }
+
+    saveStr := IniRead(fileName, IniSection, serialStr, "")
+    Data := JSON.parse(saveStr, , false)
+    MySoftData.DataCacheMap.Set(serialStr, Data)
+    return Data
+}

@@ -140,8 +140,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
 OnSearch(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     dataFile := StrCompare(paramArr[1], "搜索", false) == 0 ? SearchFile : SearchProFile
-    saveStr := IniRead(dataFile, IniSection, paramArr[2], "")
-    Data := JSON.parse(saveStr, , false)
+    Data := GetMacroCMDData(dataFile, paramArr[2])
     searchCount := Integer(Data.SearchCount)
     searchInterval := Integer(Data.SearchInterval)
     tableItem.SuccessClearActionArr[index].Set(Data.SerialStr, [])
@@ -282,36 +281,33 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
 
 OnRunFile(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    saveStr := IniRead(FileFile, IniSection, paramArr[2], "")
-    fileData := JSON.parse(saveStr, , false)
-
-    if (fileData.ProcessName != "") {
-        Run(fileData.ProcessName)
+    Data := GetMacroCMDData(FileFile, paramArr[2])
+    if (Data.ProcessName != "") {
+        Run(Data.ProcessName)
         return
     }
 
-    isMp3 := RegExMatch(fileData.FilePath, ".mp3$")
-    if (isMp3 && fileData.BackPlay) {
-        playAudioCmd := Format('wscript.exe "{}" "{}"', vbsPath, fileData.FilePath)
+    isMp3 := RegExMatch(Data.FilePath, ".mp3$")
+    if (isMp3 && Data.BackPlay) {
+        playAudioCmd := Format('wscript.exe "{}" "{}"', vbsPath, Data.FilePath)
         Run(playAudioCmd)
         return
     }
 
-    Run(fileData.FilePath)
+    Run(Data.FilePath)
 }
 
 OnCompare(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    saveStr := IniRead(CompareFile, IniSection, paramArr[2], "")
-    data := JSON.parse(saveStr, , false)
+    Data := GetMacroCMDData(CompareFile, paramArr[2])
     VariableMap := tableItem.VariableMapArr[index]
-    result := data.LogicalType == 1 ? true : false
+    result := Data.LogicalType == 1 ? true : false
     loop 4 {
-        if (!data.ToggleArr[A_Index] || data.NameArr[A_Index] == "空")
+        if (!Data.ToggleArr[A_Index] || Data.NameArr[A_Index] == "空")
             continue
 
-        Name := data.NameArr[A_Index]
-        OhterName := data.VariableArr[A_Index]
+        Name := Data.NameArr[A_Index]
+        OhterName := Data.VariableArr[A_Index]
         if (!VariableMap.Has(Name)) {
             MsgBox("当前环境不存在变量 " Name)
             return
@@ -323,10 +319,10 @@ OnCompare(tableItem, cmd, index) {
         }
 
         Value := VariableMap[Name]
-        OtherValue := OhterName != "空" ? VariableMap[OhterName] : data.ValueArr[A_Index]
+        OtherValue := OhterName != "空" ? VariableMap[OhterName] : Data.ValueArr[A_Index]
 
         currentComparison := false
-        switch data.CompareTypeArr[A_Index] {
+        switch Data.CompareTypeArr[A_Index] {
             case 1: currentComparison := Value > OtherValue
             case 2: currentComparison := Value >= OtherValue
             case 3: currentComparison := Value == OtherValue
@@ -334,7 +330,7 @@ OnCompare(tableItem, cmd, index) {
             case 5: currentComparison := Value < OtherValue
         }
 
-        if (data.LogicalType == 1) {
+        if (Data.LogicalType == 1) {
             result := result && currentComparison
             if (!result)
                 break
@@ -345,15 +341,15 @@ OnCompare(tableItem, cmd, index) {
         }
     }
 
-    if (data.SaveToggle) {
-        SaveValue := result ? data.TrueValue : data.FalseValue
-        VariableMap[data.SaveName] := SaveValue
+    if (Data.SaveToggle) {
+        SaveValue := result ? Data.TrueValue : Data.FalseValue
+        VariableMap[Data.SaveName] := SaveValue
     }
 
     MacroType := tableItem.MacroTypeArr[index]
     macro := ""
-    macro := result && data.TrueMacro != "" ? data.TrueMacro : macro
-    macro := !result && data.FalseMacro != "" ? data.FalseMacro : macro
+    macro := result && Data.TrueMacro != "" ? Data.TrueMacro : macro
+    macro := !result && Data.FalseMacro != "" ? Data.FalseMacro : macro
     if (macro == "")
         return
 
@@ -368,8 +364,7 @@ OnCompare(tableItem, cmd, index) {
 
 OnCoord(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    saveStr := IniRead(CoordFile, IniSection, paramArr[2], "")
-    Data := JSON.parse(saveStr, , false)
+    Data := GetMacroCMDData(CoordFile, paramArr[2])
     MacroType := tableItem.MacroTypeArr[index]
 
     LastSumTime := 0
@@ -429,8 +424,7 @@ OnCoordOnce(tableItem, index, Data) {
 
 OnOutput(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    saveStr := IniRead(OutputFile, IniSection, paramArr[2], "")
-    Data := JSON.parse(saveStr, , false)
+    Data := GetMacroCMDData(OutputFile, paramArr[2])
     VariableMap := tableItem.VariableMapArr[index]
     OutputText := Data.Text
     if (Data.Name != "空" && Data.Name != "")
@@ -452,36 +446,35 @@ OnOutput(tableItem, cmd, index) {
 
 OnStop(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    saveStr := IniRead(StopFile, IniSection, paramArr[2], "")
-    stopData := JSON.parse(saveStr, , false)
+    Data := GetMacroCMDData(StopFile, paramArr[2])
     tableIndex := 0
-    if (stopData.StopType == 1) {       ;终止自己
+    if (Data.StopType == 1) {       ;终止自己
         KillTableItemMacro(tableItem, index)
         return
     }
-    else if (stopData.StopType == 2) {      ;终止按键宏
+    else if (Data.StopType == 2) {      ;终止按键宏
         tableIndex := 1
     }
-    else if (stopData.StopType == 3) {      ;终止字串宏
+    else if (Data.StopType == 3) {      ;终止字串宏
         tableIndex := 2
     }
-    else if (stopData.StopType == 4) {      ;终止子宏
+    else if (Data.StopType == 4) {      ;终止子宏
         tableIndex := 3
     }
     stopTableItem := MySoftData.TableInfo[tableIndex]
-    isWork := stopTableItem.IsWorkArr[stopData.StopIndex]
+    isWork := stopTableItem.IsWorkArr[Data.StopIndex]
     if (isWork || MySoftData.isWork) {
-        MySubMacroStopAction(tableIndex, stopData.StopIndex)
+        MySubMacroStopAction(tableIndex, Data.StopIndex)
         return
     }
 
-    KillTableItemMacro(stopTableItem, stopData.StopIndex)
+    KillTableItemMacro(stopTableItem, Data.StopIndex)
 }
 
 OnSubMacro(tableItem, cmd, index) {
+    global MySoftData
     paramArr := StrSplit(cmd, "_")
-    saveStr := IniRead(SubMacroFile, IniSection, paramArr[2], "")
-    Data := JSON.parse(saveStr, , false)
+    Data := GetMacroCMDData(SubMacroFile, paramArr[2])
     macroTableIndex := 1
     macroItem := tableItem
     macro := tableItem.MacroArr[index]
@@ -509,7 +502,8 @@ OnSubMacro(tableItem, cmd, index) {
             }
         }
     }
-    macro := macroItem.MacroArr[Data.Index]
+
+    macro := macroItem.MacroArr[macroIndex]
     if (Data.CallType == 1) {   ;插入
         LoopCount := macroItem.LoopCountArr[macroIndex]
         IsLoop := macroItem.LoopCountArr[macroIndex] == -1
@@ -533,37 +527,36 @@ OnSubMacro(tableItem, cmd, index) {
 
 OnVariable(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    saveStr := IniRead(VariableFile, IniSection, paramArr[2], "")
-    variableData := JSON.parse(saveStr, , false)
-    count := variableData.SearchCount
-    interval := variableData.SearchInterval
-    tableItem.SuccessClearActionArr[index].Set(variableData.ExtractStr, [])
+    Data := GetMacroCMDData(VariableFile, paramArr[2])
+    count := Data.SearchCount
+    interval := Data.SearchInterval
+    tableItem.SuccessClearActionArr[index].Set(Data.ExtractStr, [])
     VariableMap := tableItem.VariableMapArr[index]
 
-    if (variableData.CreateType == 3) {     ;提取
-        OnExtractingVariablesOnce(tableItem, index, variableData, count == 1)
+    if (Data.CreateType == 3) {     ;提取
+        OnExtractingVariablesOnce(tableItem, index, Data, count == 1)
         loop count {
             if (A_Index == 1)
                 continue
 
-            if (!tableItem.SuccessClearActionArr[index].Has(variableData.ExtractStr)) ;第一次比较成功就退出
+            if (!tableItem.SuccessClearActionArr[index].Has(Data.ExtractStr)) ;第一次比较成功就退出
                 break
 
-            tempAction := OnExtractingVariablesOnce.Bind(tableItem, index, variableData, A_Index == count)
+            tempAction := OnExtractingVariablesOnce.Bind(tableItem, index, Data, A_Index == count)
             leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
-            tableItem.SuccessClearActionArr[index][variableData.ExtractStr].Push(tempAction)
+            tableItem.SuccessClearActionArr[index][Data.ExtractStr].Push(tempAction)
             SetTimer tempAction, -leftTime
         }
         return
     }
     loop 4 {
-        if (!variableData.ToggleArr[A_Index])
+        if (!Data.ToggleArr[A_Index])
             continue
 
-        name := variableData.NameArr[A_Index]   ;赋值
-        value := variableData.ValueArr[A_Index]
-        if (variableData.CreateType == 2) {     ;选择复制
-            copyName := variableData.SelectCopyNameArr[A_Index]
+        name := Data.NameArr[A_Index]   ;赋值
+        value := Data.ValueArr[A_Index]
+        if (Data.CreateType == 2) {     ;选择复制
+            copyName := Data.SelectCopyNameArr[A_Index]
             if (copyName == "X坐标" || copyName == "Y坐标") {
                 CoordMode("Mouse", "Screen")
                 MouseGetPos &mouseX, &mouseY
@@ -629,8 +622,7 @@ OnExtractingVariablesOnce(tableItem, index, variableData, isFinally) {
 
 OnOperation(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    saveStr := IniRead(OperationFile, IniSection, paramArr[2], "")
-    Data := JSON.parse(saveStr, , false)
+    Data := GetMacroCMDData(OperationFile, paramArr[2])
     VariableMap := tableItem.VariableMapArr[index]
     loop 4 {
         if (!Data.ToggleArr[A_Index] || Data.NameArr[A_Index] == "空")
@@ -650,8 +642,7 @@ OnOperation(tableItem, cmd, index) {
 
 OnBGMouse(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    saveStr := IniRead(BGMouseFile, IniSection, paramArr[2], "")
-    Data := JSON.parse(saveStr, , false)
+    Data := GetMacroCMDData(BGMouseFile, paramArr[2])
 
     WM_DOWN_ARR := [0x201, 0x204, 0x207]    ;左键，中键，右键
     WM_UP_ARR := [0x202, 0x205, 0x208]    ;左键，中键，右键
