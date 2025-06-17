@@ -188,8 +188,8 @@ class VariableGui {
             PosX += 200
             MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY + 3, 110), "文本识别模型:")
             PosX += 110
-            this.OCRTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 2, 130), ["极速版",
-                "标准版"])
+            this.OCRTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 2, 130), ["中文",
+                "英文"])
             this.OCRTypeCon.Value := 1
 
             PosY += 25

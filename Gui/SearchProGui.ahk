@@ -168,8 +168,8 @@ class SearchProGui {
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "文本识别模型:")
         PosX += 120
-        this.OCRTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["极速版",
-            "标准版"])
+        this.OCRTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["中文",
+            "英文"])
         this.OCRTypeCon.Value := 1
         PosY := SplitPosY
         PosX := 330

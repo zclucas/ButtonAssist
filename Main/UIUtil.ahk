@@ -728,8 +728,8 @@ AddToolUI(index) {
 
     MyGui.Add("Text", Format("x{} y{} w{}", PosX + 130, PosY, 110), "文本识别模型:")
     ToolCheckInfo.OCRTypeCtrl := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX + 240, PosY - 5, 130), [
-        "极速版",
-        "标准版"])
+        "中文",
+        "英文"])
     ToolCheckInfo.OCRTypeCtrl.Value := ToolCheckInfo.OCRTypeValue
 
     posY += 40

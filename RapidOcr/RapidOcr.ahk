@@ -25,16 +25,17 @@ class RapidOcr {
      * MsgBox ocr.ocr_from_file('1.jpg', param)
      */
     __New(path, mode := 1) {
-        config := { models: path "\RapidOcr\models" }
+        modelDire := mode := 1 ? "ch_models" : "en_models"
+        config := { models: path "\RapidOcr\" modelDire }
         dllpath := path "\RapidOcr\" (A_PtrSize * 8) "bit\RapidOcrOnnx.dll"
         static init := 0
         if (!init) {
             init := DllCall('LoadLibrary', 'str', dllpath ?? A_LineFile '\..\' (A_PtrSize * 8) 'bit\RapidOcrOnnx.dll',
             'ptr')
-            if (!init){
+            if (!init) {
                 ; throw OSError()
                 return  ;部分电脑无法加载，那么就直接返回吧
-            }   
+            }
         }
         if !IsSet(config)
             config := { models: A_LineFile '\..\models' }
@@ -70,7 +71,6 @@ class RapidOcr {
                     throw ValueError('No value is specified: ' k)
             } else if !FileExist(%k%)
                 throw TargetError('file "' k '" does not exist')
-        cls_model := mode == 1 ? cls_model : ""
         this.ptr := DllCall('RapidOcrOnnx\OcrInit', 'str', det_model, 'str', cls_model, 'str', rec_model, 'str',
             keys_dict, 'int', numThread, 'ptr')
     }
