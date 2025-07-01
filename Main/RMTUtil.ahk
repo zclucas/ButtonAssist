@@ -380,9 +380,6 @@ OnChangeSrollValue(*) {
     lParam := 0
     msg := GetKeyState("Shift") ? 0x114 : 0x115
     MySoftData.SB.ScrollMsg(wParam, lParam, msg, MySoftData.MyGui.Hwnd)
-    ; for index, value in MySoftData.GroupFixedCons {
-    ;     value.redraw()
-    ; }
 }
 
 OnToolCheckHotkey(*) {
