@@ -2,7 +2,7 @@
 #SingleInstance Force
 #Include Joy\SuperCvJoyInterface.ahk
 #Include Joy\JoyMacro.ahk
-#Include RapidOcr\RapidOcr.ahk
+#Include Plugins\RapidOcr\RapidOcr.ahk
 #Include Plugins\WinClipAPI.ahk
 #Include Plugins\WinClip.ahk
 #Include Gui\TriggerKeyGui.ahk

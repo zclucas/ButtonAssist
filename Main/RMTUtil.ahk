@@ -375,6 +375,16 @@ BindKey() {
     OnExit(OnExitSoft)
 }
 
+OnChangeSrollValue(*) {
+    wParam := InStr(A_ThisHotkey, "Down") ? 1 : 0
+    lParam := 0
+    msg := GetKeyState("Shift") ? 0x114 : 0x115
+    MySoftData.SB.ScrollMsg(wParam, lParam, msg, MySoftData.MyGui.Hwnd)
+    ; for index, value in MySoftData.GroupFixedCons {
+    ;     value.redraw()
+    ; }
+}
+
 OnToolCheckHotkey(*) {
     global ToolCheckInfo
     ToolCheckInfo.IsToolCheck := !ToolCheckInfo.IsToolCheck

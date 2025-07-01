@@ -160,7 +160,7 @@ class ScrollBar {
         this.GetEdges(&Left, &Right, &Top, &Bottom)
 
         standardDPI := 96
-        scaleValue := A_ScreenDPI /standardDPI
+        scaleValue := A_ScreenDPI / standardDPI
         ; Calculate the scroll width and height
         ScrollWidth := (Right - Left) * scaleValue
         ScrollHeight := (Bottom - Top) * scaleValue
@@ -228,6 +228,9 @@ class ScrollBar {
                 this.ScrollAction(this.SB_VERT, wParam)
                 this.ScrollWindow(0, this.oldPos - this.ScrollInf.nPos)
                 this.UpdateFixedControlsPosition()
+        }
+        for index, value in MySoftData.GroupFixedCons {
+            value.redraw()
         }
     }
 

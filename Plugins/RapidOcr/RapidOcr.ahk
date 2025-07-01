@@ -26,8 +26,8 @@ class RapidOcr {
      */
     __New(path, mode := 1) {
         modelDire := mode := 1 ? "ch_models" : "en_models"
-        config := { models: path "\RapidOcr\" modelDire }
-        dllpath := path "\RapidOcr\" (A_PtrSize * 8) "bit\RapidOcrOnnx.dll"
+        config := { models: path "\Plugins\RapidOcr\" modelDire }
+        dllpath := path "\Plugins\RapidOcr\" (A_PtrSize * 8) "bit\RapidOcrOnnx.dll"
         static init := 0
         if (!init) {
             init := DllCall('LoadLibrary', 'str', dllpath ?? A_LineFile '\..\' (A_PtrSize * 8) 'bit\RapidOcrOnnx.dll',

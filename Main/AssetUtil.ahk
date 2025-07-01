@@ -1098,10 +1098,10 @@ GetVariableOperationResult(VariableMap, Name, SymbolArr, ValueArr) {
 }
 
 OpenCVLoadDll() {
-    dllpath := A_ScriptDir "\OpenCV\x64\ImageFinder.dll"
+    dllpath := A_ScriptDir "\Plugins\OpenCV\x64\ImageFinder.dll"
 
     ; 构建包含 DLL 文件的目录路径
-    dllDir := A_ScriptDir "\OpenCV\x64"
+    dllDir := A_ScriptDir "\Plugins\OpenCV\x64"
 
     ; 使用 SetDllDirectory 将 dllDir 添加到 DLL 搜索路径中
     DllCall("SetDllDirectory", "Str", dllDir)
