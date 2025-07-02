@@ -193,10 +193,8 @@ LoadSavedSettingUI(index) {
         InfoHeight := 45
 
         newIndexCon := MyGui.Add("Text", Format("x{} y{} w{}", TabPosX + 10, tableItem.underPosY + 5, 30), A_Index ".")
-        newTriggerTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 40, tableItem.underPosY, 70), [
-            "按下",
-            "松开",
-            "松止", "开关", "长按"])
+        newTriggerTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 40, tableItem.underPosY, 70), 
+        ["按下","松开","松止", "开关", "长按"])
         newTriggerTypeCon.Value := tableItem.TriggerTypeArr.Length >= A_Index ? tableItem.TriggerTypeArr[A_Index] : 1
         newTriggerTypeCon.Enabled := isNormal
         newTriggerTypeCon.OnEvent("Change", GetTableClosureAction(OnChangeTriggerType, tableItem, A_Index))
