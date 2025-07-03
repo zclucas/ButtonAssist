@@ -15,7 +15,6 @@ class TableItem {
         this.KeyBtnConArr := []
         this.MacroBtnConArr := []
         this.DeleteBtnConArr := []
-        this.HoldTimeConArr := []
         this.ModeConArr := []
         this.ForbidConArr := []
         this.ProcessNameConArr := []

@@ -825,12 +825,6 @@ GetTableClosureAction(action, TableItem, index) {
     return (*) => funcObj()
 }
 
-OnChangeTriggerType(tableItem, index) {
-    typeValue := tableItem.TriggerTypeConArr[index].Value
-    enableHoldTime := typeValue == 5    ;长按才能编辑长按时间
-    tableItem.HoldTimeConArr[index].Enabled := enableHoldTime
-}
-
 MenuReload(*) {
     SaveWinPos()
     Reload()
@@ -868,9 +862,6 @@ OnToolRecordMacro(*) {
         Hotkey(key " Up", OnRecordMacroKeyUp, StateSymbol)
     }
 
-    Hotkey(key, OnRecordMacroKeyDown, StateSymbol)
-    Hotkey(key " Up", OnRecordMacroKeyUp, StateSymbol)
-
     if (state) {
         ToolCheckInfo.RecordNodeArr := []
         ToolCheckInfo.RecordKeyboardArr := []
@@ -883,8 +874,10 @@ OnToolRecordMacro(*) {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY
         ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
+        SetTimer RecordJoy, 50
     }
     else {
+        SetTimer RecordJoy, 0
         if (ToolCheckInfo.RecordNodeArr.Length > 0) {
             node := ToolCheckInfo.RecordNodeArr[ToolCheckInfo.RecordNodeArr.Length]
             node.EndTime := GetCurMSec()
@@ -1002,7 +995,7 @@ OnToolTextFilterSelectImage(*) {
     path := FileSelect(, , "选择图片")
     if (path == "")
         return
-    ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MySpeedOcr : MyStandardOcr
+    ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
     result := ocr.ocr_from_file(path)
     ToolCheckInfo.ToolTextCtrl.Value := result
     A_Clipboard := result
@@ -1028,7 +1021,7 @@ OnToolTextCheckScreenShot() {
         }
 
         SaveClipToBitmap(filePath)
-        ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MySpeedOcr : MyStandardOcr
+        ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
         result := ocr.ocr_from_file(filePath)
         ToolCheckInfo.ToolTextCtrl.Value := result
         A_Clipboard := result

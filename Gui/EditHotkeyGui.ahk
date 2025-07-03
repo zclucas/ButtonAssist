@@ -43,7 +43,9 @@ class EditHotkeyGui {
     OnEditHotKey(gui) {
         triggerKey := this.KeyCon.Value
         gui.SureBtnAction := (sureTriggerStr) => this.KeyCon.Value := sureTriggerStr
-        gui.ShowGui(triggerKey, false)
+        args := TriggerKeyGuiArgs()
+        args.IsToolEdit := true
+        gui.ShowGui(triggerKey, args)
         this.Gui.Hide()
     }
 }

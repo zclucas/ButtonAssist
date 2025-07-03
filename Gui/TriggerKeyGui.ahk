@@ -14,6 +14,10 @@ class TriggerKeyGui {
         this.SaveBtnCtrl := {}
         this.showSaveBtn := false
 
+        this.Args := ""
+        this.HoldTimeLabelCon := ""
+        this.HoldTimeCon := ""
+        this.HoldTimeTipCon := ""
         this.EnableTriggerKeyCon := ""
 
         this.ModifyKeys := ["Shift", "Alt", "Ctrl", "Win", "LShift", "RShift", "LAlt", "RAlt", "LCtrl", "RCtrl", "LWin",
@@ -109,7 +113,7 @@ class TriggerKeyGui {
         return true
     }
 
-    Init(triggerKey, showSaveBtn) {
+    Init(triggerKey) {
         this.CheckedBox := []
         loopCount := 0
         this.EnableTriggerKeyCon.Value := RegExMatch(triggerKey, "~")
@@ -148,7 +152,14 @@ class TriggerKeyGui {
             con.Value := 1
         }
 
-        this.showSaveBtn := showSaveBtn
+        this.showSaveBtn := !this.Args.IsToolEdit
+
+        this.HoldTimeCon.Visible := !this.Args.IsToolEdit
+        this.HoldTimeLabelCon.Visible := !this.Args.IsToolEdit
+        this.HoldTimeTipCon.Visible := !this.Args.IsToolEdit
+        if (!this.Args.IsToolEdit) {
+            this.HoldTimeCon.Value := this.Args.tableItem.HoldTimeArr[this.Args.tableIndex]
+        }
     }
 
     GetTriggerKey() {
@@ -185,6 +196,7 @@ class TriggerKeyGui {
             MsgBox("当前配置无效,请浏览勾选规则后，检查配置,有异议请联系UP: 浮生若梦的兔子。")
             return false
         }
+        this.TrySaveHoldTime()
         triggerKey := this.GetTriggerKey()
         action := this.SureBtnAction
         action(triggerKey)
@@ -198,6 +210,7 @@ class TriggerKeyGui {
             MsgBox("当前配置无效,请浏览勾选规则后，检查配置,有异议请联系UP: 浮生若梦的兔子。")
             return false
         }
+        this.TrySaveHoldTime()
         triggerKey := this.GetTriggerKey()
         action := this.SureBtnAction
         action(triggerKey)
@@ -208,8 +221,15 @@ class TriggerKeyGui {
         this.SureFocusCon.Focus()
     }
 
+    TrySaveHoldTime() {
+        if (this.Args.IsToolEdit)
+            return
+
+        this.Args.tableItem.HoldTimeArr[this.Args.tableIndex] := this.HoldTimeCon.Value
+    }
+
     ;UI相关
-    ShowGui(triggerKey, showSaveBtn) {
+    ShowGui(triggerKey, Args) {
 
         if (this.Gui != "") {
             this.Gui.Show()
@@ -217,8 +237,8 @@ class TriggerKeyGui {
         else {
             this.AddGui()
         }
-
-        this.Init(triggerKey, showSaveBtn)
+        this.Args := Args
+        this.Init(triggerKey)
         this.Refresh()
     }
 
@@ -830,12 +850,12 @@ class TriggerKeyGui {
             con.OnEvent("Click", (*) => this.OnCheckedKey("Volume_Down"))
             this.ConMap.Set("Volume_Down", con)
 
-            PosX += 80
+            PosX += 90
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "增加音量")
             con.OnEvent("Click", (*) => this.OnCheckedKey("Volume_Up"))
             this.ConMap.Set("Volume_Up", con)
 
-            PosX += 80
+            PosX += 90
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "下一首")
             con.OnEvent("Click", (*) => this.OnCheckedKey("Media_Next"))
             this.ConMap.Set("Media_Next", con)
@@ -1168,22 +1188,30 @@ class TriggerKeyGui {
 
         PosY += 50
         PosX := 20
-        MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000),
+        FlagSY := PosY
+        MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 650),
         "特殊按键：Shift, Alt, Ctrl, Win, LShift, RShift, LAlt, RAlt, LCtrl, RCtrl, LWin, RWin")
         PosY += 20
-        MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000), "普通按键：除特殊按键的其他按键")
+        MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 650), "普通按键：除特殊按键的其他按键")
         PosY += 20
-        MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000),
+        MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 650),
         "勾选规则1：特殊按键中可以 同时勾选多个按键 或 不选，普通按键中只能 勾选一个按键 或 不选")
         PosY += 20
-        MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000), "勾选规则2：手柄按钮、摇杆只能单独选")
+        MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 650), "勾选规则2：手柄按钮、摇杆只能单独选")
+        FlagEY := PosY
 
-        PosY += 20
+        PosY := FlagSY
+        PosX := 700
         con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 180, 20), "保留触发键原本功能")
         con.OnEvent("Click", (*) => this.OnChangeEnableTriggerKey())
         this.EnableTriggerKeyCon := con
 
         PosY += 30
+        this.HoldTimeLabelCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "长按时间：")
+        this.HoldTimeCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX + 80, PosY - 2, 100, 20), "500")
+        this.HoldTimeTipCon := MyGui.Add("Text", Format("x{} y{} h{}", PosX + 180, PosY, 20), "（此设置只在触发模式是【长按】时有效）")
+
+        PosY := FlagEY + 30
         PosX := 20
         con := MyGui.Add("Text", Format("x{} y{} h{} w{}", PosX, PosY, 20, 1000), "当前配置的触发键：无")
         this.CheckedInfoCon := con
@@ -1196,6 +1224,7 @@ class TriggerKeyGui {
         this.CheckedInvalidTipCon := con
 
         PosY += 30
+        PosX := 120
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "清空选项")
         btnCon.OnEvent("Click", (*) => this.ClearCheckedBox())
 
@@ -1260,5 +1289,13 @@ class TriggerKeyGui {
 
     OnChangeEnableTriggerKey() {
         this.Refresh()
+    }
+}
+
+class TriggerKeyGuiArgs {
+    __New() {
+        this.IsToolEdit := false
+        this.tableItem := ""
+        this.tableIndex := ""
     }
 }

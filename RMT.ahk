@@ -15,6 +15,7 @@
 #Include Main\Gdip_All.ahk
 #Include Main\DataClass.ahk
 #Include Main\AssetUtil.ahk
+#Include Main\RecordJoyUtil.ahk
 #Include Main\HotkeyUtil.ahk
 #Include Main\RMTUtil.ahk
 #Include Main\WorkPool.ahk
@@ -48,7 +49,7 @@ BindKey()       ;绑定快捷键
 
 ;放后面初始化，因为这初始化时间比较长
 global MyWorkPool := WorkPool()
-global MySpeedOcr := RapidOcr(A_ScriptDir)
-global MyStandardOcr := RapidOcr(A_ScriptDir, 2)
+global MyChineseOcr := RapidOcr(A_ScriptDir)
+global MyEnglishOcr := RapidOcr(A_ScriptDir, 2)
 global MyPToken := Gdip_Startup()
 OpenCVLoadDll()

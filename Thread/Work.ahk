@@ -29,11 +29,11 @@ InitData()
 InitWork()
 
 ;放后面初始化，因为这初始化时间比较长
-global MySpeedOcr := RapidOcr(A_ScriptDir "\..")
-global MyStandardOcr := RapidOcr(A_ScriptDir "\..", 2)
+global MyChineseOcr := RapidOcr(A_ScriptDir "\..")
+global MyEnglishOcr := RapidOcr(A_ScriptDir "\..", 2)
 global MyPToken := Gdip_Startup()
-global MySubMacroStopAction := SubMacroStopAction
-global MyTriggerSubMacro := TriggerSubMacro
+global MySubMacroStopAction := WorkSubMacroStopAction
+global MyTriggerSubMacro := WorkTriggerSubMacro
 WorkOpenCVLoadDll()
 
 ; 注册消息

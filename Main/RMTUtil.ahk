@@ -2,10 +2,10 @@
 
 ;绑定热键
 OnExitSoft(*) {
-    global MyPToken, MySpeedOcr
+    global MyPToken, MyChineseOcr
     Gdip_Shutdown(MyPToken)
-    MySpeedOcr := ""
-    MyStandardOcr := ""
+    MyChineseOcr := ""
+    MyEnglishOcr := ""
     MyWorkPool.Clear()
 }
 
@@ -106,7 +106,6 @@ OnTableDelete(tableItem, index) {
     tableItem.TriggerTypeConArr.RemoveAt(index)
     tableItem.ModeConArr.RemoveAt(index)
     tableItem.ForbidConArr.RemoveAt(index)
-    tableItem.HoldTimeConArr.RemoveAt(index)
     tableItem.TKConArr.RemoveAt(index)
     tableItem.InfoConArr.RemoveAt(index)
     tableItem.ProcessNameConArr.RemoveAt(index)
@@ -339,7 +338,11 @@ OnTableEditReplaceKey(tableItem, index) {
 OnTableEditTriggerKey(tableItem, index) {
     triggerKey := tableItem.TKConArr[index].Value
     MyTriggerKeyGui.SureBtnAction := (sureTriggerKey) => tableItem.TKConArr[index].Value := sureTriggerKey
-    MyTriggerKeyGui.ShowGui(triggerKey, true)
+    args := TriggerKeyGuiArgs()
+    args.IsToolEdit := false
+    args.tableItem := tableItem
+    args.tableIndex := index
+    MyTriggerKeyGui.ShowGui(triggerKey, args)
 }
 
 OnTableEditTriggerStr(tableItem, index) {
