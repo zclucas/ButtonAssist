@@ -92,11 +92,14 @@ class JoyMacro {
 
     CheckPOVMacro(joyPOVSymbol) {
         loop this.controllerNum {
-            state := GetKeyState(A_Index "JoyPOV")
-            value := this.joyPOVMap.Get(joyPOVSymbol)
-            if (state == value) {
-                this.MacroMap.Get(joyPOVSymbol).Action()
-                return
+            cont_info := GetKeyState(A_Index "JoyInfo")
+            if InStr(cont_info, "P") {
+                state := GetKeyState(A_Index "JoyPOV")
+                value := this.joyPOVMap.Get(joyPOVSymbol)
+                if (state == value) {
+                    this.MacroMap.Get(joyPOVSymbol).Action()
+                    return
+                }
             }
         }
 
@@ -105,6 +108,10 @@ class JoyMacro {
 
     CheckAxisMacro(joyAxisSymbol) {
         loop this.controllerNum {
+            cont_name := GetKeyState(A_Index "JoyName")
+            cont_info := GetKeyState(A_Index "JoyInfo")
+            if (cont_info == "ZRUPD")
+                continue
             joyAxisName := SubStr(joyAxisSymbol, 1, 4)
             state := GetKeyState(A_Index joyAxisName)
             valueSection := this.GetAxisTriggerSection(joyAxisSymbol, false)
@@ -113,6 +120,9 @@ class JoyMacro {
                 return
             }
         }
+
+        if (SubStr(joyAxisSymbol, 1, 4) == "JoyV") ;xbox没有这个轴
+            return false
 
         this.CheckXboxAxisMacro(joyAxisSymbol)
     }
@@ -163,10 +173,10 @@ class JoyMacro {
             return 0
 
         if (joyAxisSymbol == "JoyZMin") {
-            return State.bRightTrigger
+            return State.bLeftTrigger
         }
         else if (joyAxisSymbol == "JoyZMax") {
-            return State.bLeftTrigger
+            return State.bRightTrigger
         }
 
         if (joyAxisName == "JoyX") {
