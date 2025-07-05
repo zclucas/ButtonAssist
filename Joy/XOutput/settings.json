@@ -13,20 +13,23 @@
     },
     "Mouse": {
       "ForceFeedback": false
+    },
+    "19228330-c322-11ed-8002-444553540000": {
+      "ForceFeedback": false
     }
   },
   "Mapping": [
     {
       "StartWhenConnected": false,
-      "Name": "Controller",
+      "Name": "RMT虚拟手柄转Xbox手柄",
       "Id": "404c592e-59d1-4165-943c-8c8d2a55c230",
       "ForceFeedbackDevice": null,
       "Mappings": {
         "A": {
           "Mappers": [
             {
-              "InputDevice": "Keyboard",
-              "InputType": "43",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "240",
               "MinValue": 0.0,
               "MaxValue": 1.0,
               "Deadzone": 0.0
@@ -49,10 +52,10 @@
         "X": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "242",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -61,10 +64,10 @@
         "Y": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "243",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -73,10 +76,10 @@
         "L1": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "244",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -85,10 +88,10 @@
         "R1": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "245",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -97,10 +100,10 @@
         "L3": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "248",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -109,10 +112,10 @@
         "R3": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "249",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -121,10 +124,10 @@
         "Start": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "247",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -133,10 +136,10 @@
         "Back": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "246",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -157,10 +160,10 @@
         "LX": {
           "Mappers": [
             {
-              "InputDevice": null,
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
               "InputType": "0",
-              "MinValue": 0.5,
-              "MaxValue": 0.5,
+              "MinValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -169,10 +172,10 @@
         "LY": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
-              "MinValue": 0.5,
-              "MaxValue": 0.5,
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "4",
+              "MinValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -181,10 +184,10 @@
         "RX": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
-              "MinValue": 0.5,
-              "MaxValue": 0.5,
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "8",
+              "MinValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -193,10 +196,10 @@
         "RY": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
-              "MinValue": 0.5,
-              "MaxValue": 0.5,
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "12",
+              "MinValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -205,10 +208,10 @@
         "L2": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "256",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -217,10 +220,10 @@
         "R2": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "257",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -229,10 +232,10 @@
         "UP": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "251",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -241,10 +244,10 @@
         "DOWN": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "253",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -253,10 +256,10 @@
         "LEFT": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "254",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],
@@ -265,10 +268,10 @@
         "RIGHT": {
           "Mappers": [
             {
-              "InputDevice": null,
-              "InputType": "0",
+              "InputDevice": "a741e5e0-c2ce-11ef-8002-444553540000",
+              "InputType": "252",
               "MinValue": 0.0,
-              "MaxValue": 0.0,
+              "MaxValue": 1.0,
               "Deadzone": 0.0
             }
           ],

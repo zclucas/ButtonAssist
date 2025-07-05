@@ -2,6 +2,7 @@
 RecordControllerNum := 4
 RecordJoyFloat := 10
 RecordAxisMaxValue := 100
+RecordJoyIndexArr := []
 RecordAllJoyMap := Map("Joy1", 1, "Joy2", 1, "Joy3", 1, "Joy4", 1, "Joy5", 1, "Joy6", 1, "Joy7", 1, "Joy8", 1,
     "Joy9", 1, "Joy10", 1, "Joy11", 1, "Joy12", 1, "Joy13", 1, "Joy14", 1, "Joy15", 1, "Joy16", 1,
     "Joy17", 1, "Joy18", 1, "Joy19", 1, "Joy20", 1, "Joy21", 1, "Joy22", 1, "Joy23", 1, "Joy24", 1,
@@ -14,47 +15,61 @@ RecordJoyAxises := Map("JoyXMin", 0, "JoyXMax", 100, "JoyYMin", 0, "JoyYMax", 10
     "JoyRMin", 0, "JoyRMax", 100, "JoyUMin", 0, "JoyUMax", 100, "JoyVMin", 0, "JoyVMax", 100)
 RecordJoyPOVMap := Map("JoyPOV_0", 0, "JoyPOV_9000", 9000, "JoyPOV_18000", 18000, "JoyPOV_27000", 27000)
 
-RecordKeyMap := Map("JoyPOV_0", "Joy12", "JoyPOV_9000", "Joy13", "JoyPOV_18000", "Joy14", "JoyPOV_27000", "Joy15",
+RecordKeyMap := Map("JoyPOV_0", "Joy12", "JoyPOV_9000", "Joy15", "JoyPOV_18000", "Joy13", "JoyPOV_27000", "Joy14",
     "JoyXMin", "JoyAxis1Min", "JoyXMax", "JoyAxis1Max", "JoyYMin", "JoyAxis2Min", "JoyYMax", "JoyAxis2Max",
     "JoyUMin", "JoyAxis3Min", "JoyUMax", "JoyAxis3Max", "JoyRMin", "JoyAxis4Min", "JoyRMax", "JoyAxis4Max",
     "JoyZMin", "Joy17", "JoyZMax", "Joy18")
 
 XboxJoyAndPOVMap := Map("Joy1", 12, "Joy2", 13, "Joy3", 14, "Joy4", 15, "Joy5", 8, "Joy6", 9, "Joy7", 5,
     "Joy8", 4, "Joy9", 6, "Joy10", 7,
-    "JoyPOV_0", 0, "JoyPOV_18000", 1, "JoyPOV_27000", 2, "JoyPOV_9000", 3)
+    "JoyPOV_0", 0, "JoyPOV_9000", 3, "JoyPOV_18000", 1, "JoyPOV_27000", 2)
 
 XboxJosAxisMap := Map("JoyXMin", -32768, "JoyXMax", 32767, "JoyYMin", -32768, "JoyYMax", 32767, "JoyZMin",
     255, "JoyZMax", 255, "JoyRMin", -32768, "JoyRMax", 32767, "JoyUMin", -32768, "JoyUMax", 32767, "JoyVMin", -
     32768, "JoyVMax", 32767)
-
+XInputStateCache := ""
 RecordJoy() {
-    for key, value in RecordAllJoyMap {
-        isJoyAxis := RecordJoyAxises.Has(key)
-        isJoyPOV := RecordJoyPOVMap.Has(key)
-        isJoyBtn := !isJoyAxis && !isJoyPOV
-
-        isHold := false
-        if (isJoyBtn) {
-            isHold := RecordJoyCheckBtnDown(key)
+    global XInputStateCache, RecordJoyIndexArr
+    RecordJoyIndexArr := []
+    loop RecordControllerNum {
+        if GetKeyState(A_Index "JoyName") {
+            RecordJoyIndexArr.Push(A_Index)
         }
-        else if (isJoyPOV) {
-            isHold := RecordCheckPOVMacro(key)
-        }
-        else {
-            isHold := RecordCheckAxisMacro(key)
-        }
+    }
 
-        if (!ToolCheckInfo.RecordHoldKeyMap.Has(key) && isHold)
-            OnRecordJoyDown(key)
+    loop {
+        if (!ToolCheckInfo.IsToolRecord)
+            return
+        XInputStateCache := XInputState(0)
+        for key, value in RecordAllJoyMap {
+            isJoyAxis := RecordJoyAxises.Has(key)
+            isJoyPOV := RecordJoyPOVMap.Has(key)
+            isJoyBtn := !isJoyAxis && !isJoyPOV
+            isHold := false
+            if (isJoyBtn) {
+                isHold := RecordJoyCheckBtnDown(key)
+            }
+            else if (isJoyPOV) {
+                isHold := RecordCheckPOVMacro(key)
+            }
+            else {
+                isHold := RecordCheckAxisMacro(key)
+            }
 
-        if (ToolCheckInfo.RecordHoldKeyMap.Has(key) && !isHold)
-            OnRecordJoyUp(key)
+            if (!ToolCheckInfo.RecordHoldKeyMap.Has(key) && isHold)
+                OnRecordJoyDown(key)
+
+            if (ToolCheckInfo.RecordHoldKeyMap.Has(key) && !isHold)
+                OnRecordJoyUp(key)
+        }
+        Sleep(50)
     }
 }
 
 RecordJoyCheckBtnDown(key) {
-    loop RecordControllerNum {
-        if (GetKeyState(A_Index key)) {
+    loop RecordJoyIndexArr.Length {
+        index := RecordJoyIndexArr[A_Index]
+        if (GetKeyState(index "" key)) {
             return true
         }
     }
@@ -62,22 +77,24 @@ RecordJoyCheckBtnDown(key) {
 }
 
 RecordCheckPOVMacro(key) {
-    loop RecordControllerNum {
-        cont_info := GetKeyState(A_Index "JoyInfo")
+    loop RecordJoyIndexArr.Length {
+        index := RecordJoyIndexArr[A_Index]
+        cont_info := GetKeyState(index "JoyInfo")
         if InStr(cont_info, "P") {
-            state := GetKeyState(A_Index "JoyPOV")
+            state := GetKeyState(index "JoyPOV")
             value := RecordJoyPOVMap.Get(key)
             if (state == value) {
                 return true
             }
         }
     }
+
     return CheckXboxBtnOrPOVMacro(key)
 }
 
 CheckXboxBtnOrPOVMacro(key) {
     isXboxHasBtn := XboxJoyAndPOVMap.Has(key)
-    state := XInputState(0)
+    state := XInputStateCache
     if (isXboxHasBtn && state != 0) {
         bitSymbol := XboxJoyAndPOVMap.Get(key)
         isPressed := (state.wButtons >> bitSymbol) & 1
@@ -89,13 +106,14 @@ CheckXboxBtnOrPOVMacro(key) {
 }
 
 RecordCheckAxisMacro(key) {
-    loop RecordControllerNum {
-        cont_name := GetKeyState(A_Index "JoyName")
-        cont_info := GetKeyState(A_Index "JoyInfo")
+    loop RecordJoyIndexArr.Length {
+        index := RecordJoyIndexArr[A_Index]
+        cont_name := GetKeyState(index "JoyName")
+        cont_info := GetKeyState(index "JoyInfo")
         if (cont_info == "ZRUPD")
             continue
         joyAxisName := SubStr(key, 1, 4)
-        state := GetKeyState(A_Index joyAxisName)
+        state := GetKeyState(index joyAxisName)
         valueSection := GetAxisTriggerSection(key, false)
         if (IsNumber(state) && state >= valueSection[1] && state <= valueSection[2]) {
             return true
@@ -137,7 +155,7 @@ GetAxisTriggerSection(axisKey, isXbox) {
 
 GetXboxAxisValue(joyAxisSymbol) {
     joyAxisName := SubStr(joyAxisSymbol, 1, 4)
-    State := XInputState(0)
+    State := XInputStateCache
     if (State == 0)
         return 0
 

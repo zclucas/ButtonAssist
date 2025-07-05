@@ -2,7 +2,7 @@
 InitUI() {
     global MySoftData
     MyGui := Gui()
-    MyGui.Title := "RMTv1.0.5"
+    MyGui.Title := "RMTv1.0.6"
     MyGui.SetFont(, "Arial")
     MyGui.SetFont("S10 W550 Q2", "Consolas")
     MySoftData.MyGui := MyGui
@@ -192,8 +192,8 @@ LoadSavedSettingUI(index) {
         InfoHeight := 45
 
         newIndexCon := MyGui.Add("Text", Format("x{} y{} w{}", TabPosX + 10, tableItem.underPosY + 5, 30), A_Index ".")
-        newTriggerTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 40, tableItem.underPosY, 70), 
-        ["按下","松开","松止", "开关", "长按"])
+        newTriggerTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 40, tableItem.underPosY, 70),
+        ["按下", "松开", "松止", "开关", "长按"])
         newTriggerTypeCon.Value := tableItem.TriggerTypeArr.Length >= A_Index ? tableItem.TriggerTypeArr[A_Index] : 1
         newTriggerTypeCon.Enabled := isNormal
         newTriggerTypeCon.Visible := isSubMacro ? false : true
@@ -203,7 +203,8 @@ LoadSavedSettingUI(index) {
         newTkControl.Visible := isSubMacro ? false : true
         newTkControl.Value := tableItem.TKArr.Length >= A_Index ? tableItem.TKArr[A_Index] : ""
 
-        newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 center", TabPosX + 115 - subMacroWidth, tableItem.underPosY),
+        newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 center", TabPosX + 115 - subMacroWidth,
+            tableItem.underPosY),
         ["无限"])
         conValue := tableItem.LoopCountArr.Length >= A_Index ? tableItem.LoopCountArr[A_Index] : "1"
         conValue := conValue == "-1" ? "无限" : conValue
@@ -313,7 +314,8 @@ OnAddSetting(*) {
     "")
     newTkControl.Visible := isSubMacro ? false : true
 
-    newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 center", TabPosX + 115 - subMacroWidth, tableItem.underPosY), [
+    newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 center", TabPosX + 115 - subMacroWidth, tableItem.underPosY
+    ), [
         "无限"])
     newLoopCountControl.Text := "1"
     newLoopCountControl.Enabled := isMacro
@@ -396,7 +398,8 @@ AddSettingUI(index) {
 
     con := MyGui.Add("Text", Format("x{} y{} w100 Right", posX + 325, posY), "终止宏:")
     CtrlType := GetHotKeyCtrlType(MySoftData.KillMacroHotkey)
-    MySoftData.KillMacroHotkeyCtrl := MyGui.Add(CtrlType, Format("x{} y{} w100 center", posX + 430, posY - 4), MySoftData
+    MySoftData.KillMacroHotkeyCtrl := MyGui.Add(CtrlType, Format("x{} y{} w100 center", posX + 430, posY - 4),
+    MySoftData
     .KillMacroHotkey)
     MySoftData.KillMacroHotkeyCtrl.Enabled := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 535, posY - 5), "编辑")
@@ -595,7 +598,8 @@ AddHelpUI(index) {
     "软件交流QQ群：")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 700, 30),
-    '<a href="https://qm.qq.com/q/DgpDumEPzq">[1群]837661891</a>、<a href="https://qm.qq.com/q/uZszuxabPW">[2群]1050141694</a>(提交优化方案，使用心得分享，问题反馈)')
+    '<a href="https://qm.qq.com/q/DgpDumEPzq">[1群]837661891</a>、<a href="https://qm.qq.com/q/uZszuxabPW">[2群]1050141694</a>(提交优化方案，使用心得分享，问题反馈)'
+    )
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
 
     posY += 30
@@ -696,6 +700,10 @@ AddToolUI(index) {
     ToolCheckInfo.RecordMouseRelativeCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 370, posY, 60), "鼠标相对位移")
     ToolCheckInfo.RecordMouseRelativeCtrl.Value := ToolCheckInfo.RecordMouseRelativeValue
     ToolCheckInfo.RecordMouseRelativeCtrl.OnEvent("Click", OnChangeRecordOption)
+
+    ToolCheckInfo.RecordJoyCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 500, posY, 60), "录制手柄")
+    ToolCheckInfo.RecordJoyCtrl.Value := ToolCheckInfo.RecordJoyValue
+    ToolCheckInfo.RecordMouseCtrl.OnEvent("Click", OnChangeRecordOption)
 
     posY += 40
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "图片文本提取：")

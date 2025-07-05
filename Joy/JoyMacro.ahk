@@ -28,6 +28,7 @@ class JoyMacro {
         this.joyBtnNum := 32
         this.joyFloat := 5
         this.axisMaxValue := 100
+        this.JoyIndexArr := []
 
         this.timerAction := this.CheckMacro.Bind(this)
         this.joyAxises := Map("JoyXMin", 0, "JoyXMax", 100, "JoyYMin", 0, "JoyYMax", 100, "JoyZMin", 0, "JoyZMax", 100,
@@ -56,7 +57,12 @@ class JoyMacro {
     Enable() {
         if (this.MacroMap.Count == 0)
             return
-
+        this.JoyIndexArr := []
+        loop this.controllerNum {
+            if GetKeyState(A_Index "JoyName") {
+                this.JoyIndexArr.Push(A_Index)
+            }
+        }
         SetTimer this.timerAction, 0
         SetTimer this.timerAction, this.interval
     }
@@ -80,8 +86,9 @@ class JoyMacro {
     }
 
     CheckBtnMacro(joyBtnSymbol) {
-        loop this.controllerNum {
-            if (GetKeyState(A_Index joyBtnSymbol)) {
+        loop this.JoyIndexArr.Length {
+            index := this.JoyIndexArr[A_Index]
+            if (GetKeyState(index "" joyBtnSymbol)) {
                 this.MacroMap.Get(joyBtnSymbol).Action()
                 return
             }
@@ -91,10 +98,11 @@ class JoyMacro {
     }
 
     CheckPOVMacro(joyPOVSymbol) {
-        loop this.controllerNum {
-            cont_info := GetKeyState(A_Index "JoyInfo")
+        loop this.JoyIndexArr.Length {
+            index := this.JoyIndexArr[A_Index]
+            cont_info := GetKeyState(index "JoyInfo")
             if InStr(cont_info, "P") {
-                state := GetKeyState(A_Index "JoyPOV")
+                state := GetKeyState(index "JoyPOV")
                 value := this.joyPOVMap.Get(joyPOVSymbol)
                 if (state == value) {
                     this.MacroMap.Get(joyPOVSymbol).Action()
@@ -107,13 +115,14 @@ class JoyMacro {
     }
 
     CheckAxisMacro(joyAxisSymbol) {
-        loop this.controllerNum {
-            cont_name := GetKeyState(A_Index "JoyName")
-            cont_info := GetKeyState(A_Index "JoyInfo")
+        loop this.JoyIndexArr.Length {
+            index := this.JoyIndexArr[A_Index]
+            cont_name := GetKeyState(index "JoyName")
+            cont_info := GetKeyState(index "JoyInfo")
             if (cont_info == "ZRUPD")
                 continue
             joyAxisName := SubStr(joyAxisSymbol, 1, 4)
-            state := GetKeyState(A_Index joyAxisName)
+            state := GetKeyState(index joyAxisName)
             valueSection := this.GetAxisTriggerSection(joyAxisSymbol, false)
             if (IsNumber(state) && state >= valueSection[1] && state <= valueSection[2]) {
                 this.MacroMap.Get(joyAxisSymbol).Action()

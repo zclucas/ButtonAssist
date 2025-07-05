@@ -234,6 +234,7 @@ LoadSetting() {
     ToolCheckInfo.ToolTextFilterHotKey := IniRead(IniFile, IniSection, "ToolTextFilterHotKey", "!u")
     ToolCheckInfo.RecordKeyboardValue := IniRead(IniFile, IniSection, "RecordKeyboardValue", true)
     ToolCheckInfo.RecordMouseValue := IniRead(IniFile, IniSection, "RecordMouseValue", true)
+    ToolCheckInfo.RecordJoyValue := IniRead(IniFile, IniSection, "RecordJoyValue", true)
     ToolCheckInfo.RecordMouseRelativeValue := IniRead(IniFile, IniSection, "RecordMouseRelativeValue", false)
     ToolCheckInfo.OCRTypeValue := IniRead(IniFile, IniSection, "OCRType", 1)
     MySoftData.IsExecuteShow := IniRead(IniFile, IniSection, "IsExecuteShow", true)

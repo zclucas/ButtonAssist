@@ -1,23 +1,24 @@
-2025-05-04 18:19:01.198 +08:00 INFO  XOutput.Tools.DependencyEmbedder.CurrentDomain_AssemblyResolve: Loading SharpDX.DirectInput.dll from embedded resources
-2025-05-04 18:19:01.320 +08:00 INFO  XOutput.Tools.DependencyEmbedder.CurrentDomain_AssemblyResolve: Loading SharpDX.dll from embedded resources
-2025-05-04 18:19:01.424 +08:00 INFO  XOutput.UI.Windows.MainWindow..ctor: Starting XOutput in normal window
-2025-05-04 18:19:01.480 +08:00 INFO  XOutput.Tools.DependencyEmbedder.CurrentDomain_AssemblyResolve: Loading Hardcodet.Wpf.TaskbarNotification.dll from embedded resources
-2025-05-04 18:19:01.559 +08:00 INFO  XOutput.Tools.DependencyEmbedder.CurrentDomain_AssemblyResolve: Loading Newtonsoft.Json.dll from embedded resources
-2025-05-04 18:19:01.654 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: Brazilian Portuguese language is loaded.
-2025-05-04 18:19:01.654 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: English language is loaded.
-2025-05-04 18:19:01.654 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: French language is loaded.
-2025-05-04 18:19:01.654 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: German language is loaded.
-2025-05-04 18:19:01.654 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: Greek language is loaded.
-2025-05-04 18:19:01.654 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: Hungarian language is loaded.
-2025-05-04 18:19:01.654 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: Russian language is loaded.
-2025-05-04 18:19:01.654 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: Simplified Chinese language is loaded.
-2025-05-04 18:19:01.654 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: Spanish language is loaded.
-2025-05-04 18:19:01.654 +08:00 INFO  XOutput.Tools.LanguageManager.set_Language: Language is set to English
-2025-05-04 18:19:01.702 +08:00 INFO  XOutput.Tools.LanguageManager.set_Language: Language is set to Simplified Chinese
-2025-05-04 18:19:01.752 +08:00 INFO  XOutput.UI.Windows.MainWindowViewModel.Initialize: Loading settings was successful.
-2025-05-04 18:19:01.753 +08:00 INFO  XOutput.Tools.DependencyEmbedder.CurrentDomain_AssemblyResolve: Loading Nefarius.ViGEm.Client.dll from embedded resources
-2025-05-04 18:19:01.825 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor: vJoy Device a741e5e0-c2ce-11ef-8002-444553540000
-2025-05-04 18:19:01.845 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor: {
+2025-07-05 16:32:04.767 +08:00 INFO  XOutput.Tools.DependencyEmbedder.CurrentDomain_AssemblyResolve: Loading SharpDX.DirectInput.dll from embedded resources
+2025-07-05 16:32:04.830 +08:00 INFO  XOutput.Tools.DependencyEmbedder.CurrentDomain_AssemblyResolve: Loading SharpDX.dll from embedded resources
+2025-07-05 16:32:04.940 +08:00 INFO  XOutput.UI.Windows.MainWindow..ctor: Starting XOutput in normal window
+2025-07-05 16:32:05.004 +08:00 INFO  XOutput.Tools.DependencyEmbedder.CurrentDomain_AssemblyResolve: Loading Hardcodet.Wpf.TaskbarNotification.dll from embedded resources
+2025-07-05 16:32:05.163 +08:00 INFO  XOutput.Tools.DependencyEmbedder.CurrentDomain_AssemblyResolve: Loading Newtonsoft.Json.dll from embedded resources
+2025-07-05 16:32:05.337 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: Brazilian Portuguese language is loaded.
+2025-07-05 16:32:05.337 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: English language is loaded.
+2025-07-05 16:32:05.337 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: French language is loaded.
+2025-07-05 16:32:05.337 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: German language is loaded.
+2025-07-05 16:32:05.337 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: Greek language is loaded.
+2025-07-05 16:32:05.337 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: Hungarian language is loaded.
+2025-07-05 16:32:05.337 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: Russian language is loaded.
+2025-07-05 16:32:05.337 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: Simplified Chinese language is loaded.
+2025-07-05 16:32:05.337 +08:00 INFO  XOutput.Tools.LanguageManager..ctor: Spanish language is loaded.
+2025-07-05 16:32:05.337 +08:00 INFO  XOutput.Tools.LanguageManager.set_Language: Language is set to English
+2025-07-05 16:32:05.385 +08:00 INFO  XOutput.Tools.LanguageManager.set_Language: Language is set to Simplified Chinese
+2025-07-05 16:32:05.433 +08:00 INFO  XOutput.UI.Windows.MainWindowViewModel.Initialize: Loading settings was successful.
+2025-07-05 16:32:05.433 +08:00 WARN  XOutput.UI.Windows.MainWindowViewModel.Initialize: Not running in elevated mode.
+2025-07-05 16:32:05.433 +08:00 INFO  XOutput.Tools.DependencyEmbedder.CurrentDomain_AssemblyResolve: Loading Nefarius.ViGEm.Client.dll from embedded resources
+2025-07-05 16:32:05.624 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor: vJoy Device a741e5e0-c2ce-11ef-8002-444553540000
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor: {
 Properties: {
   AutoCenter: True
   AxisMode: Absolute
@@ -27,7 +28,7 @@ Properties: {
   ForceFeedbackGain: 10000
   Granularity: 调用的目标发生了异常。
   InstanceName: vJoy Device
-  InterfacePath: \\?\hid#hidclass#1&4784345&8&0000#{4d1e55b2-f16f-11cf-88cb-001111000030}
+  InterfacePath: \\?\hid#hidclass#1&4784345&a&0000#{4d1e55b2-f16f-11cf-88cb-001111000030}
   JoystickId: 0
   MemoryLoad: 调用的目标发生了异常。
   PortDisplayName: 调用的目标发生了异常。
@@ -68,10 +69,10 @@ Information: {
   Usage: LedCompose
 }
 Tag: null
-NativePointer: 2009243235944
+NativePointer: 2340732501560
 IsDisposed: False
 }
-2025-05-04 18:19:01.847 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor: [
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor: [
   ObjectType: a36d02e0-c9f3-11cf-bfc7-444553540000
   Offset: 0
   ObjectId: Flags: AbsoluteAxis, ForceFeedbackActuator InstanceNumber: 0 RawId: 0x01000002
@@ -2143,175 +2144,621 @@ IsDisposed: False
   ReportId: 0
   ,
 ]
-2025-05-04 18:19:01.848 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   X 轴 Flags: AbsoluteAxis, ForceFeedbackActuator InstanceNumber: 0 RawId: 0x01000002 offset: 0 objecttype: a36d02e0-c9f3-11cf-bfc7-444553540000 48
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Y 轴 Flags: AbsoluteAxis, ForceFeedbackActuator InstanceNumber: 1 RawId: 0x01000102 offset: 4 objecttype: a36d02e1-c9f3-11cf-bfc7-444553540000 49
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Z 轴 Flags: AbsoluteAxis InstanceNumber: 2 RawId: 0x00000202 offset: 8 objecttype: a36d02e2-c9f3-11cf-bfc7-444553540000 50
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   X 旋转 Flags: AbsoluteAxis InstanceNumber: 3 RawId: 0x00000302 offset: 12 objecttype: a36d02f4-c9f3-11cf-bfc7-444553540000 51
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Y 旋转 Flags: AbsoluteAxis InstanceNumber: 4 RawId: 0x00000402 offset: 16 objecttype: a36d02f5-c9f3-11cf-bfc7-444553540000 52
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Z 旋转 Flags: AbsoluteAxis InstanceNumber: 5 RawId: 0x00000502 offset: 20 objecttype: a36d02e3-c9f3-11cf-bfc7-444553540000 53
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   滑块 Flags: AbsoluteAxis InstanceNumber: 6 RawId: 0x00000602 offset: 24 objecttype: a36d02e4-c9f3-11cf-bfc7-444553540000 54
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   拨号 Flags: AbsoluteAxis InstanceNumber: 7 RawId: 0x00000702 offset: 28 objecttype: a36d02e4-c9f3-11cf-bfc7-444553540000 55
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 0 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 0 RawId: 0x02000004 offset: 240 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 1
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 1 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 1 RawId: 0x02000104 offset: 241 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 2
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 2 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 2 RawId: 0x02000204 offset: 242 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 3
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 3 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 3 RawId: 0x02000304 offset: 243 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 4
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 4 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 4 RawId: 0x02000404 offset: 244 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 5
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 5 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 5 RawId: 0x02000504 offset: 245 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 6
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 6 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 6 RawId: 0x02000604 offset: 246 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 7
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 7 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 7 RawId: 0x02000704 offset: 247 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 8
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 8 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 8 RawId: 0x02000804 offset: 248 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 9
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 9 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 9 RawId: 0x02000904 offset: 249 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 10
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 10 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 10 RawId: 0x02000A04 offset: 250 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 11
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 11 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 11 RawId: 0x02000B04 offset: 251 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 12
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 12 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 12 RawId: 0x02000C04 offset: 252 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 13
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 13 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 13 RawId: 0x02000D04 offset: 253 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 14
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 14 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 14 RawId: 0x02000E04 offset: 254 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 15
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 15 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 15 RawId: 0x02000F04 offset: 255 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 16
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 16 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 16 RawId: 0x02001004 offset: 256 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 17
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 17 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 17 RawId: 0x02001104 offset: 257 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 18
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 18 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 18 RawId: 0x02001204 offset: 258 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 19
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 19 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 19 RawId: 0x02001304 offset: 259 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 20
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 20 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 20 RawId: 0x02001404 offset: 260 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 21
-2025-05-04 18:19:01.849 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 21 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 21 RawId: 0x02001504 offset: 261 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 22
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 22 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 22 RawId: 0x02001604 offset: 262 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 23
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 23 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 23 RawId: 0x02001704 offset: 263 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 24
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 24 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 24 RawId: 0x02001804 offset: 264 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 25
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 25 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 25 RawId: 0x02001904 offset: 265 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 26
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 26 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 26 RawId: 0x02001A04 offset: 266 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 27
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 27 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 27 RawId: 0x02001B04 offset: 267 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 28
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 28 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 28 RawId: 0x02001C04 offset: 268 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 29
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 29 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 29 RawId: 0x02001D04 offset: 269 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 30
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 30 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 30 RawId: 0x02001E04 offset: 270 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 31
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 31 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 31 RawId: 0x02001F04 offset: 271 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 32
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 69 RawId: 0x10004580 offset: 52 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Constant Force Flags: NoData, Output InstanceNumber: 70 RawId: 0x10004680 offset: 296 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 38
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Ramp Flags: NoData, Output InstanceNumber: 71 RawId: 0x10004780 offset: 297 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 39
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Square Flags: NoData, Output InstanceNumber: 72 RawId: 0x10004880 offset: 298 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 48
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Sine Flags: NoData, Output InstanceNumber: 73 RawId: 0x10004980 offset: 299 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 49
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Triangle Flags: NoData, Output InstanceNumber: 74 RawId: 0x10004A80 offset: 300 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 50
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET SawTooth Up Flags: NoData, Output InstanceNumber: 75 RawId: 0x10004B80 offset: 301 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 51
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET SawTooth Down Flags: NoData, Output InstanceNumber: 76 RawId: 0x10004C80 offset: 302 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 52
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Spring Flags: NoData, Output InstanceNumber: 77 RawId: 0x10004D80 offset: 303 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 64
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Damper Flags: NoData, Output InstanceNumber: 78 RawId: 0x10004E80 offset: 304 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 65
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Inertia Flags: NoData, Output InstanceNumber: 79 RawId: 0x10004F80 offset: 305 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 66
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Friction Flags: NoData, Output InstanceNumber: 80 RawId: 0x10005080 offset: 306 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 67
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 81 Flags: NoData, Output InstanceNumber: 81 RawId: 0x10005180 offset: 307 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 41
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   示例期间 Flags: NoData, Output InstanceNumber: 82 RawId: 0x10005280 offset: 56 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 81
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   触发器重复间隔 Flags: NoData, Output InstanceNumber: 83 RawId: 0x10005380 offset: 60 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 84
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   持续时间 Flags: NoData, Output InstanceNumber: 84 RawId: 0x10005480 offset: 64 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 80
-2025-05-04 18:19:01.850 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   增益 Flags: NoData, Output InstanceNumber: 85 RawId: 0x10005580 offset: 68 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 82
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   触发器按钮 Flags: NoData, Output InstanceNumber: 86 RawId: 0x10005680 offset: 72 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 83
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Y 轴 Flags: NoData, Output InstanceNumber: 87 RawId: 0x10005780 offset: 308 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 49
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   X 轴 Flags: NoData, Output InstanceNumber: 88 RawId: 0x10005880 offset: 309 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 48
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   方向启用 Flags: NoData, Output InstanceNumber: 89 RawId: 0x10005980 offset: 310 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 86
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 90 Flags: NoData, Output InstanceNumber: 90 RawId: 0x10005A80 offset: 76 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 2
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 91 Flags: NoData, Output InstanceNumber: 91 RawId: 0x10005B80 offset: 80 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 1
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 92 Flags: NoData, Output InstanceNumber: 92 RawId: 0x10005C80 offset: 84 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 2
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 93 Flags: NoData, Output InstanceNumber: 93 RawId: 0x10005D80 offset: 88 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 1
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 94 RawId: 0x10005E80 offset: 92 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   消退程度 Flags: NoData, Output InstanceNumber: 95 RawId: 0x10005F80 offset: 96 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 93
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   攻击程度 Flags: NoData, Output InstanceNumber: 96 RawId: 0x10006080 offset: 100 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 91
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   消退时间 Flags: NoData, Output InstanceNumber: 97 RawId: 0x10006180 offset: 104 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 94
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   攻击时间 Flags: NoData, Output InstanceNumber: 98 RawId: 0x10006280 offset: 108 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 92
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 99 RawId: 0x10006380 offset: 112 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   参数块偏移量 Flags: NoData, Output InstanceNumber: 100 RawId: 0x10006480 offset: 116 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 35
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 101 Flags: NoData, Output InstanceNumber: 101 RawId: 0x10006580 offset: 120 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 2
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 102 Flags: NoData, Output InstanceNumber: 102 RawId: 0x10006680 offset: 124 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 1
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   CP 偏移量 Flags: NoData, Output InstanceNumber: 103 RawId: 0x10006780 offset: 128 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 96
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   负系数 Flags: NoData, Output InstanceNumber: 104 RawId: 0x10006880 offset: 132 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 98
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   正系数 Flags: NoData, Output InstanceNumber: 105 RawId: 0x10006980 offset: 136 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 97
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   负饱和度 Flags: NoData, Output InstanceNumber: 106 RawId: 0x10006A80 offset: 140 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 100
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   正饱和度 Flags: NoData, Output InstanceNumber: 107 RawId: 0x10006B80 offset: 144 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 99
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   静带 Flags: NoData, Output InstanceNumber: 108 RawId: 0x10006C80 offset: 148 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 101
-2025-05-04 18:19:01.851 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 109 RawId: 0x10006D80 offset: 152 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
-2025-05-04 18:19:01.852 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   数量 Flags: NoData, Output InstanceNumber: 110 RawId: 0x10006E80 offset: 156 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 112
-2025-05-04 18:19:01.852 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   偏移量 Flags: NoData, Output InstanceNumber: 111 RawId: 0x10006F80 offset: 160 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 111
-2025-05-04 18:19:01.852 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   阶段 Flags: NoData, Output InstanceNumber: 112 RawId: 0x10007080 offset: 164 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 113
-2025-05-04 18:19:01.852 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   期间 Flags: NoData, Output InstanceNumber: 113 RawId: 0x10007180 offset: 168 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 114
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 114 RawId: 0x10007280 offset: 172 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   数量 Flags: NoData, Output InstanceNumber: 115 RawId: 0x10007380 offset: 176 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 112
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 116 RawId: 0x10007480 offset: 180 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   斜道结束 Flags: NoData, Output InstanceNumber: 117 RawId: 0x10007580 offset: 184 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 118
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   斜道开始 Flags: NoData, Output InstanceNumber: 118 RawId: 0x10007680 offset: 188 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 117
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 119 RawId: 0x10007780 offset: 192 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   自定义强制数据偏移量 Flags: NoData, Output InstanceNumber: 120 RawId: 0x10007880 offset: 196 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 108
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   自定义强制数据 Flags: NoData, Output InstanceNumber: 121 RawId: 0x10007980 offset: 200 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 105
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Y 轴 Flags: NoData, Output InstanceNumber: 122 RawId: 0x10007A80 offset: 204 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 49
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   X 轴 Flags: NoData, Output InstanceNumber: 123 RawId: 0x10007B80 offset: 208 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 48
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 124 RawId: 0x10007C80 offset: 212 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   操作效果开始 Flags: NoData, Output InstanceNumber: 125 RawId: 0x10007D80 offset: 311 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 121
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   操作效果开始单行 Flags: NoData, Output InstanceNumber: 126 RawId: 0x10007E80 offset: 312 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 122
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   操作效果停止 Flags: NoData, Output InstanceNumber: 127 RawId: 0x10007F80 offset: 313 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 123
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   循环计数 Flags: NoData, Output InstanceNumber: 128 RawId: 0x10008080 offset: 216 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 124
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 129 RawId: 0x10008180 offset: 220 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   DC 启用传动器 Flags: NoData, Output InstanceNumber: 130 RawId: 0x10008280 offset: 314 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 151
-2025-05-04 18:19:01.858 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   DC 停用传动器 Flags: NoData, Output InstanceNumber: 131 RawId: 0x10008380 offset: 315 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 152
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   DC 停止所有效果 Flags: NoData, Output InstanceNumber: 132 RawId: 0x10008480 offset: 316 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 153
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   DC 设备重置 Flags: NoData, Output InstanceNumber: 133 RawId: 0x10008580 offset: 317 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 154
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   DV 设备暂停 Flags: NoData, Output InstanceNumber: 134 RawId: 0x10008680 offset: 318 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 155
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   DC 设备继续 Flags: NoData, Output InstanceNumber: 135 RawId: 0x10008780 offset: 319 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 156
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   设备增益 Flags: NoData, Output InstanceNumber: 136 RawId: 0x10008880 offset: 224 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 126
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 137 RawId: 0x10008980 offset: 228 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   示例计数 Flags: NoData, Output InstanceNumber: 138 RawId: 0x10008A80 offset: 232 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 109
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   示例期间 Flags: NoData, Output InstanceNumber: 139 RawId: 0x10008B80 offset: 236 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 81
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 0 - 游戏杆 Flags: Collection, NoData InstanceNumber: 0 RawId: 0x000000C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 4
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 1 - 指针 Flags: Collection, NoData InstanceNumber: 1 RawId: 0x000001C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 1
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 2 - PID 状态报表 Flags: Collection, NoData InstanceNumber: 2 RawId: 0x000002C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 146
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 3 - 设置效果报表 Flags: Collection, NoData InstanceNumber: 3 RawId: 0x000003C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 33
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 4 - 效果类型 Flags: Collection, NoData InstanceNumber: 4 RawId: 0x000004C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 37
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 5 - 轴启用 Flags: Collection, NoData InstanceNumber: 5 RawId: 0x000005C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 85
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 6 - 方向 Flags: Collection, NoData InstanceNumber: 6 RawId: 0x000006C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 87
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 7 - 类型特定块偏移量 Flags: Collection, NoData InstanceNumber: 7 RawId: 0x000007C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 88
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 8 - 设置信封报表 Flags: Collection, NoData InstanceNumber: 8 RawId: 0x000008C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 90
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 9 - 设置条件报表 Flags: Collection, NoData InstanceNumber: 9 RawId: 0x000009C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 95
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 10 - 类型特定块偏移量 Flags: Collection, NoData InstanceNumber: 10 RawId: 0x00000AC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 88
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 11 - 设置定期报表 Flags: Collection, NoData InstanceNumber: 11 RawId: 0x00000BC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 110
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 12 - 设置经常性强制报表 Flags: Collection, NoData InstanceNumber: 12 RawId: 0x00000CC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 115
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 13 - 设置斜道强制报表 Flags: Collection, NoData InstanceNumber: 13 RawId: 0x00000DC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 116
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 14 - 自定义强制数据报表 Flags: Collection, NoData InstanceNumber: 14 RawId: 0x00000EC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 104
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 15 - 下载强制示例 Flags: Collection, NoData InstanceNumber: 15 RawId: 0x00000FC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 102
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 16 - 效果操作报表 Flags: Collection, NoData InstanceNumber: 16 RawId: 0x000010C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 119
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 17 - 效果操作 Flags: Collection, NoData InstanceNumber: 17 RawId: 0x000011C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 120
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 18 - PID 块空闲报表 Flags: Collection, NoData InstanceNumber: 18 RawId: 0x000012C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 144
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 19 - PID 设备控制 Flags: Collection, NoData InstanceNumber: 19 RawId: 0x000013C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 150
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 20 - 设备增益报表 Flags: Collection, NoData InstanceNumber: 20 RawId: 0x000014C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 125
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 21 - 设置自定义强制报表 Flags: Collection, NoData InstanceNumber: 21 RawId: 0x000015C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 107
-2025-05-04 18:19:01.859 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 22 - 创建新效果 Flags: Collection, NoData InstanceNumber: 22 RawId: 0x000016C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 171
-2025-05-04 18:19:01.860 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 23 - 效果类型 Flags: Collection, NoData InstanceNumber: 23 RawId: 0x000017C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 37
-2025-05-04 18:19:01.860 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 24 - PID 块负荷报表 Flags: Collection, NoData InstanceNumber: 24 RawId: 0x000018C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 137
-2025-05-04 18:19:01.860 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 25 - 块负荷状态 Flags: Collection, NoData InstanceNumber: 25 RawId: 0x000019C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 139
-2025-05-04 18:19:01.860 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 26 - PID 池报表 Flags: Collection, NoData InstanceNumber: 26 RawId: 0x00001AC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 127
-2025-05-04 18:19:01.886 +08:00 INFO  XOutput.Devices.GameController.CreateXOutput: ViGEm devices are used.
-2025-05-04 18:19:01.911 +08:00 INFO  XOutput.UI.Windows.MainWindowViewModel.Initialize: Keyboard controller is connected
-2025-05-04 18:19:01.913 +08:00 INFO  XOutput.UI.Windows.MainWindow.Initialize: The application has started.
-2025-05-04 18:19:02.761 +08:00 INFO  XOutput.UI.Windows.MainWindowViewModel.VersionCompare: Version is up-to-date
-2025-05-04 18:19:03.719 +08:00 INFO  XOutput.Devices.GameController.Start: Emulation started on Controller.
-2025-05-04 18:19:03.719 +08:00 INFO  XOutput.Devices.GameController.Start: Force feedback mapping is connected on Controller.
-2025-05-04 18:21:30.996 +08:00 INFO  XOutput.Devices.GameController.Stop: Force feedback mapping is disconnected on Controller.
-2025-05-04 18:21:30.997 +08:00 INFO  XOutput.Devices.GameController.Stop: Emulation stopped on Controller.
-2025-05-04 18:21:47.218 +08:00 INFO  XOutput.Devices.GameController.Start: Emulation started on Controller.
-2025-05-04 18:21:47.218 +08:00 INFO  XOutput.Devices.GameController.Start: Force feedback mapping is connected on Controller.
-2025-05-04 18:22:50.386 +08:00 INFO  XOutput.Devices.GameController.Stop: Force feedback mapping is disconnected on Controller.
-2025-05-04 18:22:50.386 +08:00 INFO  XOutput.Devices.GameController.Stop: Emulation stopped on Controller.
-2025-05-04 18:23:25.659 +08:00 INFO  XOutput.Devices.GameController.Start: Emulation started on Controller.
-2025-05-04 18:23:25.659 +08:00 INFO  XOutput.Devices.GameController.Start: Force feedback mapping is connected on Controller.
-2025-05-04 18:25:19.358 +08:00 INFO  XOutput.UI.Windows.MainWindowViewModel.SaveSettings: Saving settings was successful.
-2025-05-04 18:25:21.397 +08:00 INFO  XOutput.UI.Windows.MainWindowViewModel.SaveSettings: Saving settings was successful.
-2025-05-04 18:25:28.074 +08:00 INFO  XOutput.Devices.GameController.Stop: Force feedback mapping is disconnected on Controller.
-2025-05-04 18:25:28.075 +08:00 INFO  XOutput.Devices.GameController.Stop: Emulation stopped on Controller.
-2025-05-04 18:25:35.825 +08:00 INFO  XOutput.UI.Windows.MainWindowViewModel.SaveSettings: Saving settings was successful.
-2025-05-04 18:26:54.276 +08:00 INFO  XOutput.Devices.GameController.Start: Emulation started on Controller.
-2025-05-04 18:26:54.276 +08:00 INFO  XOutput.Devices.GameController.Start: Force feedback mapping is connected on Controller.
-2025-05-04 18:28:31.883 +08:00 INFO  XOutput.Devices.GameController.Stop: Force feedback mapping is disconnected on Controller.
-2025-05-04 18:28:31.884 +08:00 INFO  XOutput.Devices.GameController.Stop: Emulation stopped on Controller.
-2025-05-04 18:29:51.845 +08:00 INFO  XOutput.Devices.GameController.Start: Emulation started on Controller.
-2025-05-04 18:29:51.845 +08:00 INFO  XOutput.Devices.GameController.Start: Force feedback mapping is connected on Controller.
-2025-05-04 18:29:53.086 +08:00 INFO  XOutput.Devices.GameController.Stop: Force feedback mapping is disconnected on Controller.
-2025-05-04 18:29:53.087 +08:00 INFO  XOutput.Devices.GameController.Stop: Emulation stopped on Controller.
-2025-05-04 18:29:54.474 +08:00 INFO  XOutput.Devices.GameController.Start: Emulation started on Controller.
-2025-05-04 18:29:54.474 +08:00 INFO  XOutput.Devices.GameController.Start: Force feedback mapping is connected on Controller.
-2025-05-04 18:30:39.516 +08:00 INFO  XOutput.UI.Windows.MainWindow.WindowClosing: The application is closed to tray.
-2025-05-04 18:32:48.121 +08:00 INFO  XOutput.UI.Windows.MainWindow.WindowClosing: The application is closed to tray.
-2025-05-04 18:33:13.891 +08:00 INFO  XOutput.Devices.GameController.Stop: Force feedback mapping is disconnected on Controller.
-2025-05-04 18:33:13.891 +08:00 INFO  XOutput.Devices.GameController.Stop: Emulation stopped on Controller.
-2025-05-04 18:33:13.898 +08:00 INFO  XOutput.UI.Windows.MainWindow.WindowClosed: The application will exit.
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   X 轴 Flags: AbsoluteAxis, ForceFeedbackActuator InstanceNumber: 0 RawId: 0x01000002 offset: 0 objecttype: a36d02e0-c9f3-11cf-bfc7-444553540000 48
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Y 轴 Flags: AbsoluteAxis, ForceFeedbackActuator InstanceNumber: 1 RawId: 0x01000102 offset: 4 objecttype: a36d02e1-c9f3-11cf-bfc7-444553540000 49
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Z 轴 Flags: AbsoluteAxis InstanceNumber: 2 RawId: 0x00000202 offset: 8 objecttype: a36d02e2-c9f3-11cf-bfc7-444553540000 50
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   X 旋转 Flags: AbsoluteAxis InstanceNumber: 3 RawId: 0x00000302 offset: 12 objecttype: a36d02f4-c9f3-11cf-bfc7-444553540000 51
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Y 旋转 Flags: AbsoluteAxis InstanceNumber: 4 RawId: 0x00000402 offset: 16 objecttype: a36d02f5-c9f3-11cf-bfc7-444553540000 52
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Z 旋转 Flags: AbsoluteAxis InstanceNumber: 5 RawId: 0x00000502 offset: 20 objecttype: a36d02e3-c9f3-11cf-bfc7-444553540000 53
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   滑块 Flags: AbsoluteAxis InstanceNumber: 6 RawId: 0x00000602 offset: 24 objecttype: a36d02e4-c9f3-11cf-bfc7-444553540000 54
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   拨号 Flags: AbsoluteAxis InstanceNumber: 7 RawId: 0x00000702 offset: 28 objecttype: a36d02e4-c9f3-11cf-bfc7-444553540000 55
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 0 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 0 RawId: 0x02000004 offset: 240 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 1
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 1 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 1 RawId: 0x02000104 offset: 241 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 2
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 2 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 2 RawId: 0x02000204 offset: 242 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 3
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 3 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 3 RawId: 0x02000304 offset: 243 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 4
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 4 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 4 RawId: 0x02000404 offset: 244 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 5
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 5 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 5 RawId: 0x02000504 offset: 245 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 6
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 6 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 6 RawId: 0x02000604 offset: 246 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 7
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 7 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 7 RawId: 0x02000704 offset: 247 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 8
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 8 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 8 RawId: 0x02000804 offset: 248 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 9
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 9 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 9 RawId: 0x02000904 offset: 249 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 10
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 10 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 10 RawId: 0x02000A04 offset: 250 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 11
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 11 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 11 RawId: 0x02000B04 offset: 251 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 12
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 12 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 12 RawId: 0x02000C04 offset: 252 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 13
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 13 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 13 RawId: 0x02000D04 offset: 253 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 14
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 14 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 14 RawId: 0x02000E04 offset: 254 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 15
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 15 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 15 RawId: 0x02000F04 offset: 255 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 16
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 16 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 16 RawId: 0x02001004 offset: 256 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 17
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 17 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 17 RawId: 0x02001104 offset: 257 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 18
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 18 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 18 RawId: 0x02001204 offset: 258 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 19
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 19 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 19 RawId: 0x02001304 offset: 259 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 20
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 20 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 20 RawId: 0x02001404 offset: 260 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 21
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 21 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 21 RawId: 0x02001504 offset: 261 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 22
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 22 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 22 RawId: 0x02001604 offset: 262 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 23
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 23 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 23 RawId: 0x02001704 offset: 263 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 24
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 24 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 24 RawId: 0x02001804 offset: 264 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 25
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 25 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 25 RawId: 0x02001904 offset: 265 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 26
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 26 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 26 RawId: 0x02001A04 offset: 266 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 27
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 27 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 27 RawId: 0x02001B04 offset: 267 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 28
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 28 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 28 RawId: 0x02001C04 offset: 268 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 29
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 29 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 29 RawId: 0x02001D04 offset: 269 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 30
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 30 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 30 RawId: 0x02001E04 offset: 270 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 31
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 31 Flags: PushButton, ForceFeedbackEffectTrigger InstanceNumber: 31 RawId: 0x02001F04 offset: 271 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 32
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 69 RawId: 0x10004580 offset: 52 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Constant Force Flags: NoData, Output InstanceNumber: 70 RawId: 0x10004680 offset: 296 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 38
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Ramp Flags: NoData, Output InstanceNumber: 71 RawId: 0x10004780 offset: 297 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 39
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Square Flags: NoData, Output InstanceNumber: 72 RawId: 0x10004880 offset: 298 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 48
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Sine Flags: NoData, Output InstanceNumber: 73 RawId: 0x10004980 offset: 299 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 49
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Triangle Flags: NoData, Output InstanceNumber: 74 RawId: 0x10004A80 offset: 300 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 50
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET SawTooth Up Flags: NoData, Output InstanceNumber: 75 RawId: 0x10004B80 offset: 301 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 51
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET SawTooth Down Flags: NoData, Output InstanceNumber: 76 RawId: 0x10004C80 offset: 302 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 52
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Spring Flags: NoData, Output InstanceNumber: 77 RawId: 0x10004D80 offset: 303 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 64
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Damper Flags: NoData, Output InstanceNumber: 78 RawId: 0x10004E80 offset: 304 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 65
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Inertia Flags: NoData, Output InstanceNumber: 79 RawId: 0x10004F80 offset: 305 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 66
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   ET Friction Flags: NoData, Output InstanceNumber: 80 RawId: 0x10005080 offset: 306 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 67
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 81 Flags: NoData, Output InstanceNumber: 81 RawId: 0x10005180 offset: 307 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 41
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   示例期间 Flags: NoData, Output InstanceNumber: 82 RawId: 0x10005280 offset: 56 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 81
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   触发器重复间隔 Flags: NoData, Output InstanceNumber: 83 RawId: 0x10005380 offset: 60 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 84
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   持续时间 Flags: NoData, Output InstanceNumber: 84 RawId: 0x10005480 offset: 64 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 80
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   增益 Flags: NoData, Output InstanceNumber: 85 RawId: 0x10005580 offset: 68 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 82
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   触发器按钮 Flags: NoData, Output InstanceNumber: 86 RawId: 0x10005680 offset: 72 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 83
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Y 轴 Flags: NoData, Output InstanceNumber: 87 RawId: 0x10005780 offset: 308 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 49
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   X 轴 Flags: NoData, Output InstanceNumber: 88 RawId: 0x10005880 offset: 309 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 48
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   方向启用 Flags: NoData, Output InstanceNumber: 89 RawId: 0x10005980 offset: 310 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 86
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 90 Flags: NoData, Output InstanceNumber: 90 RawId: 0x10005A80 offset: 76 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 2
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 91 Flags: NoData, Output InstanceNumber: 91 RawId: 0x10005B80 offset: 80 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 1
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 92 Flags: NoData, Output InstanceNumber: 92 RawId: 0x10005C80 offset: 84 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 2
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 93 Flags: NoData, Output InstanceNumber: 93 RawId: 0x10005D80 offset: 88 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 1
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 94 RawId: 0x10005E80 offset: 92 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   消退程度 Flags: NoData, Output InstanceNumber: 95 RawId: 0x10005F80 offset: 96 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 93
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   攻击程度 Flags: NoData, Output InstanceNumber: 96 RawId: 0x10006080 offset: 100 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 91
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   消退时间 Flags: NoData, Output InstanceNumber: 97 RawId: 0x10006180 offset: 104 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 94
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   攻击时间 Flags: NoData, Output InstanceNumber: 98 RawId: 0x10006280 offset: 108 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 92
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 99 RawId: 0x10006380 offset: 112 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   参数块偏移量 Flags: NoData, Output InstanceNumber: 100 RawId: 0x10006480 offset: 116 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 35
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 101 Flags: NoData, Output InstanceNumber: 101 RawId: 0x10006580 offset: 120 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 2
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   未知 102 Flags: NoData, Output InstanceNumber: 102 RawId: 0x10006680 offset: 124 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 1
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   CP 偏移量 Flags: NoData, Output InstanceNumber: 103 RawId: 0x10006780 offset: 128 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 96
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   负系数 Flags: NoData, Output InstanceNumber: 104 RawId: 0x10006880 offset: 132 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 98
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   正系数 Flags: NoData, Output InstanceNumber: 105 RawId: 0x10006980 offset: 136 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 97
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   负饱和度 Flags: NoData, Output InstanceNumber: 106 RawId: 0x10006A80 offset: 140 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 100
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   正饱和度 Flags: NoData, Output InstanceNumber: 107 RawId: 0x10006B80 offset: 144 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 99
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   静带 Flags: NoData, Output InstanceNumber: 108 RawId: 0x10006C80 offset: 148 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 101
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 109 RawId: 0x10006D80 offset: 152 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   数量 Flags: NoData, Output InstanceNumber: 110 RawId: 0x10006E80 offset: 156 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 112
+2025-07-05 16:32:05.640 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   偏移量 Flags: NoData, Output InstanceNumber: 111 RawId: 0x10006F80 offset: 160 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 111
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   阶段 Flags: NoData, Output InstanceNumber: 112 RawId: 0x10007080 offset: 164 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 113
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   期间 Flags: NoData, Output InstanceNumber: 113 RawId: 0x10007180 offset: 168 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 114
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 114 RawId: 0x10007280 offset: 172 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   数量 Flags: NoData, Output InstanceNumber: 115 RawId: 0x10007380 offset: 176 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 112
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 116 RawId: 0x10007480 offset: 180 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   斜道结束 Flags: NoData, Output InstanceNumber: 117 RawId: 0x10007580 offset: 184 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 118
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   斜道开始 Flags: NoData, Output InstanceNumber: 118 RawId: 0x10007680 offset: 188 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 117
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 119 RawId: 0x10007780 offset: 192 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   自定义强制数据偏移量 Flags: NoData, Output InstanceNumber: 120 RawId: 0x10007880 offset: 196 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 108
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   自定义强制数据 Flags: NoData, Output InstanceNumber: 121 RawId: 0x10007980 offset: 200 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 105
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Y 轴 Flags: NoData, Output InstanceNumber: 122 RawId: 0x10007A80 offset: 204 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 49
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   X 轴 Flags: NoData, Output InstanceNumber: 123 RawId: 0x10007B80 offset: 208 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 48
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 124 RawId: 0x10007C80 offset: 212 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   操作效果开始 Flags: NoData, Output InstanceNumber: 125 RawId: 0x10007D80 offset: 311 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 121
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   操作效果开始单行 Flags: NoData, Output InstanceNumber: 126 RawId: 0x10007E80 offset: 312 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 122
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   操作效果停止 Flags: NoData, Output InstanceNumber: 127 RawId: 0x10007F80 offset: 313 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 123
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   循环计数 Flags: NoData, Output InstanceNumber: 128 RawId: 0x10008080 offset: 216 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 124
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 129 RawId: 0x10008180 offset: 220 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   DC 启用传动器 Flags: NoData, Output InstanceNumber: 130 RawId: 0x10008280 offset: 314 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 151
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   DC 停用传动器 Flags: NoData, Output InstanceNumber: 131 RawId: 0x10008380 offset: 315 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 152
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   DC 停止所有效果 Flags: NoData, Output InstanceNumber: 132 RawId: 0x10008480 offset: 316 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 153
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   DC 设备重置 Flags: NoData, Output InstanceNumber: 133 RawId: 0x10008580 offset: 317 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 154
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   DV 设备暂停 Flags: NoData, Output InstanceNumber: 134 RawId: 0x10008680 offset: 318 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 155
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   DC 设备继续 Flags: NoData, Output InstanceNumber: 135 RawId: 0x10008780 offset: 319 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 156
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   设备增益 Flags: NoData, Output InstanceNumber: 136 RawId: 0x10008880 offset: 224 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 126
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   效果块索引 Flags: NoData, Output InstanceNumber: 137 RawId: 0x10008980 offset: 228 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 34
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   示例计数 Flags: NoData, Output InstanceNumber: 138 RawId: 0x10008A80 offset: 232 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 109
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   示例期间 Flags: NoData, Output InstanceNumber: 139 RawId: 0x10008B80 offset: 236 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 81
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 0 - 游戏杆 Flags: Collection, NoData InstanceNumber: 0 RawId: 0x000000C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 4
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 1 - 指针 Flags: Collection, NoData InstanceNumber: 1 RawId: 0x000001C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 1
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 2 - PID 状态报表 Flags: Collection, NoData InstanceNumber: 2 RawId: 0x000002C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 146
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 3 - 设置效果报表 Flags: Collection, NoData InstanceNumber: 3 RawId: 0x000003C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 33
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 4 - 效果类型 Flags: Collection, NoData InstanceNumber: 4 RawId: 0x000004C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 37
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 5 - 轴启用 Flags: Collection, NoData InstanceNumber: 5 RawId: 0x000005C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 85
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 6 - 方向 Flags: Collection, NoData InstanceNumber: 6 RawId: 0x000006C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 87
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 7 - 类型特定块偏移量 Flags: Collection, NoData InstanceNumber: 7 RawId: 0x000007C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 88
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 8 - 设置信封报表 Flags: Collection, NoData InstanceNumber: 8 RawId: 0x000008C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 90
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 9 - 设置条件报表 Flags: Collection, NoData InstanceNumber: 9 RawId: 0x000009C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 95
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 10 - 类型特定块偏移量 Flags: Collection, NoData InstanceNumber: 10 RawId: 0x00000AC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 88
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 11 - 设置定期报表 Flags: Collection, NoData InstanceNumber: 11 RawId: 0x00000BC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 110
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 12 - 设置经常性强制报表 Flags: Collection, NoData InstanceNumber: 12 RawId: 0x00000CC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 115
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 13 - 设置斜道强制报表 Flags: Collection, NoData InstanceNumber: 13 RawId: 0x00000DC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 116
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 14 - 自定义强制数据报表 Flags: Collection, NoData InstanceNumber: 14 RawId: 0x00000EC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 104
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 15 - 下载强制示例 Flags: Collection, NoData InstanceNumber: 15 RawId: 0x00000FC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 102
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 16 - 效果操作报表 Flags: Collection, NoData InstanceNumber: 16 RawId: 0x000010C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 119
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 17 - 效果操作 Flags: Collection, NoData InstanceNumber: 17 RawId: 0x000011C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 120
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 18 - PID 块空闲报表 Flags: Collection, NoData InstanceNumber: 18 RawId: 0x000012C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 144
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 19 - PID 设备控制 Flags: Collection, NoData InstanceNumber: 19 RawId: 0x000013C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 150
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 20 - 设备增益报表 Flags: Collection, NoData InstanceNumber: 20 RawId: 0x000014C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 125
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 21 - 设置自定义强制报表 Flags: Collection, NoData InstanceNumber: 21 RawId: 0x000015C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 107
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 22 - 创建新效果 Flags: Collection, NoData InstanceNumber: 22 RawId: 0x000016C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 171
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 23 - 效果类型 Flags: Collection, NoData InstanceNumber: 23 RawId: 0x000017C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 37
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 24 - PID 块负荷报表 Flags: Collection, NoData InstanceNumber: 24 RawId: 0x000018C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 137
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 25 - 块负荷状态 Flags: Collection, NoData InstanceNumber: 25 RawId: 0x000019C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 139
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 26 - PID 池报表 Flags: Collection, NoData InstanceNumber: 26 RawId: 0x00001AC0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 127
+2025-07-05 16:32:05.656 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor: 蓝牙 XINPUT 兼容的输入设备 19228330-c322-11ed-8002-444553540000
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor: {
+Properties: {
+  AutoCenter: 调用的目标发生了异常。
+  AxisMode: Absolute
+  BufferSize: 128
+  ClassGuid: 745a17a0-74d3-11d0-b6fe-00a0c90f57da
+  DeadZone: 调用的目标发生了异常。
+  ForceFeedbackGain: 10000
+  Granularity: 调用的目标发生了异常。
+  InstanceName: 蓝牙 XINPUT 兼容的输入设备
+  InterfacePath: \\?\hid#{00001124-0000-1000-8000-00805f9b34fb}&vid_045e&pid_02e0&ig_00#8&294cff7c&3&0000#{4d1e55b2-f16f-11cf-88cb-001111000030}
+  JoystickId: 2
+  MemoryLoad: 调用的目标发生了异常。
+  PortDisplayName: 调用的目标发生了异常。
+  ProductId: 736
+  ProductName: 蓝牙 XINPUT 兼容的输入设备
+  Range: 调用的目标发生了异常。
+  Saturation: 调用的目标发生了异常。
+  TypeName: 调用的目标发生了异常。
+  UserName: 调用的目标发生了异常。
+  VendorId: 1118
+}
+CreatedEffects: [
+]
+Capabilities: {
+  Type: Gamepad
+  Subtype: 258
+  IsHumanInterfaceDevice: True
+  Flags: Attached, Emulated
+  AxeCount: 5
+  ButtonCount: 16
+  PovCount: 1
+  ForceFeedbackSamplePeriod: 0
+  ForceFeedbackMinimumTimeResolution: 0
+  FirmwareRevision: 0
+  HardwareRevision: 0
+  DriverVersion: 0
+}
+Information: {
+  Type: Gamepad
+  Subtype: 258
+  IsHumanInterfaceDevice: True
+  InstanceGuid: 19228330-c322-11ed-8002-444553540000
+  ProductGuid: 02e0045e-0000-0000-0000-504944564944
+  InstanceName: 蓝牙 XINPUT 兼容的输入设备
+  ProductName: 蓝牙 XINPUT 兼容的输入设备
+  ForceFeedbackDriverGuid: 00000000-0000-0000-0000-000000000000
+  UsagePage: Generic
+  Usage: GenericGamepad
+}
+Tag: null
+NativePointer: 2340732497528
+IsDisposed: False
+}
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor: [
+  ObjectType: a36d02e1-c9f3-11cf-bfc7-444553540000
+  Offset: 0
+  ObjectId: Flags: AbsoluteAxis InstanceNumber: 1 RawId: 0x00000102
+  Aspect: Position
+  Name: Y 轴
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 1
+  DesignatorIndex: 0
+  UsagePage: 1
+  Usage: 49
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02e0-c9f3-11cf-bfc7-444553540000
+  Offset: 4
+  ObjectId: Flags: AbsoluteAxis InstanceNumber: 0 RawId: 0x00000002
+  Aspect: Position
+  Name: X 轴
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 1
+  DesignatorIndex: 0
+  UsagePage: 1
+  Usage: 48
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f5-c9f3-11cf-bfc7-444553540000
+  Offset: 8
+  ObjectId: Flags: AbsoluteAxis InstanceNumber: 4 RawId: 0x00000402
+  Aspect: Position
+  Name: Y 旋转
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 2
+  DesignatorIndex: 0
+  UsagePage: 1
+  Usage: 52
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f4-c9f3-11cf-bfc7-444553540000
+  Offset: 12
+  ObjectId: Flags: AbsoluteAxis InstanceNumber: 3 RawId: 0x00000302
+  Aspect: Position
+  Name: X 旋转
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 2
+  DesignatorIndex: 0
+  UsagePage: 1
+  Usage: 51
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02e2-c9f3-11cf-bfc7-444553540000
+  Offset: 16
+  ObjectId: Flags: AbsoluteAxis InstanceNumber: 2 RawId: 0x00000202
+  Aspect: Position
+  Name: Z 轴
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 3
+  DesignatorIndex: 0
+  UsagePage: 1
+  Usage: 50
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 24
+  ObjectId: Flags: PushButton InstanceNumber: 0 RawId: 0x00000004
+  Aspect: 0
+  Name: 按钮 0
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 1
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 25
+  ObjectId: Flags: PushButton InstanceNumber: 1 RawId: 0x00000104
+  Aspect: 0
+  Name: 按钮 1
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 2
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 26
+  ObjectId: Flags: PushButton InstanceNumber: 2 RawId: 0x00000204
+  Aspect: 0
+  Name: 按钮 2
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 3
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 27
+  ObjectId: Flags: PushButton InstanceNumber: 3 RawId: 0x00000304
+  Aspect: 0
+  Name: 按钮 3
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 4
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 28
+  ObjectId: Flags: PushButton InstanceNumber: 4 RawId: 0x00000404
+  Aspect: 0
+  Name: 按钮 4
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 5
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 29
+  ObjectId: Flags: PushButton InstanceNumber: 5 RawId: 0x00000504
+  Aspect: 0
+  Name: 按钮 5
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 6
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 30
+  ObjectId: Flags: PushButton InstanceNumber: 6 RawId: 0x00000604
+  Aspect: 0
+  Name: 按钮 6
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 7
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 31
+  ObjectId: Flags: PushButton InstanceNumber: 7 RawId: 0x00000704
+  Aspect: 0
+  Name: 按钮 7
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 8
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 32
+  ObjectId: Flags: PushButton InstanceNumber: 8 RawId: 0x00000804
+  Aspect: 0
+  Name: 按钮 8
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 9
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 33
+  ObjectId: Flags: PushButton InstanceNumber: 9 RawId: 0x00000904
+  Aspect: 0
+  Name: 按钮 9
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 10
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 34
+  ObjectId: Flags: PushButton InstanceNumber: 10 RawId: 0x00000A04
+  Aspect: 0
+  Name: 按钮 10
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 11
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 35
+  ObjectId: Flags: PushButton InstanceNumber: 11 RawId: 0x00000B04
+  Aspect: 0
+  Name: 按钮 11
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 12
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 36
+  ObjectId: Flags: PushButton InstanceNumber: 12 RawId: 0x00000C04
+  Aspect: 0
+  Name: 按钮 12
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 13
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 37
+  ObjectId: Flags: PushButton InstanceNumber: 13 RawId: 0x00000D04
+  Aspect: 0
+  Name: 按钮 13
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 14
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 38
+  ObjectId: Flags: PushButton InstanceNumber: 14 RawId: 0x00000E04
+  Aspect: 0
+  Name: 按钮 14
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 15
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f0-c9f3-11cf-bfc7-444553540000
+  Offset: 39
+  ObjectId: Flags: PushButton InstanceNumber: 15 RawId: 0x00000F04
+  Aspect: 0
+  Name: 按钮 15
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 9
+  Usage: 16
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f2-c9f3-11cf-bfc7-444553540000
+  Offset: 20
+  ObjectId: Flags: PointOfViewController InstanceNumber: 0 RawId: 0x00000010
+  Aspect: 0
+  Name: 帽状开关
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 1
+  Usage: 57
+  Dimension: 14
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f3-c9f3-11cf-bfc7-444553540000
+  Offset: 0
+  ObjectId: Flags: Collection, NoData InstanceNumber: 0 RawId: 0x000000C0
+  Aspect: 0
+  Name: 集合 0 - 游戏板
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 1
+  Usage: 5
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f3-c9f3-11cf-bfc7-444553540000
+  Offset: 0
+  ObjectId: Flags: Collection, NoData InstanceNumber: 1 RawId: 0x000001C0
+  Aspect: 0
+  Name: 集合 1
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 1
+  Usage: 0
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f3-c9f3-11cf-bfc7-444553540000
+  Offset: 0
+  ObjectId: Flags: Collection, NoData InstanceNumber: 2 RawId: 0x000002C0
+  Aspect: 0
+  Name: 集合 2
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 1
+  Usage: 0
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+  ObjectType: a36d02f3-c9f3-11cf-bfc7-444553540000
+  Offset: 0
+  ObjectId: Flags: Collection, NoData InstanceNumber: 3 RawId: 0x000003C0
+  Aspect: 0
+  Name: 集合 3
+  MaximumForceFeedback: 0
+  ForceFeedbackResolution: 0
+  CollectionNumber: 0
+  DesignatorIndex: 0
+  UsagePage: 1
+  Usage: 0
+  Dimension: 0
+  Exponent: 0
+  ReportId: 0
+  ,
+]
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Y 轴 Flags: AbsoluteAxis InstanceNumber: 1 RawId: 0x00000102 offset: 0 objecttype: a36d02e1-c9f3-11cf-bfc7-444553540000 49
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   X 轴 Flags: AbsoluteAxis InstanceNumber: 0 RawId: 0x00000002 offset: 4 objecttype: a36d02e0-c9f3-11cf-bfc7-444553540000 48
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Y 旋转 Flags: AbsoluteAxis InstanceNumber: 4 RawId: 0x00000402 offset: 8 objecttype: a36d02f5-c9f3-11cf-bfc7-444553540000 52
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   X 旋转 Flags: AbsoluteAxis InstanceNumber: 3 RawId: 0x00000302 offset: 12 objecttype: a36d02f4-c9f3-11cf-bfc7-444553540000 51
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   Z 轴 Flags: AbsoluteAxis InstanceNumber: 2 RawId: 0x00000202 offset: 16 objecttype: a36d02e2-c9f3-11cf-bfc7-444553540000 50
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 0 Flags: PushButton InstanceNumber: 0 RawId: 0x00000004 offset: 24 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 1
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 1 Flags: PushButton InstanceNumber: 1 RawId: 0x00000104 offset: 25 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 2
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 2 Flags: PushButton InstanceNumber: 2 RawId: 0x00000204 offset: 26 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 3
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 3 Flags: PushButton InstanceNumber: 3 RawId: 0x00000304 offset: 27 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 4
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 4 Flags: PushButton InstanceNumber: 4 RawId: 0x00000404 offset: 28 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 5
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 5 Flags: PushButton InstanceNumber: 5 RawId: 0x00000504 offset: 29 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 6
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 6 Flags: PushButton InstanceNumber: 6 RawId: 0x00000604 offset: 30 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 7
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 7 Flags: PushButton InstanceNumber: 7 RawId: 0x00000704 offset: 31 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 8
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 8 Flags: PushButton InstanceNumber: 8 RawId: 0x00000804 offset: 32 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 9
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 9 Flags: PushButton InstanceNumber: 9 RawId: 0x00000904 offset: 33 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 10
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 10 Flags: PushButton InstanceNumber: 10 RawId: 0x00000A04 offset: 34 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 11
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 11 Flags: PushButton InstanceNumber: 11 RawId: 0x00000B04 offset: 35 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 12
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 12 Flags: PushButton InstanceNumber: 12 RawId: 0x00000C04 offset: 36 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 13
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 13 Flags: PushButton InstanceNumber: 13 RawId: 0x00000D04 offset: 37 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 14
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 14 Flags: PushButton InstanceNumber: 14 RawId: 0x00000E04 offset: 38 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 15
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   按钮 15 Flags: PushButton InstanceNumber: 15 RawId: 0x00000F04 offset: 39 objecttype: a36d02f0-c9f3-11cf-bfc7-444553540000 16
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   帽状开关 Flags: PointOfViewController InstanceNumber: 0 RawId: 0x00000010 offset: 20 objecttype: a36d02f2-c9f3-11cf-bfc7-444553540000 57
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 0 - 游戏板 Flags: Collection, NoData InstanceNumber: 0 RawId: 0x000000C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 5
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 1 Flags: Collection, NoData InstanceNumber: 1 RawId: 0x000001C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 0
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 2 Flags: Collection, NoData InstanceNumber: 2 RawId: 0x000002C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 0
+2025-07-05 16:32:05.672 +08:00 INFO  XOutput.Devices.Input.DirectInput.DirectDevice..ctor:   集合 3 Flags: Collection, NoData InstanceNumber: 3 RawId: 0x000003C0 offset: 0 objecttype: a36d02f3-c9f3-11cf-bfc7-444553540000 0
+2025-07-05 16:32:05.688 +08:00 INFO  XOutput.Devices.GameController.CreateXOutput: ViGEm devices are used.
+2025-07-05 16:32:05.705 +08:00 INFO  XOutput.UI.Windows.MainWindowViewModel.Initialize: Keyboard controller is connected
+2025-07-05 16:32:05.705 +08:00 INFO  XOutput.UI.Windows.MainWindow.Initialize: The application has started.
+2025-07-05 16:32:07.059 +08:00 INFO  XOutput.UI.Windows.MainWindowViewModel.VersionCompare: Version is up-to-date
+2025-07-05 16:33:10.732 +08:00 INFO  XOutput.UI.Windows.MainWindowViewModel.SaveSettings: Saving settings was successful.
+2025-07-05 16:33:20.202 +08:00 INFO  XOutput.UI.Windows.MainWindowViewModel.SaveSettings: Saving settings was successful.
+2025-07-05 16:35:48.641 +08:00 INFO  XOutput.UI.Windows.MainWindow.WindowClosed: The application will exit.

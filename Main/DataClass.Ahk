@@ -107,6 +107,8 @@ class ToolCheck {
         this.RecordMouseValue := ""
         this.RecordMouseRelativeCtrl := ""
         this.RecordMouseRelativeValue := ""
+        this.RecordJoyCtrl := ""
+        this.RecordJoyValue := ""
         this.OCRTypeCtrl := ""
         this.OCRTypeValue := 1
     }
