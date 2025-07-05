@@ -1023,6 +1023,7 @@ SendJoyBtnClick(key, holdTime, tableItem, index, keyType) {
         MsgBox("使用手柄功能前,请先安装Joy目录下的vJoy驱动!")
         return
     }
+
     if (keyType == 1) {
         SendJoyBtnKey(key, 1, tableItem, index)
         SetTimer(() => SendJoyBtnKey(key, 0, tableItem, index), -holdTime)

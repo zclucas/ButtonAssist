@@ -24,7 +24,7 @@ class JoyMacro {
     __New() {
         this.MacroMap := Map()
         this.interval := 50
-        this.controllerNum := 4
+        this.controllerNum := 10
         this.joyBtnNum := 32
         this.joyFloat := 5
         this.axisMaxValue := 100

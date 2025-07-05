@@ -1,5 +1,5 @@
 #Requires AutoHotkey v2.0
-RecordControllerNum := 4
+RecordControllerNum := 10
 RecordJoyFloat := 10
 RecordAxisMaxValue := 100
 RecordJoyIndexArr := []
@@ -32,6 +32,7 @@ RecordJoy() {
     global XInputStateCache, RecordJoyIndexArr
     RecordJoyIndexArr := []
     loop RecordControllerNum {
+        name := GetKeyState(A_Index "JoyName")
         if GetKeyState(A_Index "JoyName") {
             RecordJoyIndexArr.Push(A_Index)
         }
@@ -40,6 +41,7 @@ RecordJoy() {
     loop {
         if (!ToolCheckInfo.IsToolRecord)
             return
+
         XInputStateCache := XInputState(0)
         for key, value in RecordAllJoyMap {
             isJoyAxis := RecordJoyAxises.Has(key)
