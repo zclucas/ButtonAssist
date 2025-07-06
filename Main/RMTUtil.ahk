@@ -583,7 +583,8 @@ OnFinishRecordMacro() {
                 continue
             keyName := value.keyName
             IsMouse := keyName == "LButton" || keyName == "RButton" || keyName == "MButton"
-            IsKeyboard := !IsMouse
+            IsJoy := InStr(keyName, "Joy")
+            IsKeyboard := !IsMouse && !IsJoy
 
             if (IsMouse && ToolCheckInfo.RecordMouseValue) {
                 isRelative := ToolCheckInfo.RecordMouseRelativeValue
@@ -603,6 +604,10 @@ OnFinishRecordMacro() {
 
                 ToolCheckInfo.RecordLastMousePos[1] := value.EndPos[1]
                 ToolCheckInfo.RecordLastMousePos[2] := value.EndPos[2]
+            }
+
+            if (IsJoy && ToolCheckInfo.RecordJoyValue) {
+                macro .= "按键_" value.keyName "_" value.Span() ","
             }
 
             if (IsKeyboard && ToolCheckInfo.RecordKeyboardValue) {
