@@ -70,7 +70,7 @@ class CoordGui {
 
         PosY += 20
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "游戏视角：调整原神，cf等游戏视角、此模式下相对位移，速度100")
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "游戏视角：调整原神等游戏视角、此模式下相对位移，速度100")
 
         PosY += 30
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "坐标位置X:")

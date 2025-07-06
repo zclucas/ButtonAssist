@@ -598,8 +598,17 @@ AddHelpUI(index) {
     "软件交流QQ群：")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 700, 30),
-    '<a href="https://qm.qq.com/q/DgpDumEPzq">[1群]837661891</a>、<a href="https://qm.qq.com/q/uZszuxabPW">[2群]1050141694</a>(提交优化方案，使用心得分享，问题反馈)'
+    '<a href="https://qm.qq.com/q/DgpDumEPzq">[1群]837661891</a>(已满)、<a href="https://qm.qq.com/q/uZszuxabPW">[2群]1050141694</a>'
     )
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+
+    posY += 30
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 30),
+    "软件交流频道：")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 700, 30),
+    '<a href="https://pd.qq.com/s/5wyjvj7zw">pd63973680</a>(提交优化方案，使用心得分享，问题反馈)')
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
 
     posY += 30
