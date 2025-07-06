@@ -70,7 +70,7 @@ RMT（若梦兔）是完全免费的开源项目，如果你觉得它对你有�
  
 
 ## 交流群
-- QQ 群：
+- QQ 群：(提交优化方案，使用心得分享，问题反馈)
   - [1群：837661891](https://qm.qq.com/q/DgpDumEPzq)（已满）
   - [2群：1050141694](https://qm.qq.com/q/uZszuxabPW)
   - [频道号：pd63973680](https://pd.qq.com/s/5wyjvj7zw)
