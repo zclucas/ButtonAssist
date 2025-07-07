@@ -470,8 +470,12 @@ OnStop(tableItem, cmd, index) {
     KillTableItemMacro(stopTableItem, Data.StopIndex)
 }
 
+testCount := 0
+
 OnSubMacro(tableItem, cmd, index) {
-    global MySoftData
+    global MySoftData, testCount
+    testCount++
+    ToolTip(testCount)
     paramArr := StrSplit(cmd, "_")
     Data := GetMacroCMDData(SubMacroFile, paramArr[2])
     macroTableIndex := 1

@@ -460,10 +460,6 @@ GetSavedTableItemInfo(index) {
 
     loop tableItem.ModeArr.Length {
         TKArrStr .= tableItem.TKConArr.Has(A_Index) ? tableItem.TKConArr[A_Index].Value : ""
-        MacroStr := tableItem.InfoConArr.Has(A_Index) ? tableItem.InfoConArr[A_Index].Value : ""
-        MacroStr := Trim(MacroStr, "`n")
-        MacroStr := Trim(MacroStr, ",")
-        MacroArrStr .= MacroStr
         ModeArrStr .= tableItem.ModeConArr[A_Index].Value
         ForbidArrStr .= tableItem.ForbidConArr[A_Index].Value
         HoldTimeArrStr .= tableItem.HoldTimeArr[A_Index]
@@ -472,11 +468,10 @@ GetSavedTableItemInfo(index) {
         TriggerTypeArrStr .= tableItem.TriggerTypeConArr.Length >= A_Index ? tableItem.TriggerTypeConArr[A_Index].Value :
             ""
         LoopCountArrStr .= GetItemSaveCountValue(tableItem.Index, A_Index)
-        MacroTypeArrStr .= tableItem.MacroTypeArr.Length >= A_Index ? tableItem.MacroTypeConArr[A_Index].Value : 1
+        MacroTypeArrStr .= tableItem.MacroTypeConArr.Length >= A_Index ? tableItem.MacroTypeConArr[A_Index].Value : 1
         SerialArrStr .= tableItem.SerialArr.Length >= A_Index ? tableItem.SerialArr[A_Index] : "000000"
         if (tableItem.ModeArr.Length > A_Index) {
             TKArrStr .= "π"
-            MacroArrStr .= "π"
             ModeArrStr .= "π"
             HoldTimeArrStr .= "π"
             ForbidArrStr .= "π"
@@ -488,7 +483,7 @@ GetSavedTableItemInfo(index) {
             SerialArrStr .= "π"
         }
     }
-    MacroArrStr := StrReplace(MacroArrStr, "`n", ",")
+
     return [TKArrStr, ModeArrStr, HoldTimeArrStr, ForbidArrStr, ProcessNameArrStr, RemarkArrStr,
         LoopCountArrStr, TriggerTypeArrStr, MacroTypeArrStr, SerialArrStr]
 }
