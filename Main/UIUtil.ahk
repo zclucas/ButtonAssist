@@ -2,7 +2,7 @@
 InitUI() {
     global MySoftData
     MyGui := Gui()
-    MyGui.Title := "RMTv1.0.6"
+    MyGui.Title := "RMTv1.0.7"
     MyGui.SetFont(, "Arial")
     MyGui.SetFont("S10 W550 Q2", "Consolas")
     MySoftData.MyGui := MyGui
