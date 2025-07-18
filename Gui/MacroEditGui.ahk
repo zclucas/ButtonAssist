@@ -47,6 +47,7 @@ class MacroEditGui {
     InitSubGui() {
         this.IntervalGui := IntervalGui()
         this.IntervalGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.IntervalGui.MacroEditGui := this
         this.SubGuiMap.Set("间隔", this.IntervalGui)
 
         this.KeyGui := KeyGui()
@@ -332,7 +333,8 @@ class MacroEditGui {
                 continue
             processedIndex := index
             isInterval := StrCompare(SubStr(value, 1, 2), "间隔", false) == 0
-            if (isInterval) {
+            isNormalInterval := StrSplit(value, "_").Length == 2 && isInterval
+            if (isNormalInterval) {
                 SubCommandArr := StrSplit(value, "_")
                 intervalValue := Integer(SubCommandArr[2])
                 loop {
@@ -342,7 +344,8 @@ class MacroEditGui {
 
                     SubCommandArr := StrSplit(CommandArr[curIndex], "_")
                     isIntervalAgain := StrCompare(SubStr(SubCommandArr[1], 1, 2), "间隔", false) == 0
-                    if (!isIntervalAgain)
+                    isNormalIntervalAgain := SubCommandArr.Length == 2 && isIntervalAgain
+                    if (!isNormalIntervalAgain)
                         break
                     intervalValue += Integer(SubCommandArr[2])
                     processedIndex := curIndex
@@ -369,14 +372,14 @@ class MacroEditGui {
                 }
             }
 
-            if (!isPressKey && !isInterval) {
+            if (!isPressKey && !isNormalInterval) {
                 macroEditStr .= value
             }
 
             nextIndex := processedIndex + 1
-            isNextInterval := nextIndex <= CommandArr.Length
-            isNextInterval := isNextInterval && StrCompare(SubStr(CommandArr[nextIndex], 1, 2), "间隔", false) == 0
-            if (!isNextInterval) {
+            isNextInterval := nextIndex <= CommandArr.Length && StrCompare(SubStr(CommandArr[nextIndex], 1, 2), "间隔", false) == 0
+            isNextNormalInterval := isNextInterval && StrSplit(CommandArr[nextIndex], "_").Length == 2
+            if (!isNextNormalInterval) {
                 macroEditStr .= "`n"
             }
         }

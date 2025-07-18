@@ -35,8 +35,16 @@ OnKillAllMacro(*) {
     loop MySoftData.TableInfo.Length {
         tableItem := MySoftData.TableInfo[A_Index]
         KillSingleTableMacro(tableItem)
+        for index, value in tableItem.ModeArr {
+            isWork := tableItem.IsWorkArr[index]
+            if (isWork) {
+                workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[index])
+                MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
+                return
+            }
+        }
     }
-    MyWorkPool.Clear()
+
     KillSingleTableMacro(MySoftData.SpecialTableItem)
 }
 
@@ -60,6 +68,7 @@ OnSaveSetting(*) {
     IniWrite(MySoftData.BootStartCtrl.Value, IniFile, IniSection, "IsBootStart")
     IniWrite(MySoftData.MutiThreadNumCtrl.Value, IniFile, IniSection, "MutiThreadNum")
     IniWrite(MySoftData.MutiThreadCtrl.Value, IniFile, IniSection, "MutiThread")
+    IniWrite(MySoftData.NoVariableTipCtrl.Value, IniFile, IniSection, "NoVariableTip")
     IniWrite(ToolCheckInfo.ToolCheckHotKeyCtrl.Value, IniFile, IniSection, "ToolCheckHotKey")
     IniWrite(ToolCheckInfo.ToolRecordMacroHotKeyCtrl.Value, IniFile, IniSection, "RecordMacroHotKey")
     IniWrite(ToolCheckInfo.ToolTextFilterHotKeyCtrl.Value, IniFile, IniSection, "ToolTextFilterHotKey")

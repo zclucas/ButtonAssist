@@ -473,6 +473,10 @@ AddSettingUI(index) {
     MySoftData.MutiThreadCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 635, posY), "指令串联多线程")
     MySoftData.MutiThreadCtrl.Value := MySoftData.MutiThread
 
+    posY += 30
+    MySoftData.NoVariableTipCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 25, posY), "无变量提醒")
+    MySoftData.NoVariableTipCtrl.Value := MySoftData.NoVariableTip
+
     tableItem := MySoftData.TableInfo[index]
     tableItem.UnderPosY := posY
 }

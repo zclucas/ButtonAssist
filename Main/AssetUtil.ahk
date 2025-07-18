@@ -241,6 +241,7 @@ LoadSetting() {
     MySoftData.IsBootStart := IniRead(IniFile, IniSection, "IsBootStart", false)
     MySoftData.MutiThread := IniRead(IniFile, IniSection, "MutiThread", false)
     MySoftData.MutiThreadNum := IniRead(IniFile, IniSection, "MutiThreadNum", 3)
+    MySoftData.NoVariableTip := IniRead(IniFile, IniSection, "NoVariableTip", true)
     MySoftData.AgreeAgreement := IniRead(IniFile, IniSection, "AgreeAgreement", false)
     MySoftData.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
     MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
@@ -565,6 +566,7 @@ KillTableItemMacro(tableItem, index) {
     if (tableItem.KilledArr.Length < index)
         return
     tableItem.KilledArr[index] := true
+
     for key, value in tableItem.HoldKeyArr[index] {
         if (value == "Game") {
             SendGameModeKey(key, 0, tableItem, index)
@@ -1178,4 +1180,9 @@ GetMacroCMDData(fileName, serialStr) {
     Data := JSON.parse(saveStr, , false)
     MySoftData.DataCacheMap.Set(serialStr, Data)
     return Data
+}
+
+ShowNoVariableTip(variableName) {
+    if (MySoftData.NoVariableTip)
+        MsgBox("当前环境不存在变量 " variableName)
 }

@@ -308,12 +308,12 @@ OnCompare(tableItem, cmd, index) {
         Name := Data.NameArr[A_Index]
         OhterName := Data.VariableArr[A_Index]
         if (!VariableMap.Has(Name)) {
-            MsgBox("当前环境不存在变量 " Name)
+            ShowNoVariableTip(Name)
             return
         }
 
         if (OhterName != "空" && !VariableMap.Has(OhterName)) {
-            MsgBox("当前环境不存在变量 " OhterName)
+            ShowNoVariableTip(OhterName)
             return
         }
 
@@ -397,12 +397,12 @@ OnCoordOnce(tableItem, index, Data) {
     Speed := 100 - Data.Speed
     VariableMap := tableItem.VariableMapArr[index]
     if (Data.NameX != "空" && !VariableMap.Has(Data.NameX)) {
-        MsgBox("当前环境不存在变量 " Data.NameX)
+        ShowNoVariableTip(Data.NameX)
         return
     }
 
     if (Data.NameY != "空" && !VariableMap.Has(Data.NameY)) {
-        MsgBox("当前环境不存在变量 " Data.NameY)
+        ShowNoVariableTip(Data.NameY)
         return
     }
 
@@ -649,12 +649,12 @@ OnBGMouse(tableItem, cmd, index) {
 
     VariableMap := tableItem.VariableMapArr[index]
     if (Data.PosXName != "空" && !VariableMap.Has(Data.PosXName)) {
-        MsgBox("当前环境不存在变量 " Data.PosXName)
+        ShowNoVariableTip(Data.PosXName)
         return
     }
 
     if (Data.PosYName != "空" && !VariableMap.Has(Data.PosYName)) {
-        MsgBox("当前环境不存在变量 " Data.PosYName)
+        ShowNoVariableTip(Data.PosYName)
         return
     }
 
@@ -721,7 +721,18 @@ OnMouseMove(tableItem, cmd, index) {
 
 OnInterval(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    interval := Integer(paramArr[2])
+    if (paramArr.Length == 2) {
+        interval := Integer(paramArr[2])
+    }
+    else {
+        VariableMap := tableItem.VariableMapArr[index]
+        if (!VariableMap.Has(paramArr[3])) {
+            ShowNoVariableTip(paramArr[3])
+            return
+        }
+
+        interval := VariableMap[paramArr[3]]
+    }
     FloatInterval := GetFloatTime(interval, MySoftData.IntervalFloat)
     curTime := 0
     clip := Min(500, FloatInterval)
@@ -885,7 +896,7 @@ OnShowWinChanged(*) {
 
 OnBootStartChanged(*) {
     global MySoftData ; 访问全局变量
-    MySoftData.IsBootStart := !MySoftData.IsBootStart
+    MySoftData.IsBootStart := MySoftData.BootStartCtrl.Value
     regPath := "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run"
     softPath := A_ScriptFullPath
     if (MySoftData.IsBootStart) {
@@ -894,6 +905,7 @@ OnBootStartChanged(*) {
     else {
         RegDelete(regPath, "RMT")
     }
+    IniWrite(MySoftData.BootStartCtrl.Value, IniFile, IniSection, "IsBootStart")
 }
 
 ;按键模拟

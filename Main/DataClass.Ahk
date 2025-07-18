@@ -131,6 +131,8 @@ class SoftData {
         this.ShowWinCtrl := ""
         this.IsBootStart := false
         this.BootStartCtrl := ""
+        this.NoVariableTip := false
+        this.NoVariableTipCtrl := ""
         this.MutiThread := false
         this.MutiThreadCtrl := ""
         this.MutiThreadNum := 3
